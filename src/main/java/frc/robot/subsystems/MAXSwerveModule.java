@@ -86,7 +86,7 @@ public class MAXSwerveModule {
         m_drivingEncoder.getPosition(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
-
+  
   /**
    * Sets the desired state for the module.
    *
@@ -106,6 +106,12 @@ public class MAXSwerveModule {
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
     m_desiredState = desiredState;
+  }
+
+  public void setVoltageAngle(double voltage, Rotation2d angle) {
+    
+    m_desiredState.speedMetersPerSecond = 0.0;
+    m_desiredState.angle = angle.minus(Rotation2d.fromRadians(m_chassisAngularOffset));
   }
 
   /** Zeroes all the SwerveModule encoders. */

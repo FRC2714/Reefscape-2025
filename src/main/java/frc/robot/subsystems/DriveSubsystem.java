@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -19,12 +23,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -102,6 +113,63 @@ public class DriveSubsystem extends SubsystemBase {
       },
       this // Reference to this subsystem to set requirements
     );
+  }
+
+  public SysIdRoutine sysIdDrive() {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
+  }
+
+  public SysIdRoutine sysIdRotation() {
+    return new SysIdRoutine(
+        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> this.driveVoltageRotateTest(voltage.in(Volts)), null, this));
+  }
+
+  public Command translationalQuasistatic() {
+    return new SequentialCommandGroup(
+      sysIdDrive().quasistatic(SysIdRoutine.Direction.kForward),
+      sysIdDrive().quasistatic(SysIdRoutine.Direction.kReverse)
+    );
+  }
+
+  public Command rotationalQuasistatic() {
+    return new SequentialCommandGroup(
+      sysIdRotation().quasistatic(SysIdRoutine.Direction.kForward),
+      sysIdRotation().quasistatic(SysIdRoutine.Direction.kReverse)
+    );
+  }
+
+  public Command translationalDynamic() {
+    return new SequentialCommandGroup(
+      sysIdDrive().dynamic(SysIdRoutine.Direction.kForward),
+      sysIdDrive().dynamic(SysIdRoutine.Direction.kReverse)
+    );
+  }
+
+  public Command rotationalDynamic() {
+    return new SequentialCommandGroup(
+      sysIdRotation().dynamic(SysIdRoutine.Direction.kForward),
+      sysIdRotation().dynamic(SysIdRoutine.Direction.kReverse)
+    );
+  }
+
+  private void driveVoltageForwardTest(double voltage) {
+    var direction = new Rotation2d();
+    m_frontLeft.setVoltageAngle(voltage, direction);
+    m_frontRight.setVoltageAngle(voltage, direction);
+    m_rearLeft.setVoltageAngle(voltage, direction);
+    m_rearRight.setVoltageAngle(voltage, direction);
+  }
+
+  private void driveVoltageRotateTest(double voltage) {
+    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(-45.0));
+    m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(45.0));
+    m_rearLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(45.0));
+    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(-45.0));
   }
 
   @Override
