@@ -12,20 +12,61 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.LimelightHelpers;
+import frc.robot.utils.LimelightHelpers;
 
 public class Limelight extends SubsystemBase {
   
   private String limelightName = LimelightConstants.kLimelightName;
+  private double kCameraHeight = LimelightConstants.kCameraHeight;
+  private double kMountingAngle = LimelightConstants.kMountingAngle;
+  private double kGoalHeight = LimelightConstants.kGoalHeight;
 
-  public Limelight() {
+  public Limelight() {}
+
+  public double getDistanceToGoalInches() {
+    return (kGoalHeight - kCameraHeight) / Math.tan(Units.degreesToRadians(kMountingAngle + getYAngleOffsetDegrees()));
   }
 
+  public void setGoalHeight(double GoalHeight) {
+		this.kGoalHeight = GoalHeight;
+	}
   
-
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public double getGoalHeight() {
+    return kGoalHeight;
   }
+
+  public double getDistanceToGoalMeters() {
+		return Units.inchesToMeters(getDistanceToGoalInches());
+	}
+
+  // Offset in Degrees
+  public double getYAngleOffsetDegrees() {
+    return LimelightHelpers.getTY(limelightName);
+  }
+
+  public double getXAngleOffsetDegrees() {
+    return -1 * LimelightHelpers.getTX(limelightName); // must be negative
+  }
+
+  // Offset in Radians
+  public double getYOffsetRadians() {
+		return Units.degreesToRadians(getYAngleOffsetDegrees());
+	}
+
+  public double getXOffsetRadians() {
+		return Units.degreesToRadians(getXAngleOffsetDegrees());
+	}
+
+  public boolean isTargetVisible() {
+		return LimelightHelpers.getTV(limelightName);
+	}
+
+  // Pipline Stuff
+	public void setAprilTagPipeline() {
+		LimelightHelpers.setPipelineIndex(limelightName, 1);
+	}
+
+	public void setAprilTagFarPipeline() {
+		LimelightHelpers.setPipelineIndex(limelightName, 2);
+	}
 }
