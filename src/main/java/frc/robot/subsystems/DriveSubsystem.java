@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -114,6 +115,11 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    
+        SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
+        SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
+        SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
+        SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
   }
 
   /**
