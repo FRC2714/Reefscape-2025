@@ -103,7 +103,7 @@ public final class Constants {
   }
 
   public static final class LimelightConstants{
-    public static final String kLimelightName = ""; //idk the name yet
+    public static final String kLimelightName = "limelight-test"; //idk the name yet
     public static final double kCameraHeight = 0.00; // Change this later
     public static final double kMountingAngle = 0.00; // Change this later
     public static final double kGoalHeight = 0.00; // Change this later
