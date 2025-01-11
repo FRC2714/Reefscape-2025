@@ -53,14 +53,18 @@ public class Limelight extends SubsystemBase {
 	}
 
   // Pipline Stuff
-	public void setAprilTagPipeline() {
+	public void setCoralTagPipelineRight() {
 		LimelightHelpers.setPipelineIndex(limelightName, 1);
 	}
 
-	public void setAprilTagFarPipeline() {
+	public void setCoralTagPipelineLeft() {
 		LimelightHelpers.setPipelineIndex(limelightName, 2);
 	}
 
+  public int getTargetID()
+  {
+    return (int)LimelightHelpers.getFiducialID(limelightName);
+  }
   @Override
   public void periodic()
   {
