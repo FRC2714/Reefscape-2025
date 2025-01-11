@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.073872950819672,
-        "y": 6.0
+        "x": 1.5307499999999998,
+        "y": 5.94575
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0738729508196725,
-        "y": 6.0
+        "x": 2.5252486920523616,
+        "y": 6.150506352785799
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "X-Algea"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 3.9,
+        "y": 5.428999999999999
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 3.20775,
+        "y": 6.0335
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -61.04900479253315
   },
   "reversed": false,
-  "folder": "TEST",
+  "folder": "Paths 2025",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -163.74
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

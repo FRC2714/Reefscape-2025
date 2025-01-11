@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.073872950819672,
-        "y": 6.0
+        "x": 5.31375,
+        "y": 2.767249999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0738729508196725,
-        "y": 6.0
+        "x": 4.797000000000001,
+        "y": 1.919
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "F -Coral"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 1.51125,
+        "y": 1.9677499999999997
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 2.301,
+        "y": 1.9579999999999993
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Z-algea"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -177.3057157101439
   },
   "reversed": false,
-  "folder": "TEST",
+  "folder": "Paths 2025",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 116.25
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

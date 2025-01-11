@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.073872950819672,
-        "y": 6.0
+        "x": 1.51125,
+        "y": 1.9677499999999997
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0738729508196725,
-        "y": 6.0
+        "x": 2.3985000000000003,
+        "y": 1.8994999999999993
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Z-algea"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 4.04625,
+        "y": 2.864749999999999
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 3.3735000000000004,
+        "y": 2.22125
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 60.94539590092283
   },
   "reversed": false,
-  "folder": "TEST",
+  "folder": "Paths 2025",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 140.36563092663988
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Turning path"
+            "pathName": "Start to F"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "TEST",
+  "folder": "Auto 2025",
   "choreoAuto": false
 }
