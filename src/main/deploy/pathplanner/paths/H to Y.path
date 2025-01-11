@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.1425137133776655,
-        "y": 7.018249572906393
+        "x": 5.501144366197183,
+        "y": 7.865757042253521
       },
       "isLocked": false,
       "linkedName": "H-Coral"
     },
     {
       "anchor": {
-        "x": 1.5307499999999998,
-        "y": 5.94575
+        "x": 1.482,
+        "y": 4.3077499999999995
       },
       "prevControl": {
-        "x": 2.58375,
-        "y": 6.08225
+        "x": 1.9863556338028159,
+        "y": 4.5210387323943655
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "X-Algea"
+      "linkedName": "Y-Algea"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -163.74
+    "rotation": -135.61605990839925
   },
   "reversed": false,
   "folder": "Paths 2025",
