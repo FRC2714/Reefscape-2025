@@ -20,12 +20,12 @@
         "y": 4.2005
       },
       "prevControl": {
-        "x": 6.67875002955733,
+        "x": 6.678750029557331,
         "y": 4.190751891852685
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "H-Coral"
+      "linkedName": "H-coral"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -176.9872124958166
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Paths 2025",
