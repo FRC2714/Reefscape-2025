@@ -84,7 +84,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.a().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true, 1));
+    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true, 2));
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }
 

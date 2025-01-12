@@ -19,20 +19,23 @@ public class AlignToCoral extends Command {
   private PIDController thetaController;
 
   private boolean side;
+  private int pipelineNum;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_limelight, boolean side) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_limelight, boolean side, int pipelineNum) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_limelight = m_limelight;
     this.side = side; //right = true, left = false
+    this.pipelineNum = pipelineNum;
 
-    xController = new PIDController(0.25, 0, 0); //tune these later
+
+    xController = new PIDController(0.55, 0, 0); //tune these later
     yController = new PIDController(0.25, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
     
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(.13);
+    xController.setSetpoint(.23);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
@@ -46,11 +49,11 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(side)
+    if(pipelineNum == 1)
     {
        m_limelight.setCoralTagPipelineRight();
     }
-    else
+    else if(pipelineNum == 2)
     {
       m_limelight.setCoralTagPipelineLeft();
     }
