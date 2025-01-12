@@ -26,15 +26,21 @@ public class AlignToCoral extends Command {
     this.m_limelight = m_limelight;
     this.side = side; //right = true, left = false
 
-    xController = new PIDController(0.1, 0, 0); //tune these later
-    yController = new PIDController(0.1, 0, 0);
-    thetaController = new PIDController(0.1, 0, 0);
+    xController = new PIDController(0.25, 0, 0); //tune these later
+    yController = new PIDController(0.25, 0, 0);
+    thetaController = new PIDController(0.01, 0, 0);
     
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(0);
+    xController.setSetpoint(.13);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
+    thetaController.enableContinuousInput(-180, 180);
+
+    xController.setTolerance(.2);
+    yController.setTolerance(.2);
+    thetaController.setTolerance(.1);
+
   }
 
   // Called when the command is initially scheduled.
@@ -87,10 +93,13 @@ public class AlignToCoral extends Command {
           thetaController.setSetpoint(240);
           break;
       }
-        m_drivetrain.drive(xController.calculate(m_limelight.getDistanceToGoalMeters()),
+        m_drivetrain.drive(-xController.calculate(m_limelight.getDistanceToGoalMeters()),
          yController.calculate(m_limelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
-          true);
+          false);
+    }
+    else {
+      m_drivetrain.drive(0, 0, 0, true);
     }
   }
 

@@ -24,6 +24,7 @@ import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -83,7 +84,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.a().onTrue(new AlignToCoral(m_robotDrive, m_Limelight, true));
+    m_driverController.a().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }
 
   /**
