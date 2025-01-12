@@ -72,7 +72,7 @@ public class Limelight extends SubsystemBase {
     //SmartDashboard.putString("asdfas", "limelightName");
     SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
-
+    SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
 
   }
   
