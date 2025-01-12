@@ -26,11 +26,15 @@ public class AlignToCoral extends Command {
     this.m_limelight = m_limelight;
     this.side = side; //right = true, left = false
 
-    xController = new PIDController(0, 0, 0); //tune these later
-    yController = new PIDController(0, 0, 0);
-    thetaController = new PIDController(0, 0, 0);
+    xController = new PIDController(0.1, 0, 0); //tune these later
+    yController = new PIDController(0.1, 0, 0);
+    thetaController = new PIDController(0.1, 0, 0);
     
     addRequirements(m_drivetrain);
+
+    xController.setSetpoint(0);
+    yController.setSetpoint(0);
+    thetaController.setSetpoint(0);
   }
 
   // Called when the command is initially scheduled.

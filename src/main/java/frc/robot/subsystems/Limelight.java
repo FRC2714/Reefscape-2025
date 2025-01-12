@@ -41,7 +41,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getXAngleOffsetDegrees() {
-    return LimelightHelpers.getTX(limelightName); 
+    return -LimelightHelpers.getTX(limelightName); 
   }
 
   public double getXOffsetRadians() {
