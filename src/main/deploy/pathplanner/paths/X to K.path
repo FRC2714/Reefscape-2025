@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.9,
-        "y": 5.428999999999999
+        "x": 3.8571302816901403,
+        "y": 5.4422535211267595
       },
       "prevControl": {
-        "x": 3.20775,
-        "y": 6.0335
+        "x": 3.1648802816901402,
+        "y": 6.04675352112676
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "K-Coral"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -61.04900479253315
+    "rotation": -62.10272896905242
   },
   "reversed": false,
   "folder": "Paths 2025",
