@@ -20,12 +20,12 @@
         "y": 4.2005
       },
       "prevControl": {
-        "x": 6.678750029557331,
+        "x": 6.67875002955733,
         "y": 4.190751891852685
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "H-coral"
+      "linkedName": "H-Coral"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -176.9872124958166
   },
   "reversed": false,
   "folder": "Paths 2025",

@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to H"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H to X"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "X to K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to Y"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Y to A"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "A to Z"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Z to C"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Auto 2025",
+  "choreoAuto": false
+}
