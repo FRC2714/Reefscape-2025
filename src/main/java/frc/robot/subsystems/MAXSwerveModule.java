@@ -109,9 +109,21 @@ public class MAXSwerveModule {
   }
 
   public void setVoltageAngle(double voltage, Rotation2d angle) {
-    
-    m_desiredState.speedMetersPerSecond = 0.0;
-    m_desiredState.angle = angle.minus(Rotation2d.fromRadians(m_chassisAngularOffset));
+    // Apply chassis angular offset to the desired state.
+    SwerveModuleState desiredState = new SwerveModuleState(0, angle); 
+    SwerveModuleState correctedDesiredState = new SwerveModuleState();
+    correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
+    correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
+
+    // Optimize the reference state to avoid spinning further than 90 degrees.
+    correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
+
+    // Command driving and turning SPARKS towards their respective setpoints.
+    // m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_drivingFlex.setVoltage(voltage);
+    m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+
+    m_desiredState = desiredState;
   }
 
   /** Zeroes all the SwerveModule encoders. */
