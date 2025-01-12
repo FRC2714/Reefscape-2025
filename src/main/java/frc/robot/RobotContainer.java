@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
@@ -43,7 +44,14 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final Limelight m_Limelight = new Limelight();
+  private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
+                                                           LimelightConstants.kRightCameraHeight,
+                                                           LimelightConstants.kRightMountingAngle,
+                                                           LimelightConstants.kReefTagHeight);
+  private final Limelight m_leftLimelight = new Limelight(LimelightConstants.kLeftLimelightName,
+                                                         LimelightConstants.kLeftCameraHeight,
+                                                         LimelightConstants.kLeftMountingAngle,
+                                                         LimelightConstants.kReefTagHeight);
 
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -84,8 +92,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true, 1));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_Limelight, true, 2));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
+    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }
 

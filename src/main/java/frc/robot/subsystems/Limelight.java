@@ -12,23 +12,30 @@ import frc.robot.utils.LimelightHelpers;
 
 public class Limelight extends SubsystemBase {
   
-  private String limelightName = LimelightConstants.kLimelightName;
-  private double kCameraHeight = LimelightConstants.kCameraHeight;
-  private double kMountingAngle = LimelightConstants.kMountingAngle;
-  private double kGoalHeight = LimelightConstants.kGoalHeight;
+  private String m_limelightName;
+  private double m_cameraHeight;
+  private double m_mountingAngle;
+  private double m_goalHeight;
 
-  public Limelight() {}
+  public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
-  public double getDistanceToGoalInches() {
-    return (kGoalHeight - kCameraHeight) / Math.tan(Units.degreesToRadians(kMountingAngle + getYAngleOffsetDegrees()));
+    this.m_limelightName = m_limelightName;
+    this.m_cameraHeight = m_cameraHeight;
+    this.m_mountingAngle = m_mountingAngle;
+    this.m_goalHeight = m_goalHeight;
+
   }
 
-  public void setGoalHeight(double GoalHeight) {
-		this.kGoalHeight = GoalHeight;
+  public double getDistanceToGoalInches() {
+    return (m_goalHeight - m_cameraHeight) / Math.tan(Units.degreesToRadians(m_mountingAngle + getYAngleOffsetDegrees()));
+  }
+
+  public void setGoalHeight(double goalHeight) {
+		this.m_goalHeight = goalHeight;
 	}
   
   public double getGoalHeight() {
-    return kGoalHeight;
+    return m_goalHeight;
   }
 
   public double getDistanceToGoalMeters() {
@@ -37,11 +44,11 @@ public class Limelight extends SubsystemBase {
 
   // Offset in Degrees
   public double getYAngleOffsetDegrees() {
-    return LimelightHelpers.getTY(limelightName);
+    return LimelightHelpers.getTY(m_limelightName);
   }
 
   public double getXAngleOffsetDegrees() {
-    return LimelightHelpers.getTX(limelightName); 
+    return LimelightHelpers.getTX(m_limelightName); 
   }
 
   public double getXOffsetRadians() {
@@ -49,27 +56,27 @@ public class Limelight extends SubsystemBase {
 	}
 
   public boolean isTargetVisible() {
-		return LimelightHelpers.getTV(limelightName);
+		return LimelightHelpers.getTV(m_limelightName);
 	}
 
   // Pipline Stuff
 	public void setCoralTagPipelineRight() {
-		LimelightHelpers.setPipelineIndex(limelightName, 1);
+		LimelightHelpers.setPipelineIndex(m_limelightName, 1);
 	}
 
 	public void setCoralTagPipelineLeft() {
-		LimelightHelpers.setPipelineIndex(limelightName, 2);
+		LimelightHelpers.setPipelineIndex(m_limelightName, 2);
 	}
 
   public int getTargetID()
   {
-    return (int)LimelightHelpers.getFiducialID(limelightName);
+    return (int)LimelightHelpers.getFiducialID(m_limelightName);
   }
   @Override
   public void periodic()
   {
     //SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-    //SmartDashboard.putString("asdfas", "limelightName");
+    //SmartDashboard.putString("asdfas", "m_limelightName");
     SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());

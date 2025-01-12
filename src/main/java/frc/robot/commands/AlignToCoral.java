@@ -21,11 +21,10 @@ public class AlignToCoral extends Command {
   private boolean side;
   private int pipelineNum;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_limelight, boolean side, int pipelineNum) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_limelight, int pipelineNum) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_limelight = m_limelight;
-    this.side = side; //right = true, left = false
     this.pipelineNum = pipelineNum;
 
 

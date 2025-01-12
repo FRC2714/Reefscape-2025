@@ -103,9 +103,14 @@ public final class Constants {
   }
 
   public static final class LimelightConstants{
-    public static final String kLimelightName = "limelight-test"; //idk the name yet
-    public static final double kCameraHeight = 18.75; // Change this later
-    public static final double kMountingAngle = -28;// Change this later
-    public static final double kGoalHeight = 12; // Change this later
+    public static final String kRightLimelightName = "limelight-right";
+    public static final String kLeftLimelightName = "limelight-left";
+    public static final double kRightCameraHeight = 18.75;
+    public static final double kLeftCameraHeight = 18.75;
+    public static final double kRightMountingAngle = -28;
+    public static final double kLeftMountingAngle = -28;
+    public static final double kReefTagHeight = 12;
+    public static final int kRightReefBranchPipeline = 1;
+    public static final int kLeftReefBranchPipeline = 2;
   }
 }
