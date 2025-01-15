@@ -92,8 +92,10 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
     m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }
 
