@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.deser.impl.FailingDeserializer;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -99,4 +101,16 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
-}
+
+  public static final class LimelightConstants{
+    public static final String kRightLimelightName = "limelight-right";
+    public static final String kLeftLimelightName = "limelight-left";
+    public static final double kRightCameraHeight = 14.75;
+    public static final double kLeftCameraHeight = 15.75;
+    public static final double kRightMountingAngle = 10;
+    public static final double kLeftMountingAngle = 17;
+    public static final double kReefTagHeight = 12;
+    public static final int kRightReefBranchPipeline = 1;
+    public static final int kLeftReefBranchPipeline = 2;
+  }
+};

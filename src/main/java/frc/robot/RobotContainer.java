@@ -19,11 +19,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
@@ -39,9 +44,17 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
+                                                           LimelightConstants.kRightCameraHeight,
+                                                           LimelightConstants.kRightMountingAngle,
+                                                           LimelightConstants.kReefTagHeight);
+  private final Limelight m_leftLimelight = new Limelight(LimelightConstants.kLeftLimelightName,
+                                                         LimelightConstants.kLeftCameraHeight,
+                                                         LimelightConstants.kLeftMountingAngle,
+                                                         LimelightConstants.kReefTagHeight);
 
   // The driver's controller
-  private final XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   private SendableChooser<Command> autoChooser;
 
@@ -79,10 +92,11 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
+    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
+    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+
+    m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }
 
   /**
