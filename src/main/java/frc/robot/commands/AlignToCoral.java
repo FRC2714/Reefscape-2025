@@ -70,7 +70,88 @@ public class AlignToCoral extends Command {
   //if both cameras see, the default camera will be set to whatever side the driver wants to align to (ie. left bumper = left align = default left camera which uses pipeline 1)
   @Override
   public void execute() {
-    if((m_leftLimelight.isTargetVisible() || m_rightLimelight.isTargetVisible()) && pipelineNum == 2)
+    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both are visible
+    {
+      if(pipelineNum == 1) //driver align right so right camera
+      {
+        switch(m_rightLimelight.getTargetID()) 
+        { 
+         case 6:
+         case 19:
+           thetaController.setSetpoint(300);
+           break;
+ 
+         case 7:
+         case 18: 
+           thetaController.setSetpoint(0);
+           break;
+ 
+         case 8:
+         case 17:
+           thetaController.setSetpoint(60);
+           break;
+ 
+         case 9:
+         case 16:
+           thetaController.setSetpoint(120);
+           break;
+ 
+         case 10:
+         case 15: 
+           thetaController.setSetpoint(180);
+           break;
+ 
+         case 11:
+         case 14:
+           thetaController.setSetpoint(240);
+           break;
+       }
+       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+       yController.calculate(m_rightLimelight.getXOffsetRadians()),
+        thetaController.calculate(m_drivetrain.getHeading()), 
+        false);
+      }
+      else //driver aligns left so left camera
+      {
+        switch(m_leftLimelight.getTargetID()) 
+        { 
+         case 6:
+         case 19:
+           thetaController.setSetpoint(300);
+           break;
+ 
+         case 7:
+         case 18: 
+           thetaController.setSetpoint(0);
+           break;
+ 
+         case 8:
+         case 17:
+           thetaController.setSetpoint(60);
+           break;
+ 
+         case 9:
+         case 16:
+           thetaController.setSetpoint(120);
+           break;
+ 
+         case 10:
+         case 15: 
+           thetaController.setSetpoint(180);
+           break;
+ 
+         case 11:
+         case 14:
+           thetaController.setSetpoint(240);
+           break;
+       }
+       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+       yController.calculate(m_leftLimelight.getXOffsetRadians()),
+        thetaController.calculate(m_drivetrain.getHeading()), 
+        false);
+      }
+    }
+    else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
     {
       switch(m_leftLimelight.getTargetID()) 
        { 
@@ -109,7 +190,7 @@ public class AlignToCoral extends Command {
           thetaController.calculate(m_drivetrain.getHeading()), 
           false);
     }
-    else if ((m_rightLimelight.isTargetVisible() ||m_leftLimelight.isTargetVisible()) && pipelineNum == 1)  //right LL sees
+    else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
     { 
       switch(m_rightLimelight.getTargetID())
        {
