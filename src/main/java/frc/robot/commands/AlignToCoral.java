@@ -64,8 +64,7 @@ public class AlignToCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_leftLimelight.isTargetVisible())
-    {
+    if(m_leftLimelight.isTargetVisible()) {
       switch(m_leftLimelight.getTargetID()) {
         case 6:
         case 19:
@@ -102,7 +101,7 @@ public class AlignToCoral extends Command {
           thetaController.calculate(m_drivetrain.getHeading()), 
           false);
     }
-    else if (m_rightLimelight.isTargetVisible()) {
+    else if(m_rightLimelight.isTargetVisible()) {
       switch(m_rightLimelight.getTargetID()) {
         case 6:
         case 19:
@@ -138,6 +137,82 @@ public class AlignToCoral extends Command {
          yController.calculate(m_rightLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
           false);
+    }
+    else if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {
+      if (m_leftLimelight.getDistanceToGoalMeters() > m_rightLimelight.getDistanceToGoalMeters()) {
+        switch(m_rightLimelight.getTargetID()) {
+          case 6:
+          case 19:
+            thetaController.setSetpoint(300);
+            break;
+  
+          case 7:
+          case 18: 
+            thetaController.setSetpoint(0);
+            break;
+  
+          case 8:
+          case 17:
+            thetaController.setSetpoint(60);
+            break;
+  
+          case 9:
+          case 16:
+            thetaController.setSetpoint(120);
+            break;
+  
+          case 10:
+          case 15: 
+            thetaController.setSetpoint(180);
+            break;
+  
+          case 11:
+          case 14:
+            thetaController.setSetpoint(240);
+            break;
+        }
+        m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+         yController.calculate(m_rightLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()), 
+          false);
+      }
+      else {
+        switch(m_leftLimelight.getTargetID()) {
+          case 6:
+          case 19:
+            thetaController.setSetpoint(300);
+            break;
+  
+          case 7:
+          case 18: 
+            thetaController.setSetpoint(0);
+            break;
+  
+          case 8:
+          case 17:
+            thetaController.setSetpoint(60);
+            break;
+  
+          case 9:
+          case 16:
+            thetaController.setSetpoint(120);
+            break;
+  
+          case 10:
+          case 15: 
+            thetaController.setSetpoint(180);
+            break;
+  
+          case 11:
+          case 14:
+            thetaController.setSetpoint(240);
+            break;
+        }
+        m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+         yController.calculate(m_rightLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()), 
+          false);
+      }
     }
     else {
       m_drivetrain.drive(0, 0, 0, true);
