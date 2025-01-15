@@ -61,12 +61,19 @@ public class AlignToCoral extends Command {
     }
   }
 
+
+
   // Called every time the scheduler runs while the command is scheduled.
+  //when both cameras see:
+  //right align = right default (pipelin 1)
+  //left align = left default (pipelin 2)
+  //if both cameras see, the default camera will be set to whatever side the driver wants to align to (ie. left bumper = left align = default left camera which uses pipeline 1)
   @Override
   public void execute() {
-    if(m_leftLimelight.isTargetVisible())
+    if((m_leftLimelight.isTargetVisible() || m_rightLimelight.isTargetVisible()) && pipelineNum == 2)
     {
-      switch(m_leftLimelight.getTargetID()) {
+      switch(m_leftLimelight.getTargetID()) 
+       { 
         case 6:
         case 19:
           thetaController.setSetpoint(300);
@@ -102,8 +109,10 @@ public class AlignToCoral extends Command {
           thetaController.calculate(m_drivetrain.getHeading()), 
           false);
     }
-    else if (m_rightLimelight.isTargetVisible()) {
-      switch(m_rightLimelight.getTargetID()) {
+    else if ((m_rightLimelight.isTargetVisible() ||m_leftLimelight.isTargetVisible()) && pipelineNum == 1)  //right LL sees
+    { 
+      switch(m_rightLimelight.getTargetID())
+       {
         case 6:
         case 19:
           thetaController.setSetpoint(300);
@@ -134,15 +143,16 @@ public class AlignToCoral extends Command {
           thetaController.setSetpoint(240);
           break;
       }
-      m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+          m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
          yController.calculate(m_rightLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
           false);
     }
-    else {
+    else 
+    {
       m_drivetrain.drive(0, 0, 0, true);
     }
-  }
+}
 
   // Called once the command ends or is interrupted.
   @Override
