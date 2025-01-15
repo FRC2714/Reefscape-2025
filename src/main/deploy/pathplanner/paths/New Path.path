@@ -1,0 +1,166 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.99718309859155,
+        "y": 3.84075704225352
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.99718309859155,
+        "y": 3.84075704225352
+      },
+      "isLocked": false,
+      "linkedName": "G-Coral"
+    },
+    {
+      "anchor": {
+        "x": 5.033450704225352,
+        "y": 2.6360915492957737
+      },
+      "prevControl": {
+        "x": 4.534859154929577,
+        "y": 3.6944542253521124
+      },
+      "nextControl": {
+        "x": 5.532042253521127,
+        "y": 1.577728873239435
+      },
+      "isLocked": false,
+      "linkedName": "E-Coral"
+    },
+    {
+      "anchor": {
+        "x": 3.8571302816901403,
+        "y": 2.6360915492957737
+      },
+      "prevControl": {
+        "x": 4.714409110915492,
+        "y": 2.0972491197183087
+      },
+      "nextControl": {
+        "x": 2.999851452464789,
+        "y": 3.1749339788732387
+      },
+      "isLocked": false,
+      "linkedName": "D-Coral"
+    },
+    {
+      "anchor": {
+        "x": 3.6161971830985906,
+        "y": 2.7778169014084493
+      },
+      "prevControl": {
+        "x": 2.592311289612675,
+        "y": 3.068496919014083
+      },
+      "nextControl": {
+        "x": 4.6400830765845065,
+        "y": 2.4871368838028154
+      },
+      "isLocked": false,
+      "linkedName": "C-Coral"
+    },
+    {
+      "anchor": {
+        "x": 2.978433098591548,
+        "y": 3.84075704225352
+      },
+      "prevControl": {
+        "x": 2.7338522680973263,
+        "y": 3.7889862265871947
+      },
+      "nextControl": {
+        "x": 3.22301392908577,
+        "y": 3.8925278579198457
+      },
+      "isLocked": false,
+      "linkedName": "B-Coral"
+    },
+    {
+      "anchor": {
+        "x": 2.978433098591548,
+        "y": 4.180897887323942
+      },
+      "prevControl": {
+        "x": 2.0519559082048557,
+        "y": 4.794943506424709
+      },
+      "nextControl": {
+        "x": 3.9049102889782406,
+        "y": 3.566852268223175
+      },
+      "isLocked": false,
+      "linkedName": "A-Coral"
+    },
+    {
+      "anchor": {
+        "x": 3.6161971830985906,
+        "y": 5.243838028169014
+      },
+      "prevControl": {
+        "x": 3.0235819050525,
+        "y": 5.695045852421447
+      },
+      "nextControl": {
+        "x": 4.2088124611446815,
+        "y": 4.792630203916581
+      },
+      "isLocked": false,
+      "linkedName": "L-Coral"
+    },
+    {
+      "anchor": {
+        "x": 3.8571302816901403,
+        "y": 5.4422535211267595
+      },
+      "prevControl": {
+        "x": 3.4022935545160022,
+        "y": 6.51343658083153
+      },
+      "nextControl": {
+        "x": 4.311967008864278,
+        "y": 4.371070461421989
+      },
+      "isLocked": false,
+      "linkedName": "K-Coral"
+    },
+    {
+      "anchor": {
+        "x": 5.146830985915492,
+        "y": 5.4422535211267595
+      },
+      "prevControl": {
+        "x": 4.793175405840589,
+        "y": 6.2884841743729645
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "J-Coral"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -122.0053832080836
+  },
+  "reversed": false,
+  "folder": "Paths 2025",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -179.2151753970081
+  },
+  "useDefaultConstraints": true
+}
