@@ -74,38 +74,8 @@ public class AlignToCoral extends Command {
     {
       if(pipelineNum == 1) //driver align right so right camera
       {
-        switch(m_rightLimelight.getTargetID()) 
-        { 
-         case 6:
-         case 19:
-           thetaController.setSetpoint(300);
-           break;
- 
-         case 7:
-         case 18: 
-           thetaController.setSetpoint(0);
-           break;
- 
-         case 8:
-         case 17:
-           thetaController.setSetpoint(60);
-           break;
- 
-         case 9:
-         case 16:
-           thetaController.setSetpoint(120);
-           break;
- 
-         case 10:
-         case 15: 
-           thetaController.setSetpoint(180);
-           break;
- 
-         case 11:
-         case 14:
-           thetaController.setSetpoint(240);
-           break;
-       }
+        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+
        m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
        yController.calculate(m_rightLimelight.getXOffsetRadians()),
         thetaController.calculate(m_drivetrain.getHeading()), 
@@ -113,38 +83,8 @@ public class AlignToCoral extends Command {
       }
       else //driver aligns left so left camera
       {
-        switch(m_leftLimelight.getTargetID()) 
-        { 
-         case 6:
-         case 19:
-           thetaController.setSetpoint(300);
-           break;
- 
-         case 7:
-         case 18: 
-           thetaController.setSetpoint(0);
-           break;
- 
-         case 8:
-         case 17:
-           thetaController.setSetpoint(60);
-           break;
- 
-         case 9:
-         case 16:
-           thetaController.setSetpoint(120);
-           break;
- 
-         case 10:
-         case 15: 
-           thetaController.setSetpoint(180);
-           break;
- 
-         case 11:
-         case 14:
-           thetaController.setSetpoint(240);
-           break;
-       }
+        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+
        m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
        yController.calculate(m_leftLimelight.getXOffsetRadians()),
         thetaController.calculate(m_drivetrain.getHeading()), 
@@ -153,38 +93,8 @@ public class AlignToCoral extends Command {
     }
     else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
     {
-      switch(m_leftLimelight.getTargetID()) 
-       { 
-        case 6:
-        case 19:
-          thetaController.setSetpoint(300);
-          break;
+        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-        case 7:
-        case 18: 
-          thetaController.setSetpoint(0);
-          break;
-
-        case 8:
-        case 17:
-          thetaController.setSetpoint(60);
-          break;
-
-        case 9:
-        case 16:
-          thetaController.setSetpoint(120);
-          break;
-
-        case 10:
-        case 15: 
-          thetaController.setSetpoint(180);
-          break;
-
-        case 11:
-        case 14:
-          thetaController.setSetpoint(240);
-          break;
-      }
         m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
          yController.calculate(m_leftLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
@@ -192,38 +102,8 @@ public class AlignToCoral extends Command {
     }
     else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
     { 
-      switch(m_rightLimelight.getTargetID())
-       {
-        case 6:
-        case 19:
-          thetaController.setSetpoint(300);
-          break;
-
-        case 7:
-        case 18: 
-          thetaController.setSetpoint(0);
-          break;
-
-        case 8:
-        case 17:
-          thetaController.setSetpoint(60);
-          break;
-
-        case 9:
-        case 16:
-          thetaController.setSetpoint(120);
-          break;
-
-        case 10:
-        case 15: 
-          thetaController.setSetpoint(180);
-          break;
-
-        case 11:
-        case 14:
-          thetaController.setSetpoint(240);
-          break;
-      }
+        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+        
           m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
          yController.calculate(m_rightLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
@@ -235,6 +115,16 @@ public class AlignToCoral extends Command {
     }
 }
 
+  private void updateThetaControllerSetpoint(int targetID) {
+    switch (targetID) {
+      case 6, 19 -> thetaController.setSetpoint(300);
+      case 7, 18 -> thetaController.setSetpoint(0);
+      case 8, 17 -> thetaController.setSetpoint(60);
+      case 9, 16 -> thetaController.setSetpoint(120);
+      case 10, 15 -> thetaController.setSetpoint(180);
+      case 11, 14 -> thetaController.setSetpoint(240);
+  }
+  }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
