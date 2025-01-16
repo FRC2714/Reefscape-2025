@@ -12,8 +12,11 @@ import frc.robot.subsystems.Limelight;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
-  private Limelight m_rightLimelight;
-  private Limelight m_leftLimelight;
+  private Limelight[] m_limelights;
+  private String targetLimelightName;
+
+  // private Limelight m_rightLimelight;
+  // private Limelight m_leftLimelight;
 
   private PIDController xController;
   private PIDController yController;
@@ -21,11 +24,13 @@ public class AlignToCoral extends Command {
 
   private int pipelineNum;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, int pipelineNum) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight[] limelights, int pipelineNum, String targetLimelightName) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
-    this.m_rightLimelight = m_rightLimelight;
-    this.m_leftLimelight = m_leftLimelight;
+    this.m_limelights = limelights;
+    this.targetLimelightName = targetLimelightName;
+    // this.m_rightLimelight = m_rightLimelight;
+    // this.m_leftLimelight = m_leftLimelight;
     this.pipelineNum = pipelineNum;
 
 
@@ -49,174 +54,58 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(pipelineNum == 1)
-    {
-       m_rightLimelight.setCoralTagPipelineRight();
-       m_leftLimelight.setCoralTagPipelineRight();
-    }
-    else if(pipelineNum == 2)
-    {
-      m_rightLimelight.setCoralTagPipelineLeft();
-      m_leftLimelight.setCoralTagPipelineLeft();
+    for(Limelight limelight : m_limelights) {
+      if(limelight.getName().equals(targetLimelightName)) {
+        if(pipelineNum == 1) {
+          limelight.setCoralTagPipelineRight();
+          //  m_rightLimelight.setCoralTagPipelineRight();
+          //  m_leftLimelight.setCoralTagPipelineRight();
+        }
+        else if(pipelineNum == 2) {
+          limelight.setCoralTagPipelineLeft();
+          // m_rightLimelight.setCoralTagPipelineLeft();
+          // m_leftLimelight.setCoralTagPipelineLeft();
+        }
+      }
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_leftLimelight.isTargetVisible()) {
-      switch(m_leftLimelight.getTargetID()) {
-        case 6:
-        case 19:
-          thetaController.setSetpoint(300);
-          break;
-
-        case 7:
-        case 18: 
-          thetaController.setSetpoint(0);
-          break;
-
-        case 8:
-        case 17:
-          thetaController.setSetpoint(60);
-          break;
-
-        case 9:
-        case 16:
-          thetaController.setSetpoint(120);
-          break;
-
-        case 10:
-        case 15: 
-          thetaController.setSetpoint(180);
-          break;
-
-        case 11:
-        case 14:
-          thetaController.setSetpoint(240);
-          break;
+      Limelight closestLimelight = null;
+      double closestDistance = Double.MAX_VALUE;
+      for (Limelight limelight : m_limelights) {
+          if (limelight.isTargetVisible()) {
+              double distance = limelight.getDistanceToGoalMeters();
+              if (distance < closestDistance) {
+                closestDistance = distance;
+                closestLimelight = limelight;
+              }
+          }
       }
-        m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_leftLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
-    }
-    else if(m_rightLimelight.isTargetVisible()) {
-      switch(m_rightLimelight.getTargetID()) {
-        case 6:
-        case 19:
-          thetaController.setSetpoint(300);
-          break;
-
-        case 7:
-        case 18: 
-          thetaController.setSetpoint(0);
-          break;
-
-        case 8:
-        case 17:
-          thetaController.setSetpoint(60);
-          break;
-
-        case 9:
-        case 16:
-          thetaController.setSetpoint(120);
-          break;
-
-        case 10:
-        case 15: 
-          thetaController.setSetpoint(180);
-          break;
-
-        case 11:
-        case 14:
-          thetaController.setSetpoint(240);
-          break;
+      if (closestLimelight != null) {
+          updateThetaControllerSetpoint(closestLimelight.getTargetID());
+          m_drivetrain.drive(
+              -xController.calculate(closestLimelight.getDistanceToGoalMeters()),
+              yController.calculate(closestLimelight.getXOffsetRadians()),
+              thetaController.calculate(m_drivetrain.getHeading()),
+              false
+          );
+      } else {
+          m_drivetrain.drive(0, 0, 0, true); // Stop if no target is visible
       }
-      m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_rightLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
-    }
-    else if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {
-      if (m_leftLimelight.getDistanceToGoalMeters() > m_rightLimelight.getDistanceToGoalMeters()) {
-        switch(m_rightLimelight.getTargetID()) {
-          case 6:
-          case 19:
-            thetaController.setSetpoint(300);
-            break;
-  
-          case 7:
-          case 18: 
-            thetaController.setSetpoint(0);
-            break;
-  
-          case 8:
-          case 17:
-            thetaController.setSetpoint(60);
-            break;
-  
-          case 9:
-          case 16:
-            thetaController.setSetpoint(120);
-            break;
-  
-          case 10:
-          case 15: 
-            thetaController.setSetpoint(180);
-            break;
-  
-          case 11:
-          case 14:
-            thetaController.setSetpoint(240);
-            break;
-        }
-        m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_rightLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
-      }
-      else {
-        switch(m_leftLimelight.getTargetID()) {
-          case 6:
-          case 19:
-            thetaController.setSetpoint(300);
-            break;
-  
-          case 7:
-          case 18: 
-            thetaController.setSetpoint(0);
-            break;
-  
-          case 8:
-          case 17:
-            thetaController.setSetpoint(60);
-            break;
-  
-          case 9:
-          case 16:
-            thetaController.setSetpoint(120);
-            break;
-  
-          case 10:
-          case 15: 
-            thetaController.setSetpoint(180);
-            break;
-  
-          case 11:
-          case 14:
-            thetaController.setSetpoint(240);
-            break;
-        }
-        m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_rightLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
-      }
-    }
-    else {
-      m_drivetrain.drive(0, 0, 0, true);
-    }
+  }
+
+  private void updateThetaControllerSetpoint(int targetID) {
+    switch (targetID) {
+      case 6, 19 -> thetaController.setSetpoint(300);
+      case 7, 18 -> thetaController.setSetpoint(0);
+      case 8, 17 -> thetaController.setSetpoint(60);
+      case 9, 16 -> thetaController.setSetpoint(120);
+      case 10, 15 -> thetaController.setSetpoint(180);
+      case 11, 14 -> thetaController.setSetpoint(240);
+  }
   }
 
   // Called once the command ends or is interrupted.

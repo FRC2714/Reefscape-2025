@@ -26,6 +26,10 @@ public class Limelight extends SubsystemBase {
 
   }
 
+  public String getName() {
+    return m_limelightName;
+  }
+
   public double getDistanceToGoalInches() {
     return (m_goalHeight - m_cameraHeight) / Math.tan(Units.degreesToRadians(m_mountingAngle + getYAngleOffsetDegrees()));
   }
