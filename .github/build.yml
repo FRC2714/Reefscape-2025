@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'main'
+    tags-ignore:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Build
+        run: |
+          ./gradlew build
