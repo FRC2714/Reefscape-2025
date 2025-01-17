@@ -74,19 +74,19 @@ public class AlignToCoral extends Command {
     {
       if(pipelineNum == 1) //driver align right so right camera
       {
-        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-       yController.calculate(m_rightLimelight.getXOffsetRadians()),
+       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+       yController.calculate(m_leftLimelight.getXOffsetRadians()),
         thetaController.calculate(m_drivetrain.getHeading()), 
         false);
       }
       else //driver aligns left so left camera
       {
-        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-       yController.calculate(m_leftLimelight.getXOffsetRadians()),
+       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+       yController.calculate(m_rightLimelight.getXOffsetRadians()),
         thetaController.calculate(m_drivetrain.getHeading()), 
         false);
       }
