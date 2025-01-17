@@ -91,8 +91,8 @@ public class RobotContainer {
 //     m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
 //     m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
     // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_limelights, LimelightConstants.kLeftReefBranchPipeline, LimelightConstants.kLeftLimelightName));
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_limelights, LimelightConstants.kRightReefBranchPipeline, LimelightConstants.kRightLimelightName));
+    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }

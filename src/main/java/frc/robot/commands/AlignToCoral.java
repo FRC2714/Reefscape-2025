@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -12,7 +13,8 @@ import frc.robot.subsystems.Limelight;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
-  private Limelight[] m_limelights;
+  private Limelight m_rightLimelight;
+  private Limelight m_leftLimelight;
   private String targetLimelightName;
 
   // private Limelight m_rightLimelight;
@@ -23,15 +25,16 @@ public class AlignToCoral extends Command {
   private PIDController thetaController;
 
   private int pipelineNum;
+  private int closestTagID;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight[] limelights, int pipelineNum, String targetLimelightName) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, int pipelineNum) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
-    this.m_limelights = limelights;
-    this.targetLimelightName = targetLimelightName;
-    // this.m_rightLimelight = m_rightLimelight;
-    // this.m_leftLimelight = m_leftLimelight;
+    this.m_rightLimelight = m_rightLimelight;
+    this.m_leftLimelight = m_leftLimelight;
     this.pipelineNum = pipelineNum;
+
+    this.closestTagID = -1;
 
 
     xController = new PIDController(0.55, 0, 0); //tune these later
@@ -40,7 +43,7 @@ public class AlignToCoral extends Command {
     
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(.23);
+    xController.setSetpoint(Units.inchesToMeters(10));
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
@@ -54,18 +57,29 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    for(Limelight limelight : m_limelights) {
-      if(limelight.getName().equals(targetLimelightName)) {
-        if(pipelineNum == 1) {
-          limelight.setCoralTagPipelineRight();
-          //  m_rightLimelight.setCoralTagPipelineRight();
-          //  m_leftLimelight.setCoralTagPipelineRight();
+    if(pipelineNum == 1) {
+       m_rightLimelight.setCoralTagPipelineRight();
+       m_leftLimelight.setCoralTagPipelineRight();
+    }
+    else if(pipelineNum == 2) {
+      m_rightLimelight.setCoralTagPipelineLeft();
+      m_leftLimelight.setCoralTagPipelineLeft();
+    }
+
+
+    double closestDistance = Double.MAX_VALUE;
+    if (m_rightLimelight.isTargetVisible()) {
+        double distance = m_rightLimelight.getDistanceToGoalMeters();
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestTagID = m_rightLimelight.getTargetID();
         }
-        else if(pipelineNum == 2) {
-          limelight.setCoralTagPipelineLeft();
-          // m_rightLimelight.setCoralTagPipelineLeft();
-          // m_leftLimelight.setCoralTagPipelineLeft();
-        }
+    }
+    if (m_leftLimelight.isTargetVisible()) {
+      double distance = m_leftLimelight.getDistanceToGoalMeters();
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestTagID = m_leftLimelight.getTargetID();
       }
     }
   }
@@ -79,68 +93,73 @@ public class AlignToCoral extends Command {
   //if both cameras see, the default camera will be set to whatever side the driver wants to align to (ie. left bumper = left align = default left camera which uses pipeline 1)
   @Override
   public void execute() {
-      Limelight closestLimelight = null;
-      double closestDistance = Double.MAX_VALUE;
-      for (Limelight limelight : m_limelights) {
-          if (limelight.isTargetVisible()) {
-              double distance = limelight.getDistanceToGoalMeters();
-              if (distance < closestDistance) {
-                closestDistance = distance;
-                closestLimelight = limelight;
-              }
+    if (m_leftLimelight.getTargetID() == closestTagID || m_rightLimelight.getTargetID() == closestTagID) {
+      if (m_leftLimelight.getTargetID() == closestTagID && m_rightLimelight.getTargetID() == closestTagID) {
+        // 2 LL 1 T
+        if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {//if both are visible
+          if(pipelineNum == 1) //driver align right so right camera
+          {
+            updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+    
+           m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+           yController.calculate(m_leftLimelight.getXOffsetRadians()),
+            thetaController.calculate(m_drivetrain.getHeading()), 
+            false);
           }
+          else //driver aligns left so left camera
+          {
+            updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+    
+           m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+           yController.calculate(m_rightLimelight.getXOffsetRadians()),
+            thetaController.calculate(m_drivetrain.getHeading()), 
+            false);
+          }
+        }
+        else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
+        {
+            updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+    
+            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+             yController.calculate(m_leftLimelight.getXOffsetRadians()),
+              thetaController.calculate(m_drivetrain.getHeading()), 
+              false);
+        }
+        else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
+        { 
+            updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+            
+              m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+             yController.calculate(m_rightLimelight.getXOffsetRadians()),
+              thetaController.calculate(m_drivetrain.getHeading()), 
+              false);
+        }
+        else 
+        {
+          m_drivetrain.drive(0, 0, 0, true);
+        }
       }
-      if (closestLimelight != null) {
-          updateThetaControllerSetpoint(closestLimelight.getTargetID());
-          m_drivetrain.drive(
-              -xController.calculate(closestLimelight.getDistanceToGoalMeters()),
-              yController.calculate(closestLimelight.getXOffsetRadians()),
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false
-          );
-      } else {
-          m_drivetrain.drive(0, 0, 0, true); // Stop if no target is visible
+      else if (m_leftLimelight.getTargetID() == closestTagID) {
+        if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
+        {
+            updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+             yController.calculate(m_leftLimelight.getXOffsetRadians()),
+              0,
+              false);
+        }
       }
-  }
-
-    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both are visible
-    {
-      if(pipelineNum == 1) //driver align right so right camera
-      {
-        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
-
-       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-       yController.calculate(m_leftLimelight.getXOffsetRadians()),
-        thetaController.calculate(m_drivetrain.getHeading()), 
-        false);
+      else {
+        if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
+        { 
+            updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+            
+              m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+             yController.calculate(m_rightLimelight.getXOffsetRadians()),
+              0, 
+              false);
+        }
       }
-      else //driver aligns left so left camera
-      {
-        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
-
-       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-       yController.calculate(m_rightLimelight.getXOffsetRadians()),
-        thetaController.calculate(m_drivetrain.getHeading()), 
-        false);
-      }
-    }
-    else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
-    {
-        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
-
-        m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_leftLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
-    }
-    else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
-    { 
-        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
-        
-          m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_rightLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
-          false);
     }
     else 
     {
@@ -156,7 +175,7 @@ public class AlignToCoral extends Command {
       case 9, 16 -> thetaController.setSetpoint(120);
       case 10, 15 -> thetaController.setSetpoint(180);
       case 11, 14 -> thetaController.setSetpoint(240);
-  }
+    }
   }
   // Called once the command ends or is interrupted.
   @Override
