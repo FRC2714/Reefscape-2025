@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to H"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to L"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to A"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Auto 2025",
+  "choreoAuto": false
+}

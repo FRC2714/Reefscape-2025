@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.947727643346081,
+        "x": 6.572945205479446,
         "y": 4.032512842465753
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.995248287671233,
-        "y": 4.167744006849315
+        "x": 4.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 6.619248317228563,
-        "y": 4.157995898702
+        "x": 3.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "H-Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Waypoints",

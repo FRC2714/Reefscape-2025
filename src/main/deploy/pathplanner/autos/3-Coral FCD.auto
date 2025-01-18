@@ -7,25 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "Start to F"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "F to Z"
+            "pathName": "F to Feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Z to D"
+            "pathName": "Feeder to D"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to C"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Archived Autos",
+  "folder": "Auto 2025",
   "choreoAuto": false
 }
