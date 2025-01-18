@@ -9,6 +9,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
+import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
@@ -43,7 +44,7 @@ public class AlignToCoral extends Command {
     
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(Units.inchesToMeters(10));
+    xController.setSetpoint(Units.inchesToMeters(11));
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
@@ -139,26 +140,27 @@ public class AlignToCoral extends Command {
           m_drivetrain.drive(0, 0, 0, true);
         }
       }
-      else if (m_leftLimelight.getTargetID() == closestTagID) {
-        if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
-        {
-            updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
-            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-             yController.calculate(m_leftLimelight.getXOffsetRadians()),
-              0,
+      else if (m_leftLimelight.hasRawFiducial(closestTagID)) {
+        // if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
+        // {
+          RawFiducial targetFiducial = m_leftLimelight.getRawFiducial(closestTagID);
+            updateThetaControllerSetpoint(closestTagID);
+            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getRawFiducialDistToCamera(targetFiducial)),
+             yController.calculate(m_leftLimelight.getRawFiducialTX(targetFiducial)),
+              thetaController.calculate(m_drivetrain.getHeading()),
               false);
-        }
+        // }
       }
-      else {
-        if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
-        { 
-            updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
-            
-              m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-             yController.calculate(m_rightLimelight.getXOffsetRadians()),
-              0, 
+      else if (m_rightLimelight.hasRawFiducial(closestTagID)) {
+        // if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
+        // {
+          RawFiducial targetFiducial = m_rightLimelight.getRawFiducial(closestTagID);
+            updateThetaControllerSetpoint(closestTagID);
+            m_drivetrain.drive(-xController.calculate(m_rightLimelight.getRawFiducialDistToCamera(targetFiducial)),
+             yController.calculate(m_rightLimelight.getRawFiducialTX(targetFiducial)),
+              thetaController.calculate(m_drivetrain.getHeading()),
               false);
-        }
+        // }
       }
     }
     else 

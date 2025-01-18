@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
+import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 public class Limelight extends SubsystemBase {
   
@@ -62,6 +63,40 @@ public class Limelight extends SubsystemBase {
   public boolean isTargetVisible() {
 		return LimelightHelpers.getTV(m_limelightName);
 	}
+
+  public RawFiducial[] getRawFiducials() {
+    return LimelightHelpers.getRawFiducials(m_limelightName);
+  }
+
+  public RawFiducial getRawFiducial(double id) {
+    for (RawFiducial fiducial : getRawFiducials()) {
+      if (fiducial.id == id) {
+        return fiducial;
+      }
+    }
+    return null;
+  }
+
+  public boolean hasRawFiducial(double id) {
+    for (RawFiducial fiducial : getRawFiducials()) {
+      if (fiducial.id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public double getRawFiducialDistToCamera(RawFiducial rawFiducial) {
+    return rawFiducial.distToCamera;
+  }
+
+  public double getRawFiducialTX(RawFiducial rawFiducial) {
+    return rawFiducial.txnc;
+  }
+
+  public double getRawFiducialTY(RawFiducial rawFiducial) {
+    return rawFiducial.tync;
+  }
 
   // Pipline Stuff
 	public void setCoralTagPipelineRight() {
