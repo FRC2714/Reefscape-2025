@@ -28,6 +28,7 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -61,6 +62,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+
+  private final Field2d m_field = new Field2d();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -212,11 +215,10 @@ PPHolonomicDriveController.clearFeedbackOverrides();
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+        m_field.setRobotPose(getPose());
     
-        SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+        SmartDashboard.putData("Field", m_field);
   }
 
   /**
