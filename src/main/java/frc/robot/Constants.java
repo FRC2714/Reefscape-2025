@@ -91,6 +91,7 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
+
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
@@ -116,16 +117,16 @@ public final class Constants {
 
   public static final class ElevatorConstants {
 
-    //Edit values
+    //Update values
 
-    public static final int kElevatorMotorCanId = 0;
+    public static final int kElevatorMotorCanId = 9;
 
     public static final class ElevatorSetpoints {
       public static final int kFeederStation = 0; 
       public static final int kLevel1 = 0; 
       public static final int kLevel2 = 0;
-      public static final int kLevel3 = 0; 
-      public static final int kLevel4 = 0; 
+      public static final int kLevel3 = 100; 
+      public static final int kLevel4 = 200; 
     }
   }
 

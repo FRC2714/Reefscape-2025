@@ -14,6 +14,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpoints;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
@@ -36,13 +39,14 @@ public enum Setpoint {
     kLevel4
   }
 
-  private SparkFlex elevatorMotor = new SparkFlex(0, MotorType.kBrushless);
+  private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
 
+//Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim elevatorMotorSim;
   private SparkLimitSwitchSim elevatorLimitSwitchSim;
@@ -58,6 +62,7 @@ public enum Setpoint {
       0.0,
       0.0);
 
+  //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 25, 0);
   private final MechanismLigament2d m_elevatorMech2d = m_mech2dRoot.append(
@@ -73,6 +78,8 @@ public enum Setpoint {
         Configs.Elevator.elevatorConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+
+    SmartDashboard.putData("Elevator", m_mech2d);
 
     elevatorEncoder.setPosition(0);
 
@@ -97,7 +104,8 @@ public enum Setpoint {
   }
 
   public Command setSetpointCommand(Setpoint setpoint) {
-    return this.runOnce(
+    return new SequentialCommandGroup(
+        new InstantCommand(
         () -> {
           switch (setpoint) {
             case kFeederStation:
@@ -115,19 +123,20 @@ public enum Setpoint {
             case kLevel4:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
               break;
-          }
-        });
-  }
+          }}),
+          new InstantCommand(() ->
+          moveToSetpoint()));
+        }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    moveToSetpoint();
     zeroElevatorOnLimitSwitch();
 
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
+
 
     m_elevatorMech2d.setLength(
         SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
@@ -145,14 +154,22 @@ public enum Setpoint {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
+    SmartDashboard.putNumber("Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Setpoint", elevatorCurrentTarget);
 
     // Update sim limit switch
     elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
 
     // Next, we update it. The standard loop time is 20ms.
-    m_elevatorSim.update(0.020);
+    m_elevatorSim.update(0.001);
 
-    // Iterate the elevator and arm SPARK simulations
+    m_elevatorMech2d.setLength(
+      SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
+          + SimulationRobotConstants.kPixelsPerMeter
+              * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
+              * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
+
+    // Iterate the elevator SPARK simulations
     elevatorMotorSim.iterate(
         ((m_elevatorSim.getVelocityMetersPerSecond()
             / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))

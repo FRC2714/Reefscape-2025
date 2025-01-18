@@ -14,6 +14,8 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.Setpoint;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -41,6 +43,7 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
+  private final Elevator m_elevator = new Elevator();
 
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -83,17 +86,29 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    // m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-//     m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-//     m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-//     m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
+    // m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    // m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
+    // m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    // m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
     // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
-    m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    // m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
+     m_driverController.b().onTrue(m_elevator.setSetpointCommand(Setpoint.kFeederStation));
+
+    // A Button -> Elevator/Arm to level 2 position
+    m_driverController.a().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
+
+    // X Button -> Elevator/Arm to level 3 position
+    m_driverController.x().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
+
+    // Y Button -> Elevator/Arm to level 4 position
+    m_driverController.y().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
+  
   }
 
   /**
