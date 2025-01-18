@@ -8,6 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -33,6 +34,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final AlgaeSubsystem m_algaeSubsystem = new AlgaeSubsystem();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -70,6 +72,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+    m_algaeSubsystem.setDefaultCommand(m_algaeSubsystem.idleCommand());
   }
 
   /**
@@ -83,17 +86,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    m_driverController
+        .rightTrigger(OIConstants.kTriggerButtonThreshold)
+        .whileTrue(m_algaeSubsystem.runIntakeCommand());
 
-//     m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-//     m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-//     m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
-    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // Left Trigger -> Run ball intake in reverse, set to stow when idle
+    m_driverController
+        .leftTrigger(OIConstants.kTriggerButtonThreshold)
+        .whileTrue(m_algaeSubsystem.reverseIntakeCommand());  
+
+    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
     m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
+
   }
 
   /**
