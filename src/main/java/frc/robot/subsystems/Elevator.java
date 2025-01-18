@@ -161,7 +161,7 @@ public enum Setpoint {
     elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
 
     // Next, we update it. The standard loop time is 20ms.
-    m_elevatorSim.update(0.001);
+    m_elevatorSim.update(0.020);
 
     m_elevatorMech2d.setLength(
       SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters

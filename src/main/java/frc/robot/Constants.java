@@ -80,6 +80,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
   }
 
@@ -123,10 +124,10 @@ public final class Constants {
 
     public static final class ElevatorSetpoints {
       public static final int kFeederStation = 0; 
-      public static final int kLevel1 = 0; 
-      public static final int kLevel2 = 0;
+      public static final int kLevel1 = 10; 
+      public static final int kLevel2 = 50;
       public static final int kLevel3 = 100; 
-      public static final int kLevel4 = 200; 
+      public static final int kLevel4 = 150; 
     }
   }
 

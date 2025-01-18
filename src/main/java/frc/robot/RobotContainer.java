@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,8 +46,13 @@ public class RobotContainer {
                                                          LimelightConstants.kReefTagHeight);
   private final Elevator m_elevator = new Elevator();
 
+  Joystick buttonBox = new Joystick(1);
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  private final JoystickButton elevatorStage1 = new JoystickButton(buttonBox, 1); // L1
+  private final JoystickButton elevatorStage2 = new JoystickButton(buttonBox, 2); // L2
+  private final JoystickButton elevatorStage3 = new JoystickButton(buttonBox, 3); // L3
+  private final JoystickButton elevatorStage4 = new JoystickButton(buttonBox, 4); // L4
 
   private SendableChooser<Command> autoChooser;
 
@@ -108,6 +114,13 @@ public class RobotContainer {
 
     // Y Button -> Elevator/Arm to level 4 position
     m_driverController.y().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
+
+    // BUTTON BOX
+    elevatorStage1.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel1));
+    elevatorStage2.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
+    elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
+    elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
+
   
   }
 
