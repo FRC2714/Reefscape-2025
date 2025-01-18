@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
+import frc.robot.commands.AlignToCoral;
 
 public class Limelight extends SubsystemBase {
   
@@ -119,6 +120,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
+    SmartDashboard.putBoolean("valid target", AlignToCoral.getValidTarget());
 
   }
   
