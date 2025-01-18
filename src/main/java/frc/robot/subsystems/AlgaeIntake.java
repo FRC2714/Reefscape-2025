@@ -35,12 +35,14 @@ public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private SparkFlex pivotMotor;
-  private AbsoluteEncoder pivotEncoder;
+  private SparkFlex pivotMotor = new SparkFlex(0, MotorType.kBrushless);
+  private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private SparkFlex rollerMotor;
+  private SparkFlex rollerMotor = new SparkFlex(1, MotorType.kBrushless);
 
-  private PIDController pivotController;
+  private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+
+  private double pivotReference = 0;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -90,10 +92,13 @@ public class AlgaeIntake extends SubsystemBase {
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
-    pivotMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later
-    rollerMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later   
+    // pivotMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later
+    // rollerMotor = new SparkFlex(1, MotorType.kBrushless); //CANID later
     
-    pivotEncoder = pivotMotor.getAbsoluteEncoder();
+    // pivotController = pivotMotor.getClosedLoopController();
+    // pivotReference = 0;
+    
+    // pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
   
     rollerMotor.configure(
@@ -147,7 +152,8 @@ public class AlgaeIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void setPivotPosition(double position) {
-    pivotController.setSetpoint(position);
+    pivotReference = position;
+    pivotController.setReference(position, ControlType.kMAXMotionPositionControl);
   }
 
   @Override
@@ -156,6 +162,7 @@ public class AlgaeIntake extends SubsystemBase {
     // Display subsystem values
     SmartDashboard.putNumber("Algae/Arm/Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Algae/Arm/Pivot setpoint", pivotReference);
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(

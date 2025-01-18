@@ -66,8 +66,8 @@ public final class Constants {
     public static final int kPivotMotorCanId = 14; //tune ts
 
     public static final class pivotSetpoints {
-      public static final double kDown = 0;
-      public static final double kUp = 0;
+      public static final double kDown = 5; // TBD
+      public static final double kUp = 15; // TBD
     }
 
     public static final class AlgaeRollerSetpoints {
