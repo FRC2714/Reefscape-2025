@@ -80,6 +80,8 @@ public final class Configs {
                         .maxAcceleration(6000)
                         .allowedClosedLoopError(0.5);
 
+                pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+
                 pivotConfig
                         .closedLoop
                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
@@ -93,7 +95,9 @@ public final class Configs {
                         .allowedClosedLoopError(0.5);
                 pivotConfig
                         .absoluteEncoder
-                        .positionConversionFactor(360);
+                        .positionConversionFactor(1)
+                        .zeroOffset(0)
+                        .inverted(true);
         }
     }
 }

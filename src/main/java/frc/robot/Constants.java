@@ -149,5 +149,13 @@ public final class Constants {
     public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
     public static final double kMinElevatorHeightMeters = 0.922; // m
     public static final double kMaxElevatorHeightMeters = 1.62; // m
+
+    public static final double kPivotReduction = 60; // 60:1
+    public static final double kPivotLength = 0.433; // m
+    public static final double kPivotMass = 4.3; // Kg
+    public static final double kMinAngleRads =
+        Units.degreesToRadians(-50.1); // -50.1 deg from horiz
+    public static final double kMaxAngleRads =
+        Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
   }
 };

@@ -4,13 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -19,8 +19,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -47,9 +49,9 @@ public enum Setpoint {
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
   // Pivot Arm
-  private SparkFlex pivotMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(ElevatorConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
-  private SparkAbsoluteEncoder pivotSparkAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
+  private AbsoluteEncoder pivotSparkAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
@@ -70,6 +72,22 @@ public enum Setpoint {
       SimulationRobotConstants.kMinElevatorHeightMeters,
       0.0,
       0.0);
+
+  private DCMotor pivotMotorModel = DCMotor.getNeoVortex(1);
+  private SparkFlexSim pivotMotorSim;
+  private final SingleJointedArmSim m_pivotSim =
+      new SingleJointedArmSim(
+          pivotMotorModel,
+          SimulationRobotConstants.kPivotReduction,
+          SingleJointedArmSim.estimateMOI(
+              SimulationRobotConstants.kPivotLength, SimulationRobotConstants.kPivotMass),
+          SimulationRobotConstants.kPivotLength,
+          SimulationRobotConstants.kMinAngleRads,
+          SimulationRobotConstants.kMaxAngleRads,
+          true,
+          SimulationRobotConstants.kMinAngleRads,
+          0.0,
+          0.0);
 
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
@@ -98,6 +116,8 @@ public enum Setpoint {
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
+
+    pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
   }
 
   private void moveToSetpoint() {
@@ -132,7 +152,7 @@ public enum Setpoint {
               break;
             case kLevel2:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
-              pivotCurrentTarget = PivotSetpoints.kLevel3;
+              pivotCurrentTarget = PivotSetpoints.kLevel2;
               break;
             case kLevel3:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
@@ -199,6 +219,12 @@ public enum Setpoint {
             / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))
             * SimulationRobotConstants.kElevatorGearing)
             * 60.0,
+        RobotController.getBatteryVoltage(),
+        0.02);
+
+    pivotMotorSim.iterate(
+        Units.radiansPerSecondToRotationsPerMinute(
+            m_pivotSim.getVelocityRadPerSec() * SimulationRobotConstants.kPivotReduction),
         RobotController.getBatteryVoltage(),
         0.02);
 
