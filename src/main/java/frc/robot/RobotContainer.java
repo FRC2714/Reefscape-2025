@@ -46,13 +46,14 @@ public class RobotContainer {
                                                          LimelightConstants.kReefTagHeight);
   private final Elevator m_elevator = new Elevator();
 
-  Joystick buttonBox = new Joystick(1);
+  Joystick m_operatorController = new Joystick(1);
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  private final JoystickButton elevatorStage1 = new JoystickButton(buttonBox, 1); // L1
-  private final JoystickButton elevatorStage2 = new JoystickButton(buttonBox, 2); // L2
-  private final JoystickButton elevatorStage3 = new JoystickButton(buttonBox, 3); // L3
-  private final JoystickButton elevatorStage4 = new JoystickButton(buttonBox, 4); // L4
+  private final JoystickButton elevatorStage1 = new JoystickButton(m_operatorController, 1); // L1
+  private final JoystickButton elevatorStage2 = new JoystickButton(m_operatorController, 2); // L2
+  private final JoystickButton elevatorStage3 = new JoystickButton(m_operatorController, 3); // L3
+  private final JoystickButton elevatorStage4 = new JoystickButton(m_operatorController, 4); // L4
+  private final JoystickButton coralStation = new JoystickButton(m_operatorController, 5); // Coral Station
 
   private SendableChooser<Command> autoChooser;
 
@@ -104,7 +105,7 @@ public class RobotContainer {
 
     // m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-     m_driverController.b().onTrue(m_elevator.setSetpointCommand(Setpoint.kFeederStation));
+     m_driverController.b().onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
 
     // A Button -> Elevator/Arm to level 2 position
     m_driverController.a().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
@@ -120,7 +121,7 @@ public class RobotContainer {
     elevatorStage2.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
     elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
     elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
-
+    coralStation.onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
   
   }
 

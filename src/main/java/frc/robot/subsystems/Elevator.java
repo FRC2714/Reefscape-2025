@@ -32,7 +32,7 @@ import frc.robot.Constants.SimulationRobotConstants;
 public class Elevator extends SubsystemBase {
 
 public enum Setpoint {
-    kFeederStation,
+    kCoralStation,
     kLevel1,
     kLevel2,
     kLevel3,
@@ -44,7 +44,7 @@ public enum Setpoint {
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
   private boolean wasResetByLimit = false;
-  private double elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+  private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
 
 //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
@@ -108,8 +108,8 @@ public enum Setpoint {
         new InstantCommand(
         () -> {
           switch (setpoint) {
-            case kFeederStation:
-              elevatorCurrentTarget = ElevatorSetpoints.kFeederStation;
+            case kCoralStation:
+              elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
               break;
             case kLevel1:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
