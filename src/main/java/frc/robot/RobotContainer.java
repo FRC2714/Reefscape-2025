@@ -120,7 +120,6 @@ public class RobotContainer {
     elevatorStage2.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
     elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
     elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
-
   
   }
 
