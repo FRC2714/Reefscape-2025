@@ -46,7 +46,7 @@ public class AlignToCoral extends Command {
     
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(Units.inchesToMeters(11));
+    xController.setSetpoint(Units.inchesToMeters(13));
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
