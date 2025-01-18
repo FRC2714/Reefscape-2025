@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "F -Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
@@ -74,7 +74,7 @@
     "rotation": 121.50426671920422
   },
   "reversed": false,
-  "folder": "Paths 2025",
+  "folder": "Waypoints",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -178.87669728592454
