@@ -1,9 +1,11 @@
 package frc.robot;
 
-import com.revrobotics.spark.config.SparkMaxConfig;
+
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -52,5 +54,30 @@ public final class Configs {
                     .positionWrappingEnabled(true)
                     .positionWrappingInputRange(0, turningFactor);
         }
+    }
+
+    public static final class Elevator {
+        public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
+
+            static {
+                elevatorConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(50).voltageCompensation(12);
+
+                elevatorConfig
+                    .limitSwitch
+                    .reverseLimitSwitchEnabled(true)
+                    .reverseLimitSwitchType(Type.kNormallyOpen);
+
+                elevatorConfig
+                    .closedLoop
+                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                    // Set PID values for position control
+                    .p(0.1)
+                    .outputRange(-1, 1)
+                    .maxMotion
+                    // Set MAXMotion parameters for position control
+                    .maxVelocity(4200)
+                    .maxAcceleration(6000)
+                    .allowedClosedLoopError(0.5);
+           }
     }
 }

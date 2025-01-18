@@ -113,4 +113,30 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
   }
+
+  public static final class ElevatorConstants {
+
+    //Edit values
+
+    public static final int kElevatorMotorCanId = 0;
+
+    public static final class ElevatorSetpoints {
+      public static final int kFeederStation = 0; 
+      public static final int kLevel1 = 0; 
+      public static final int kLevel2 = 0;
+      public static final int kLevel3 = 0; 
+      public static final int kLevel4 = 0; 
+    }
+  }
+
+  public static final class SimulationRobotConstants {
+    public static final double kPixelsPerMeter = 20;
+
+    public static final double kElevatorGearing = 25; // 25:1
+    public static final double kCarriageMass =
+        4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
+    public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
+    public static final double kMinElevatorHeightMeters = 0.922; // m
+    public static final double kMaxElevatorHeightMeters = 1.62; // m
+  }
 };
