@@ -10,6 +10,7 @@ import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpoints;
+import frc.robot.Constants.ElevatorConstants.PivotSetpoints;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
@@ -39,12 +41,19 @@ public enum Setpoint {
     kLevel4
   }
 
+  // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
+  // Pivot Arm
+  private SparkFlex pivotMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
+  private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
+  private SparkAbsoluteEncoder pivotSparkAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
+
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
+  private double pivotCurrentTarget = PivotSetpoints.kCoralStation;
 
 //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
@@ -72,7 +81,7 @@ public enum Setpoint {
               * SimulationRobotConstants.kPixelsPerMeter,
           90));
 
-  /** Creates a new Elevator. */
+  /** Creates a new Elevator and Pivot. */
   public Elevator() {
     elevatorMotor.configure(
         Configs.Elevator.elevatorConfig,
@@ -81,6 +90,10 @@ public enum Setpoint {
 
     SmartDashboard.putData("Elevator", m_mech2d);
 
+    pivotMotor.configure(
+      Configs.Elevator.pivotConfig,
+      ResetMode.kResetSafeParameters,
+      PersistMode.kPersistParameters);
     elevatorEncoder.setPosition(0);
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
@@ -89,6 +102,7 @@ public enum Setpoint {
 
   private void moveToSetpoint() {
     elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
   private void zeroElevatorOnLimitSwitch() {
@@ -110,18 +124,23 @@ public enum Setpoint {
           switch (setpoint) {
             case kCoralStation:
               elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
+              pivotCurrentTarget = PivotSetpoints.kCoralStation;
               break;
             case kLevel1:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
+              pivotCurrentTarget = PivotSetpoints.kLevel1;
               break;
             case kLevel2:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
+              pivotCurrentTarget = PivotSetpoints.kLevel3;
               break;
             case kLevel3:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
+              pivotCurrentTarget = PivotSetpoints.kLevel3;
               break;
             case kLevel4:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
+              pivotCurrentTarget = PivotSetpoints.kLevel4;
               break;
           }}),
           new InstantCommand(() ->
@@ -136,6 +155,8 @@ public enum Setpoint {
 
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
+    SmartDashboard.putNumber("Pivot/Actual Position", pivotSparkAbsoluteEncoder.getPosition());
 
 
     m_elevatorMech2d.setLength(
@@ -154,8 +175,11 @@ public enum Setpoint {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Setpoint", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
+    SmartDashboard.putNumber("Pivot Position", pivotSparkAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
+    
 
     // Update sim limit switch
     elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);

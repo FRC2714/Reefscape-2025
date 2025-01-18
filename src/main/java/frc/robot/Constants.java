@@ -121,6 +121,15 @@ public final class Constants {
     //Update values
 
     public static final int kElevatorMotorCanId = 9;
+    public static final int kPivotMotorCanId = 10;
+    
+    public static final class PivotSetpoints {
+      public static final double kCoralStation = 0;
+      public static final double kLevel1 = 90;
+      public static final double kLevel2 = 180;
+      public static final double kLevel3 = 270; 
+      public static final double kLevel4 =  360;
+    }
 
     public static final class ElevatorSetpoints {
       public static final int kCoralStation = 0;
