@@ -8,7 +8,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -34,7 +34,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AlgaeSubsystem m_algaeSubsystem = new AlgaeSubsystem();
+  private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -72,7 +72,6 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
-    m_algaeSubsystem.setDefaultCommand(m_algaeSubsystem.idleCommand());
   }
 
   /**
@@ -88,12 +87,12 @@ public class RobotContainer {
 
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
-        .whileTrue(m_algaeSubsystem.runIntakeCommand());
+        .whileTrue(m_algaeSubsystem.intakeCommand());
 
     // Left Trigger -> Run ball intake in reverse, set to stow when idle
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
-        .whileTrue(m_algaeSubsystem.reverseIntakeCommand());  
+        .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor());  
 
     m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));

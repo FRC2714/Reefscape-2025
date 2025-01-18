@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -12,6 +13,10 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -26,22 +31,16 @@ import frc.robot.Configs;
 import frc.robot.Constants.AlgaeSubsystemConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
-public class AlgaeSubsystem extends SubsystemBase {
+public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
-  private SparkFlex armMotor =
-      new SparkFlex(AlgaeSubsystemConstants.kPivotMotorCanId, MotorType.kBrushless);
-  private SparkClosedLoopController armController = armMotor.getClosedLoopController();
-  private RelativeEncoder armEncoder = armMotor.getEncoder();
 
-  // Initialize intake SPARK. We will use open loop control for this so we don't need a closed loop
-  // controller like above.
-  private SparkFlex intakeMotor =
-      new SparkFlex(AlgaeSubsystemConstants.kIntakeMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotMotor;
+  private AbsoluteEncoder pivotEncoder;
 
-  // Member variables for subsystem state management
-  private boolean stowWhenIdle = true;
-  private boolean wasReset = false;
+  private SparkFlex rollerMotor;
+
+  private PIDController pivotController;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -80,7 +79,7 @@ public class AlgaeSubsystem extends SubsystemBase {
                   * SimulationRobotConstants.kPixelsPerMeter,
               Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
-  public AlgaeSubsystem() {
+  public AlgaeIntake() {
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -91,74 +90,48 @@ public class AlgaeSubsystem extends SubsystemBase {
      * the SPARK loses power. This is useful for power cycles that may occur
      * mid-operation.
      */
-    intakeMotor.configure(
-        Configs.AlgaeSubsystem.intakeConfig,
+    pivotMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later
+    rollerMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later   
+    
+    pivotEncoder = pivotMotor.getAbsoluteEncoder();
+
+  
+    rollerMotor.configure(
+        Configs.AlgaeSubsystem.rollerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    armMotor.configure(
-        Configs.AlgaeSubsystem.armConfig,
+    pivotMotor.configure(
+        Configs.AlgaeSubsystem.pivotConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
     // Display mechanism2d
     SmartDashboard.putData("Algae Subsystem", m_mech2d);
 
-    // Zero arm encoder on initialization
-    armEncoder.setPosition(0);
-
     // Initialize Simulation values
-    armMotorSim = new SparkFlexSim(armMotor, armMotorModel);
+    armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
   }
 
-  /** Zero the arm encoder when the user button is pressed on the roboRIO */
-  private void zeroOnUserButton() {
-    if (!wasReset && RobotController.getUserButton()) {
-      // Zero the encoder only when button switches from "unpressed" to "pressed" to prevent
-      // constant zeroing while pressed
-      wasReset = true;
-      armEncoder.setPosition(0);
-    } else if (!RobotController.getUserButton()) {
-      wasReset = false;
-    }
-  }
 
-  /**
-   * Command to run the algae intake. This will extend the arm to its "down" position and run the
-   * motor at its "forward" power to intake the ball.
-   *
-   * <p>This will also update the idle state to hold onto the ball when this command is not running.
-   */
-  public Command runIntakeCommand() {
+
+  public Command intakeCommand() {
     return this.run(
         () -> {
-          stowWhenIdle = false;
-          setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kForward);
-          setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kDown);
+          setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kForward);
+          setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kDown);
         });
   }
 
-  /**
-   * Command to run the algae intake in reverse. This will extend the arm to its "hold" position and
-   * run the motor at its "reverse" power to eject the ball.
-   *
-   * <p>This will also update the idle state to stow the arm when this command is not running.
-   */
-  public Command reverseIntakeCommand() {
+
+  public Command scoreAlgaeProcessor()
+  {
     return this.run(
-        () -> {
-          stowWhenIdle = true;
-          setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kReverse);
-          setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
-        });
+      () -> {
+        setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kReverse);
+        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kUp);
+      });
   }
 
-  /** Command to force the subsystem into its "stow" state. */
-  public Command stowCommand() {
-    return this.runOnce(
-        () -> {
-          stowWhenIdle = true;
-        });
-  }
 
   /**
    * Command to run when the intake is not actively running. When in the "hold" state, the intake
@@ -166,42 +139,29 @@ public class AlgaeSubsystem extends SubsystemBase {
    * When in the "stow" state, the intake will stow the arm in the "stow" position and stop the
    * motor.
    */
-  public Command idleCommand() {
-    return this.run(
-        () -> {
-          if (stowWhenIdle) {
-            setIntakePower(0.0);
-            setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kStow);
-          } else {
-            setIntakePower(AlgaeSubsystemConstants.IntakeSetpoints.kHold);
-            setIntakePosition(AlgaeSubsystemConstants.ArmSetpoints.kHold);
-          }
-        });
-  }
 
-  /** Set the intake motor power in the range of [-1, 1]. */
-  private void setIntakePower(double power) {
-    intakeMotor.set(power);
+  /** Set the pivot motor power in the range of [-1, 1]. */
+  private void setRollerPower(double power) {
+    rollerMotor.set(power);
   }
 
   /** Set the arm motor position. This will use closed loop position control. */
-  private void setIntakePosition(double position) {
-    armController.setReference(position, ControlType.kPosition);
+  private void setPivotPosition(double position) {
+    pivotController.setSetpoint(position);
   }
 
   @Override
   public void periodic() {
-    zeroOnUserButton();
 
     // Display subsystem values
-    SmartDashboard.putNumber("Algae/Arm/Position", armEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Intake/Applied Output", intakeMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Algae/Arm/Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(
         Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
             + Units.rotationsToDegrees(
-                armEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
+                pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
   }
 
   /** Get the current drawn by each simulation physics model */
