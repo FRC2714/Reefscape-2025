@@ -120,7 +120,6 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-    SmartDashboard.putBoolean("valid target", AlignToCoral.getValidTarget());
 
   }
   
