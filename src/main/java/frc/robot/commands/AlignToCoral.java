@@ -85,8 +85,6 @@ public class AlignToCoral extends Command {
     }
   }
 
-
-
   // Called every time the scheduler runs while the command is scheduled.
   //when both cameras see:
   //right align = right default (pipelin 1)
@@ -94,16 +92,14 @@ public class AlignToCoral extends Command {
   //if both cameras see, the default camera will be set to whatever side the driver wants to align to (ie. left bumper = left align = default left camera which uses pipeline 1)
   @Override
   public void execute() {
-    if (m_leftLimelight.getTargetID() == closestTagID || m_rightLimelight.getTargetID() == closestTagID) {
-      if (m_leftLimelight.getTargetID() == closestTagID && m_rightLimelight.getTargetID() == closestTagID) {
-        // 2 LL 1 T
-        if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {//if both are visible
+      if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {//if both are visible
+        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) { // checks if both see same april tag
           if(pipelineNum == 1) //driver align right so right camera
           {
             updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
     
-           m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-           yController.calculate(m_leftLimelight.getXOffsetRadians()),
+            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+            yController.calculate(m_leftLimelight.getXOffsetRadians()),
             thetaController.calculate(m_drivetrain.getHeading()), 
             false);
           }
@@ -111,62 +107,36 @@ public class AlignToCoral extends Command {
           {
             updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
     
-           m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-           yController.calculate(m_rightLimelight.getXOffsetRadians()),
+            m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+            yController.calculate(m_rightLimelight.getXOffsetRadians()),
             thetaController.calculate(m_drivetrain.getHeading()), 
             false);
           }
         }
-        else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
-        {
-            updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
-    
-            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-             yController.calculate(m_leftLimelight.getXOffsetRadians()),
-              thetaController.calculate(m_drivetrain.getHeading()), 
-              false);
-        }
-        else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
-        { 
-            updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
-            
-              m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-             yController.calculate(m_rightLimelight.getXOffsetRadians()),
-              thetaController.calculate(m_drivetrain.getHeading()), 
-              false);
-        }
-        else 
-        {
-          m_drivetrain.drive(0, 0, 0, true);
-        }
+        else m_drivetrain.drive(0,0,0, true);
       }
-      else if (m_leftLimelight.hasRawFiducial(closestTagID)) {
-        // if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
-        // {
-          RawFiducial targetFiducial = m_leftLimelight.getRawFiducial(closestTagID);
-            updateThetaControllerSetpoint(closestTagID);
-            m_drivetrain.drive(-xController.calculate(m_leftLimelight.getRawFiducialDistToCamera(targetFiducial)),
-             yController.calculate(m_leftLimelight.getRawFiducialTX(targetFiducial)),
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
-        // }
+      else if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
+      {
+        updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+
+        m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+          yController.calculate(m_leftLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()), 
+          false);
       }
-      else if (m_rightLimelight.hasRawFiducial(closestTagID)) {
-        // if((m_leftLimelight.isTargetVisible())) //if can only see left, then do whatever we did before
-        // {
-          RawFiducial targetFiducial = m_rightLimelight.getRawFiducial(closestTagID);
-            updateThetaControllerSetpoint(closestTagID);
-            m_drivetrain.drive(-xController.calculate(m_rightLimelight.getRawFiducialDistToCamera(targetFiducial)),
-             yController.calculate(m_rightLimelight.getRawFiducialTX(targetFiducial)),
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
-        // }
+      else if ((m_rightLimelight.isTargetVisible()))  //same thing when the camera sees right
+      { 
+        updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+        
+          m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+          yController.calculate(m_rightLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()), 
+          false);
       }
-    }
-    else 
-    {
-      m_drivetrain.drive(0, 0, 0, true);
-    }
+      else 
+      {
+        m_drivetrain.drive(0, 0, 0, true);
+      }
 }
 
   private void updateThetaControllerSetpoint(int targetID) {
