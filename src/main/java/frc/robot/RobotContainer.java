@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import org.w3c.dom.events.MutationEvent;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 /*
@@ -41,6 +43,7 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
+  private final Limelight[] m_limelights = {m_rightLimelight, m_leftLimelight};
 
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -104,5 +107,26 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Create config for trajectory
     return autoChooser.getSelected();
+  }
+
+  public boolean validTarget()
+  {
+    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both r able to see
+    {
+        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
+        {
+          return true;
+        }
+        return false;
+    }
+    else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
+    {
+      return true;
+    }
+    else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
+    {
+      return true;
+    }
+    return false;
   }
 }
