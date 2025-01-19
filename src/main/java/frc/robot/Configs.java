@@ -6,6 +6,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -58,6 +60,7 @@ public final class Configs {
 
     public static final class Elevator {
         public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig elevatorFollowerConfig = new SparkFlexConfig();
         public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
 
         static {
@@ -79,6 +82,9 @@ public final class Configs {
                         .maxVelocity(4200)
                         .maxAcceleration(6000)
                         .allowedClosedLoopError(0.5);
+                elevatorFollowerConfig
+                        .follow(ElevatorConstants.kElevatorMotorCanId)
+                        .inverted(true);
 
                 pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
 

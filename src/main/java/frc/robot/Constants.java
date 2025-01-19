@@ -120,8 +120,9 @@ public final class Constants {
 
     //Update values
 
-    public static final int kElevatorMotorCanId = 9;
-    public static final int kPivotMotorCanId = 10;
+    public static final int kElevatorMotorCanId = 9; // TBD
+    public static final int kPivotMotorCanId = 10; // TBD
+    public static final int kElevatorFollowerCanId = 11; // TBD
     
     public static final class PivotSetpoints {
       public static final double kCoralStation = 0;

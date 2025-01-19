@@ -11,7 +11,6 @@ import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -46,6 +45,7 @@ public enum Setpoint {
 
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
+  private SparkFlex elevatorFollower = new SparkFlex(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
@@ -104,6 +104,16 @@ public enum Setpoint {
   public Elevator() {
     elevatorMotor.configure(
         Configs.Elevator.elevatorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+
+    elevatorFollower.configure(
+        Configs.Elevator.elevatorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+
+    elevatorFollower.configure(
+        Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
