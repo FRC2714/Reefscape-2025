@@ -11,6 +11,7 @@ import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -57,7 +58,7 @@ public enum Setpoint {
   private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
   private double pivotCurrentTarget = PivotSetpoints.kCoralStation;
 
-//Simulation testing
+  //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim elevatorMotorSim;
   private SparkLimitSwitchSim elevatorLimitSwitchSim;
@@ -163,8 +164,7 @@ public enum Setpoint {
               pivotCurrentTarget = PivotSetpoints.kLevel4;
               break;
           }}),
-          new InstantCommand(() ->
-          moveToSetpoint()));
+          new InstantCommand(() -> moveToSetpoint()));
         }
 
   @Override
@@ -195,6 +195,7 @@ public enum Setpoint {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
+    m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
     SmartDashboard.putNumber("Pivot Position", pivotSparkAbsoluteEncoder.getPosition());
@@ -206,6 +207,7 @@ public enum Setpoint {
 
     // Next, we update it. The standard loop time is 20ms.
     m_elevatorSim.update(0.020);
+    m_pivotSim.update(0.020);
 
     m_elevatorMech2d.setLength(
       SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
@@ -218,7 +220,7 @@ public enum Setpoint {
         ((m_elevatorSim.getVelocityMetersPerSecond()
             / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))
             * SimulationRobotConstants.kElevatorGearing)
-            * 60.0,
+            * 60.0, 
         RobotController.getBatteryVoltage(),
         0.02);
 

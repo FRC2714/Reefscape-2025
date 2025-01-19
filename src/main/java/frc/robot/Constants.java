@@ -125,10 +125,10 @@ public final class Constants {
     
     public static final class PivotSetpoints {
       public static final double kCoralStation = 0;
-      public static final double kLevel1 = 90;
-      public static final double kLevel2 = 180;
-      public static final double kLevel3 = 270; 
-      public static final double kLevel4 =  360;
+      public static final double kLevel1 = 0.25;
+      public static final double kLevel2 = 0.5;
+      public static final double kLevel3 = 0.75; 
+      public static final double kLevel4 =  1;
     }
 
     public static final class ElevatorSetpoints {
