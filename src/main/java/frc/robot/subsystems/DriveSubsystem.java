@@ -8,10 +8,19 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.time.chrono.ThaiBuddhistChronology;
+
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.*;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.urcl.URCL;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -23,14 +32,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -38,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class DriveSubsystem extends SubsystemBase {
+
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -72,16 +83,58 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       });
+  // private final SysIdRoutine sysIdRoutine =
+  // new SysIdRoutine(
+  // // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+  // new SysIdRoutine.Config(),
+  // new SysIdRoutine.Mechanism(
+  // // Tell SysId how to plumb the driving voltage to the motors.
+  // (Voltage volts) -> {
+  // m_frontLeft.setVoltageAngle(volts.in(Units.Volts), null);
+  // m_frontRight.setVoltageAngle(volts.in(Units.Volts), null);
+  // m_rearLeft.setVoltageAngle(volts.in(Units.Volts), null);
+  // m_rearRight.setVoltageAngle(volts.in(Units.Volts), null);
+  // },
+  // log -> {
+  // log.motor("frontRight")
+  // .voltage(Units.Volts.of(m_frontLeft.getVoltageOutput()))
+  // .linearPosition(Units.Meters.of(m_frontRight.getPosition().distanceMeters))
+  // .linearVelocity(Units.MetersPerSecond.of(m_frontRight.getState().speedMetersPerSecond));
+  // log.motor("frontLeft")
+  // .voltage(Units.Volts.of(m_frontLeft.getVoltageOutput()))
+  // .linearPosition(Units.Meters.of(m_frontRight.getPosition().distanceMeters))
+  // .linearVelocity(Units.MetersPerSecond.of(m_frontLeft.getState().speedMetersPerSecond));
+  // log.motor("rearRight")
+  // .voltage(Units.Volts.of(m_frontLeft.getVoltageOutput()))
+  // .linearPosition(Units.Meters.of(m_frontRight.getPosition().distanceMeters))
+  // .linearVelocity(Units.MetersPerSecond.of(m_rearRight.getState().speedMetersPerSecond));
+  // log.motor("rearLeft")
+  // .voltage(Units.Volts.of(m_frontLeft.getVoltageOutput()))
+  // .linearPosition(Units.Meters.of(m_frontRight.getPosition().distanceMeters))
+  // .linearVelocity(Units.MetersPerSecond.of(m_rearLeft.getState().speedMetersPerSecond));
+  // },
+  // this));
+  // Create the SysId routine
+  SysIdRoutine sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)),
+          null, // No log consumer, since data is recorded by URCL
+          this));
+
+  private final SysIdRoutine rotationRoutine;
+  private final SysIdRoutine driveRoutine;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
     RobotConfig config;
-    try{
+    try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
@@ -91,85 +144,94 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
-      this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-      new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-      ),
-      config, // The robot configuration
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
+                                                              // ChassisSpeeds. Also optionally outputs individual
+                                                              // module feedforwards
+        new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
+                                        // drive trains
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+        ),
+        config, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this // Reference to this subsystem to set requirements
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
     );
+    driveRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
+    rotationRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Mechanism(
+            (voltage) -> this.driveVoltageRotateTest(voltage.in(Volts)), null, this));
+
   }
 
   public SysIdRoutine sysIdDrive() {
     return new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(10)),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
   }
 
   public SysIdRoutine sysIdRotation() {
     return new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(10),
+            (state) -> Logger.recordOutput("SysIdTestState", state.toString())),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageRotateTest(voltage.in(Volts)), null, this));
   }
 
   public Command translationalQuasistatic() {
     return new SequentialCommandGroup(
-      sysIdDrive().quasistatic(SysIdRoutine.Direction.kForward),
-      sysIdDrive().quasistatic(SysIdRoutine.Direction.kReverse)
-    );
+        driveRoutine.quasistatic(SysIdRoutine.Direction.kForward),
+        driveRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command rotationalQuasistatic() {
     return new SequentialCommandGroup(
-      sysIdRotation().quasistatic(SysIdRoutine.Direction.kForward),
-      sysIdRotation().quasistatic(SysIdRoutine.Direction.kReverse)
-    );
+        rotationRoutine.quasistatic(SysIdRoutine.Direction.kForward),
+        rotationRoutine.quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command translationalDynamic() {
     return new SequentialCommandGroup(
-      sysIdDrive().dynamic(SysIdRoutine.Direction.kForward),
-      sysIdDrive().dynamic(SysIdRoutine.Direction.kReverse)
-    );
+        driveRoutine.dynamic(SysIdRoutine.Direction.kForward),
+        driveRoutine.dynamic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command rotationalDynamic() {
     return new SequentialCommandGroup(
-      sysIdRotation().dynamic(SysIdRoutine.Direction.kForward),
-      sysIdRotation().dynamic(SysIdRoutine.Direction.kReverse)
-    );
+        rotationRoutine.dynamic(SysIdRoutine.Direction.kForward),
+        rotationRoutine.dynamic(SysIdRoutine.Direction.kReverse));
   }
 
   private void driveVoltageForwardTest(double voltage) {
-    var direction = new Rotation2d();
-    m_frontLeft.setVoltageAngle(voltage, direction);
-    m_frontRight.setVoltageAngle(voltage, direction);
-    m_rearLeft.setVoltageAngle(voltage, direction);
-    m_rearRight.setVoltageAngle(voltage, direction);
+    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(90.0));
+    m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(-180.0));
+    m_rearLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(0.0));
+    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(90.0));
   }
 
   private void driveVoltageRotateTest(double voltage) {
-    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(-45.0));
-    m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(45.0));
-    m_rearLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(45.0));
-    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(-45.0));
+    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(62.0));
+    m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(27.9));
+    m_rearLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(27.9));
+    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(62.0));
   }
 
   @Override
@@ -183,11 +245,14 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-    
-        SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+
+    SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+
+    m_frontRight.periodic();
+
   }
 
   /**
@@ -273,11 +338,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public SwerveModuleState[] getModuleStates() {
-    return new SwerveModuleState[]{
-      m_frontLeft.getState(),
-      m_frontRight.getState(),
-      m_rearLeft.getState(),
-      m_rearRight.getState()
+    return new SwerveModuleState[] {
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
     };
   }
 

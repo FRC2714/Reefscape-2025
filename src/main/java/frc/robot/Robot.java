@@ -6,7 +6,11 @@ package frc.robot;
 
 import org.littletonrobotics.urcl.URCL;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,7 +36,14 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     DataLogManager.start();
+    var log = DataLogManager.getLog();
+    log.addSchema(Pose2d.proto);
+    log.addSchema(ChassisSpeeds.proto);
+    log.addSchema(Pose2d.struct);
+    log.addSchema(Pose3d.struct);
+
     URCL.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**
