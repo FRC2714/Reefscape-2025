@@ -52,7 +52,7 @@ public enum Setpoint {
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(ElevatorConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
-  private AbsoluteEncoder pivotSparkAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
+  private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
@@ -99,7 +99,12 @@ public enum Setpoint {
           SimulationRobotConstants.kMinElevatorHeightMeters
               * SimulationRobotConstants.kPixelsPerMeter,
           90));
-
+private final MechanismLigament2d m_armMech2d =
+      m_elevatorMech2d.append(
+          new MechanismLigament2d(
+              "Arm",
+              SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
+              180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
   /** Creates a new Elevator and Pivot. */
   public Elevator() {
     elevatorMotor.configure(
@@ -186,7 +191,7 @@ public enum Setpoint {
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Pivot/Actual Position", pivotSparkAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
 
 
     m_elevatorMech2d.setLength(
@@ -194,6 +199,14 @@ public enum Setpoint {
             + SimulationRobotConstants.kPixelsPerMeter
                 * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
                 * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
+    m_armMech2d.setAngle(
+        180
+            - ( // mirror the angles so they display in the correct direction
+            Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
+                + Units.rotationsToDegrees(
+                    pivotAbsoluteEncoder.getPosition() / SimulationRobotConstants.kPivotReduction))
+            - 90 // subtract 90 degrees to account for the elevator
+        );
   }
 
   public double getSimulationCurrentDraw() {
@@ -208,7 +221,7 @@ public enum Setpoint {
     m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Pivot Position", pivotSparkAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
     
 

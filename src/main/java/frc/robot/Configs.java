@@ -92,7 +92,7 @@ public final class Configs {
                         .closedLoop
                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                         // Set PID values for position control
-                        .p(.01)
+                        .p(.1)
                         .outputRange(-1, 1)
                         .maxMotion
                         //Set MAXMotion parameters for position control
@@ -101,7 +101,7 @@ public final class Configs {
                         .allowedClosedLoopError(0.5);
                 pivotConfig
                         .absoluteEncoder
-                        .positionConversionFactor(1)
+                        // .positionConversionFactor(1)
                         .zeroOffset(0)
                         .inverted(true);
         }

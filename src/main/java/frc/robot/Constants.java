@@ -23,6 +23,8 @@ import edu.wpi.first.math.util.Units;
  * wherever the
  * constants are needed, to reduce verbosity.
  */
+
+// ! Update Values for AlphaBot
 public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -104,6 +106,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  // ! Update Values for AlphaBot
   public static final class LimelightConstants{
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
@@ -116,20 +119,19 @@ public final class Constants {
     public static final int kLeftReefBranchPipeline = 2;
   }
 
+  // ! Update Values for AlphaBot
   public static final class ElevatorConstants {
-
-    //Update values
 
     public static final int kElevatorMotorCanId = 9; // TBD
     public static final int kPivotMotorCanId = 10; // TBD
     public static final int kElevatorFollowerCanId = 11; // TBD
     
     public static final class PivotSetpoints {
-      public static final double kCoralStation = 0;
-      public static final double kLevel1 = 0.25;
-      public static final double kLevel2 = 0.5;
-      public static final double kLevel3 = 0.75; 
-      public static final double kLevel4 =  1;
+      public static final double kCoralStation = 33;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 2;
+      public static final double kLevel3 = 2; 
+      public static final double kLevel4 =  19;
     }
 
     public static final class ElevatorSetpoints {
