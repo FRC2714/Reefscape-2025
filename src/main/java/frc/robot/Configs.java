@@ -61,7 +61,6 @@ public final class Configs {
     public static final class Elevator {
         public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
         public static final SparkFlexConfig elevatorFollowerConfig = new SparkFlexConfig();
-        public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
 
         static {
                 elevatorConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(50).voltageCompensation(12);
@@ -86,24 +85,7 @@ public final class Configs {
                         .follow(ElevatorConstants.kElevatorMotorCanId)
                         .inverted(true);
 
-                pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
 
-                pivotConfig
-                        .closedLoop
-                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                        // Set PID values for position control
-                        .p(.1)
-                        .outputRange(-1, 1)
-                        .maxMotion
-                        //Set MAXMotion parameters for position control
-                        .maxVelocity(4200)
-                        .maxAcceleration(6000)
-                        .allowedClosedLoopError(0.5);
-                pivotConfig
-                        .absoluteEncoder
-                        // .positionConversionFactor(1)
-                        .zeroOffset(0)
-                        .inverted(true);
         }
     }
 }
