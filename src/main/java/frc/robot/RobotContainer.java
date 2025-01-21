@@ -15,8 +15,8 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.Setpoint;
+import frc.robot.subsystems.Dragon;
+import frc.robot.subsystems.Dragon.Setpoint;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 
 import org.w3c.dom.events.MutationEvent;
 
@@ -46,7 +47,7 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
-  private final Elevator m_elevator = new Elevator();
+  private final Dragon m_Dragon = new Dragon();
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -105,30 +106,14 @@ public class RobotContainer {
     // m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
     // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
+
+    m_driverController.x().onTrue(m_Dragon.setSetpointCommand(Setpoint.kLevel1));
     // m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-     m_driverController.b().onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
 
-    // A Button -> Elevator/Arm to level 2 position
-    m_driverController.a().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
-
-    // X Button -> Elevator/Arm to level 3 position
-    m_driverController.x().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
-
-    // Y Button -> Elevator/Arm to level 4 position
-    m_driverController.y().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
-
-    // BUTTON BOX
-    elevatorStage1.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel1));
-    elevatorStage2.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
-    elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
-    elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
-    coralStation.onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
-  
   }
 
   public void setTeleOpDefaultStates() {
-    m_elevator.setSetpointCommand(Setpoint.kStow).schedule();
   }
 
   /**

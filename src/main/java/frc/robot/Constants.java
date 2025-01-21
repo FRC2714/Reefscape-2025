@@ -123,8 +123,23 @@ public final class Constants {
   public static final class ElevatorConstants {
 
     public static final int kElevatorMotorCanId = 9; // TBD
-    public static final int kPivotMotorCanId = 10; // TBD
     public static final int kElevatorFollowerCanId = 11; // TBD
+    
+    public static final class ElevatorSetpoints {
+      public static final double kStow = 0;
+      public static final double kCoralStation = 0;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 0;
+      public static final double kLevel3 = 100; 
+      public static final double kLevel4 = 150;
+    }
+  }
+
+  public static final class dragonConstants
+  {
+
+    public static final int kPivotMotorCanId = 10; // TBD
+    public static final int kPivotRollerMotorCanID = 12; //TBD
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
@@ -135,13 +150,9 @@ public final class Constants {
       public static final double kLevel4 =  19;
     }
 
-    public static final class ElevatorSetpoints {
-      public static final double kStow = 0;
-      public static final double kCoralStation = 0;
-      public static final double kLevel1 = 0;
-      public static final double kLevel2 = 0;
-      public static final double kLevel3 = 100; 
-      public static final double kLevel4 = 150;
+    public static final class endEffectorSpeeds{
+      public static final double kIntakeSpeed = 0.5; //tune ts (pos when getting from station)
+      public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
     }
   }
 
