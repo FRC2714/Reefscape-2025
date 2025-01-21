@@ -127,6 +127,7 @@ public final class Constants {
     public static final int kElevatorFollowerCanId = 11; // TBD
     
     public static final class PivotSetpoints {
+      public static final double kStow = 0;
       public static final double kCoralStation = 33;
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 2;
@@ -135,11 +136,12 @@ public final class Constants {
     }
 
     public static final class ElevatorSetpoints {
-      public static final int kCoralStation = 0;
-      public static final int kLevel1 = 0;
-      public static final int kLevel2 = 0;
-      public static final int kLevel3 = 100; 
-      public static final int kLevel4 = 150;
+      public static final double kStow = 0;
+      public static final double kCoralStation = 0;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 0;
+      public static final double kLevel3 = 100; 
+      public static final double kLevel4 = 150;
     }
   }
 

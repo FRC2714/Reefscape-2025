@@ -127,6 +127,10 @@ public class RobotContainer {
   
   }
 
+  public void setTeleOpDefaultStates() {
+    m_elevator.setSetpointCommand(Setpoint.kStow).schedule();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
