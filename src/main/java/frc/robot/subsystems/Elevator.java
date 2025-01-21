@@ -81,12 +81,6 @@ public enum Setpoint {
               * SimulationRobotConstants.kPixelsPerMeter,
           90));
           
-private final MechanismLigament2d m_armMech2d =
-      m_elevatorMech2d.append(
-          new MechanismLigament2d(
-              "Arm",
-              SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
-              180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
   /** Creates a new Elevator and Pivot. */
   public Elevator() {
     elevatorMotor.configure(
