@@ -119,21 +119,6 @@ public final class Constants {
     public static final int kLeftReefBranchPipeline = 2;
   }
 
-  // ! Update Values for AlphaBot
-  public static final class ElevatorConstants {
-
-    public static final int kElevatorMotorCanId = 9; // TBD
-    public static final int kElevatorFollowerCanId = 11; // TBD
-    
-    public static final class ElevatorSetpoints {
-      public static final double kStow = 0;
-      public static final double kCoralStation = 0;
-      public static final double kLevel1 = 0;
-      public static final double kLevel2 = 0;
-      public static final double kLevel3 = 100; 
-      public static final double kLevel4 = 150;
-    }
-  }
 
   public static final class dragonConstants
   {

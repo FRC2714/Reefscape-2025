@@ -71,20 +71,16 @@ public class Dragon extends SubsystemBase {
 
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 25, 0);
-  private final MechanismLigament2d m_elevatorMech2d = m_mech2dRoot.append(
-      new MechanismLigament2d(
-          "Elevator",
-          SimulationRobotConstants.kMinElevatorHeightMeters
-              * SimulationRobotConstants.kPixelsPerMeter,
-          90));
-private final MechanismLigament2d m_armMech2d =
-      m_elevatorMech2d.append(
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Dragon Root", 25, 0);
+
+private final MechanismLigament2d m_DragonMech2D =
+      m_mech2dRoot.append(
           new MechanismLigament2d(
-              "Arm",
+              "Pivot",
               SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
               180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
   /** Creates a new Elevator and Pivot. */
+
   public Dragon() {
 
     pivotMotor.configure(
@@ -98,6 +94,8 @@ private final MechanismLigament2d m_armMech2d =
         PersistMode.kPersistParameters);
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
+
+    SmartDashboard.putData("dragon", m_mech2d);
   }
 
   private void moveToSetpoint() 
@@ -143,7 +141,10 @@ private final MechanismLigament2d m_armMech2d =
     {
         pivotRollers.set(power);
     }
-  
+    
+    public double getSimulationCurrentDraw() {
+      return m_pivotSim.getCurrentDrawAmps();
+    }
         
   @Override
   public void periodic() {
@@ -154,7 +155,7 @@ private final MechanismLigament2d m_armMech2d =
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
 
 
-    m_armMech2d.setAngle(
+    m_DragonMech2D.setAngle(
         180
             - ( // mirror the angles so they display in the correct direction
             Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
@@ -178,6 +179,8 @@ private final MechanismLigament2d m_armMech2d =
     // Update sim limit switch
     // Next, we update it. The standard loop time is 20ms.
     m_pivotSim.update(0.020);
+
+    
 
 
     pivotMotorSim.iterate(
