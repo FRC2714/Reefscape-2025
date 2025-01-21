@@ -62,17 +62,18 @@ public final class Constants {
   }
 
   public static final class AlgaeSubsystemConstants {
-    public static final int kIntakeMotorCanId = 13; //tune ts
+    public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
 
     public static final class pivotSetpoints {
-      public static final double kDown = 5; // TBD
+      public static final double kDown = 0; // TBD
       public static final double kUp = 15; // TBD
     }
 
     public static final class AlgaeRollerSetpoints {
       public static final double kForward = 0.5; //tune ts
       public static final double kReverse = -0.5; // tune ts
+      public static final double kStop = 0;
     }
   }
 

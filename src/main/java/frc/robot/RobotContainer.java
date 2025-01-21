@@ -87,12 +87,14 @@ public class RobotContainer {
 
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
-        .whileTrue(m_algaeSubsystem.intakeCommand());
+        .onTrue(m_algaeSubsystem.intakeCommand())
+        .onFalse(m_algaeSubsystem.stowCommand());
 
     // Left Trigger -> Run ball intake in reverse, set to stow when idle
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
-        .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor());  
+        .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor())
+        .onFalse(m_algaeSubsystem.stowCommand());  
 
     m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
@@ -101,6 +103,10 @@ public class RobotContainer {
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
 
+  }
+
+  public void setTeleOpDefaultStates() {
+    m_algaeSubsystem.stowCommand().schedule();
   }
 
   /**

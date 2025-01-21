@@ -35,10 +35,10 @@ public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private SparkFlex pivotMotor = new SparkFlex(0, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(AlgaeSubsystemConstants.kPivotMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private SparkFlex rollerMotor = new SparkFlex(1, MotorType.kBrushless);
+  private SparkFlex rollerMotor = new SparkFlex(AlgaeSubsystemConstants.kRollerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
@@ -125,6 +125,14 @@ public class AlgaeIntake extends SubsystemBase {
           setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kForward);
           setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kDown);
         });
+  }
+
+  public Command stowCommand() {
+    return this.run(
+      () -> {
+        setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kStop);
+        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kUp);
+      });
   }
 
 
