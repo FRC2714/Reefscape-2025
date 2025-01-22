@@ -183,11 +183,11 @@ private final MechanismLigament2d m_DragonMech2D =
     
 
 
-    pivotMotorSim.iterate(
-        Units.radiansPerSecondToRotationsPerMinute(
-            m_pivotSim.getVelocityRadPerSec() * SimulationRobotConstants.kPivotReduction),
-        RobotController.getBatteryVoltage(),
-        0.02);
+  pivotMotorSim.iterate(
+    Units.radiansPerSecondToRotationsPerMinute(
+        m_pivotSim.getVelocityRadPerSec() * SimulationRobotConstants.kPivotReduction),
+    RobotController.getBatteryVoltage(),
+    0.02);
 
     // SimBattery is updated in Robot.java
   }
