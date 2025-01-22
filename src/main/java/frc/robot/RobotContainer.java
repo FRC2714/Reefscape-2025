@@ -47,7 +47,7 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
-  private final Dragon m_Dragon = new Dragon();
+  private final Dragon m_dragon = new Dragon();
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -105,9 +105,10 @@ public class RobotContainer {
     // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
     // m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
     // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    m_driverController.a().onTrue(m_dragon.setSetpointCommand(Setpoint.kLevel4))
+      .onFalse(m_dragon.setSetpointCommand(Setpoint.kCoralStation));
 
-
-    m_driverController.x().onTrue(m_Dragon.setSetpointCommand(Setpoint.kLevel1));
+    m_driverController.x().onTrue(m_dragon.setSetpointCommand(Setpoint.kLevel1));
     // m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
 

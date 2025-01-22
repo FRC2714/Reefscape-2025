@@ -120,7 +120,7 @@ public final class Constants {
   }
 
 
-  public static final class dragonConstants
+  public static final class DragonConstants
   {
 
     public static final int kPivotMotorCanId = 10; // TBD

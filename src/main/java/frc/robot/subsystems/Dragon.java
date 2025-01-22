@@ -25,9 +25,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
-import frc.robot.Constants.dragonConstants.PivotSetpoints;
+import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
-import frc.robot.Constants.dragonConstants;
+import frc.robot.Constants.DragonConstants;
 
 public class Dragon extends SubsystemBase {
 
@@ -41,12 +41,12 @@ public class Dragon extends SubsystemBase {
   }
 
   // Pivot Arm
-  private SparkFlex pivotMotor = new SparkFlex(dragonConstants.kPivotMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
   private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
-  //pivt rollers
-  private SparkFlex pivotRollers = new SparkFlex(dragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless); 
+  // Pivot rollers
+  private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless); 
 
 
 
@@ -114,23 +114,23 @@ private final MechanismLigament2d m_DragonMech2D =
               break;
             case kCoralStation:
               pivotCurrentTarget = PivotSetpoints.kCoralStation;
-              setRollerPower(dragonConstants.endEffectorSpeeds.kIntakeSpeed);
+              setRollerPower(DragonConstants.endEffectorSpeeds.kIntakeSpeed);
               break;
             case kLevel1:
               pivotCurrentTarget = PivotSetpoints.kLevel1;
-              setRollerPower(dragonConstants.endEffectorSpeeds.kExtakeSpeed);
+              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case kLevel2:
               pivotCurrentTarget = PivotSetpoints.kLevel2;
-              setRollerPower(dragonConstants.endEffectorSpeeds.kExtakeSpeed);
+              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case kLevel3:
               pivotCurrentTarget = PivotSetpoints.kLevel3;
-              setRollerPower(dragonConstants.endEffectorSpeeds.kExtakeSpeed);
+              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case kLevel4:
               pivotCurrentTarget = PivotSetpoints.kLevel4;
-              setRollerPower(dragonConstants.endEffectorSpeeds.kExtakeSpeed);
+              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
           }}),
           new InstantCommand(() -> moveToSetpoint()));
