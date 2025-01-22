@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -38,6 +39,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -95,28 +97,23 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    // m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    m_driverController
+        .rightTrigger(OIConstants.kTriggerButtonThreshold)
+        .onTrue(m_algaeSubsystem.intakeCommand())
+        .onFalse(m_algaeSubsystem.stowCommand());
 
-    // m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    // m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-    // m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-    // m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
-    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
-    // m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
-    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // Left Trigger -> Run ball intake in reverse, set to stow when idle
+    m_driverController
+        .leftTrigger(OIConstants.kTriggerButtonThreshold)
+        .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor())
+        .onFalse(m_algaeSubsystem.stowCommand());  
 
-    // m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
-     m_driverController.b().onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-    // A Button -> Elevator/Arm to level 2 position
-    m_driverController.a().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
-
-    // X Button -> Elevator/Arm to level 3 position
-    m_driverController.x().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
-
-    // Y Button -> Elevator/Arm to level 4 position
-    m_driverController.y().onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
 
     // BUTTON BOX
     elevatorStage1.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel1));
@@ -124,10 +121,10 @@ public class RobotContainer {
     elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
     elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
     coralStation.onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
-  
   }
 
   public void setTeleOpDefaultStates() {
+    m_algaeSubsystem.stowCommand().schedule();
     m_elevator.setSetpointCommand(Setpoint.kStow).schedule();
   }
 

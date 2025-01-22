@@ -58,6 +58,46 @@ public final class Configs {
         }
     }
 
+    public static final class AlgaeSubsystem {
+        public static final SparkFlexConfig rollerConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
+
+        static {
+        // Configure basic setting of the arm motor
+        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true).voltageCompensation(12);
+        pivotConfig.absoluteEncoder
+                .positionConversionFactor(1)
+                .inverted(true)
+                .zeroOffset(0); //tune later
+        pivotConfig
+                .closedLoop
+                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        // Set PID values for position control. We don't need to pass a closed
+        // loop slot, as it will default to slot 0.
+                .p(0.1)
+                .outputRange(-1, 1)
+                .maxMotion
+                .maxVelocity(4200)
+                .maxAcceleration(6000)
+                .allowedClosedLoopError(0.5);
+
+        /*
+        * Configure the closed loop controller. We want to make sure we set the
+        * feedback sensor as the primary encoder.
+        */
+        // pivotConfig
+        //         .closedLoop
+        //         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        //         // Set PID values for position control. We don't need to pass a closed
+        //         // loop slot, as it will default to slot 0.
+        //         .p(0.1)
+        //         .outputRange(-0.5, 0.5);
+
+        // Configure basic settings of the intake motor
+        rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(0);
+        }
+        }
+
     public static final class Elevator {
         public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
         public static final SparkFlexConfig elevatorFollowerConfig = new SparkFlexConfig();
