@@ -71,7 +71,7 @@ public class Dragon extends SubsystemBase {
 
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Dragon Root", 25, 0);
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Dragon Root", 25, 25);
 
 private final MechanismLigament2d m_DragonMech2D =
       m_mech2dRoot.append(
