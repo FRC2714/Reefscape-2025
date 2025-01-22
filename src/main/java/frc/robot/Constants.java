@@ -196,8 +196,8 @@ public final class Constants {
   public static final class DragonConstants
   {
 
-    public static final int kPivotMotorCanId = 10; // TBD
-    public static final int kPivotRollerMotorCanID = 12; //TBD
+    public static final int kPivotMotorCanId = 50; // TBD
+    public static final int kPivotRollerMotorCanID = 51; //TBD
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
