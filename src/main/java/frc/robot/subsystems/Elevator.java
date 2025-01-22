@@ -50,14 +50,9 @@ public enum ElevatorSetpoint {
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
-  // Pivot Arm
-  private SparkFlex pivotMotor = new SparkFlex(ElevatorConstants.kPivotMotorCanId, MotorType.kBrushless);
-  private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
-  private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
-  private double pivotCurrentTarget = PivotSetpoints.kCoralStation;
 
   //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
@@ -75,21 +70,7 @@ public enum ElevatorSetpoint {
       0.0,
       0.0);
 
-  private DCMotor pivotMotorModel = DCMotor.getNeoVortex(1);
-  private SparkFlexSim pivotMotorSim;
-  private final SingleJointedArmSim m_pivotSim =
-      new SingleJointedArmSim(
-          pivotMotorModel,
-          SimulationRobotConstants.kPivotReduction,
-          SingleJointedArmSim.estimateMOI(
-              SimulationRobotConstants.kPivotLength, SimulationRobotConstants.kPivotMass),
-          SimulationRobotConstants.kPivotLength,
-          SimulationRobotConstants.kMinAngleRads,
-          SimulationRobotConstants.kMaxAngleRads,
-          true,
-          SimulationRobotConstants.kMinAngleRads,
-          0.0,
-          0.0);
+
 
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
@@ -100,12 +81,6 @@ public enum ElevatorSetpoint {
           SimulationRobotConstants.kMinElevatorHeightMeters
               * SimulationRobotConstants.kPixelsPerMeter,
           90));
-private final MechanismLigament2d m_armMech2d =
-      m_elevatorMech2d.append(
-          new MechanismLigament2d(
-              "Arm",
-              SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
-              180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
   /** Creates a new Elevator and Pivot. */
   public Elevator() {
     elevatorMotor.configure(
@@ -125,21 +100,14 @@ private final MechanismLigament2d m_armMech2d =
 
     SmartDashboard.putData("Elevator", m_mech2d);
 
-    pivotMotor.configure(
-      Configs.Elevator.pivotConfig,
-      ResetMode.kResetSafeParameters,
-      PersistMode.kPersistParameters);
-    elevatorEncoder.setPosition(0);
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
 
-    pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
   }
 
   private void moveToSetpoint() {
     elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
   private void zeroElevatorOnLimitSwitch() {
@@ -161,27 +129,21 @@ private final MechanismLigament2d m_armMech2d =
           switch (setpoint) {
             case kStow:
               elevatorCurrentTarget = ElevatorSetpoints.kStow;
-              pivotCurrentTarget = PivotSetpoints.kStow;
               break;
             case kCoralStation:
               elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
-              pivotCurrentTarget = PivotSetpoints.kCoralStation;
               break;
             case kLevel1:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
-              pivotCurrentTarget = PivotSetpoints.kLevel1;
               break;
             case kLevel2:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
-              pivotCurrentTarget = PivotSetpoints.kLevel2;
               break;
             case kLevel3:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
-              pivotCurrentTarget = PivotSetpoints.kLevel3;
               break;
             case kLevel4:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
-              pivotCurrentTarget = PivotSetpoints.kLevel4;
               break;
           }}),
           new InstantCommand(() -> moveToSetpoint()));
@@ -195,8 +157,7 @@ private final MechanismLigament2d m_armMech2d =
 
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
+
 
 
     m_elevatorMech2d.setLength(
@@ -204,14 +165,6 @@ private final MechanismLigament2d m_armMech2d =
             + SimulationRobotConstants.kPixelsPerMeter
                 * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
                 * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
-    m_armMech2d.setAngle(
-        180
-            - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
-                + Units.rotationsToDegrees(
-                    pivotAbsoluteEncoder.getPosition() / SimulationRobotConstants.kPivotReduction))
-            - 90 // subtract 90 degrees to account for the elevator
-        );
   }
 
   public double getSimulationCurrentDraw() {
@@ -223,11 +176,9 @@ private final MechanismLigament2d m_armMech2d =
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Pivot Position", pivotAbsoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
+
     
 
     // Update sim limit switch
@@ -235,7 +186,6 @@ private final MechanismLigament2d m_armMech2d =
 
     // Next, we update it. The standard loop time is 20ms.
     m_elevatorSim.update(0.020);
-    m_pivotSim.update(0.020);
 
     m_elevatorMech2d.setLength(
       SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
@@ -252,11 +202,7 @@ private final MechanismLigament2d m_armMech2d =
         RobotController.getBatteryVoltage(),
         0.02);
 
-    pivotMotorSim.iterate(
-        Units.radiansPerSecondToRotationsPerMinute(
-            m_pivotSim.getVelocityRadPerSec() * SimulationRobotConstants.kPivotReduction),
-        RobotController.getBatteryVoltage(),
-        0.02);
+ 
 
     // SimBattery is updated in Robot.java
   }
