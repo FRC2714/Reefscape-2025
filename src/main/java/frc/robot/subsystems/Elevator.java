@@ -35,7 +35,7 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
 
-public enum Setpoint {
+public enum ElevatorSetpoint {
     kStow,
     kCoralStation,
     kLevel1,
@@ -154,7 +154,7 @@ private final MechanismLigament2d m_armMech2d =
     }
   }
 
-  public Command setSetpointCommand(Setpoint setpoint) {
+  public Command setSetpointCommand(ElevatorSetpoint setpoint) {
     return new SequentialCommandGroup(
         new InstantCommand(
         () -> {

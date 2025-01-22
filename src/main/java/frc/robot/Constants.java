@@ -194,4 +194,25 @@ public final class Constants {
       public static final double kLevel4 = 150;
     }
   }
+
+  public static final class DragonConstants
+  {
+
+    public static final int kPivotMotorCanId = 10; // TBD
+    public static final int kPivotRollerMotorCanID = 12; //TBD
+    
+    public static final class PivotSetpoints {
+      public static final double kStow = 0;
+      public static final double kCoralStation = 33;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 2;
+      public static final double kLevel3 = 2; 
+      public static final double kLevel4 =  19;
+    }
+
+    public static final class endEffectorSpeeds{
+      public static final double kIntakeSpeed = 0.5; //tune ts (pos when getting from station)
+      public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
+    }
+  }
 };

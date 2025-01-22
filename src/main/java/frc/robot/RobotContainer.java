@@ -10,23 +10,21 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.AlgaeIntake;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.Dragon;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.Setpoint;
+import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Dragon.DragonSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-import org.w3c.dom.events.MutationEvent;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -49,6 +47,8 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
   private final Elevator m_elevator = new Elevator();
+
+  private final Dragon m_dragon = new Dragon();
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -116,16 +116,21 @@ public class RobotContainer {
 
 
     // BUTTON BOX
-    elevatorStage1.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel1));
-    elevatorStage2.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel2));
-    elevatorStage3.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel3));
-    elevatorStage4.onTrue(m_elevator.setSetpointCommand(Setpoint.kLevel4));
-    coralStation.onTrue(m_elevator.setSetpointCommand(Setpoint.kCoralStation));
+    elevatorStage1.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel1));
+    elevatorStage2.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel2));
+    elevatorStage3.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel3));
+    elevatorStage4.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel4));
+    coralStation.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kCoralStation));
+
+    m_driverController.a().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel4))
+    .onFalse(m_dragon.setSetpointCommand(DragonSetpoint.kCoralStation));
+
+    m_driverController.x().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel1));
   }
 
   public void setTeleOpDefaultStates() {
     m_algaeSubsystem.stowCommand().schedule();
-    m_elevator.setSetpointCommand(Setpoint.kStow).schedule();
+    m_elevator.setSetpointCommand(ElevatorSetpoint.kStow).schedule();
   }
 
   /**
