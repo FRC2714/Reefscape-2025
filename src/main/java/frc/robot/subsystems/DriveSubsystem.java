@@ -171,11 +171,12 @@ public class DriveSubsystem extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
     driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Config(Volts.of(0.1).per(Second), Volts.of(1.75), Seconds.of(10)),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
+
     rotationRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.25).per(Second), Volts.of(5), Seconds.of(10)),
+        new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(10)),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageRotateTest(voltage.in(Volts)), null, this));
 
@@ -221,14 +222,15 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   private void driveVoltageForwardTest(double voltage) {
-    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(90.0));
-    m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(-180.0));
-    m_rearLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(0.0));
-    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(90.0));
+    var direction = new Rotation2d();
+    m_frontLeft.setVoltageAngle(-voltage, direction.plus(Rotation2d.fromDegrees(90)));
+    m_frontRight.setVoltageAngle(voltage, direction);
+    m_rearLeft.setVoltageAngle(-voltage, direction);
+    m_rearRight.setVoltageAngle(voltage, direction.plus(Rotation2d.fromDegrees(90)));
   }
 
   private void driveVoltageRotateTest(double voltage) {
-    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(62.0));
+    m_frontLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(62.0));
     m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(27.9));
     m_rearLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(27.9));
     m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(62.0));

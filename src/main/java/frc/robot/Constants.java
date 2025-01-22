@@ -29,7 +29,8 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.39372, 1.9421, 0.22045);
+    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.2049,1.9347, 0.37092);//0.39372, 1.9421, 0.22045
+    //test 2 (0.2049,1.9347, 0.37092)
     public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0, 0, 0);
 
     // Chassis configuration
