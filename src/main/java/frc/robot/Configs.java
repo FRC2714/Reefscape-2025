@@ -1,10 +1,13 @@
 package frc.robot;
 
-import com.revrobotics.spark.config.SparkMaxConfig;
+
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public final class Configs {
@@ -94,4 +97,84 @@ public final class Configs {
         rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(0);
         }
         }
+
+    public static final class Elevator {
+        public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig elevatorFollowerConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
+
+        static {
+                elevatorConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(50).voltageCompensation(12);
+
+                elevatorConfig
+                        .limitSwitch
+                        .reverseLimitSwitchEnabled(true)
+                        .reverseLimitSwitchType(Type.kNormallyOpen);
+
+                elevatorConfig
+                        .closedLoop
+                        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                        // Set PID values for position control
+                        .p(.1)
+                        .outputRange(-1, 1)
+                        .maxMotion
+                        // Set MAXMotion parameters for position control
+                        .maxVelocity(4200)
+                        .maxAcceleration(6000)
+                        .allowedClosedLoopError(0.5);
+                elevatorFollowerConfig
+                        .follow(ElevatorConstants.kElevatorMotorCanId)
+                        .inverted(true);
+
+                pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+
+                pivotConfig
+                        .closedLoop
+                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                        // Set PID values for position control
+                        .p(.1)
+                        .outputRange(-1, 1)
+                        .maxMotion
+                        //Set MAXMotion parameters for position control
+                        .maxVelocity(4200)
+                        .maxAcceleration(6000)
+                        .allowedClosedLoopError(0.5);
+                pivotConfig
+                        .absoluteEncoder
+                        // .positionConversionFactor(1)
+                        .zeroOffset(0)
+                        .inverted(true);
+        }
+    }
+
+    public static final class Dragon {
+        public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
+        public static final SparkFlexConfig pivotRollerConfig = new SparkFlexConfig();
+
+        static {
+
+                pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+
+                pivotConfig
+                        .closedLoop
+                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                        // Set PID values for position control
+                        .p(.1)
+                        .outputRange(-1, 1)
+                        .maxMotion
+                        //Set MAXMotion parameters for position control
+                        .maxVelocity(4200)
+                        .maxAcceleration(6000)
+                        .allowedClosedLoopError(0.5);
+                pivotConfig
+                        .absoluteEncoder
+                        // .positionConversionFactor(1)
+                        .zeroOffset(0)
+                        .inverted(true);
+
+                pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+
+
+        }
+    }
 }

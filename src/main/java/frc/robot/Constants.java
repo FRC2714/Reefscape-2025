@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.impl.FailingDeserializer;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -23,6 +21,8 @@ import edu.wpi.first.math.util.Units;
  * wherever the
  * constants are needed, to reduce verbosity.
  */
+
+// ! Update Values for AlphaBot
 public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
@@ -90,6 +90,11 @@ public final class Constants {
     public static final double kArmReduction = 60; // 60:1
     public static final double kArmLength = 0.433; // m
     public static final double kArmMass = 4.3; // Kg
+
+    public static final double kPivotReduction = 60; // 60:1
+    public static final double kPivotLength = 0.433; // m
+    public static final double kPivotMass = 4.3; // Kg
+
     public static final double kMinAngleRads =
         Units.degreesToRadians(-50.1); // -50.1 deg from horiz
     public static final double kMaxAngleRads =
@@ -124,6 +129,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
     public static final double kTriggerButtonThreshold = 0.2;
   }
@@ -136,6 +142,7 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
+
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
@@ -147,6 +154,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  // ! Update Values for AlphaBot
   public static final class LimelightConstants{
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
@@ -157,5 +165,52 @@ public final class Constants {
     public static final double kReefTagHeight = 12;
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
+  }
+
+  // ! Update Values for AlphaBot
+  public static final class ElevatorConstants {
+
+    public static final int kElevatorMotorCanId = 63; // TBD
+    public static final int kPivotMotorCanId = 61; // TBD
+    public static final int kElevatorFollowerCanId = 62; // TBD
+    
+    public static final class PivotSetpoints {
+      public static final double kStow = 0;
+      public static final double kCoralStation = 33;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 2;
+      public static final double kLevel3 = 2; 
+      public static final double kLevel4 =  19;
+    }
+
+    public static final class ElevatorSetpoints {
+      public static final double kStow = 0;
+      public static final double kCoralStation = 0;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 0;
+      public static final double kLevel3 = 100; 
+      public static final double kLevel4 = 150;
+    }
+  }
+
+  public static final class DragonConstants
+  {
+
+    public static final int kPivotMotorCanId = 50; // TBD
+    public static final int kPivotRollerMotorCanID = 51; //TBD
+    
+    public static final class PivotSetpoints {
+      public static final double kStow = 0;
+      public static final double kCoralStation = 33;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 2;
+      public static final double kLevel3 = 2; 
+      public static final double kLevel4 =  19;
+    }
+
+    public static final class endEffectorSpeeds{
+      public static final double kIntakeSpeed = 0.5; //tune ts (pos when getting from station)
+      public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
+    }
   }
 };
