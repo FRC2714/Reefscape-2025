@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.impl.FailingDeserializer;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -172,9 +170,9 @@ public final class Constants {
   // ! Update Values for AlphaBot
   public static final class ElevatorConstants {
 
-    public static final int kElevatorMotorCanId = 9; // TBD
-    public static final int kPivotMotorCanId = 10; // TBD
-    public static final int kElevatorFollowerCanId = 11; // TBD
+    public static final int kElevatorMotorCanId = 63; // TBD
+    public static final int kPivotMotorCanId = 61; // TBD
+    public static final int kElevatorFollowerCanId = 62; // TBD
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
