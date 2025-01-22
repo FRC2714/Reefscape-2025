@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.054749999999999,
-        "y": 4.2005
+        "x": 5.995248287671233,
+        "y": 4.167744006849315
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.501144366197183,
-        "y": 7.865757042253521
+        "x": 5.754837328767123,
+        "y": 6.00087756849315
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "H-Coral"
     },
     {
       "anchor": {
-        "x": 1.482,
-        "y": 4.3077499999999995
+        "x": 1.1269263698630136,
+        "y": 7.157855308219178
       },
       "prevControl": {
-        "x": 1.9863556338028159,
-        "y": 4.5210387323943655
+        "x": 1.7580051369863015,
+        "y": 6.857341609589041
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CoralFeeder-Left"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.61605990839925
+    "rotation": 127.00000000000001
   },
   "reversed": false,
-  "folder": "Archived Paths",
+  "folder": "Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -176.9872124958166
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
