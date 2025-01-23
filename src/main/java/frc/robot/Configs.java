@@ -6,9 +6,12 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
+import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.SimulationRobotConstants;
 
 public final class Configs {
     public static final class MAXSwerveModule {
@@ -64,39 +67,80 @@ public final class Configs {
 
         static {
         // Configure basic setting of the arm motor
-        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true).voltageCompensation(12);
-        pivotConfig.absoluteEncoder
-                .positionConversionFactor(1)
-                .inverted(true)
-                .zeroOffset(0); //tune later
-        pivotConfig
-                .closedLoop
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        // Set PID values for position control. We don't need to pass a closed
-        // loop slot, as it will default to slot 0.
-                .p(0.1)
-                .outputRange(-1, 1)
-                .maxMotion
-                .maxVelocity(4200)
-                .maxAcceleration(6000)
-                .allowedClosedLoopError(0.5);
+                pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true).voltageCompensation(12);
+                pivotConfig.absoluteEncoder
+                        .positionConversionFactor(1)
+                        .inverted(true)
+                        .zeroOffset(0); //tune later
+                pivotConfig
+                        .closedLoop
+                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                // Set PID values for position control. We don't need to pass a closed
+                // loop slot, as it will default to slot 0.
+                        .p(0.1)
+                        .outputRange(-1, 1)
+                        .maxMotion
+                        .maxVelocity(4200)
+                        .maxAcceleration(6000)
+                        .allowedClosedLoopError(0.5);
 
-        /*
-        * Configure the closed loop controller. We want to make sure we set the
-        * feedback sensor as the primary encoder.
-        */
-        // pivotConfig
-        //         .closedLoop
-        //         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-        //         // Set PID values for position control. We don't need to pass a closed
-        //         // loop slot, as it will default to slot 0.
-        //         .p(0.1)
-        //         .outputRange(-0.5, 0.5);
+                /*
+                * Configure the closed loop controller. We want to make sure we set the
+                * feedback sensor as the primary encoder.
+                */
+                // pivotConfig
+                //         .closedLoop
+                //         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                //         // Set PID values for position control. We don't need to pass a closed
+                //         // loop slot, as it will default to slot 0.
+                //         .p(0.1)
+                //         .outputRange(-0.5, 0.5);
 
-        // Configure basic settings of the intake motor
-        rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(0);
+                // Configure basic settings of the intake motor
+                rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
         }
-        }
+    }
+
+    public static final class CoralIntake {
+                public static final SparkFlexConfig topRollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig bottomRollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
+        
+                static {
+                        // Configure basic setting of the arm motor
+                        pivotConfig.smartCurrentLimit(40)
+                                .idleMode(IdleMode.kBrake)
+                                .inverted(true)
+                                .voltageCompensation(12);
+                        pivotConfig.absoluteEncoder
+                                .positionConversionFactor(360 / SimulationRobotConstants.kIntakeReduction)
+                                .inverted(true)
+                                .zeroOffset(0)
+                                .zeroCentered(false); //tune later
+                        pivotConfig
+                                .closedLoop
+                                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+                        // Set PID values for position control. We don't need to pass a closed
+                        // loop slot, as it will default to slot 0.
+                                .p(0.1)
+                                .outputRange(-1, 1)
+                                .positionWrappingEnabled(true)
+                                .positionWrappingInputRange(0, 360)
+                                .maxMotion
+                                .maxVelocity(4200)
+                                .maxAcceleration(6000)
+                                .allowedClosedLoopError(0.5);
+                
+                        // Configure basic settings of the intake motor
+                        topRollerConfig
+                                .inverted(false)
+                                .idleMode(IdleMode.kCoast)
+                                .smartCurrentLimit(40)
+                                .voltageCompensation(12);
+                        bottomRollerConfig.follow(CoralIntakeConstants.kTopRollerMotorCanId)
+                                .inverted(true);
+                }
+   }
 
     public static final class Elevator {
         public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
