@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
 
@@ -99,11 +100,15 @@ public class Limelight extends SubsystemBase {
 
   // Pipline Stuff
 	public void setCoralTagPipelineRight() {
-		LimelightHelpers.setPipelineIndex(m_limelightName, 1);
+		LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kRightReefBranchPipeline);
 	}
 
 	public void setCoralTagPipelineLeft() {
-		LimelightHelpers.setPipelineIndex(m_limelightName, 2);
+		LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kLeftReefBranchPipeline);
+	}
+
+  public void setProcessorTagPipeline() {
+		LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kProcessorPipeline);
 	}
 
   public int getTargetID()
