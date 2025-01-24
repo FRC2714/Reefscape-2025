@@ -17,9 +17,10 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Elevator.ElevatorSetpoint;
+import frc.robot.subsystems.superstructure.StateMachine;
+import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.StateMachine.State;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Dragon.DragonSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -51,6 +52,11 @@ public class RobotContainer {
   private final Elevator m_elevator = new Elevator();
 
   private final Dragon m_dragon = new Dragon();
+
+  private final Superstructure m_superstructure = new Superstructure(
+    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_leftLimelight, m_rightLimelight);
+
+  private final StateMachine m_stateMachine = new StateMachine(m_superstructure);
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -100,51 +106,66 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     m_driverController
-        .rightTrigger(OIConstants.kTriggerButtonThreshold)
-        .onTrue(m_algaeSubsystem.intakeCommand())
-        .onFalse(m_algaeSubsystem.stowCommand());
+      .leftTrigger(OIConstants.kTriggerButtonThreshold)
+      .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.INTAKE))
+      .onFalse(m_stateMachine.algaeIntakeSelectCommand(State.STOW));
+
+    m_driverController
+      .rightTrigger(OIConstants.kTriggerButtonThreshold)
+      .onTrue(m_stateMachine.coralIntakeSelectCommand(State.INTAKE))
+      .onFalse(m_stateMachine.coralIntakeSelectCommand(State.STOW));
+
+    m_driverController.a()
+      .whileTrue(m_stateMachine.scoreLevel(State.L1))
+      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+
+      m_driverController.x()
+      .whileTrue(m_stateMachine.scoreLevel(State.L2))
+      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+
+      m_driverController.b()
+      .whileTrue(m_stateMachine.scoreLevel(State.L3))
+      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+
+      m_driverController.y()
+      .whileTrue(m_stateMachine.scoreLevel(State.L4))
+      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+
+  
+
+
 
     // Left Trigger -> Run ball intake in reverse, set to stow when idle
-    m_driverController
-        .leftTrigger(OIConstants.kTriggerButtonThreshold)
-        .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor())
-        .onFalse(m_algaeSubsystem.stowCommand());  
+    // m_driverController
+    //     .leftTrigger(OIConstants.kTriggerButtonThreshold)
+    //     .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor())
+    //     .onFalse(m_algaeSubsystem.stowCommand());  
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    // m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
-    m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    //m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
 
     // BUTTON BOX
-    elevatorStage1.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel1));
-    elevatorStage2.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel2));
-    elevatorStage3.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel3));
-    elevatorStage4.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel4));
-    coralStation.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kCoralStation));
+    // elevatorStage1.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel1));
+    // elevatorStage2.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel2));
+    // elevatorStage3.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel3));
+    // elevatorStage4.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kLevel4));
+    // coralStation.onTrue(m_elevator.setSetpointCommand(ElevatorSetpoint.kCoralStation));
 
-    m_driverController.a().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel4))
-    .onFalse(m_dragon.setSetpointCommand(DragonSetpoint.kCoralStation));
+    // m_driverController.a().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel4))
+    // .onFalse(m_dragon.setSetpointCommand(DragonSetpoint.kCoralStation));
 
-    m_driverController.x().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel1));
+    // m_driverController.x().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel1));
 
-    m_driverController.a()
-      .onTrue(m_coralIntake.intakeCommand())
-      .onFalse(m_coralIntake.stowCommand());
-    
-    m_driverController.b()
-      .onTrue(m_coralIntake.extakeCommand())
-      .onFalse(m_coralIntake.stowCommand());
-    
-    m_driverController.x()
-      .onTrue(m_coralIntake.handoffCommand())
-      .onFalse(m_coralIntake.stowCommand());
+ 
   }
 
   public void setTeleOpDefaultStates() {
     m_algaeSubsystem.stowCommand().schedule();
-    m_elevator.setSetpointCommand(ElevatorSetpoint.kStow).schedule();
+    // m_elevator.setSetpointCommand(ElevatorSetpoint.kStow).schedule();
     m_coralIntake.stowCommand().schedule();
   }
 
