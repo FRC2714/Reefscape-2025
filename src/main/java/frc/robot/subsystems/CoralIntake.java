@@ -32,6 +32,7 @@ public class CoralIntake extends SubsystemBase {
   // initialize the closed loop controller and encoder.
 
   private SparkFlex pivotMotor = new SparkFlex(CoralIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
   private SparkFlex topRollerMotor = new SparkFlex(CoralIntakeConstants.kTopRollerMotorCanId, MotorType.kBrushless);
@@ -93,6 +94,10 @@ public class CoralIntake extends SubsystemBase {
         Configs.CoralIntake.pivotConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+    pivotFollowerMotor.configure(
+      Configs.CoralIntake.pivotFollowerConfig,
+      ResetMode.kResetSafeParameters,
+      PersistMode.kPersistParameters);
 
     // Display mechanism2d
     SmartDashboard.putData("Coral Intake", m_mech2d);
