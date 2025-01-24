@@ -132,7 +132,7 @@ public class AlgaeIntake extends SubsystemBase {
     return this.run(
       () -> {
         setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kReverse);
-        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kUp);
+        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kMid);
       });
   }
 

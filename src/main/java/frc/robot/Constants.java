@@ -68,6 +68,7 @@ public final class Constants {
     public static final class pivotSetpoints {
       public static final double kDown = 0; // TBD
       public static final double kUp = 15; // TBD
+      public static final double kMid = 7; //TBD (extake position)
     }
 
     public static final class AlgaeRollerSetpoints {
