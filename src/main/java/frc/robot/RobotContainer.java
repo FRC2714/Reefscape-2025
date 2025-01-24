@@ -15,6 +15,7 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
+import frc.robot.commands.AlignToProcessor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
@@ -48,6 +49,12 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
+
+  private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
+  LimelightConstants.kBackCameraHeight,
+  LimelightConstants.kBackMountingAngle,
+  LimelightConstants.kProcessorTagHeight);
+
   private final Elevator m_elevator = new Elevator();
 
   private final Dragon m_dragon = new Dragon();
@@ -111,7 +118,7 @@ public class RobotContainer {
         .onFalse(m_algaeSubsystem.stowCommand());  
 
     m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.leftBumper().whileTrue(new AlignToProcessor(m_robotDrive, m_backLimelight, LimelightConstants.kProcessorPipeline));
     m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
