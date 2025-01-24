@@ -198,21 +198,11 @@ public final class Constants {
   public static final class ElevatorConstants {
 
     public static final int kElevatorMotorCanId = 63; // TBD
-    public static final int kPivotMotorCanId = 61; // TBD
     public static final int kElevatorFollowerCanId = 62; // TBD
-    
-    public static final class PivotSetpoints {
-      public static final double kStow = 0;
-      public static final double kCoralStation = 33;
-      public static final double kLevel1 = 0;
-      public static final double kLevel2 = 2;
-      public static final double kLevel3 = 2; 
-      public static final double kLevel4 =  19;
-    }
 
     public static final class ElevatorSetpoints {
       public static final double kStow = 0;
-      public static final double kCoralStation = 0;
+      public static final double kHandoff = 0;
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
       public static final double kLevel3 = 100; 
