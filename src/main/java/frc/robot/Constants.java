@@ -77,6 +77,28 @@ public final class Constants {
     }
   }
 
+  public static final class CoralIntakeConstants {
+    public static final int kPivotMotorCanId = 40;
+    public static final int kPivotFollowerMotorCanId = 39;
+    public static final int kTopRollerMotorCanId = 41;
+    public static final int kBottomRollerMotorCanId = 42;
+
+    public static final class PivotSetpoints {
+      public static final double kStow = 0; // TBD
+      public static final double kIntakeShelf = 120; // TBD
+      public static final double kExtakeFloor = 60; // TBD
+      public static final double kHandoff = 270; // TBD
+
+      public static final double kZeroOffsetDegrees = 270;
+    }
+
+    public static final class RollerSetpoints {
+      public static final double kForward = 0.5; //tune ts
+      public static final double kReverse = -0.5; // tune ts
+      public static final double kStop = 0;
+    }
+  }
+
   public static final class SimulationRobotConstants {
     public static final double kPixelsPerMeter = 20;
 
@@ -105,8 +127,13 @@ public final class Constants {
     public static final double kIntakeMass = 5.8738; // Kg
     public static final double kIntakeMinAngleRads = Units.degreesToRadians(80);
     public static final double kIntakeMaxAngleRads = Units.degreesToRadians(180);
+
+    public static final double kCoralIntakeMinAngleRads = Units.degreesToRadians(0);
+    public static final double kCoralIntakeMaxAngleRads = Units.degreesToRadians(360 * kIntakeReduction);
+
     public static final double kIntakeShortBarLength = 0.1524;
     public static final double kIntakeLongBarLength = 0.3048;
+    public static final double kCoralIntakeLength = 0.5;
     public static final double kIntakeBarAngleRads = Units.degreesToRadians(-60);
   }
 

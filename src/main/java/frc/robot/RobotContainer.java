@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Dragon;
+import frc.robot.subsystems.CoralIntake;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
@@ -38,6 +39,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
+  private final CoralIntake m_coralIntake = new CoralIntake();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -126,11 +128,24 @@ public class RobotContainer {
     .onFalse(m_dragon.setSetpointCommand(DragonSetpoint.kCoralStation));
 
     m_driverController.x().onTrue(m_dragon.setSetpointCommand(DragonSetpoint.kLevel1));
+
+    m_driverController.a()
+      .onTrue(m_coralIntake.intakeCommand())
+      .onFalse(m_coralIntake.stowCommand());
+    
+    m_driverController.b()
+      .onTrue(m_coralIntake.extakeCommand())
+      .onFalse(m_coralIntake.stowCommand());
+    
+    m_driverController.x()
+      .onTrue(m_coralIntake.handoffCommand())
+      .onFalse(m_coralIntake.stowCommand());
   }
 
   public void setTeleOpDefaultStates() {
     m_algaeSubsystem.stowCommand().schedule();
     m_elevator.setSetpointCommand(ElevatorSetpoint.kStow).schedule();
+    m_coralIntake.stowCommand().schedule();
   }
 
   /**
