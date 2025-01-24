@@ -17,7 +17,6 @@ public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
-  private String targetLimelightName;
 
   // private Limelight m_rightLimelight;
   // private Limelight m_leftLimelight;
