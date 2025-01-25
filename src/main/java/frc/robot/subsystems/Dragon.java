@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.lang.Thread.State;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
