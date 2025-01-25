@@ -242,6 +242,11 @@ public final class Constants {
   public static final class LEDConstants {
     public static final int kBlinkinPort = 2;
 
-    public static final double kBlue = 0.01;
+    public static final double kBlue = 0.87;  
+    public static final double kGreen = 0.77;
+    public static final double kWhite = 0.93;
+    public static final double kYellow = 0.69;
+    public static final double kHeartbeatRed = -0.25;
+
   }
 };

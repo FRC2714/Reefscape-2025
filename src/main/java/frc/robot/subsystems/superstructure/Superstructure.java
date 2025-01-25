@@ -96,7 +96,7 @@ public class Superstructure extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This methodwill be called once per scheduler run
 
     if (true) {     //FIX CONDN
       m_blinkin.setBlue();

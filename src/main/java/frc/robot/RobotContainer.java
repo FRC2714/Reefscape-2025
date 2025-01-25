@@ -137,6 +137,7 @@ public class RobotContainer {
     // Force Actions
     m_driverController.povLeft()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
   // TODO: add pov up down for coral station and processor
@@ -180,16 +181,19 @@ public class RobotContainer {
     {
         if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
         {
+          m_blinkin.setYellow(); //has a valid target
           return true;
         }
         return false;
     }
     else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
     {
+      m_blinkin.setYellow(); //has a valid atarget
       return true;
     }
     else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
     {
+      m_blinkin.setYellow(); //has a valid target
       return true;
     }
     return false;

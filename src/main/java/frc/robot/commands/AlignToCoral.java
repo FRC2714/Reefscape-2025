@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
+import frc.robot.subsystems.LED;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -18,6 +19,7 @@ public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
+  private LED m_blinkin;
   private Align side;
 
   // private Limelight m_rightLimelight;
@@ -79,7 +81,9 @@ public class AlignToCoral extends Command {
           if(side == Align.RIGHT) //driver align right so right camera
           {
             updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
-    
+            
+            m_blinkin.setHeartBeatRed(); //process of aligning
+
             m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
             yController.calculate(m_leftLimelight.getXOffsetRadians()),
             thetaController.calculate(m_drivetrain.getHeading()), 
@@ -89,6 +93,8 @@ public class AlignToCoral extends Command {
           {
             updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
     
+            m_blinkin.setHeartBeatRed(); //process of aligning 
+
             m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
             yController.calculate(m_rightLimelight.getXOffsetRadians()),
             thetaController.calculate(m_drivetrain.getHeading()), 
@@ -102,6 +108,9 @@ public class AlignToCoral extends Command {
       }
       else if((m_leftLimelight.isTargetVisible())) { //if can only see left, then do whatever we did before
         updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+
+        m_blinkin.setHeartBeatRed(); //process of aligning
+
         m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
           yController.calculate(m_leftLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()), 
@@ -109,6 +118,9 @@ public class AlignToCoral extends Command {
       }
       else if ((m_rightLimelight.isTargetVisible())) {  //same thing when the camera sees right 
         updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+
+        m_blinkin.setHeartBeatRed(); //process of aligning
+
         m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
         yController.calculate(m_rightLimelight.getXOffsetRadians()),
         thetaController.calculate(m_drivetrain.getHeading()), 
@@ -138,6 +150,7 @@ public class AlignToCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    m_blinkin.setGreen(); //finished aligning
     return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
   }
 }

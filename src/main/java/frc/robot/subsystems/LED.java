@@ -21,5 +21,26 @@ public class LED extends SubsystemBase {
         this.set(LEDConstants.kBlue); 
     }
 
+    public void setGreen()
+    {
+        this.set(LEDConstants.kGreen);
+    }
+    
+    public void setWhite()
+    {
+        this.set(LEDConstants.kWhite);
+    }
+
+    public void setYellow()
+    {
+        this.set(LEDConstants.kYellow);
+    }
+
+    public void setHeartBeatRed()
+    {
+        this.set(LEDConstants.kHeartbeatRed);
+    }
+
+
 
 }
