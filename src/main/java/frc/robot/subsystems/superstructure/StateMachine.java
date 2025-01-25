@@ -111,16 +111,6 @@ public class StateMachine extends SubsystemBase {
     );
   }
 
-  public Command handoffCoral()
-  {
-    return new SequentialCommandGroup(
-      dragonSelectCommand(State.STOW), 
-      elevatorSelectCommand(State.HANDOFF),
-      dragonSelectCommand(State.HANDOFF),
-      coralIntakeSelectCommand(State.INTAKE)
-    );
-  }
-
   public Command stowElevator() {
     return new SequentialCommandGroup(
       dragonSelectCommand(State.STOW),

@@ -136,7 +136,7 @@ public class RobotContainer {
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
-
+  // TODO: add pov up down for coral station and processor
     // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
@@ -149,9 +149,6 @@ public class RobotContainer {
     Handoff.onTrue(m_stateMachine.coralHandoff());
 
     coralStation.onTrue(m_coralIntake.intakeCommand());
-
-    m_driverController.leftBumper()
-    .whileTrue(m_stateMachine.coralHandoff());
 
 
     // Left Trigger -> Run ball intake in reverse, set to stow when idle
