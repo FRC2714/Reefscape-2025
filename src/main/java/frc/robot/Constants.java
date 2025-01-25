@@ -61,7 +61,7 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
-  public static final class AlgaeSubsystemConstants {
+  public static final class AlgaeIntakeConstants {
     public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
 
@@ -90,7 +90,6 @@ public final class Constants {
       public static final double kIntakeShelf = 120; // TBD
       public static final double kExtakeFloor = 60; // TBD
       public static final double kHandoff = 270; // TBD
-
       public static final double kZeroOffsetDegrees = 270;
     }
 
