@@ -5,8 +5,10 @@
 package frc.robot.subsystems.superstructure;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.superstructure.StateMachine.State;
 
@@ -74,6 +76,10 @@ public class Superstructure extends SubsystemBase {
 
   public Command scoreAlgae() {
     return m_algaeIntake.scoreAlgaeProcessor();
+  }
+
+  public Command scoreCoral() {
+    return new InstantCommand(() -> m_dragon.setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed));
   }
 
   public Command setElevatorPosition(State elevatorState) {
