@@ -151,7 +151,7 @@ public class RobotContainer {
   }
 
   public void setTeleOpDefaultStates() {
-    m_stateMachine.algaeIntakeSelectCommand(State.STOW);
+    m_stateMachine.algaeIntakeSelectCommand(State.STOW).schedule();
     m_stateMachine.stowElevator().schedule();
     m_stateMachine.coralIntakeSelectCommand(State.STOW).schedule();
   }
