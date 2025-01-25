@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Limelight.Align;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -17,6 +18,7 @@ public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
+  private Align side;
 
   // private Limelight m_rightLimelight;
   // private Limelight m_leftLimelight;
@@ -25,17 +27,13 @@ public class AlignToCoral extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
-  private int pipelineNum;
-  private int closestTagID;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, int pipelineNum) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, Align side) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
-    this.pipelineNum = pipelineNum;
-
-    this.closestTagID = -1;
+    this.side = side;
 
 
     xController = new PIDController(0.55, 0, 0); //tune these later
@@ -59,30 +57,13 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(pipelineNum == 1) {
+    if(side == Align.RIGHT) {
        m_rightLimelight.setCoralTagPipelineRight();
        m_leftLimelight.setCoralTagPipelineRight();
     }
-    else if(pipelineNum == 2) {
+    else if(side == Align.LEFT) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
-    }
-
-
-    double closestDistance = Double.MAX_VALUE;
-    if (m_rightLimelight.isTargetVisible()) {
-        double distance = m_rightLimelight.getDistanceToGoalMeters();
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestTagID = m_rightLimelight.getTargetID();
-        }
-    }
-    if (m_leftLimelight.isTargetVisible()) {
-      double distance = m_leftLimelight.getDistanceToGoalMeters();
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestTagID = m_leftLimelight.getTargetID();
-      }
     }
   }
 
@@ -95,7 +76,7 @@ public class AlignToCoral extends Command {
   public void execute() {
       if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {//if both are visible
         if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) { // checks if both see same april tag
-          if(pipelineNum == 1) //driver align right so right camera
+          if(side == Align.RIGHT) //driver align right so right camera
           {
             updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
     

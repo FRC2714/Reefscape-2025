@@ -15,11 +15,13 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
+import frc.robot.commands.AlignToProcessor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.StateMachine.State;
+import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -49,6 +51,12 @@ public class RobotContainer {
                                                          LimelightConstants.kLeftCameraHeight,
                                                          LimelightConstants.kLeftMountingAngle,
                                                          LimelightConstants.kReefTagHeight);
+
+  private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
+  LimelightConstants.kBackCameraHeight,
+  LimelightConstants.kBackMountingAngle,
+  LimelightConstants.kProcessorTagHeight);
+
   private final Elevator m_elevator = new Elevator();
 
   private final Dragon m_dragon = new Dragon();
@@ -119,8 +127,6 @@ public class RobotContainer {
       .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.INTAKE))
       .onFalse(m_stateMachine.algaeIntakeSelectCommand(State.STOW));
 
-    m_driverController.rightBumper()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, 0)); // Create an abstract command for aligning with both processor and reef
 
     m_driverController.leftBumper()
       .onTrue(m_stateMachine.extakeCoral())
@@ -128,9 +134,9 @@ public class RobotContainer {
 
     // Force Actions
     m_driverController.povLeft()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
     m_driverController.povRight()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
   // TODO: add pov up down for coral station and processor
     // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
