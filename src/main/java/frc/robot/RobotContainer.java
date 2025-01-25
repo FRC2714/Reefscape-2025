@@ -131,13 +131,16 @@ public class RobotContainer {
     m_driverController.leftBumper()
       .whileTrue(m_stateMachine.extakeCoral());
 
-      m_driverController.b()
-      .whileTrue(m_stateMachine.scoreLevel(State.L3))
-      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+    // Force Actions
+    m_driverController.povLeft()
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.povRight()
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
     // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
+    // Stages
     Stage1.onTrue(m_stateMachine.scoreLevel(State.L1));
     Stage2.onTrue(m_stateMachine.scoreLevel(State.L2));
     Stage3.onTrue(m_stateMachine.scoreLevel(State.L3));
