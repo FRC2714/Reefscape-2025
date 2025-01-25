@@ -29,20 +29,11 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpoints;
-import frc.robot.Constants.ElevatorConstants.PivotSetpoints;
+import frc.robot.subsystems.superstructure.StateMachine.State;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
-
-public enum ElevatorSetpoint {
-    kStow,
-    kCoralStation,
-    kLevel1,
-    kLevel2,
-    kLevel3,
-    kLevel4
-  }
 
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
@@ -52,7 +43,7 @@ public enum ElevatorSetpoint {
 
 
   private boolean wasResetByLimit = false;
-  private double elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
+  private double elevatorCurrentTarget = ElevatorConstants.ElevatorSetpoints.kStow;
 
   //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
@@ -122,27 +113,27 @@ public enum ElevatorSetpoint {
     }
   }
 
-  public Command setSetpointCommand(ElevatorSetpoint setpoint) {
+  public Command setSetpointCommand(State setpoint) {
     return new SequentialCommandGroup(
         new InstantCommand(
         () -> {
           switch (setpoint) {
-            case kStow:
+            case STOW:
               elevatorCurrentTarget = ElevatorSetpoints.kStow;
               break;
-            case kCoralStation:
-              elevatorCurrentTarget = ElevatorSetpoints.kCoralStation;
+            case HANDOFF:
+              elevatorCurrentTarget = ElevatorSetpoints.kHandoff;
               break;
-            case kLevel1:
+            case L1:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
               break;
-            case kLevel2:
+            case L2:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
               break;
-            case kLevel3:
+            case L3:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
               break;
-            case kLevel4:
+            case L4:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
               break;
           }}),
