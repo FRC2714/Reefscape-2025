@@ -18,6 +18,7 @@ public class Superstructure extends SubsystemBase {
   private CoralIntake m_coralIntake;
   private Dragon m_dragon;
   private Elevator m_elevator;
+  private LED m_blinkin;
   private Limelight m_leftLimelight;
   private Limelight m_rightLimelight;
 
@@ -26,6 +27,7 @@ public class Superstructure extends SubsystemBase {
                       CoralIntake m_coralIntake,
                       Dragon m_dragon,
                       Elevator m_elevator,
+                      LED m_blinkin,
                       Limelight m_leftLimelight,
                       Limelight m_rightLimelight) {
 
@@ -33,6 +35,7 @@ public class Superstructure extends SubsystemBase {
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
+    this.m_blinkin = m_blinkin;
     this.m_leftLimelight = m_leftLimelight;
     this.m_rightLimelight = m_rightLimelight;
 
@@ -90,8 +93,15 @@ public class Superstructure extends SubsystemBase {
     return m_dragon.setSetpointCommand(dragonState);
   }
 
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (true) {     //FIX CONDN
+      m_blinkin.setBlue();
+    }
+      
+
   }
 }

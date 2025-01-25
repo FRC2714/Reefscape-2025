@@ -238,4 +238,10 @@ public final class Constants {
       public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
     }
   }
+
+  public static final class LEDConstants {
+    public static final int kBlinkinPort = 2;
+
+    public static final double kBlue = 0.01;
+  }
 };
