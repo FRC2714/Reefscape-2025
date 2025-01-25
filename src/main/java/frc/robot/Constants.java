@@ -68,6 +68,7 @@ public final class Constants {
     public static final class pivotSetpoints {
       public static final double kDown = 0; // TBD
       public static final double kUp = 15; // TBD
+      public static final double kMid = 7; //TBD (extake position)
     }
 
     public static final class AlgaeRollerSetpoints {
@@ -82,6 +83,7 @@ public final class Constants {
     public static final int kPivotFollowerMotorCanId = 39;
     public static final int kTopRollerMotorCanId = 41;
     public static final int kBottomRollerMotorCanId = 42;
+    public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
       public static final double kStow = 0; // TBD
@@ -201,23 +203,13 @@ public final class Constants {
   public static final class ElevatorConstants {
 
     public static final int kElevatorMotorCanId = 63; // TBD
-    public static final int kPivotMotorCanId = 61; // TBD
     public static final int kElevatorFollowerCanId = 62; // TBD
-    
-    public static final class PivotSetpoints {
-      public static final double kStow = 0;
-      public static final double kCoralStation = 33;
-      public static final double kLevel1 = 0;
-      public static final double kLevel2 = 2;
-      public static final double kLevel3 = 2; 
-      public static final double kLevel4 =  19;
-    }
 
     public static final class ElevatorSetpoints {
       public static final double kStow = 0;
-      public static final double kCoralStation = 0;
-      public static final double kLevel1 = 0;
-      public static final double kLevel2 = 0;
+      public static final double kHandoff = 90;
+      public static final double kLevel1 = 20;
+      public static final double kLevel2 = 30;
       public static final double kLevel3 = 100; 
       public static final double kLevel4 = 150;
     }
@@ -228,11 +220,12 @@ public final class Constants {
 
     public static final int kPivotMotorCanId = 50; // TBD
     public static final int kPivotRollerMotorCanID = 51; //TBD
+    public static final double kPivotReduction = 1;  // TODO
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
-      public static final double kCoralStation = 33;
-      public static final double kLevel1 = 0;
+      public static final double kHandoff = 33;
+      public static final double kLevel1 = 1;
       public static final double kLevel2 = 2;
       public static final double kLevel3 = 2; 
       public static final double kLevel4 =  19;
