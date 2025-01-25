@@ -83,6 +83,7 @@ public final class Constants {
     public static final int kPivotFollowerMotorCanId = 39;
     public static final int kTopRollerMotorCanId = 41;
     public static final int kBottomRollerMotorCanId = 42;
+    public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
       public static final double kStow = 0; // TBD
@@ -216,6 +217,7 @@ public final class Constants {
 
     public static final int kPivotMotorCanId = 50; // TBD
     public static final int kPivotRollerMotorCanID = 51; //TBD
+    public static final double kPivotReduction = 1;
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
