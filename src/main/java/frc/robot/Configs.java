@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import frc.robot.Constants.CoralIntakeConstants;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.SimulationRobotConstants;
@@ -114,7 +115,7 @@ public final class Configs {
                                 .inverted(true)
                                 .voltageCompensation(12);
                         pivotConfig.absoluteEncoder
-                                .positionConversionFactor(360 / SimulationRobotConstants.kIntakeReduction)
+                                .positionConversionFactor(360 / CoralIntakeConstants.kPivotReduction)
                                 .inverted(true)
                                 .zeroOffset(0)
                                 .zeroCentered(false); //tune later
@@ -125,8 +126,6 @@ public final class Configs {
                         // loop slot, as it will default to slot 0.
                                 .p(0.1)
                                 .outputRange(-1, 1)
-                                .positionWrappingEnabled(true)
-                                .positionWrappingInputRange(0, 360)
                                 .maxMotion
                                 .maxVelocity(4200)
                                 .maxAcceleration(6000)
@@ -221,7 +220,8 @@ public final class Configs {
                         .absoluteEncoder
                         // .positionConversionFactor(1)
                         .zeroOffset(0)
-                        .inverted(true);
+                        .inverted(true)
+                        .positionConversionFactor(360 / DragonConstants.kPivotReduction);
 
                 pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
 

@@ -131,12 +131,9 @@ public class RobotContainer {
     m_driverController.leftBumper()
       .whileTrue(m_stateMachine.extakeCoral());
 
-    // Force Align
-    m_driverController.povLeft()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
-    m_driverController.povRight()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
-
+      m_driverController.b()
+      .whileTrue(m_stateMachine.scoreLevel(State.L3))
+      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
 
     // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
@@ -149,6 +146,13 @@ public class RobotContainer {
     Handoff.onTrue(m_stateMachine.coralHandoff());
 
     coralStation.onTrue(m_coralIntake.intakeCommand());
+      m_driverController.leftBumper()
+      .whileTrue(m_stateMachine.coralHandoff());
+
+    
+
+      
+
 
 
 
