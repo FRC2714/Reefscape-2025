@@ -111,6 +111,13 @@ public class StateMachine extends SubsystemBase {
     );
   }
 
+  public Command stowElevator() {
+    return new SequentialCommandGroup(
+      dragonSelectCommand(State.STOW),
+      elevatorSelectCommand(State.STOW)
+    );
+  }
+
   public Command intakeCoral() {
     return coralIntakeSelectCommand(State.INTAKE);
   }
