@@ -18,6 +18,12 @@ public class Limelight extends SubsystemBase {
   private double m_mountingAngle;
   private double m_goalHeight;
 
+  public enum Align
+  {
+    LEFT,
+    RIGHT
+  }
+
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;

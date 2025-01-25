@@ -25,7 +25,7 @@ public class AlignToProcessor extends Command {
   private PIDController thetaController;
 
 
-  public AlignToProcessor(DriveSubsystem m_drivetrain, Limelight m_backLimelight, int pipelineNum) {
+  public AlignToProcessor(DriveSubsystem m_drivetrain, Limelight m_backLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_backLimelight = m_backLimelight;

@@ -19,6 +19,7 @@ import frc.robot.commands.AlignToProcessor;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
+import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -118,8 +119,8 @@ public class RobotContainer {
         .onFalse(m_algaeSubsystem.stowCommand());  
 
     m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
-    m_driverController.leftBumper().whileTrue(new AlignToProcessor(m_robotDrive, m_backLimelight, LimelightConstants.kProcessorPipeline));
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    m_driverController.leftBumper().whileTrue(new AlignToProcessor(m_robotDrive, m_backLimelight));
+    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
 
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
