@@ -107,7 +107,13 @@ public class Elevator extends SubsystemBase {
       // prevent constant zeroing while pressed
       elevatorEncoder.setPosition(0);
       wasResetByLimit = true;
-    } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()) {
+    }
+    else if(!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed())
+    {
+      elevatorEncoder.setPosition(32);
+      wasResetByLimit = true;
+    }
+    else if (!elevatorMotor.getReverseLimitSwitch().isPressed() && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
     }
   }

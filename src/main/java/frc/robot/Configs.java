@@ -147,6 +147,11 @@ public final class Configs {
                         .reverseLimitSwitchType(Type.kNormallyOpen);
 
                 elevatorConfig
+                        .limitSwitch
+                        .forwardLimitSwitchEnabled(true)
+                        .forwardLimitSwitchType(Type.kNormallyOpen);
+
+                elevatorConfig
                         .closedLoop
                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                         // Set PID values for position control
