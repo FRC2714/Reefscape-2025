@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -28,17 +27,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.AlgaeSubsystemConstants;
+import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private SparkFlex pivotMotor = new SparkFlex(AlgaeSubsystemConstants.kPivotMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotMotor = new SparkFlex(AlgaeIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private SparkFlex rollerMotor = new SparkFlex(AlgaeSubsystemConstants.kRollerMotorCanId, MotorType.kBrushless);
+  private SparkFlex rollerMotor = new SparkFlex(AlgaeIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
@@ -122,8 +121,8 @@ public class AlgaeIntake extends SubsystemBase {
   public Command intakeCommand() {
     return this.run(
         () -> {
-          setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kForward);
-          setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kDown);
+          setRollerPower(AlgaeIntakeConstants.AlgaeRollerSetpoints.kForward);
+          setPivotPosition(AlgaeIntakeConstants.pivotSetpoints.kDown);
         });
   }
 
@@ -131,16 +130,16 @@ public class AlgaeIntake extends SubsystemBase {
   public Command extakeCommand() {
     return this.run(
       () -> {
-        setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kReverse);
-        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kMid);
+        setRollerPower(AlgaeIntakeConstants.AlgaeRollerSetpoints.kReverse);
+        setPivotPosition(AlgaeIntakeConstants.pivotSetpoints.kMid);
       });
   }
 
   public Command stowCommand() {
     return this.run(
       () -> {
-        setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kStop);
-        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kUp);
+        setRollerPower(AlgaeIntakeConstants.AlgaeRollerSetpoints.kStop);
+        setPivotPosition(AlgaeIntakeConstants.pivotSetpoints.kUp);
       });
   }
 
@@ -149,8 +148,8 @@ public class AlgaeIntake extends SubsystemBase {
   {
     return this.run(
       () -> {
-        setRollerPower(AlgaeSubsystemConstants.AlgaeRollerSetpoints.kReverse);
-        setPivotPosition(AlgaeSubsystemConstants.pivotSetpoints.kUp);
+        setRollerPower(AlgaeIntakeConstants.AlgaeRollerSetpoints.kReverse);
+        setPivotPosition(AlgaeIntakeConstants.pivotSetpoints.kUp);
       });
   }
 
