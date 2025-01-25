@@ -136,6 +136,10 @@ public class StateMachine extends SubsystemBase {
     return coralIntakeSelectCommand(State.EXTAKE);
   }
 
+  public Command stowCoralIntake() {
+    return coralIntakeSelectCommand(State.STOW);
+  }
+
   public Command intakeAlgae() {
     return algaeIntakeSelectCommand(State.INTAKE);
   }

@@ -221,7 +221,7 @@ public final class Constants {
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
-      public static final double kCoralStation = 33;
+      public static final double kHandoff = 33;
       public static final double kLevel1 = 1;
       public static final double kLevel2 = 2;
       public static final double kLevel3 = 2; 

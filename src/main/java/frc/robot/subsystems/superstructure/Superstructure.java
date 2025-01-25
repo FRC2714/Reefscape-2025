@@ -79,7 +79,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command scoreCoral() {
-    return new InstantCommand(() -> m_dragon.setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed));
+    return m_dragon.setRollerPowerCommand();
   }
 
   public Command setElevatorPosition(State elevatorState) {

@@ -106,7 +106,7 @@ private final MechanismLigament2d m_DragonMech2D =
               setRollerPower(0);
               break;
             case HANDOFF:
-              pivotCurrentTarget = PivotSetpoints.kCoralStation;
+              pivotCurrentTarget = PivotSetpoints.kHandoff;
               setRollerPower(DragonConstants.endEffectorSpeeds.kIntakeSpeed);
               break;
             case L1:
@@ -133,6 +133,10 @@ private final MechanismLigament2d m_DragonMech2D =
     public void setRollerPower(double power)
     {
         pivotRollers.set(power);
+    }
+
+    public Command setRollerPowerCommand() {
+      return new InstantCommand(() -> setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed));
     }
     
     public double getSimulationCurrentDraw() {
