@@ -61,12 +61,16 @@ public class RobotContainer {
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  private final JoystickButton elevatorStage1 = new JoystickButton(m_operatorController, 1); // L1
-  private final JoystickButton elevatorStage2 = new JoystickButton(m_operatorController, 2); // L2
-  private final JoystickButton elevatorStage3 = new JoystickButton(m_operatorController, 3); // L3
-  private final JoystickButton elevatorStage4 = new JoystickButton(m_operatorController, 4); // L4
-  private final JoystickButton coralStation = new JoystickButton(m_operatorController, 5); // Coral Station
 
+  // Operator Controller
+  private final JoystickButton Stage1 = new JoystickButton(m_operatorController, 1); // L1
+  private final JoystickButton Stage2 = new JoystickButton(m_operatorController, 2); // L2
+  private final JoystickButton Stage3 = new JoystickButton(m_operatorController, 3); // L3
+  private final JoystickButton Stage4 = new JoystickButton(m_operatorController, 4); // L4
+  private final JoystickButton coralStation = new JoystickButton(m_operatorController, 5); // Coral Station
+  private final JoystickButton Handoff = new JoystickButton(m_operatorController, 6); // L4
+  private final JoystickButton StowButton = new JoystickButton(m_operatorController, 8); // Stow
+  
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -115,23 +119,37 @@ public class RobotContainer {
       .onTrue(m_stateMachine.coralIntakeSelectCommand(State.INTAKE))
       .onFalse(m_stateMachine.coralIntakeSelectCommand(State.STOW));
 
-    m_driverController.a()
-      .whileTrue(m_stateMachine.scoreLevel(State.L1))
-      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+    m_driverController.rightTrigger()
+      .whileTrue(m_stateMachine.algaeIntakeSelectCommand(State.INTAKE));
 
-      m_driverController.x()
-      .whileTrue(m_stateMachine.scoreLevel(State.L2))
-      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+    m_driverController.leftTrigger()
+      .whileTrue(m_stateMachine.algaeIntakeSelectCommand(State.EXTAKE));
 
-      m_driverController.b()
-      .whileTrue(m_stateMachine.scoreLevel(State.L3))
-      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+    m_driverController.rightBumper()
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, 0)); // Create an abstract command for aligning with both processor and reef
 
-      m_driverController.y()
-      .whileTrue(m_stateMachine.scoreLevel(State.L4))
-      .whileFalse(m_stateMachine.elevatorSelectCommand(State.STOW));
+    m_driverController.leftBumper()
+      .whileTrue(m_stateMachine.extakeCoral());
 
-  
+    // Force Align
+    m_driverController.povLeft()
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.povRight()
+      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+
+
+    // Additional
+    m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    
+    Stage1.onTrue(m_stateMachine.scoreLevel(State.L1));
+    Stage2.onTrue(m_stateMachine.scoreLevel(State.L2));
+    Stage3.onTrue(m_stateMachine.scoreLevel(State.L3));
+    Stage4.onTrue(m_stateMachine.scoreLevel(State.L4));
+    StowButton.onTrue(m_stateMachine.stowElevator());
+    Handoff.onTrue(m_stateMachine.coralHandoff());
+
+    coralStation.onTrue(m_coralIntake.intakeCommand());
+
 
 
 
