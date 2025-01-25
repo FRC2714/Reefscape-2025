@@ -114,7 +114,7 @@ public class Elevator extends SubsystemBase {
       elevatorEncoder.setPosition(32);
       wasResetByLimit = true;
     }
-    else if (!elevatorMotor.getReverseLimitSwitch().isPressed()) {
+    else if (!elevatorMotor.getReverseLimitSwitch().isPressed() && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
     }
   }
