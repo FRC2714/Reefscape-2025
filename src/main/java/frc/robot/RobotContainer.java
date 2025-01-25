@@ -146,15 +146,9 @@ public class RobotContainer {
     Handoff.onTrue(m_stateMachine.coralHandoff());
 
     coralStation.onTrue(m_coralIntake.intakeCommand());
-      m_driverController.leftBumper()
-      .whileTrue(m_stateMachine.coralHandoff());
 
-    
-
-      
-
-
-
+    m_driverController.leftBumper()
+    .whileTrue(m_stateMachine.coralHandoff());
 
 
     // Left Trigger -> Run ball intake in reverse, set to stow when idle
