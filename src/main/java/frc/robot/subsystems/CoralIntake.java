@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -35,10 +36,12 @@ public class CoralIntake extends SubsystemBase {
   private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private SparkFlex topRollerMotor = new SparkFlex(CoralIntakeConstants.kTopRollerMotorCanId, MotorType.kBrushless);
-  private SparkFlex bottomRollerMotor = new SparkFlex(CoralIntakeConstants.kBottomRollerMotorCanId, MotorType.kBrushless);
+  private SparkFlex rollerMotor = new SparkFlex(CoralIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
+  private SparkFlex indexerMotor = new SparkFlex(CoralIntakeConstants.kIndexerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+
+  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
 
   private double pivotReference = 0;
 
@@ -82,12 +85,12 @@ public class CoralIntake extends SubsystemBase {
      * mid-operation.
      */
   
-    topRollerMotor.configure(
-        Configs.CoralIntake.topRollerConfig,
+    rollerMotor.configure(
+        Configs.CoralIntake.rollerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    bottomRollerMotor.configure(
-          Configs.CoralIntake.bottomRollerConfig,
+    indexerMotor.configure(
+          Configs.CoralIntake.indexerConfig,
           ResetMode.kResetSafeParameters,
           PersistMode.kPersistParameters);
     pivotMotor.configure(
@@ -151,7 +154,10 @@ public class CoralIntake extends SubsystemBase {
 
   /** Set the pivot motor power in the range of [-1, 1]. */
   private void setRollerPower(double power) {
-    topRollerMotor.set(power);
+    rollerMotor.set(power);
+
+    // TODO: Control this separately
+    indexerMotor.set(power);
   }
 
   /** Set the arm motor position. This will use closed loop position control. */
@@ -162,10 +168,12 @@ public class CoralIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
 
     // Display subsystem values
     SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("CoralIntake/Applied Output", topRollerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotReference);
 
     // Update mechanism2d
