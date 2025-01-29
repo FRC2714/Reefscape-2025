@@ -103,7 +103,7 @@ public class StateMachine extends SubsystemBase {
     );
   }
 
-  public Command scoreLevel(State level) {
+  public Command moveToLevel(State level) {
     return new SequentialCommandGroup(
       dragonSelectCommand(State.STOW), 
       elevatorSelectCommand(level),
@@ -150,6 +150,8 @@ public class StateMachine extends SubsystemBase {
       coralIntakeSelectCommand(State.HANDOFF)
     );
   }
+
+
 
 
 

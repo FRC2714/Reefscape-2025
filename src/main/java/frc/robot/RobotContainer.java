@@ -142,17 +142,16 @@ public class RobotContainer {
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
     // Stages
-    L1Button.onTrue(m_stateMachine.scoreLevel(State.L1));
-    L2Button.onTrue(m_stateMachine.scoreLevel(State.L2));
-    L3Button.onTrue(m_stateMachine.scoreLevel(State.L3));
-    L4Button.onTrue(m_stateMachine.scoreLevel(State.L4));
+    L1Button.onTrue(m_stateMachine.moveToLevel(State.L1));
+    L2Button.onTrue(m_stateMachine.moveToLevel(State.L2));
+    L3Button.onTrue(m_stateMachine.moveToLevel(State.L3));
+    L4Button.onTrue(m_stateMachine.moveToLevel(State.L4));
     stowButton.onTrue(m_stateMachine.stowElevator());
     handoffButton.onTrue(m_stateMachine.coralHandoff());
 
-    coralStationButton.onTrue(m_coralIntake.intakeCommand());
+    coralStationButton.onTrue(m_superstructure.scoreCoral());
 
-    m_driverController.leftBumper()
-    .whileTrue(m_stateMachine.coralHandoff());
+
  
   }
 
