@@ -247,6 +247,8 @@ public final class Constants {
     public static final double kWhite = 0.93;
     public static final double kYellow = 0.69;
     public static final double kHeartbeatRed = -0.25;
+    public static final double kViolet = 0.91;
+    public static final double kOrange = 0.65;
 
   }
 };

@@ -163,6 +163,7 @@ public class RobotContainer {
     m_stateMachine.algaeIntakeSelectCommand(State.STOW).schedule();
     m_stateMachine.stowElevator().schedule();
     m_stateMachine.coralIntakeSelectCommand(State.STOW).schedule();
+    m_blinkin.setOrange(); //default lights are orange
   }
 
   /**
@@ -175,27 +176,4 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public boolean validTarget()
-  {
-    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both r able to see
-    {
-        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
-        {
-          m_blinkin.setYellow(); //has a valid target
-          return true;
-        }
-        return false;
-    }
-    else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
-    {
-      m_blinkin.setYellow(); //has a valid atarget
-      return true;
-    }
-    else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
-    {
-      m_blinkin.setYellow(); //has a valid target
-      return true;
-    }
-    return false;
-  }
 }

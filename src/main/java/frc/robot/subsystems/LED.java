@@ -6,6 +6,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
+
+//current LED status lights
+//flashing red: process of aligning
+//green: finished alinging
+//yellow: has a valid target
+
 public class LED extends SubsystemBase {
     private Spark m_blinkin;
 
@@ -39,6 +45,16 @@ public class LED extends SubsystemBase {
     public void setHeartBeatRed()
     {
         this.set(LEDConstants.kHeartbeatRed);
+    }
+
+    public void setViolet()
+    {
+        this.set(LEDConstants.kViolet);
+    }
+
+    public void setOrange()
+    {
+        this.set(LEDConstants.kOrange);
     }
 
 

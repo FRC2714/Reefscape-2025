@@ -151,6 +151,11 @@ public class StateMachine extends SubsystemBase {
     );
   }
 
+  public Command scoreCoral()
+  {
+    return m_superstructure.scoreCoral();
+  }
+
 
 
 
