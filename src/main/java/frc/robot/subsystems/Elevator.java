@@ -61,8 +61,6 @@ public class Elevator extends SubsystemBase {
       0.0,
       0.0);
 
-
-
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 25, 0);
@@ -72,6 +70,7 @@ public class Elevator extends SubsystemBase {
           SimulationRobotConstants.kMinElevatorHeightMeters
               * SimulationRobotConstants.kPixelsPerMeter,
           90));
+
   /** Creates a new Elevator and Pivot. */
   public Elevator() {
     elevatorMotor.configure(
