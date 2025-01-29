@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -39,6 +40,8 @@ public class CoralIntake extends SubsystemBase {
   private SparkFlex bottomRollerMotor = new SparkFlex(CoralIntakeConstants.kBottomRollerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+
+  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
 
   private double pivotReference = 0;
 
@@ -162,6 +165,7 @@ public class CoralIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
 
     // Display subsystem values
     SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
