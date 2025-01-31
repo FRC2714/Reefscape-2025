@@ -13,19 +13,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "H to Y"
+            "pathName": "H to Feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Y to A"
+            "pathName": "Feeder to K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to L"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Archived Autos",
+  "folder": "Auto 2025",
   "choreoAuto": false
 }
