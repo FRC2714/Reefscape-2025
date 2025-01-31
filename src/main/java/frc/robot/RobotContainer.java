@@ -4,23 +4,31 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.AlgaeIntake;
-import frc.robot.subsystems.Dragon;
-import frc.robot.subsystems.CoralIntake;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
-import frc.robot.commands.AlignToProcessor;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.superstructure.StateMachine;
-import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.StateMachine.State;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.Limelight;
@@ -32,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -121,7 +130,7 @@ public class RobotContainer {
 
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.EXTAKE))
+      .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.SCORE))
       .onFalse(m_stateMachine.algaeIntakeSelectCommand(State.STOW));
 
     m_driverController
@@ -131,8 +140,7 @@ public class RobotContainer {
 
 
     m_driverController.leftBumper()
-      .onTrue(m_stateMachine.extakeCoral())
-      .onFalse(m_stateMachine.stowCoralIntake());
+      .onTrue(m_superstructure.scoreCoral());
 
     // Force Actions
     m_driverController.povLeft()
@@ -145,17 +153,15 @@ public class RobotContainer {
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
     // Stages
-    L1Button.onTrue(m_stateMachine.scoreLevel(State.L1));
-    L2Button.onTrue(m_stateMachine.scoreLevel(State.L2));
-    L3Button.onTrue(m_stateMachine.scoreLevel(State.L3));
-    L4Button.onTrue(m_stateMachine.scoreLevel(State.L4));
+    L1Button.onTrue(m_stateMachine.moveToLevel(State.L1));
+    L2Button.onTrue(m_stateMachine.moveToLevel(State.L2)); 
+    L3Button.onTrue(m_stateMachine.moveToLevel(State.L3));
+    L4Button.onTrue(m_stateMachine.moveToLevel(State.L4));
     stowButton.onTrue(m_stateMachine.stowElevator());
     handoffButton.onTrue(m_stateMachine.coralHandoff());
-
     coralStationButton.onTrue(m_coralIntake.intakeCommand());
 
-    m_driverController.leftBumper()
-    .whileTrue(m_stateMachine.coralHandoff());
+
  
   }
 

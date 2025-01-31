@@ -105,23 +105,18 @@ private final MechanismLigament2d m_DragonMech2D =
               break;
             case HANDOFF:
               pivotCurrentTarget = PivotSetpoints.kHandoff;
-              setRollerPower(DragonConstants.endEffectorSpeeds.kIntakeSpeed);
               break;
             case L1:
               pivotCurrentTarget = PivotSetpoints.kLevel1;
-              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case L2:
               pivotCurrentTarget = PivotSetpoints.kLevel2;
-              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case L3:
               pivotCurrentTarget = PivotSetpoints.kLevel3;
-              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
             case L4:
               pivotCurrentTarget = PivotSetpoints.kLevel4;
-              setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed);
               break;
           }}),
           new InstantCommand(() -> moveToSetpoint()));
