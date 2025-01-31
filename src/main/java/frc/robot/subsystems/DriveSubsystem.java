@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants;
@@ -58,6 +59,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
+  private final Field2d m_field = new Field2d();
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -73,6 +76,8 @@ public class DriveSubsystem extends SubsystemBase {
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+
+    SmartDashboard.putData("Field", m_field);
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -208,6 +213,9 @@ PPHolonomicDriveController.clearFeedbackOverrides();
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+
+        m_field.setRobotPose(getPose());
     
         SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
         SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);

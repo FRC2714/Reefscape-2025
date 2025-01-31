@@ -61,9 +61,14 @@ public class CoralIntake extends SubsystemBase {
 
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Coral Intake Root", 25, 25);
-  private final MechanismLigament2d intakePivotMechanism =
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Coral Intake Root", 25.1, 0);
+  private final MechanismLigament2d coralStand =
       m_mech2dRoot.append(
+        new MechanismLigament2d(
+          "Coral Stand", SimulationRobotConstants.kCoralStandLength, 90)
+      );
+  private final MechanismLigament2d intakePivotMechanism =
+      coralStand.append(
           new MechanismLigament2d(
               "Coral Pivot",
               SimulationRobotConstants.kCoralIntakeLength

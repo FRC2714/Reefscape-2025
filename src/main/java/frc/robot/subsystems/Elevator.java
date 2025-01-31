@@ -63,12 +63,11 @@ public class Elevator extends SubsystemBase {
 
   //Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 25, 0);
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 24.8, 0);
   private final MechanismLigament2d m_elevatorMech2d = m_mech2dRoot.append(
       new MechanismLigament2d(
           "Elevator",
-          SimulationRobotConstants.kMinElevatorHeightMeters
-              * SimulationRobotConstants.kPixelsPerMeter,
+          SimulationRobotConstants.kMinElevatorHeightMeters,
           90));
 
   /** Creates a new Elevator and Pivot. */
@@ -151,9 +150,8 @@ public class Elevator extends SubsystemBase {
 
 
     m_elevatorMech2d.setLength(
-        SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
-            + SimulationRobotConstants.kPixelsPerMeter
-                * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
+      SimulationRobotConstants.kMinElevatorHeightMeters
+                + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
                 * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
   }
 
@@ -178,9 +176,8 @@ public class Elevator extends SubsystemBase {
     m_elevatorSim.update(0.020);
 
     m_elevatorMech2d.setLength(
-      SimulationRobotConstants.kPixelsPerMeter * SimulationRobotConstants.kMinElevatorHeightMeters
-          + SimulationRobotConstants.kPixelsPerMeter
-              * (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
+      SimulationRobotConstants.kMinElevatorHeightMeters
+          + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
               * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
 
     // Iterate the elevator SPARK simulations
