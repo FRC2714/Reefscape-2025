@@ -5,11 +5,19 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.subsystems.superstructure.StateMachine.limelightState;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
+import frc.robot.subsystems.superstructure.StateMachine.limelightState;
+
 
 public class Limelight extends SubsystemBase {
   
@@ -17,6 +25,11 @@ public class Limelight extends SubsystemBase {
   private double m_cameraHeight;
   private double m_mountingAngle;
   private double m_goalHeight;
+
+  private int targetID;
+  private Align branchSide;
+  private int [] allianceSideId;
+  
 
   public enum Align
   {
@@ -30,6 +43,8 @@ public class Limelight extends SubsystemBase {
     this.m_cameraHeight = m_cameraHeight;
     this.m_mountingAngle = m_mountingAngle;
     this.m_goalHeight = m_goalHeight;
+
+    allianceSideId = new int[6];
 
   }
 
@@ -121,6 +136,92 @@ public class Limelight extends SubsystemBase {
   {
     return (int)LimelightHelpers.getFiducialID(m_limelightName);
   }
+
+  public Command setLocationCommand(limelightState limelightState)
+  {
+      if(DriverStation.getAlliance().equals(Alliance.Red)) //if side is red, the array should be for red
+      {
+        allianceSideId = LimelightConstants.redSideId;
+      }
+      else if(DriverStation.getAlliance().equals(Alliance.Blue)) //if side is blue, the array should be blue
+      {
+        allianceSideId = LimelightConstants.blueSideId;
+      }
+
+      return this.runOnce(() -> {
+        switch(limelightState)
+        {
+          case SIDE1RIGHT:
+            targetID = allianceSideId[0];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE2LEFT:
+            targetID = allianceSideId[1];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE2RIGHT:
+            targetID = allianceSideId[1];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE3LEFT:
+            targetID = allianceSideId[2];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE3RIGHT:
+            targetID = allianceSideId[2];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE4LEFT:
+            targetID = allianceSideId[3];
+            branchSide = Align.LEFT;
+            break;
+
+          case SIDE4RIGHT:
+            targetID = allianceSideId[3];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE5LEFT:
+            targetID = allianceSideId[4];
+            branchSide = Align.LEFT;
+            break;
+
+          case SIDE5RIGHT:
+            targetID = allianceSideId[4];
+            branchSide = Align.RIGHT;
+            break;
+          
+          case SIDE6LEFT:
+            targetID = allianceSideId[5];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE6RIGHT:
+            targetID = allianceSideId[5];
+            branchSide = Align.RIGHT;
+            break;
+          
+          case SIDE1LEFT:
+            targetID = allianceSideId[0];
+            branchSide = Align.LEFT;
+            break;
+        }
+        });
+
+  }
+
+  public Align getBranchSide()
+  {
+    return branchSide;
+  }
+  
+
+
   @Override
   public void periodic()
   {

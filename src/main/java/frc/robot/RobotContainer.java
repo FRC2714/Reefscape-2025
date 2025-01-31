@@ -21,6 +21,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.StateMachine.State;
+import frc.robot.subsystems.superstructure.StateMachine.limelightState;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.Limelight;
@@ -80,6 +81,7 @@ public class RobotContainer {
   private final JoystickButton coralStationButton = new JoystickButton(m_operatorController, 5); // Coral Station
   private final JoystickButton handoffButton = new JoystickButton(m_operatorController, 6); // L4
   private final JoystickButton stowButton = new JoystickButton(m_operatorController, 8); // Stow
+  private final JoystickButton setFrontRight = new JoystickButton(m_operatorController, 0); //TBD
   
   private SendableChooser<Command> autoChooser;
 
@@ -134,6 +136,12 @@ public class RobotContainer {
       .onTrue(m_stateMachine.extakeCoral())
       .onFalse(m_stateMachine.stowCoralIntake());
 
+    m_driverController.rightBumper()
+      .onTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getBranchSide()));
+
+    
+
+
     // Force Actions
     m_driverController.povLeft()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
@@ -151,6 +159,7 @@ public class RobotContainer {
     L4Button.onTrue(m_stateMachine.scoreLevel(State.L4));
     stowButton.onTrue(m_stateMachine.stowElevator());
     handoffButton.onTrue(m_stateMachine.coralHandoff());
+    setFrontRight.onTrue(m_stateMachine.limelightSelectCommand(limelightState.SIDE1RIGHT));
 
     coralStationButton.onTrue(m_coralIntake.intakeCommand());
 

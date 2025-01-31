@@ -12,11 +12,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.superstructure.Superstructure;
 
 public class StateMachine extends SubsystemBase {
 
   private Superstructure m_superstructure;
+
+  private int targetId;
+  private Align branchSide;
+  private int [] allianceSideId;
 
   
   public enum State {
@@ -31,10 +36,29 @@ public class StateMachine extends SubsystemBase {
     SCORE
   }
 
+  public enum limelightState{
+    SIDE1RIGHT,
+    SIDE2LEFT,
+    SIDE2RIGHT,
+    SIDE3LEFT,
+    SIDE3RIGHT,
+    SIDE4LEFT,
+    SIDE4RIGHT,
+    SIDE5LEFT,
+    SIDE5RIGHT,
+    SIDE6LEFT,
+    SIDE6RIGHT,
+    SIDE1LEFT;
+
+  }
+
+
+
   private State coralIntakeState;
   private State algaeIntakeState;
   private State elevatorState;
   private State dragonState;
+  private limelightState limelightState;
 
   /** Creates a new Statemachine. */
   public StateMachine(Superstructure m_superstructure) {
@@ -45,7 +69,11 @@ public class StateMachine extends SubsystemBase {
     algaeIntakeState = State.STOW;
     dragonState = State.STOW;
     elevatorState = State.STOW;
+    limelightState = limelightState.SIDE1RIGHT;
+
+    allianceSideId = new int[6];
   }
+
 
   public Command setCoralIntakeState(State coralIntakeState) {
     return new InstantCommand(() -> this.coralIntakeState = coralIntakeState);
@@ -61,6 +89,11 @@ public class StateMachine extends SubsystemBase {
 
   public Command setElevatorState(State elevatorState) {
     return new InstantCommand(() -> this.elevatorState = elevatorState);
+  }
+
+  public Command setlimeLightState(limelightState limelightState)
+  {
+    return new InstantCommand(() -> this.limelightState = limelightState);
   }
 
   public Command coralIntakeSelectCommand(State coralIntakeState) {
@@ -101,6 +134,79 @@ public class StateMachine extends SubsystemBase {
       setDragonState(dragonState),
       m_superstructure.setDragonPosition(dragonState)
     );
+  }
+
+  public Command limelightSelectCommand(limelightState limelightState)
+  {
+        return this.runOnce(() -> {
+        switch(limelightState)
+        {
+          case SIDE1RIGHT:
+            targetId = allianceSideId[0];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE2LEFT:
+            targetId = allianceSideId[1];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE2RIGHT:
+            targetId = allianceSideId[1];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE3LEFT:
+            targetId = allianceSideId[2];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE3RIGHT:
+            targetId = allianceSideId[2];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE4LEFT:
+            targetId = allianceSideId[3];
+            branchSide = Align.LEFT;
+            break;
+
+          case SIDE4RIGHT:
+            targetId = allianceSideId[3];
+            branchSide = Align.RIGHT;
+            break;
+
+          case SIDE5LEFT:
+            targetId = allianceSideId[4];
+            branchSide = Align.LEFT;
+            break;
+
+          case SIDE5RIGHT:
+            targetId = allianceSideId[4];
+            branchSide = Align.RIGHT;
+            break;
+          
+          case SIDE6LEFT:
+            targetId = allianceSideId[5];
+            branchSide = Align.LEFT;
+            break;
+          
+          case SIDE6RIGHT:
+            targetId = allianceSideId[5];
+            branchSide = Align.RIGHT;
+            break;
+          
+          case SIDE1LEFT:
+            targetId = allianceSideId[0];
+            branchSide = Align.LEFT;
+            break;
+        }
+        });
+  }
+
+  public Align getBranchSide()
+  {
+    return branchSide;
   }
 
   public Command scoreLevel(State level) {

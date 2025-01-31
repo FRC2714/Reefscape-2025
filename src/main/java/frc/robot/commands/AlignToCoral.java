@@ -12,6 +12,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -52,7 +53,6 @@ public class AlignToCoral extends Command {
     xController.setTolerance(.2);
     yController.setTolerance(.2);
     thetaController.setTolerance(.1);
-
   }
 
 
@@ -136,9 +136,9 @@ public class AlignToCoral extends Command {
       case 6, 19 -> thetaController.setSetpoint(300);
       case 7, 18 -> thetaController.setSetpoint(0);
       case 8, 17 -> thetaController.setSetpoint(60);
-      case 9, 16 -> thetaController.setSetpoint(120);
-      case 10, 15 -> thetaController.setSetpoint(180);
-      case 11, 14 -> thetaController.setSetpoint(240);
+      case 9, 22 -> thetaController.setSetpoint(120);
+      case 10, 21 -> thetaController.setSetpoint(180);
+      case 11, 20 -> thetaController.setSetpoint(240);
     }
   }
   // Called once the command ends or is interrupted.

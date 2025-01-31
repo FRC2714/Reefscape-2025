@@ -201,6 +201,9 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kProcessorPipeline = 0; //TBD
+    public static final int [] redSideId = new int [] {7,8,9,10,11,6};
+    public static final int [] blueSideId = new int [] {18,17,22,21,20,19};
+
   }
 
   // ! Update Values for AlphaBot

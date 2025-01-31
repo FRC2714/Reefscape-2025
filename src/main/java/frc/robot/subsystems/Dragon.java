@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
+import frc.robot.subsystems.superstructure.StateMachine.State;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Constants.DragonConstants;
 
@@ -94,7 +95,7 @@ private final MechanismLigament2d m_DragonMech2D =
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public Command setSetpointCommand(frc.robot.subsystems.superstructure.StateMachine.State setpoint) {
+  public Command setSetpointCommand(State setpoint) {
     return new SequentialCommandGroup(
         new InstantCommand(
         () -> {
