@@ -52,15 +52,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 6;
-    public static final int kRearLeftDrivingCanId = 12;
-    public static final int kFrontRightDrivingCanId = 8;
-    public static final int kRearRightDrivingCanId = 10;
+    public static final int kFrontLeftDrivingCanId = 6;//10
+    public static final int kRearLeftDrivingCanId = 12;//8
+    public static final int kFrontRightDrivingCanId = 8;//12
+    public static final int kRearRightDrivingCanId = 10;//6
 
-    public static final int kFrontLeftTurningCanId = 5;
-    public static final int kRearLeftTurningCanId = 11;
-    public static final int kFrontRightTurningCanId = 7;
-    public static final int kRearRightTurningCanId = 9;
+    public static final int kFrontLeftTurningCanId = 5;//9
+    public static final int kRearLeftTurningCanId = 11;//7
+    public static final int kFrontRightTurningCanId = 7;//11
+    public static final int kRearRightTurningCanId = 9;//5
 
     public static final boolean kGyroReversed = false;
   }
@@ -188,13 +188,13 @@ public final class Constants {
   // ! Update Values for AlphaBot
   public static final class LimelightConstants{
     public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // needs tuning
-    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(10, 10, 99999999.0); // needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // needs tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
     public static final double kRightCameraHeight = 17 + 2.75;
     public static final double kLeftCameraHeight = 17.5 + 2.75;
-    public static final double kBackCameraHeight = 0; //tune later
+    public static final double kBackCameraHeight = 2.75 + 15.5; //tune later
     public static final double kRightMountingAngle = -21;
     public static final double kLeftMountingAngle = -23;
     public static final double kBackMountingAngle = 0; //tune later

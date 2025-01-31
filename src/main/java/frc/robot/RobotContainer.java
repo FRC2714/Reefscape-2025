@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -93,6 +94,8 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+
+  
   }
 
   /**
@@ -117,10 +120,12 @@ public class RobotContainer {
         .whileTrue(m_algaeSubsystem.scoreAlgaeProcessor())
         .onFalse(m_algaeSubsystem.stowCommand());  
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    // m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
     m_driverController.leftBumper().whileTrue(new AlignToProcessor(m_robotDrive, m_backLimelight, LimelightConstants.kProcessorPipeline));
     m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
-
+    m_driverController.y().onTrue(new InstantCommand(() -> m_backLimelight.setProcessorTagPipeline()));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_backLimelight.setPipeline(6)));
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
 

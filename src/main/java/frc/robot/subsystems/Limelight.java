@@ -10,6 +10,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
@@ -23,6 +25,7 @@ public class Limelight extends SubsystemBase {
   private double m_cameraHeight;
   private double m_mountingAngle;
   private double m_goalHeight;
+  Field2d m_field = new Field2d();
 
   LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("m_limelight");
 
@@ -32,6 +35,8 @@ public class Limelight extends SubsystemBase {
     this.m_cameraHeight = m_cameraHeight;
     this.m_mountingAngle = m_mountingAngle;
     this.m_goalHeight = m_goalHeight;
+
+    SmartDashboard.putData(m_field);
 
   }
 
@@ -108,6 +113,10 @@ public class Limelight extends SubsystemBase {
   }
 
   // Pipline Stuff
+  public void setPipeline(int pipeline) {
+    LimelightHelpers.setPipelineIndex(m_limelightName, pipeline);
+  }
+
   public void setCoralTagPipelineRight() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kRightReefBranchPipeline);
   }
@@ -140,15 +149,23 @@ public class Limelight extends SubsystemBase {
     return (int) LimelightHelpers.getFiducialID(m_limelightName);
   }
 
-
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-    // SmartDashboard.putString("asdfas", "limelight_back");
-    SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
-    SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
-    SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
+    if (DriverStation.getAlliance().get().toString().equals("Red")) {
+      setProcessorTagPipeline();
+    } else {
+      setPipeline(6);
+      // SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
+      // SmartDashboard.putString("asdfas", "limelight_back");
+      SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
+      SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
+      SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
+      // Pose2d LLpose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-back");
+      // if(LimelightHelpers.getTV("limelight-back")){
+      // m_field.setRobotPose(LLpose);
+      // }
+      // direct odometry editing
+    }
 
   }
-
 }
