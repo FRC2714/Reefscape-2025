@@ -81,8 +81,11 @@ public final class Constants {
   public static final class CoralIntakeConstants {
     public static final int kPivotMotorCanId = 40;
     public static final int kPivotFollowerMotorCanId = 39;
-    public static final int kTopRollerMotorCanId = 41;
-    public static final int kBottomRollerMotorCanId = 42;
+    public static final int kRollerMotorCanId = 41;
+    public static final int kIndexerMotorCanId = 42;
+
+    public static final int kBeamBreakDioChannel = 0;
+
     public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
@@ -236,5 +239,18 @@ public final class Constants {
       public static final double kIntakeSpeed = 0.5; //tune ts (pos when getting from station)
       public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
     }
+  }
+
+  public static final class LEDConstants {
+    public static final int kBlinkinPort = 2;
+
+    public static final double kBlue = 0.87;  
+    public static final double kGreen = 0.77;
+    public static final double kWhite = 0.93;
+    public static final double kYellow = 0.69;
+    public static final double kHeartbeatRed = -0.25;
+    public static final double kViolet = 0.91;
+    public static final double kOrange = 0.65;
+
   }
 };

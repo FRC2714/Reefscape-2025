@@ -90,8 +90,8 @@ public final class Configs {
     }
 
     public static final class CoralIntake {
-                public static final SparkFlexConfig topRollerConfig = new SparkFlexConfig();
-                public static final SparkFlexConfig bottomRollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig rollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig indexerConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig pivotFollowerConfig = new SparkFlexConfig();
         
@@ -125,13 +125,18 @@ public final class Configs {
                                 .follow(CoralIntakeConstants.kPivotMotorCanId);
                 
                         // Configure basic settings of the intake motor
-                        topRollerConfig
+                        rollerConfig
                                 .inverted(false)
                                 .idleMode(IdleMode.kCoast)
                                 .smartCurrentLimit(40)
                                 .voltageCompensation(12);
-                        bottomRollerConfig.follow(CoralIntakeConstants.kTopRollerMotorCanId)
-                                .inverted(true);
+
+                        // Configure indexer
+                        indexerConfig
+                                .inverted(false)
+                                .smartCurrentLimit(40)
+                                .idleMode(IdleMode.kBrake);
+
                 }
    }
 

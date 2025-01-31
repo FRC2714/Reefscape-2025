@@ -29,6 +29,18 @@ import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.superstructure.StateMachine.State;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.Limelight.Align;
+import frc.robot.subsystems.Limelight;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,6 +53,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
+  private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -60,7 +73,7 @@ public class RobotContainer {
   private final Dragon m_dragon = new Dragon();
 
   private final Superstructure m_superstructure = new Superstructure(
-    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_leftLimelight, m_rightLimelight);
+    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight);
 
   private final StateMachine m_stateMachine = new StateMachine(m_superstructure);
 
@@ -132,6 +145,7 @@ public class RobotContainer {
     // Force Actions
     m_driverController.povLeft()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
   // TODO: add pov up down for coral station and processor
@@ -155,6 +169,7 @@ public class RobotContainer {
     m_stateMachine.algaeIntakeSelectCommand(State.STOW).schedule();
     m_stateMachine.stowElevator().schedule();
     m_stateMachine.coralIntakeSelectCommand(State.STOW).schedule();
+    m_blinkin.setOrange(); //default lights are orange
   }
 
   /**
@@ -167,24 +182,4 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public boolean validTarget()
-  {
-    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both r able to see
-    {
-        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
-        {
-          return true;
-        }
-        return false;
-    }
-    else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
-    {
-      return true;
-    }
-    else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
-    {
-      return true;
-    }
-    return false;
-  }
 }
