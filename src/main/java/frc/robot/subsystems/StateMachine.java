@@ -41,6 +41,13 @@ public class StateMachine extends SubsystemBase {
       this.overrideIntake = false;
     }
 
+    public Command stowElevator() {
+      return new SequentialCommandGroup(
+          m_dragon.stow(),
+          m_elevator.moveToStow()
+      );
+    }
+
     public Command setL1() {
       if (m_dragon.isCoralOnDragon().getAsBoolean()) {
         return new SequentialCommandGroup(
@@ -165,6 +172,10 @@ public class StateMachine extends SubsystemBase {
 
     public Command extakeCoral() {
       return m_coralIntake.extake();
+    }
+
+    public Command stowCoralIntake() {
+      return m_coralIntake.stow();
     }
 
     public Command handoffReady() {
