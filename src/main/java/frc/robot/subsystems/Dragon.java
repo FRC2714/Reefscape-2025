@@ -122,7 +122,7 @@ private final MechanismLigament2d m_DragonMech2D =
     return new InstantCommand(() -> m_dragonState = state);
   }
 
-  private Command setSetpointCommand(DragonState setpoint) {
+  private Command setPivotCommand(DragonState setpoint) {
     return new SequentialCommandGroup(
         setDragonStateCommand(setpoint),
         new InstantCommand(
@@ -162,65 +162,65 @@ private final MechanismLigament2d m_DragonMech2D =
 
     public Command stow() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.STOW),
+        setPivotCommand(DragonState.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command handoffReady() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.HANDOFF),
+        setPivotCommand(DragonState.HANDOFF),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
 
     public Command handoff() {
       return new SequentialCommandGroup(
-        setRollerPowerCommand(RollerSetpoints.kStop),
         new ParallelCommandGroup(
-          setSetpointCommand(DragonState.HANDOFF),
-          setRollerPowerCommand(RollerSetpoints.kIntake)
-        )
+          setPivotCommand(DragonState.HANDOFF),
+          setRollerPowerCommand(RollerSetpoints.kStop)
+        ),
+        setRollerPowerCommand(RollerSetpoints.kIntake)
       );
     }
 
     public Command poopReadyL1() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.STOW),
+        setPivotCommand(DragonState.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL1() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.L1),
+        setPivotCommand(DragonState.L1),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL2() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.L2),
+        setPivotCommand(DragonState.L2),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL3() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.L3),
+        setPivotCommand(DragonState.L3),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL4() {
       return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.L4),
+        setPivotCommand(DragonState.L4),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
 
     public Command score() {
-      return new ParallelCommandGroup(
+      return new SequentialCommandGroup(
         new InstantCommand(() -> coralOnDragon = false),
         setRollerPowerCommand(RollerSetpoints.kExtake)
       );
@@ -237,15 +237,16 @@ private final MechanismLigament2d m_DragonMech2D =
     }
 
     public BooleanSupplier isCoralOnDragon() {
-      return () -> coralOnDragon;
+      // return () -> coralOnDragon;
+      return () -> true;
     }
         
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Target Position", pivotCurrentTarget);
+    SmartDashboard.putNumber("Dragon/Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());

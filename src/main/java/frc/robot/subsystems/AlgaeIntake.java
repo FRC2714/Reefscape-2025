@@ -148,7 +148,7 @@ public class AlgaeIntake extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntakeState = state);
   }
 
-  private Command setSetpointCommand(AlgaeIntakeState setpoint) {
+  private Command setPivotCommand(AlgaeIntakeState setpoint) {
     return new SequentialCommandGroup(
       setCoralIntakeStateCommand(setpoint),
       new InstantCommand(
@@ -183,29 +183,29 @@ public class AlgaeIntake extends SubsystemBase {
 
   public Command moveToIntake() {
     return new ParallelCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.INTAKE),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
+      setPivotCommand(AlgaeIntakeState.INTAKE),
+      setRollerPowerCommand(RollerSetpoints.kIntake)
     );
   }
 
   public Command moveToExtake() {
     return new SequentialCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.EXTAKE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
+      setPivotCommand(AlgaeIntakeState.EXTAKE),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
   public Command moveToStow() {
     return new ParallelCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.STOW),
+        setPivotCommand(AlgaeIntakeState.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
   public Command moveToScore() {
     return new SequentialCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.SCORE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
+      setPivotCommand(AlgaeIntakeState.SCORE),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 

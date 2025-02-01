@@ -143,7 +143,7 @@ public class CoralIntake extends SubsystemBase {
     return new InstantCommand(() -> m_coralIntakeState = state);
   }
 
-  private Command setSetpointCommand(CoralIntakeState setpoint) {
+  private Command setPivotCommand(CoralIntakeState setpoint) {
     return new SequentialCommandGroup(
       setCoralIntakeStateCommand(setpoint),
       new InstantCommand(
@@ -184,71 +184,68 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return new SequentialCommandGroup(
-      setRollerPowerCommand(RollerSetpoints.kStop),
-      new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.INTAKE),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
-      )
+    return new ParallelCommandGroup(
+      setPivotCommand(CoralIntakeState.INTAKE),
+      setRollerPowerCommand(RollerSetpoints.kIntake)
     );
   }
 
   public Command intakeReady() {
     return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.INTAKE),
+        setPivotCommand(CoralIntakeState.INTAKE),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
   public Command extake() {
     return new SequentialCommandGroup(
-      setRollerPowerCommand(RollerSetpoints.kStop),
       new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.EXTAKE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-      )
+        setPivotCommand(CoralIntakeState.EXTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
   public Command stow() {
     return new ParallelCommandGroup(
-      setSetpointCommand(CoralIntakeState.STOW),
+      setPivotCommand(CoralIntakeState.STOW),
       setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
   public Command handoff() {
     return new SequentialCommandGroup(
-      setRollerPowerCommand(RollerSetpoints.kStop),
       new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-      )
+        setPivotCommand(CoralIntakeState.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
   public Command handoffReady()
   {
     return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kStop)
+      setPivotCommand(CoralIntakeState.HANDOFF),
+      setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
   public Command poopL1() {
     return new SequentialCommandGroup(
-      setRollerPowerCommand(RollerSetpoints.kStop),
       new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.POOP_L1),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-      )
+        setPivotCommand(CoralIntakeState.POOP_L1),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
   public Command poopReadyL1()
   {
     return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.POOP_L1),
+        setPivotCommand(CoralIntakeState.POOP_L1),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }

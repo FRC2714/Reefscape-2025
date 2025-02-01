@@ -142,7 +142,7 @@ public class Elevator extends SubsystemBase {
     return new InstantCommand(() -> m_elevatorState = state);
   }
 
-  private Command setSetpointCommand(ElevatorState setpoint) {
+  private Command setElevatorSetpointCommand(ElevatorState setpoint) {
     return new SequentialCommandGroup(
         setElevatorStateCommand(setpoint),
         new InstantCommand(
@@ -176,31 +176,31 @@ public class Elevator extends SubsystemBase {
   }
   
   public Command moveToStow() {
-    return setSetpointCommand(ElevatorState.STOW);
+    return setElevatorSetpointCommand(ElevatorState.STOW);
   }
 
   public Command moveToHandoff() {
-    return setSetpointCommand(ElevatorState.HANDOFF);
+    return setElevatorSetpointCommand(ElevatorState.HANDOFF);
   }
 
   public Command moveToPoop() {
-    return setSetpointCommand(ElevatorState.POOP);
+    return setElevatorSetpointCommand(ElevatorState.POOP);
   }
 
   public Command moveToL1() {
-    return setSetpointCommand(ElevatorState.L1);
+    return setElevatorSetpointCommand(ElevatorState.L1);
   }
 
   public Command moveToL2() {
-    return setSetpointCommand(ElevatorState.L2);
+    return setElevatorSetpointCommand(ElevatorState.L2);
   }
 
   public Command moveToL3() {
-    return setSetpointCommand(ElevatorState.L3);
+    return setElevatorSetpointCommand(ElevatorState.L3);
   }
 
   public Command moveToL4() {
-    return setSetpointCommand(ElevatorState.L4);
+    return setElevatorSetpointCommand(ElevatorState.L4);
   }
 
   @Override
