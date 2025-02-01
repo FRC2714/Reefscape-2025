@@ -298,6 +298,7 @@ public class DriveSubsystem extends SubsystemBase {
       }
 
       if (!doRejectUpdate) {
+        System.out.println("using mt1");
         swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
         if (mt1back.tagCount > mt1Right.tagCount && mt1back.tagCount > mt1left.tagCount) {
           swerveDrivePoseEstimator.addVisionMeasurement(
@@ -314,12 +315,6 @@ public class DriveSubsystem extends SubsystemBase {
         }
       }
     } else if (useMegaTag2 == true) {
-      LimelightHelpers.SetRobotOrientation("limelight-back",
-          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.SetRobotOrientation("limelight-right",
-          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.SetRobotOrientation("limelight-left",
-          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2back = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
       LimelightHelpers.PoseEstimate mt2right = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
       LimelightHelpers.PoseEstimate mt2left = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
@@ -329,14 +324,33 @@ public class DriveSubsystem extends SubsystemBase {
       {
         doRejectUpdate = true;
       }
-      if (mt2back.tagCount == 0) {
+      if (mt2back == null || mt2left == null || mt2back.tagCount == 0 && mt2left.tagCount == 0) { // mt2right == null ||
+                                                                                                  // mt2right.tagCount
+                                                                                                  // == 0 &&
         doRejectUpdate = true;
       }
+
       if (!doRejectUpdate) {
         swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-        swerveDrivePoseEstimator.addVisionMeasurement(
-            mt2back.pose,
-            mt2back.timestampSeconds);
+        if (mt2left.rawFiducials.length > mt2back.rawFiducials.length
+            && mt2left.tagCount > mt2back.tagCount) { // && mt2left.tagCount >= mt2right.tagCount
+          System.out.println("update left");
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt2left.pose,
+              mt2left.timestampSeconds);
+        }
+        // else if (mt2right.tagCount >= mt2left.tagCount && mt2right.tagCount >=
+        // mt2back.tagCount) {
+        // swerveDrivePoseEstimator.addVisionMeasurement(
+        // mt2right.pose,
+        // mt2right.timestampSeconds);
+        // }
+        else {
+          System.out.println("update back");
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt2back.pose,
+              mt2back.timestampSeconds);
+        }
       }
     }
   }
@@ -357,6 +371,12 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
     SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+    LimelightHelpers.SetRobotOrientation("limelight-back",
+        swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation("limelight-right",
+        swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation("limelight-left",
+        swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     update();
     m_fieldPose.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
   }
