@@ -16,31 +16,19 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.superstructure.StateMachine;
-import frc.robot.subsystems.superstructure.StateMachine.State;
-import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.LED;
-import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.Limelight;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
-
-import com.pathplanner.lib.auto.AutoBuilder;
-
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -51,31 +39,31 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
+  private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
-  private final LED m_blinkin = new LED();
-  private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
-                                                           LimelightConstants.kRightCameraHeight,
-                                                           LimelightConstants.kRightMountingAngle,
-                                                           LimelightConstants.kReefTagHeight);
-  private final Limelight m_leftLimelight = new Limelight(LimelightConstants.kLeftLimelightName,
-                                                         LimelightConstants.kLeftCameraHeight,
-                                                         LimelightConstants.kLeftMountingAngle,
-                                                         LimelightConstants.kReefTagHeight);
-
-  private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
-  LimelightConstants.kBackCameraHeight,
-  LimelightConstants.kBackMountingAngle,
-  LimelightConstants.kProcessorTagHeight);
-
   private final Elevator m_elevator = new Elevator();
-
   private final Dragon m_dragon = new Dragon();
 
-  private final Superstructure m_superstructure = new Superstructure(
-    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight);
+  private final LED m_blinkin = new LED();
+  private final Limelight m_rightLimelight = new Limelight(
+    LimelightConstants.kRightLimelightName,
+    LimelightConstants.kRightCameraHeight,
+    LimelightConstants.kRightMountingAngle,
+    LimelightConstants.kReefTagHeight);
+  private final Limelight m_leftLimelight = new Limelight(
+    LimelightConstants.kLeftLimelightName,
+    LimelightConstants.kLeftCameraHeight,
+    LimelightConstants.kLeftMountingAngle,
+    LimelightConstants.kReefTagHeight);
 
-  private final StateMachine m_stateMachine = new StateMachine(m_superstructure);
+  private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
+    LimelightConstants.kBackCameraHeight,
+    LimelightConstants.kBackMountingAngle,
+    LimelightConstants.kProcessorTagHeight);
+
+  private final StateMachine m_stateMachine = new StateMachine(
+    m_algaeIntake, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight, m_backLimelight
+  );
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -130,17 +118,17 @@ public class RobotContainer {
 
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.SCORE))
-      .onFalse(m_stateMachine.algaeIntakeSelectCommand(State.STOW));
+      .onTrue(m_algaeIntake.moveToScore())
+      .onFalse(m_algaeIntake.moveToStow());
 
     m_driverController
       .rightTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.INTAKE))
-      .onFalse(m_stateMachine.algaeIntakeSelectCommand(State.STOW));
+      .onTrue(m_algaeIntake.moveToIntake())
+      .onFalse(m_algaeIntake.moveToStow());
 
 
     m_driverController.leftBumper()
-      .onTrue(m_superstructure.scoreCoral());
+      .onTrue(m_stateMachine.scoreCoral());
 
     // Force Actions
     m_driverController.povLeft()
@@ -153,22 +141,19 @@ public class RobotContainer {
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
     // Stages
-    L1Button.onTrue(m_stateMachine.moveToLevel(State.L1));
-    L2Button.onTrue(m_stateMachine.moveToLevel(State.L2)); 
-    L3Button.onTrue(m_stateMachine.moveToLevel(State.L3));
-    L4Button.onTrue(m_stateMachine.moveToLevel(State.L4));
-    stowButton.onTrue(m_stateMachine.stowElevator());
-    handoffButton.onTrue(m_stateMachine.coralHandoff());
-    coralStationButton.onTrue(m_coralIntake.intakeCommand());
-
-
- 
+    L1Button.onTrue(m_stateMachine.elevator_moveToL1());
+    L2Button.onTrue(m_stateMachine.elevator_moveToL2()); 
+    L3Button.onTrue(m_stateMachine.elevator_moveToL3());
+    L4Button.onTrue(m_stateMachine.elevator_moveToL4());
+    stowButton.onTrue(m_stateMachine.elevator_moveToStow());
+    handoffButton.onTrue(m_stateMachine.handoffCoral());
+    coralStationButton.onTrue(m_coralIntake.moveToIntake());
   }
 
   public void setTeleOpDefaultStates() {
-    m_stateMachine.algaeIntakeSelectCommand(State.STOW).schedule();
-    m_stateMachine.stowElevator().schedule();
-    m_stateMachine.coralIntakeSelectCommand(State.STOW).schedule();
+    m_algaeIntake.moveToStow().schedule();
+    m_stateMachine.elevator_moveToStow().schedule();
+    m_coralIntake.moveToStow().schedule();
     m_blinkin.setOrange(); //default lights are orange
   }
 

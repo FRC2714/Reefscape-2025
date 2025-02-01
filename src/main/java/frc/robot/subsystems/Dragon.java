@@ -26,10 +26,23 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
+import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Constants.DragonConstants;
 
 public class Dragon extends SubsystemBase {
+
+
+  private enum DragonState {
+    STOW,
+    HANDOFF,
+    L1,
+    L2,
+    L3,
+    L4
+  }
+
+  private DragonState m_dragonState;
 
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
@@ -38,8 +51,6 @@ public class Dragon extends SubsystemBase {
 
   // Pivot rollers
   private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless); 
-
-
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
@@ -84,6 +95,8 @@ private final MechanismLigament2d m_DragonMech2D =
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
+    m_dragonState = DragonState.STOW;
+
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
     SmartDashboard.putData("dragon", m_mech2d);
@@ -94,14 +107,18 @@ private final MechanismLigament2d m_DragonMech2D =
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public Command setSetpointCommand(frc.robot.subsystems.superstructure.StateMachine.State setpoint) {
+  private Command setDragonStateCommand(DragonState state) {
+    return new InstantCommand(() -> m_dragonState = state);
+  }
+
+  private Command setSetpointCommand(DragonState setpoint) {
     return new SequentialCommandGroup(
+        setDragonStateCommand(setpoint),
         new InstantCommand(
         () -> {
-          switch (setpoint) {
+          switch (m_dragonState) {
             case STOW:
               pivotCurrentTarget = PivotSetpoints.kStow;
-              setRollerPower(0);
               break;
             case HANDOFF:
               pivotCurrentTarget = PivotSetpoints.kHandoff;
@@ -122,14 +139,40 @@ private final MechanismLigament2d m_DragonMech2D =
           new InstantCommand(() -> moveToSetpoint()));
     }
 
-
-    public void setRollerPower(double power)
-    {
-        pivotRollers.set(power);
+    private Command setRollerPowerCommand(double power) {
+      return new InstantCommand(() -> pivotRollers.set(power));
     }
 
-    public Command setRollerPowerCommand() {
-      return new InstantCommand(() -> setRollerPower(DragonConstants.endEffectorSpeeds.kExtakeSpeed));
+    public Command moveToStow() {
+      return setSetpointCommand(DragonState.STOW);
+    }
+  
+    public Command moveToHandoff() {
+      return setSetpointCommand(DragonState.HANDOFF);
+    }
+  
+    public Command moveToL1() {
+      return setSetpointCommand(DragonState.L1);
+    }
+  
+    public Command moveToL2() {
+      return setSetpointCommand(DragonState.L2);
+    }
+  
+    public Command moveToL3() {
+      return setSetpointCommand(DragonState.L3);
+    }
+  
+    public Command moveToL4() {
+      return setSetpointCommand(DragonState.L4);
+    }
+
+    public Command intake() {
+      return setRollerPowerCommand(RollerSetpoints.kIntake);
+    }
+
+    public Command extake() {
+      return setRollerPowerCommand(RollerSetpoints.kExtake);
     }
     
     public double getSimulationCurrentDraw() {
@@ -143,6 +186,8 @@ private final MechanismLigament2d m_DragonMech2D =
     SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
     SmartDashboard.putNumber("Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
+
+    SmartDashboard.putString("Dragon State", m_dragonState.toString());
 
 
     m_DragonMech2D.setAngle(
