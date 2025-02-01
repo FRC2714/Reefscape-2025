@@ -27,7 +27,6 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.LED;
 
 /*
@@ -61,9 +60,9 @@ public class RobotContainer {
     LimelightConstants.kBackMountingAngle,
     LimelightConstants.kProcessorTagHeight);
 
-  private final StateMachine m_stateMachine = new StateMachine(
-    m_algaeIntake, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight, m_backLimelight
-  );
+  // private final StateMachine m_stateMachine = new StateMachine(
+  //   m_algaeIntake, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight, m_backLimelight
+  // );
 
   Joystick m_operatorController = new Joystick(1);
   // The driver's controller
@@ -116,45 +115,45 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    m_driverController
-      .leftTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_algaeIntake.moveToScore())
-      .onFalse(m_algaeIntake.moveToStow());
+  //   m_driverController
+  //     .leftTrigger(OIConstants.kTriggerButtonThreshold)
+  //     .onTrue(m_algaeIntake.moveToScore())
+  //     .onFalse(m_algaeIntake.moveToStow());
 
-    m_driverController
-      .rightTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_algaeIntake.moveToIntake())
-      .onFalse(m_algaeIntake.moveToStow());
+  //   m_driverController
+  //     .rightTrigger(OIConstants.kTriggerButtonThreshold)
+  //     .onTrue(m_algaeIntake.moveToIntake())
+  //     .onFalse(m_algaeIntake.moveToStow());
 
 
-    m_driverController.leftBumper()
-      .onTrue(m_stateMachine.scoreCoral());
+  //   m_driverController.leftBumper()
+  //     .onTrue(m_stateMachine.scoreCoral());
 
-    // Force Actions
-    m_driverController.povLeft()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+  //   // Force Actions
+  //   m_driverController.povLeft()
+  //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
 
-    m_driverController.povRight()
-      .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-  // TODO: add pov up down for coral station and processor
-    // Additional
-    m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+  //   m_driverController.povRight()
+  //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
+  // // TODO: add pov up down for coral station and processor
+  //   // Additional
+  //   m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
-    // Stages
-    L1Button.onTrue(m_stateMachine.elevator_moveToL1());
-    L2Button.onTrue(m_stateMachine.elevator_moveToL2()); 
-    L3Button.onTrue(m_stateMachine.elevator_moveToL3());
-    L4Button.onTrue(m_stateMachine.elevator_moveToL4());
-    stowButton.onTrue(m_stateMachine.elevator_moveToStow());
-    handoffButton.onTrue(m_stateMachine.handoffCoral());
-    coralStationButton.onTrue(m_coralIntake.moveToIntake());
+  //   // Stages
+  //   L1Button.onTrue(m_stateMachine.elevator_moveToL1());
+  //   L2Button.onTrue(m_stateMachine.elevator_moveToL2()); 
+  //   L3Button.onTrue(m_stateMachine.elevator_moveToL3());
+  //   L4Button.onTrue(m_stateMachine.elevator_moveToL4());
+  //   stowButton.onTrue(m_stateMachine.elevator_moveToStow());
+  //   handoffButton.onTrue(m_stateMachine.handoffCoral());
+    // coralStationButton.onTrue(m_coralIntake.moveToIntake());
   }
 
   public void setTeleOpDefaultStates() {
-    m_algaeIntake.moveToStow().schedule();
-    m_stateMachine.elevator_moveToStow().schedule();
-    m_coralIntake.moveToStow().schedule();
-    m_blinkin.setOrange(); //default lights are orange
+    // m_algaeIntake.moveToStow().schedule();
+    // m_stateMachine.elevator_moveToStow().schedule();
+    // m_coralIntake.moveToStow().schedule();
+    // m_blinkin.setOrange(); //default lights are orange
   }
 
   /**
