@@ -277,43 +277,66 @@ public class DriveSubsystem extends SubsystemBase {
     boolean useMegaTag2 = true; // set to false to use MegaTag1
     boolean doRejectUpdate = false;
     if (useMegaTag2 == false) {
-      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
+      LimelightHelpers.PoseEstimate mt1back = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
+      LimelightHelpers.PoseEstimate mt1Right = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+      LimelightHelpers.PoseEstimate mt1left = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
 
-      if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
-        if (mt1.rawFiducials[0].ambiguity > .7) {
+      if (mt1back.tagCount == 1 && mt1back.rawFiducials.length == 1
+          || mt1Right.tagCount == 1 && mt1Right.rawFiducials.length == 1
+          || mt1left.tagCount == 1 && mt1left.rawFiducials.length == 1) {
+        if (mt1back.rawFiducials[0].ambiguity > .7 && mt1Right.rawFiducials[0].ambiguity > .7
+            && mt1left.rawFiducials[0].ambiguity > .7) {
           doRejectUpdate = true;
         }
-        if (mt1.rawFiducials[0].distToCamera > 3) {
+        if (mt1back.rawFiducials[0].distToCamera > 3 && mt1Right.rawFiducials[0].distToCamera > 3
+            && mt1left.rawFiducials[0].distToCamera > 3) {
           doRejectUpdate = true;
         }
       }
-      if (mt1.tagCount == 0) {
+      if (mt1back.tagCount == 0 && mt1Right.tagCount == 0 && mt1left.tagCount == 0) {
         doRejectUpdate = true;
       }
 
       if (!doRejectUpdate) {
         swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-        swerveDrivePoseEstimator.addVisionMeasurement(
-            mt1.pose,
-            mt1.timestampSeconds);
+        if (mt1back.tagCount > mt1Right.tagCount && mt1back.tagCount > mt1left.tagCount) {
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt1back.pose,
+              mt1back.timestampSeconds);
+        } else if (mt1left.tagCount > mt1Right.tagCount && mt1left.tagCount > mt1Right.tagCount) {
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt1Right.pose,
+              mt1Right.timestampSeconds);
+        } else {
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt1left.pose,
+              mt1left.timestampSeconds);
+        }
       }
     } else if (useMegaTag2 == true) {
       LimelightHelpers.SetRobotOrientation("limelight-back",
           swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+      LimelightHelpers.SetRobotOrientation("limelight-right",
+          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight-left",
+          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate mt2back = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+      LimelightHelpers.PoseEstimate mt2right = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+      LimelightHelpers.PoseEstimate mt2left = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+
       if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
                                             // vision updates
       {
         doRejectUpdate = true;
       }
-      if (mt2.tagCount == 0) {
+      if (mt2back.tagCount == 0) {
         doRejectUpdate = true;
       }
       if (!doRejectUpdate) {
         swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         swerveDrivePoseEstimator.addVisionMeasurement(
-            mt2.pose,
-            mt2.timestampSeconds);
+            mt2back.pose,
+            mt2back.timestampSeconds);
       }
     }
   }
