@@ -65,6 +65,8 @@ public final class Constants {
     public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
 
+    public static final double kPivotThreshold = 0; // tune
+
     public static final class PivotSetpoints {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 0; // TBD
@@ -84,6 +86,8 @@ public final class Constants {
     public static final int kPivotFollowerMotorCanId = 39;
     public static final int kRollerMotorCanId = 41;
     public static final int kIndexerMotorCanId = 42;
+
+    public static final double kPivotThreshold = 0; // tune
 
     public static final int kBeamBreakDioChannel = 0;
 
@@ -210,6 +214,8 @@ public final class Constants {
     public static final int kElevatorMotorCanId = 63; // TBD
     public static final int kElevatorFollowerCanId = 62; // TBD
 
+    public static final double kSetpointThreshold = 0; // tune
+
     public static final class ElevatorSetpoints {
       public static final double kStow = 0;
       public static final double kHandoff = 90;
@@ -226,6 +232,7 @@ public final class Constants {
     public static final int kPivotMotorCanId = 50; // TBD
     public static final int kPivotRollerMotorCanID = 51; //TBD
     public static final double kPivotReduction = 1;  // TODO
+    public static final double kPivotThreshold = 0; // tune
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs;
 import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
@@ -131,6 +134,10 @@ public class CoralIntake extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
+  private BooleanSupplier atSetpoint() {
+    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
+  }
+
   private Command setCoralIntakeStateCommand(CoralIntakeState state) {
     return new InstantCommand(() -> m_coralIntakeState = state);
   }
@@ -154,7 +161,9 @@ public class CoralIntake extends SubsystemBase {
             pivotCurrentTarget = PivotSetpoints.kExtake;
             break;
         }}),
-        new InstantCommand(() -> moveToSetpoint()));
+        new InstantCommand(() -> moveToSetpoint()),
+        new WaitUntilCommand(atSetpoint())
+      );
   }
 
   /** Set the pivot motor power in the range of [-1, 1]. */
@@ -226,6 +235,9 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotReference);
+
+    SmartDashboard.putString("Dragon State", m_coralIntakeState.toString());
+    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint().getAsBoolean());
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());

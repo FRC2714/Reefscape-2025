@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkLimitSwitchSim;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -130,6 +133,10 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  private BooleanSupplier atSetpoint() {
+    return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+  }
+
   private Command setElevatorStateCommand(ElevatorState state) {
     return new InstantCommand(() -> m_elevatorState = state);
   }
@@ -159,8 +166,10 @@ public class Elevator extends SubsystemBase {
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
               break;
           }}),
-          new InstantCommand(() -> moveToSetpoint()));
-        }
+          new InstantCommand(() -> moveToSetpoint()),
+          new WaitUntilCommand(atSetpoint())
+        );
+  }
   
   public Command moveToStow() {
     return setSetpointCommand(ElevatorState.STOW);
@@ -195,6 +204,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putString("Elevator State", m_elevatorState.toString());
+    SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
 
 
 
