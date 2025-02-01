@@ -44,7 +44,7 @@ public class CoralIntake extends SubsystemBase {
     HANDOFF,
     INTAKE,
     EXTAKE,
-    EJECT
+    POOP_L1
   }
 
   private CoralIntakeState m_coralIntakeState;
@@ -161,7 +161,7 @@ public class CoralIntake extends SubsystemBase {
           case EXTAKE:
             pivotCurrentTarget = PivotSetpoints.kExtake;
             break;
-          case EJECT:
+          case POOP_L1:
             pivotCurrentTarget = PivotSetpoints.kEject;
             break;
 
@@ -212,9 +212,9 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command handoff() {
-    return new ParallelCommandGroup(
+    return new SequentialCommandGroup(
         setSetpointCommand(CoralIntakeState.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kStop)
+        setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
@@ -226,17 +226,17 @@ public class CoralIntake extends SubsystemBase {
     );
   }
 
-  public Command eject() {
-    return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.EJECT),
+  public Command poopL1() {
+    return new SequentialCommandGroup(
+        setSetpointCommand(CoralIntakeState.POOP_L1),
         setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
-  public Command ejectReady()
+  public Command poopReadyL1()
   {
     return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.EJECT),
+        setSetpointCommand(CoralIntakeState.POOP_L1),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }

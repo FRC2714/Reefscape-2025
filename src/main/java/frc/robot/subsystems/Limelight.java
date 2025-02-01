@@ -104,9 +104,9 @@ public class Limelight extends SubsystemBase {
     return rawFiducial.tync;
   }
 
-  public boolean inRange()
+  public boolean coralStationInRange()
   {
-    return getDistanceToGoalMeters() < 3;
+    return getDistanceToGoalMeters() < LimelightConstants.kCoralStationDistanceThreshold;
   }
 
 

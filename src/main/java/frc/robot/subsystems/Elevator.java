@@ -38,6 +38,7 @@ public class Elevator extends SubsystemBase {
   private enum ElevatorState {
     STOW,
     HANDOFF,
+    POOP,
     L1,
     L2,
     L3,
@@ -153,6 +154,9 @@ public class Elevator extends SubsystemBase {
             case HANDOFF:
               elevatorCurrentTarget = ElevatorSetpoints.kHandoff;
               break;
+            case POOP:
+              elevatorCurrentTarget = ElevatorSetpoints.kPoop;
+              break;
             case L1:
               elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
               break;
@@ -177,6 +181,10 @@ public class Elevator extends SubsystemBase {
 
   public Command moveToHandoff() {
     return setSetpointCommand(ElevatorState.HANDOFF);
+  }
+
+  public Command moveToPoop() {
+    return setSetpointCommand(ElevatorState.POOP);
   }
 
   public Command moveToL1() {

@@ -207,6 +207,8 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kProcessorPipeline = 0; //TBD
+
+    public static final double kCoralStationDistanceThreshold = 0; // tune
   }
 
   // ! Update Values for AlphaBot
@@ -219,6 +221,7 @@ public final class Constants {
 
     public static final class ElevatorSetpoints {
       public static final double kStow = 0;
+      public static final double kPoop = 0;
       public static final double kHandoff = 90;
       public static final double kLevel1 = 20;
       public static final double kLevel2 = 30;
