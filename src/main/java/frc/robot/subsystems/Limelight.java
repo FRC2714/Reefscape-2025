@@ -104,6 +104,12 @@ public class Limelight extends SubsystemBase {
     return rawFiducial.tync;
   }
 
+  public boolean inRange()
+  {
+    return getDistanceToGoalMeters() < 3;
+  }
+
+
   // Pipline Stuff
 	public void setCoralTagPipelineRight() {
 		LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kRightReefBranchPipeline);
