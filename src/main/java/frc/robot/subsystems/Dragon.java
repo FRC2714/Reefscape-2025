@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -46,6 +47,8 @@ public class Dragon extends SubsystemBase {
   }
 
   private DragonState m_dragonState;
+
+  private boolean coralOnDragon;
 
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
@@ -103,6 +106,8 @@ private final MechanismLigament2d m_DragonMech2D =
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
     SmartDashboard.putData("dragon", m_mech2d);
+
+    coralOnDragon = false;
   }
 
   private void moveToSetpoint() {
@@ -151,40 +156,85 @@ private final MechanismLigament2d m_DragonMech2D =
       return new InstantCommand(() -> pivotRollers.set(power));
     }
 
-    public Command moveToStow() {
-      return setSetpointCommand(DragonState.STOW);
-    }
-  
-    public Command moveToHandoff() {
-      return setSetpointCommand(DragonState.HANDOFF);
-    }
-  
-    public Command moveToL1() {
-      return setSetpointCommand(DragonState.L1);
-    }
-  
-    public Command moveToL2() {
-      return setSetpointCommand(DragonState.L2);
-    }
-  
-    public Command moveToL3() {
-      return setSetpointCommand(DragonState.L3);
-    }
-  
-    public Command moveToL4() {
-      return setSetpointCommand(DragonState.L4);
+    public BooleanSupplier rollerCurrentSpikeDetected() {
+      return () -> pivotRollers.getOutputCurrent() >= DragonConstants.kRollerCurrentThreshold;
     }
 
-    public Command intake() {
-      return setRollerPowerCommand(RollerSetpoints.kIntake);
+    public Command stow() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.STOW),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command handoffReady() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
     }
 
-    public Command extake() {
-      return setRollerPowerCommand(RollerSetpoints.kExtake);
+    public Command handoff() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kIntake)
+      );
+    }
+
+    public Command poopReadyL1() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.STOW),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL1() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.L1),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL2() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.L2),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL3() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.L3),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL4() {
+      return new ParallelCommandGroup(
+        setSetpointCommand(DragonState.L4),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+
+    public Command score() {
+      return new ParallelCommandGroup(
+        new InstantCommand(() -> coralOnDragon = false),
+        setRollerPowerCommand(RollerSetpoints.kExtake)
+        );
     }
     
     public double getSimulationCurrentDraw() {
       return m_pivotSim.getCurrentDrawAmps();
+    }
+  
+    private void setCoralOnDragon() {
+      if (!coralOnDragon) {
+        coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
+      }
+    }
+
+    public BooleanSupplier isCoralOnDragon() {
+      return () -> coralOnDragon;
     }
         
   @Override
@@ -197,6 +247,8 @@ private final MechanismLigament2d m_DragonMech2D =
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());
     SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint().getAsBoolean());
+
+    setCoralOnDragon();
 
 
     m_DragonMech2D.setAngle(

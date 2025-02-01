@@ -234,6 +234,7 @@ public final class Constants {
     public static final int kPivotRollerMotorCanID = 51; //TBD
     public static final double kPivotReduction = 1;  // TODO
     public static final double kPivotThreshold = 0; // tune
+    public static final double kRollerCurrentThreshold = 0; // tune
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
@@ -247,6 +248,7 @@ public final class Constants {
     public static final class RollerSetpoints {
       public static final double kIntake = 0.5; //tune ts (pos when getting from station)
       public static final double kExtake = -0.5; /// tune ts (neg when scoring)
+      public static final double kStop = 0;
     }
   }
 
