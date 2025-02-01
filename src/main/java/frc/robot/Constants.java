@@ -98,6 +98,7 @@ public final class Constants {
       public static final double kIntake = 120; // TBD
       public static final double kExtake = 60; // TBD
       public static final double kHandoff = 270; // TBD
+      public static final double kEject = 360; //TBD
       public static final double kZeroOffsetDegrees = 270;
     }
 

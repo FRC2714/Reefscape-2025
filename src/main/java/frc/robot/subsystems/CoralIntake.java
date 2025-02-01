@@ -39,11 +39,12 @@ public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private enum CoralIntakeState {
+  public enum CoralIntakeState {
     STOW,
     HANDOFF,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    EJECT
   }
 
   private CoralIntakeState m_coralIntakeState;
@@ -160,6 +161,10 @@ public class CoralIntake extends SubsystemBase {
           case EXTAKE:
             pivotCurrentTarget = PivotSetpoints.kExtake;
             break;
+          case EJECT:
+            pivotCurrentTarget = PivotSetpoints.kEject;
+            break;
+
         }}),
         new InstantCommand(() -> moveToSetpoint()),
         new WaitUntilCommand(atSetpoint())
@@ -178,44 +183,72 @@ public class CoralIntake extends SubsystemBase {
     return new InstantCommand(() -> setRollerPower(power));
   }
 
-  public Command moveToIntake() {
+  public Command intake() {
     return new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.INTAKE),
         setRollerPowerCommand(RollerSetpoints.kIntake)
     );
   }
 
-  public Command moveToExtake() {
+  public Command intakeReady() {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.INTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    );
+  }
+
+  public Command extake() {
     return new SequentialCommandGroup(
         setSetpointCommand(CoralIntakeState.EXTAKE),
         setRollerPowerCommand(RollerSetpoints.kExtake)
     );
   }
 
-  public Command moveToStow() {
+  public Command stow() {
     return new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
-  public Command moveToHandoff() {
+  public Command handoff() {
     return new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.HANDOFF),
         setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
-  public Command intake() {
-    return setRollerPowerCommand(RollerSetpoints.kIntake);
+  public Command handoffReady()
+  {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    );
   }
 
-  public Command extake() {
-    return setRollerPowerCommand(RollerSetpoints.kExtake);
+  public Command eject() {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.EJECT),
+        setRollerPowerCommand(RollerSetpoints.kExtake)
+    );
   }
+
+  public Command ejectReady()
+  {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.EJECT),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    );
+  }
+
 
   public boolean isLoaded() {
     return !beamBreak.get();
+  }
+
+  public CoralIntakeState getState()
+  {
+    return m_coralIntakeState;
   }
 
 
