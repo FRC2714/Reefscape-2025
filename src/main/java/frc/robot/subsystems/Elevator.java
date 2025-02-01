@@ -4,7 +4,8 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkLimitSwitchSim;
@@ -14,13 +15,13 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -29,11 +30,21 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants.ElevatorSetpoints;
-import frc.robot.subsystems.superstructure.StateMachine.State;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
+
+  private enum ElevatorState {
+    STOW,
+    HANDOFF,
+    L1,
+    L2,
+    L3,
+    L4
+  }
+
+  private ElevatorState m_elevatorState;
 
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
@@ -88,6 +99,9 @@ public class Elevator extends SubsystemBase {
         Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
+    
+
+    m_elevatorState = ElevatorState.STOW;
 
     SmartDashboard.putData("Elevator", m_mech2d);
 
@@ -119,11 +133,20 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  public Command setSetpointCommand(State setpoint) {
+  private BooleanSupplier atSetpoint() {
+    return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+  }
+
+  private Command setElevatorStateCommand(ElevatorState state) {
+    return new InstantCommand(() -> m_elevatorState = state);
+  }
+
+  private Command setSetpointCommand(ElevatorState setpoint) {
     return new SequentialCommandGroup(
+        setElevatorStateCommand(setpoint),
         new InstantCommand(
         () -> {
-          switch (setpoint) {
+          switch (m_elevatorState) {
             case STOW:
               elevatorCurrentTarget = ElevatorSetpoints.kStow;
               break;
@@ -143,8 +166,34 @@ public class Elevator extends SubsystemBase {
               elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
               break;
           }}),
-          new InstantCommand(() -> moveToSetpoint()));
-        }
+          new InstantCommand(() -> moveToSetpoint()),
+          new WaitUntilCommand(atSetpoint())
+        );
+  }
+  
+  public Command moveToStow() {
+    return setSetpointCommand(ElevatorState.STOW);
+  }
+
+  public Command moveToHandoff() {
+    return setSetpointCommand(ElevatorState.HANDOFF);
+  }
+
+  public Command moveToL1() {
+    return setSetpointCommand(ElevatorState.L1);
+  }
+
+  public Command moveToL2() {
+    return setSetpointCommand(ElevatorState.L2);
+  }
+
+  public Command moveToL3() {
+    return setSetpointCommand(ElevatorState.L3);
+  }
+
+  public Command moveToL4() {
+    return setSetpointCommand(ElevatorState.L4);
+  }
 
   @Override
   public void periodic() {
@@ -154,6 +203,8 @@ public class Elevator extends SubsystemBase {
 
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
+    SmartDashboard.putString("Elevator State", m_elevatorState.toString());
+    SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
 
 
 

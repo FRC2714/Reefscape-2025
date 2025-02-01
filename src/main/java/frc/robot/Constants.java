@@ -65,15 +65,18 @@ public final class Constants {
     public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
 
-    public static final class pivotSetpoints {
-      public static final double kDown = 0; // TBD
-      public static final double kUp = 15; // TBD
-      public static final double kMid = 7; //TBD (extake position)
+    public static final double kPivotThreshold = 0; // tune
+
+    public static final class PivotSetpoints {
+      public static final double kStow = 15; // TBD
+      public static final double kIntake = 0; // TBD
+      public static final double kExtake = 0;
+      public static final double kScore = 7; //TBD (extake position)
     }
 
-    public static final class AlgaeRollerSetpoints {
-      public static final double kForward = 0.5; //tune ts
-      public static final double kReverse = -0.5; // tune ts
+    public static final class RollerSetpoints {
+      public static final double kIntake = 0.5; //tune ts
+      public static final double kExtake = -0.5; // tune ts
       public static final double kStop = 0;
     }
   }
@@ -84,21 +87,23 @@ public final class Constants {
     public static final int kRollerMotorCanId = 41;
     public static final int kIndexerMotorCanId = 42;
 
+    public static final double kPivotThreshold = 0; // tune
+
     public static final int kBeamBreakDioChannel = 0;
 
     public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
       public static final double kStow = 0; // TBD
-      public static final double kIntakeShelf = 120; // TBD
-      public static final double kExtakeFloor = 60; // TBD
+      public static final double kIntake = 120; // TBD
+      public static final double kExtake = 60; // TBD
       public static final double kHandoff = 270; // TBD
       public static final double kZeroOffsetDegrees = 270;
     }
 
     public static final class RollerSetpoints {
-      public static final double kForward = 0.5; //tune ts
-      public static final double kReverse = -0.5; // tune ts
+      public static final double kIntake = 0.5; //tune ts
+      public static final double kExtake = -0.5; // tune ts
       public static final double kStop = 0;
     }
   }
@@ -209,6 +214,8 @@ public final class Constants {
     public static final int kElevatorMotorCanId = 63; // TBD
     public static final int kElevatorFollowerCanId = 62; // TBD
 
+    public static final double kSetpointThreshold = 0; // tune
+
     public static final class ElevatorSetpoints {
       public static final double kStow = 0;
       public static final double kHandoff = 90;
@@ -225,6 +232,7 @@ public final class Constants {
     public static final int kPivotMotorCanId = 50; // TBD
     public static final int kPivotRollerMotorCanID = 51; //TBD
     public static final double kPivotReduction = 1;  // TODO
+    public static final double kPivotThreshold = 0; // tune
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
@@ -235,9 +243,9 @@ public final class Constants {
       public static final double kLevel4 =  19;
     }
 
-    public static final class endEffectorSpeeds{
-      public static final double kIntakeSpeed = 0.5; //tune ts (pos when getting from station)
-      public static final double kExtakeSpeed = -0.5; /// tune ts (neg when scoring)
+    public static final class RollerSetpoints {
+      public static final double kIntake = 0.5; //tune ts (pos when getting from station)
+      public static final double kExtake = -0.5; /// tune ts (neg when scoring)
     }
   }
 

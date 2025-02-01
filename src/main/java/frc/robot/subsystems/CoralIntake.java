@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -11,7 +13,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkSim;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -23,14 +24,31 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs;
 import frc.robot.Constants.CoralIntakeConstants;
+import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
+import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
+
+  private enum CoralIntakeState {
+    STOW,
+    HANDOFF,
+    INTAKE,
+    EXTAKE
+  }
+
+  private CoralIntakeState m_coralIntakeState;
+
+  private double pivotCurrentTarget = PivotSetpoints.kStow;
 
   private SparkFlex pivotMotor = new SparkFlex(CoralIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId, MotorType.kBrushless);
@@ -102,6 +120,8 @@ public class CoralIntake extends SubsystemBase {
       ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
+    m_coralIntakeState = CoralIntakeState.STOW;
+
     // Display mechanism2d
     SmartDashboard.putData("Coral Intake", m_mech2d);
 
@@ -109,39 +129,93 @@ public class CoralIntake extends SubsystemBase {
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
   }
 
-
-
-  public Command intakeCommand() {
-    return this.run(
-        () -> {
-          setRollerPower(CoralIntakeConstants.RollerSetpoints.kForward);
-          setPivotPosition(CoralIntakeConstants.PivotSetpoints.kIntakeShelf);
-        });
+  /** Set the arm motor position. This will use closed loop position control. */
+  private void moveToSetpoint() {
+    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public Command extakeCommand() {
-    return this.run(
-        () -> {
-          setRollerPower(CoralIntakeConstants.RollerSetpoints.kReverse);
-          setPivotPosition(CoralIntakeConstants.PivotSetpoints.kExtakeFloor);
-        });
+  private BooleanSupplier atSetpoint() {
+    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
   }
 
-  public Command stowCommand() {
-    return this.run(
+  private Command setCoralIntakeStateCommand(CoralIntakeState state) {
+    return new InstantCommand(() -> m_coralIntakeState = state);
+  }
+
+  private Command setSetpointCommand(CoralIntakeState setpoint) {
+    return new SequentialCommandGroup(
+      setCoralIntakeStateCommand(setpoint),
+      new InstantCommand(
       () -> {
-        setRollerPower(CoralIntakeConstants.RollerSetpoints.kStop);
-        setPivotPosition(CoralIntakeConstants.PivotSetpoints.kStow);
-      });
+        switch (m_coralIntakeState) {
+          case STOW:
+            pivotCurrentTarget = PivotSetpoints.kStow;
+            break;
+          case HANDOFF:
+            pivotCurrentTarget = PivotSetpoints.kHandoff;
+            break;
+          case INTAKE:
+            pivotCurrentTarget = PivotSetpoints.kIntake;
+            break;
+          case EXTAKE:
+            pivotCurrentTarget = PivotSetpoints.kExtake;
+            break;
+        }}),
+        new InstantCommand(() -> moveToSetpoint()),
+        new WaitUntilCommand(atSetpoint())
+      );
   }
 
-  public Command handoffCommand()
-  {
-    return this.run(
-      () -> {
-        setRollerPower(CoralIntakeConstants.RollerSetpoints.kReverse);
-        setPivotPosition(CoralIntakeConstants.PivotSetpoints.kHandoff);
-      });
+  /** Set the pivot motor power in the range of [-1, 1]. */
+  private void setRollerPower(double power) {
+    rollerMotor.set(power);
+
+    // TODO: Control this separately
+    indexerMotor.set(power);
+  }
+
+  private Command setRollerPowerCommand(double power) {
+    return new InstantCommand(() -> setRollerPower(power));
+  }
+
+  public Command moveToIntake() {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.INTAKE),
+        setRollerPowerCommand(RollerSetpoints.kIntake)
+    );
+  }
+
+  public Command moveToExtake() {
+    return new SequentialCommandGroup(
+        setSetpointCommand(CoralIntakeState.EXTAKE),
+        setRollerPowerCommand(RollerSetpoints.kExtake)
+    );
+  }
+
+  public Command moveToStow() {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.STOW),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    );
+  }
+
+  public Command moveToHandoff() {
+    return new ParallelCommandGroup(
+        setSetpointCommand(CoralIntakeState.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    );
+  }
+
+  public Command intake() {
+    return setRollerPowerCommand(RollerSetpoints.kIntake);
+  }
+
+  public Command extake() {
+    return setRollerPowerCommand(RollerSetpoints.kExtake);
+  }
+
+  public boolean isLoaded() {
+    return !beamBreak.get();
   }
 
 
@@ -152,20 +226,6 @@ public class CoralIntake extends SubsystemBase {
    * motor.
    */
 
-  /** Set the pivot motor power in the range of [-1, 1]. */
-  private void setRollerPower(double power) {
-    rollerMotor.set(power);
-
-    // TODO: Control this separately
-    indexerMotor.set(power);
-  }
-
-  /** Set the arm motor position. This will use closed loop position control. */
-  private void setPivotPosition(double position) {
-    pivotReference = position;
-    pivotController.setReference(position, ControlType.kMAXMotionPositionControl);
-  }
-
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
@@ -175,6 +235,9 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotReference);
+
+    SmartDashboard.putString("Dragon State", m_coralIntakeState.toString());
+    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint().getAsBoolean());
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());

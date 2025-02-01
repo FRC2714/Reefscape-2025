@@ -6,13 +6,11 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.SimulationRobotConstants;
 
 public final class Configs {
     public static final class MAXSwerveModule {
