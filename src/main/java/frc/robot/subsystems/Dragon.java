@@ -175,9 +175,12 @@ private final MechanismLigament2d m_DragonMech2D =
     }
 
     public Command handoff() {
-      return new ParallelCommandGroup(
-        setSetpointCommand(DragonState.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
+      return new SequentialCommandGroup(
+        setRollerPowerCommand(RollerSetpoints.kStop),
+        new ParallelCommandGroup(
+          setSetpointCommand(DragonState.HANDOFF),
+          setRollerPowerCommand(RollerSetpoints.kIntake)
+        )
       );
     }
 
@@ -220,7 +223,7 @@ private final MechanismLigament2d m_DragonMech2D =
       return new ParallelCommandGroup(
         new InstantCommand(() -> coralOnDragon = false),
         setRollerPowerCommand(RollerSetpoints.kExtake)
-        );
+      );
     }
     
     public double getSimulationCurrentDraw() {

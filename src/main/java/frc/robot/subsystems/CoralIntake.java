@@ -184,9 +184,12 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return new ParallelCommandGroup(
+    return new SequentialCommandGroup(
+      setRollerPowerCommand(RollerSetpoints.kStop),
+      new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.INTAKE),
         setRollerPowerCommand(RollerSetpoints.kIntake)
+      )
     );
   }
 
@@ -199,22 +202,28 @@ public class CoralIntake extends SubsystemBase {
 
   public Command extake() {
     return new SequentialCommandGroup(
+      setRollerPowerCommand(RollerSetpoints.kStop),
+      new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.EXTAKE),
         setRollerPowerCommand(RollerSetpoints.kExtake)
+      )
     );
   }
 
   public Command stow() {
     return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)
+      setSetpointCommand(CoralIntakeState.STOW),
+      setRollerPowerCommand(RollerSetpoints.kStop)
     );
   }
 
   public Command handoff() {
     return new SequentialCommandGroup(
+      setRollerPowerCommand(RollerSetpoints.kStop),
+      new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.HANDOFF),
         setRollerPowerCommand(RollerSetpoints.kExtake)
+      )
     );
   }
 
@@ -228,8 +237,11 @@ public class CoralIntake extends SubsystemBase {
 
   public Command poopL1() {
     return new SequentialCommandGroup(
+      setRollerPowerCommand(RollerSetpoints.kStop),
+      new ParallelCommandGroup(
         setSetpointCommand(CoralIntakeState.POOP_L1),
         setRollerPowerCommand(RollerSetpoints.kExtake)
+      )
     );
   }
 
