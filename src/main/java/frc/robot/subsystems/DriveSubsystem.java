@@ -324,28 +324,35 @@ public class DriveSubsystem extends SubsystemBase {
       {
         doRejectUpdate = true;
       }
-      if (mt2back == null || mt2left == null || mt2back.tagCount == 0 && mt2left.tagCount == 0) { // mt2right == null ||
-                                                                                                  // mt2right.tagCount
-                                                                                                  // == 0 &&
+      if (mt2back == null || mt2left == null || mt2right == null
+          || mt2back.tagCount == 0 && mt2left.tagCount == 0 && mt2right.tagCount == 0) { // mt2right == null ||
+        // mt2right.tagCount
+        // == 0 &&
+        doRejectUpdate = true;
+      }
+
+      if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
+          && mt2left.avgTagDist > 3) {
         doRejectUpdate = true;
       }
 
       if (!doRejectUpdate) {
-        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 9999999));
         if (mt2left.rawFiducials.length > mt2back.rawFiducials.length
+            && mt2left.rawFiducials.length > mt2right.rawFiducials.length
             && mt2left.tagCount > mt2back.tagCount) { // && mt2left.tagCount >= mt2right.tagCount
           System.out.println("update left");
           swerveDrivePoseEstimator.addVisionMeasurement(
               mt2left.pose,
               mt2left.timestampSeconds);
-        }
-        // else if (mt2right.tagCount >= mt2left.tagCount && mt2right.tagCount >=
-        // mt2back.tagCount) {
-        // swerveDrivePoseEstimator.addVisionMeasurement(
-        // mt2right.pose,
-        // mt2right.timestampSeconds);
-        // }
-        else {
+        } else if (mt2right.rawFiducials.length > mt2back.rawFiducials.length
+            && mt2right.rawFiducials.length > mt2left.rawFiducials.length &&
+            mt2right.tagCount > mt2left.tagCount) {
+          System.out.println("update right");
+          swerveDrivePoseEstimator.addVisionMeasurement(
+              mt2right.pose,
+              mt2right.timestampSeconds);
+        } else if (mt2back.rawFiducials.length > 0.1) {
           System.out.println("update back");
           swerveDrivePoseEstimator.addVisionMeasurement(
               mt2back.pose,
@@ -357,6 +364,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("left pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-left"));
+    SmartDashboard.putNumber("right pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-right"));
+    SmartDashboard.putNumber("back pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-back"));
+
+
     // Update the odometry in the periodic block
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
