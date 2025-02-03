@@ -37,7 +37,7 @@ import frc.robot.Constants.DragonConstants;
 public class Dragon extends SubsystemBase {
 
 
-  private enum DragonState {
+  private enum DragonSetpoints {
     STOW,
     HANDOFF,
     L1,
@@ -46,7 +46,7 @@ public class Dragon extends SubsystemBase {
     L4
   }
 
-  private DragonState m_dragonState;
+  private DragonSetpoints m_dragonState;
 
   private boolean coralOnDragon;
 
@@ -101,7 +101,7 @@ private final MechanismLigament2d m_DragonMech2D =
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    m_dragonState = DragonState.STOW;
+    m_dragonState = DragonSetpoints.STOW;
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
@@ -118,11 +118,11 @@ private final MechanismLigament2d m_DragonMech2D =
     return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
-  private Command setDragonStateCommand(DragonState state) {
+  private Command setDragonStateCommand(DragonSetpoints state) {
     return new InstantCommand(() -> m_dragonState = state);
   }
 
-  private Command setPivotCommand(DragonState setpoint) {
+  private Command setPivotCommand(DragonSetpoints setpoint) {
     return new SequentialCommandGroup(
         setDragonStateCommand(setpoint),
         new InstantCommand(
@@ -162,14 +162,14 @@ private final MechanismLigament2d m_DragonMech2D =
 
     public Command stow() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.STOW),
+        setPivotCommand(DragonSetpoints.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command handoffReady() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.HANDOFF),
+        setPivotCommand(DragonSetpoints.HANDOFF),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
@@ -177,7 +177,7 @@ private final MechanismLigament2d m_DragonMech2D =
     public Command handoff() {
       return new SequentialCommandGroup(
         new ParallelCommandGroup(
-          setPivotCommand(DragonState.HANDOFF),
+          setPivotCommand(DragonSetpoints.HANDOFF),
           setRollerPowerCommand(RollerSetpoints.kStop)
         ),
         setRollerPowerCommand(RollerSetpoints.kIntake)
@@ -186,35 +186,35 @@ private final MechanismLigament2d m_DragonMech2D =
 
     public Command poopReadyL1() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.STOW),
+        setPivotCommand(DragonSetpoints.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL1() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.L1),
+        setPivotCommand(DragonSetpoints.L1),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL2() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.L2),
+        setPivotCommand(DragonSetpoints.L2),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL3() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.L3),
+        setPivotCommand(DragonSetpoints.L3),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }
   
     public Command scoreReadyL4() {
       return new ParallelCommandGroup(
-        setPivotCommand(DragonState.L4),
+        setPivotCommand(DragonSetpoints.L4),
         setRollerPowerCommand(RollerSetpoints.kStop)
       );
     }

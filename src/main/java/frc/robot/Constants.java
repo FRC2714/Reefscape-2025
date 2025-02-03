@@ -219,7 +219,7 @@ public final class Constants {
 
     public static final double kSetpointThreshold = 0; // tune
 
-    public static final class ElevatorSetpoints {
+    public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 90;

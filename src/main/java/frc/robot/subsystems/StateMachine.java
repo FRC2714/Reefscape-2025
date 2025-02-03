@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.subsystems.CoralIntake.CoralIntakeStates;
 
 public class StateMachine extends SubsystemBase {
 
@@ -49,47 +50,51 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command setL1() {
-      if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-        return new SequentialCommandGroup(
-          m_dragon.stow(),
-          m_elevator.moveToL1(),
-          m_dragon.scoreReadyL1()
+      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState()) //will only set L1 positions if the handoff is ready
+      {
+          if (m_dragon.isCoralOnDragon().getAsBoolean()) { //if the dragon has a coral it will move the elevator
+          return new SequentialCommandGroup(
+            m_dragon.stow(),
+            m_elevator.moveToL1(),
+            m_dragon.scoreReadyL1()
+          );
+        }
+        return new ParallelCommandGroup( //if not it will poop it
+          new SequentialCommandGroup(
+            m_dragon.stow(),
+            m_elevator.moveToPoop(),
+            m_dragon.poopReadyL1()
+          ),
+          m_coralIntake.poopReadyL1()
         );
       }
-      return new ParallelCommandGroup(
-        new SequentialCommandGroup(
-          m_dragon.stow(),
-          m_elevator.moveToPoop(),
-          m_dragon.poopReadyL1()
-        ),
-        m_coralIntake.poopReadyL1()
-      );
+      return new InstantCommand(); //the elevator will not move if the handoff is not ready
     }
 
     public Command setL2() {
-      if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+      if (m_dragon.isCoralOnDragon().getAsBoolean()) { //if the dragon already has a coral
         return new SequentialCommandGroup(
           m_dragon.stow(),
           m_elevator.moveToL2(),
           m_dragon.scoreReadyL2()
         );
       }
-      return new SequentialCommandGroup(
-        new ParallelCommandGroup(
+      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState()) //this is if we have a coral in our intake and we are ready to handoff
+      {
+        return new SequentialCommandGroup(
           m_dragon.handoff(),
-          m_coralIntake.handoffReady()
-        ),
-        m_coralIntake.handoff(),
-        new WaitUntilCommand(m_dragon.isCoralOnDragon()),
-        new ParallelCommandGroup(
-          new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL2(),
-            m_dragon.scoreReadyL2()
-          ),
-          m_coralIntake.intakeReady()
-        )
-      );
+          m_coralIntake.handoff(),
+          new WaitUntilCommand(m_dragon.isCoralOnDragon()),
+          new ParallelCommandGroup(
+            new SequentialCommandGroup(
+              m_dragon.stow(),
+              m_elevator.moveToL2(),
+              m_dragon.scoreReadyL2()
+            )
+          )
+        );
+      }
+      return new InstantCommand();
     }
 
     public Command setL3() {
@@ -100,22 +105,22 @@ public class StateMachine extends SubsystemBase {
           m_dragon.scoreReadyL3()
         );
       }
-      return new SequentialCommandGroup(
-        new ParallelCommandGroup(
+      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState())
+      {
+        return new SequentialCommandGroup(
           m_dragon.handoff(),
-          m_coralIntake.handoffReady()
-        ),
-        m_coralIntake.handoff(),
-        new WaitUntilCommand(m_dragon.isCoralOnDragon()),
-        new ParallelCommandGroup(
-          new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL3(),
-            m_dragon.scoreReadyL3()
-          ),
-          m_coralIntake.intakeReady()
-        )
-      );
+          m_coralIntake.handoff(),
+          new WaitUntilCommand(m_dragon.isCoralOnDragon()),
+          new ParallelCommandGroup(
+            new SequentialCommandGroup(
+              m_dragon.stow(),
+              m_elevator.moveToL3(),
+              m_dragon.scoreReadyL3()
+            )
+          )
+        );
+      }
+      return new InstantCommand();
     }
 
     public Command setL4() {
@@ -126,27 +131,27 @@ public class StateMachine extends SubsystemBase {
           m_dragon.scoreReadyL4()
         );
       }
-      return new SequentialCommandGroup(
-        new ParallelCommandGroup(
+      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState())
+      {
+        return new SequentialCommandGroup(
           m_dragon.handoff(),
-          m_coralIntake.handoffReady()
-        ),
-        m_coralIntake.handoff(),
-        new WaitUntilCommand(m_dragon.isCoralOnDragon()),
-        new ParallelCommandGroup(
-          new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL4(),
-            m_dragon.scoreReadyL4()
-          ),
-          m_coralIntake.intakeReady()
-        )
-      );
+          m_coralIntake.handoff(),
+          new WaitUntilCommand(m_dragon.isCoralOnDragon()),
+          new ParallelCommandGroup(
+            new SequentialCommandGroup(
+              m_dragon.stow(),
+              m_elevator.moveToL4(),
+              m_dragon.scoreReadyL4()
+            )
+          )
+        );
+      }
+      return new InstantCommand();
     }
 
     public Command scoreCoral() {
       if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-        return m_dragon.score();
+        return new SequentialCommandGroup(m_dragon.score(), m_coralIntake.intake());
       }
       else if (m_coralIntake.isLoaded()) {
         return new SequentialCommandGroup(
@@ -159,11 +164,15 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command intakeCoral() {
-      return new SequentialCommandGroup(
-        m_coralIntake.intake(),
-        new WaitUntilCommand(() -> m_coralIntake.isLoaded()),
-        m_coralIntake.handoffReady()
-      );
+      if(CoralIntakeStates.INTAKEREADY == m_coralIntake.getState()) //can only intake if the intake is ready 
+      {
+        return new SequentialCommandGroup(
+          m_coralIntake.intake(),
+          new WaitUntilCommand(() -> m_coralIntake.isLoaded()),
+          m_coralIntake.handoffReady()
+        );
+      }
+      return new InstantCommand(); //if its not ready it will do nothign
     }
 
     public Command intakeReadyCoral() {
