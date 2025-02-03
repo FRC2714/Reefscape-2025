@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -36,7 +37,7 @@ import frc.robot.Constants.DragonConstants;
 public class Dragon extends SubsystemBase {
 
 
-  private enum DragonState {
+  private enum DragonSetpoints {
     STOW,
     HANDOFF,
     L1,
@@ -45,7 +46,9 @@ public class Dragon extends SubsystemBase {
     L4
   }
 
-  private DragonState m_dragonState;
+  private DragonSetpoints m_dragonState;
+
+  private boolean coralOnDragon;
 
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
@@ -98,11 +101,13 @@ private final MechanismLigament2d m_DragonMech2D =
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    m_dragonState = DragonState.STOW;
+    m_dragonState = DragonSetpoints.STOW;
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
     SmartDashboard.putData("dragon", m_mech2d);
+
+    coralOnDragon = false;
   }
 
   private void moveToSetpoint() {
@@ -113,11 +118,11 @@ private final MechanismLigament2d m_DragonMech2D =
     return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
-  private Command setDragonStateCommand(DragonState state) {
+  private Command setDragonStateCommand(DragonSetpoints state) {
     return new InstantCommand(() -> m_dragonState = state);
   }
 
-  private Command setSetpointCommand(DragonState setpoint) {
+  private Command setPivotCommand(DragonSetpoints setpoint) {
     return new SequentialCommandGroup(
         setDragonStateCommand(setpoint),
         new InstantCommand(
@@ -151,52 +156,103 @@ private final MechanismLigament2d m_DragonMech2D =
       return new InstantCommand(() -> pivotRollers.set(power));
     }
 
-    public Command moveToStow() {
-      return setSetpointCommand(DragonState.STOW);
-    }
-  
-    public Command moveToHandoff() {
-      return setSetpointCommand(DragonState.HANDOFF);
-    }
-  
-    public Command moveToL1() {
-      return setSetpointCommand(DragonState.L1);
-    }
-  
-    public Command moveToL2() {
-      return setSetpointCommand(DragonState.L2);
-    }
-  
-    public Command moveToL3() {
-      return setSetpointCommand(DragonState.L3);
-    }
-  
-    public Command moveToL4() {
-      return setSetpointCommand(DragonState.L4);
+    public BooleanSupplier rollerCurrentSpikeDetected() {
+      return () -> pivotRollers.getOutputCurrent() >= DragonConstants.kRollerCurrentThreshold;
     }
 
-    public Command intake() {
-      return setRollerPowerCommand(RollerSetpoints.kIntake);
+    public Command stow() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.STOW),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command handoffReady() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
     }
 
-    public Command extake() {
-      return setRollerPowerCommand(RollerSetpoints.kExtake);
+    public Command handoff() {
+      return new SequentialCommandGroup(
+        new ParallelCommandGroup(
+          setPivotCommand(DragonSetpoints.HANDOFF),
+          setRollerPowerCommand(RollerSetpoints.kStop)
+        ),
+        setRollerPowerCommand(RollerSetpoints.kIntake)
+      );
+    }
+
+    public Command poopReadyL1() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.STOW),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL1() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.L1),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL2() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.L2),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL3() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.L3),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+  
+    public Command scoreReadyL4() {
+      return new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoints.L4),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      );
+    }
+
+    public Command score() {
+      return new SequentialCommandGroup(
+        new InstantCommand(() -> coralOnDragon = false),
+        setRollerPowerCommand(RollerSetpoints.kExtake)
+      );
     }
     
     public double getSimulationCurrentDraw() {
       return m_pivotSim.getCurrentDrawAmps();
+    }
+  
+    private void setCoralOnDragon() {
+      if (!coralOnDragon) {
+        coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
+      }
+    }
+
+    public BooleanSupplier isCoralOnDragon() {
+      // return () -> coralOnDragon;
+      return () -> true;
     }
         
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Target Position", pivotCurrentTarget);
+    SmartDashboard.putNumber("Dragon/Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());
     SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint().getAsBoolean());
+
+    setCoralOnDragon();
 
 
     m_DragonMech2D.setAngle(
