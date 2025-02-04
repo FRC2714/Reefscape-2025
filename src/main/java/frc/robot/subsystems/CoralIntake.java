@@ -39,23 +39,29 @@ public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  public enum CoralIntakeSetpoints {
+  private enum CoralIntakeSetpoint {
     STOW,
     HANDOFF,
     INTAKE,
     EXTAKE,
-    POOP_L1
+    POOP
   }
 
-  public enum CoralIntakeStates
+  public enum CoralIntakeState
   {
-    INTAKEREADY,
-    HANDOFFREADY,
-    POOPREADY
+    STOW,
+    INTAKE_READY,
+    INTAKE,
+    EXTAKE_READY,
+    EXTAKE,
+    HANDOFF_READY,
+    HANDOFF,
+    POOP_READY,
+    POOP_SCORE
   }
 
-  private CoralIntakeSetpoints m_coralIntakeSetpoint;
-  private CoralIntakeStates m_CoralIntakeStates;
+  private CoralIntakeSetpoint m_coralIntakeSetpoint;
+  private CoralIntakeState m_coralIntakeState;
   
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
@@ -130,7 +136,8 @@ public class CoralIntake extends SubsystemBase {
       ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
-    m_coralIntakeSetpoint = CoralIntakeSetpoints.STOW;
+    m_coralIntakeSetpoint = CoralIntakeSetpoint.STOW;
+    m_coralIntakeState = CoralIntakeState.STOW;
 
     // Display mechanism2d
     SmartDashboard.putData("Coral Intake", m_mech2d);
@@ -148,15 +155,15 @@ public class CoralIntake extends SubsystemBase {
     return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
   }
 
-  private Command setCoralIntakeSetpointCommand(CoralIntakeSetpoints state) {
+  private Command setCoralIntakeSetpointCommand(CoralIntakeSetpoint state) {
     return new InstantCommand(() -> m_coralIntakeSetpoint = state);
   }
 
-  private Command setCoralIntakeStateCommand(CoralIntakeStates state) {
-    return new InstantCommand(() -> m_CoralIntakeStates = state);
+  private Command setCoralIntakeStateCommand(CoralIntakeState state) {
+    return new InstantCommand(() -> m_coralIntakeState = state);
   }
 
-  private Command setPivotCommand(CoralIntakeSetpoints setpoint) {
+  private Command setPivotCommand(CoralIntakeSetpoint setpoint) {
     return new SequentialCommandGroup(
       setCoralIntakeSetpointCommand(setpoint),
       new InstantCommand(
@@ -174,7 +181,7 @@ public class CoralIntake extends SubsystemBase {
           case EXTAKE:
             pivotCurrentTarget = PivotSetpoints.kExtake;
             break;
-          case POOP_L1:
+          case POOP:
             pivotCurrentTarget = PivotSetpoints.kEject;
             break;
 
@@ -198,72 +205,76 @@ public class CoralIntake extends SubsystemBase {
 
   public Command intake() {
     return new ParallelCommandGroup(
-      setPivotCommand(CoralIntakeSetpoints.INTAKE),
+      setPivotCommand(CoralIntakeSetpoint.INTAKE),
       setRollerPowerCommand(RollerSetpoints.kIntake)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE));
   }
 
   public Command intakeReady() {
     return new ParallelCommandGroup(
-        setCoralIntakeStateCommand(CoralIntakeStates.INTAKEREADY),
-        setPivotCommand(CoralIntakeSetpoints.INTAKE),
+        setPivotCommand(CoralIntakeSetpoint.INTAKE),
         setRollerPowerCommand(RollerSetpoints.kStop)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE_READY));
+  }
+
+  public Command extakeReady() {
+    return new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.EXTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.EXTAKE_READY));
   }
 
   public Command extake() {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
-        setPivotCommand(CoralIntakeSetpoints.EXTAKE),
+        setPivotCommand(CoralIntakeSetpoint.EXTAKE),
         setRollerPowerCommand(RollerSetpoints.kStop)
       ),
       setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.EXTAKE));
   }
 
   public Command stow() {
     return new ParallelCommandGroup(
-      setPivotCommand(CoralIntakeSetpoints.STOW),
+      setPivotCommand(CoralIntakeSetpoint.STOW),
       setRollerPowerCommand(RollerSetpoints.kStop)
-    );
-  }
-
-  public Command handoff() {
-    return new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        setPivotCommand(CoralIntakeSetpoints.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      ),
-      setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.STOW));
   }
 
   public Command handoffReady()
   {
     return new ParallelCommandGroup(
-      setCoralIntakeStateCommand(CoralIntakeStates.HANDOFFREADY),
-      setPivotCommand(CoralIntakeSetpoints.HANDOFF),
+      setPivotCommand(CoralIntakeSetpoint.HANDOFF),
       setRollerPowerCommand(RollerSetpoints.kStop)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.HANDOFF_READY));
   }
 
-  public Command poopL1() {
+  public Command handoff() {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
-        setPivotCommand(CoralIntakeSetpoints.POOP_L1),
+        setPivotCommand(CoralIntakeSetpoint.HANDOFF),
         setRollerPowerCommand(RollerSetpoints.kStop)
       ),
       setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.HANDOFF));
   }
 
   public Command poopReadyL1()
   {
     return new ParallelCommandGroup(
-      setCoralIntakeStateCommand(CoralIntakeStates.POOPREADY),
-        setPivotCommand(CoralIntakeSetpoints.POOP_L1),
+      setPivotCommand(CoralIntakeSetpoint.POOP),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.POOP_READY));
+  }
+
+  public Command poopL1() {
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.POOP),
         setRollerPowerCommand(RollerSetpoints.kStop)
-    );
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.POOP_SCORE));
   }
 
 
@@ -271,14 +282,14 @@ public class CoralIntake extends SubsystemBase {
     return !beamBreak.get();
   }
 
-  public CoralIntakeSetpoints getSetpointState()
+  public CoralIntakeSetpoint getSetpoint()
   {
     return m_coralIntakeSetpoint;
   }
 
-  public CoralIntakeStates getState()
+  public CoralIntakeState getState()
   {
-    return m_CoralIntakeStates;
+    return m_coralIntakeState;
   }
 
 
