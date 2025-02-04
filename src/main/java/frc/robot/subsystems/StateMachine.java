@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.CoralIntake.CoralIntakeStates;
+import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 
 public class StateMachine extends SubsystemBase {
 
@@ -50,7 +50,7 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command setL1() {
-      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState()) //will only set L1 positions if the handoff is ready
+      if(CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()) //will only set L1 positions if the handoff is ready
       {
           if (m_dragon.isCoralOnDragon().getAsBoolean()) { //if the dragon has a coral it will move the elevator
           return new SequentialCommandGroup(
@@ -79,7 +79,7 @@ public class StateMachine extends SubsystemBase {
           m_dragon.scoreReadyL2()
         );
       }
-      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState()) //this is if we have a coral in our intake and we are ready to handoff
+      if(CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()) //this is if we have a coral in our intake and we are ready to handoff
       {
         return new SequentialCommandGroup(
           m_dragon.handoff(),
@@ -105,7 +105,7 @@ public class StateMachine extends SubsystemBase {
           m_dragon.scoreReadyL3()
         );
       }
-      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState())
+      if(CoralIntakeState.HANDOFF_READY == m_coralIntake.getState())
       {
         return new SequentialCommandGroup(
           m_dragon.handoff(),
@@ -131,7 +131,7 @@ public class StateMachine extends SubsystemBase {
           m_dragon.scoreReadyL4()
         );
       }
-      if(CoralIntakeStates.HANDOFFREADY == m_coralIntake.getState())
+      if(CoralIntakeState.HANDOFF_READY == m_coralIntake.getState())
       {
         return new SequentialCommandGroup(
           m_dragon.handoff(),
@@ -164,7 +164,7 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command intakeCoral() {
-      if(CoralIntakeStates.INTAKEREADY == m_coralIntake.getState()) //can only intake if the intake is ready 
+      if(CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) //can only intake if the intake is ready 
       {
         return new SequentialCommandGroup(
           m_coralIntake.intake(),
