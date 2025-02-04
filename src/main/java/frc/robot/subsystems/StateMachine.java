@@ -63,9 +63,9 @@ public class StateMachine extends SubsystemBase {
           new SequentialCommandGroup(
             m_dragon.stow(),
             m_elevator.moveToPoop(),
+            m_coralIntake.poopReadyL1(),
             m_dragon.poopReadyL1()
-          ),
-          m_coralIntake.poopReadyL1()
+          )
         );
       }
       return new InstantCommand(); //the elevator will not move if the handoff is not ready
@@ -150,10 +150,10 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command scoreCoral() {
-      if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+      if (m_dragon.isCoralOnDragon().getAsBoolean()) { //if the dragon has a piece regardless if the op pressed any level but 1 or if we decided to move levels
         return new SequentialCommandGroup(m_dragon.score(), m_coralIntake.intake());
       }
-      else if (m_coralIntake.isLoaded()) {
+      else if (CoralIntakeStates.POOPREADY == m_coralIntake.getState()) { //if the op selects l1 and the driver wants to score, it will poop
         return new SequentialCommandGroup(
           m_coralIntake.poopL1(),
           new WaitUntilCommand(() -> !m_coralIntake.isLoaded()),
