@@ -153,7 +153,7 @@ public class StateMachine extends SubsystemBase {
       if (m_dragon.isCoralOnDragon().getAsBoolean()) { //if the dragon has a piece regardless if the op pressed any level but 1 or if we decided to move levels
         return new SequentialCommandGroup(m_dragon.score(), m_coralIntake.intake());
       }
-      else if (CoralIntakeStates.POOPREADY == m_coralIntake.getState()) { //if the op selects l1 and the driver wants to score, it will poop
+      else if (CoralIntakeState.POOP_READY == m_coralIntake.getState()) { //if the op selects l1 and the driver wants to score, it will poop
         return new SequentialCommandGroup(
           m_coralIntake.poopL1(),
           new WaitUntilCommand(() -> !m_coralIntake.isLoaded()),
