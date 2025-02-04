@@ -37,7 +37,7 @@ import frc.robot.Constants.DragonConstants;
 public class Dragon extends SubsystemBase {
 
 
-  private enum DragonSetpoints {
+  private enum DragonSetpoint {
     STOW,
     HANDOFF,
     L1,
@@ -46,7 +46,17 @@ public class Dragon extends SubsystemBase {
     L4
   }
 
-  private DragonSetpoints m_dragonState;
+  public enum DragonState {
+    STOW,
+    HANDOFF_READY,
+    HANDOFF,
+    SCORE_READY,
+    SCORE,
+    POOP_READY
+  }
+
+  private DragonSetpoint m_dragonSetpoint;
+  private DragonState m_dragonState;
 
   private boolean coralOnDragon;
 
@@ -101,7 +111,8 @@ private final MechanismLigament2d m_DragonMech2D =
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    m_dragonState = DragonSetpoints.STOW;
+    m_dragonState = DragonState.STOW;
+    m_dragonSetpoint = DragonSetpoint.STOW;
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
@@ -118,128 +129,142 @@ private final MechanismLigament2d m_DragonMech2D =
     return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
-  private Command setDragonStateCommand(DragonSetpoints state) {
+  private Command setDragonStateCommand(DragonState state) {
     return new InstantCommand(() -> m_dragonState = state);
   }
 
-  private Command setPivotCommand(DragonSetpoints setpoint) {
+  private Command setDragonSetpointCommand(DragonSetpoint setpoint) {
+    return new InstantCommand(() -> m_dragonSetpoint = setpoint);
+  }
+
+  private Command setPivotCommand(DragonSetpoint setpoint) {
     return new SequentialCommandGroup(
-        setDragonStateCommand(setpoint),
-        new InstantCommand(
-        () -> {
-          switch (m_dragonState) {
-            case STOW:
-              pivotCurrentTarget = PivotSetpoints.kStow;
-              break;
-            case HANDOFF:
-              pivotCurrentTarget = PivotSetpoints.kHandoff;
-              break;
-            case L1:
-              pivotCurrentTarget = PivotSetpoints.kLevel1;
-              break;
-            case L2:
-              pivotCurrentTarget = PivotSetpoints.kLevel2;
-              break;
-            case L3:
-              pivotCurrentTarget = PivotSetpoints.kLevel3;
-              break;
-            case L4:
-              pivotCurrentTarget = PivotSetpoints.kLevel4;
-              break;
-          }}),
-          new InstantCommand(() -> moveToSetpoint()),
-          new WaitUntilCommand(atSetpoint())
-        );
-    }
-
-    private Command setRollerPowerCommand(double power) {
-      return new InstantCommand(() -> pivotRollers.set(power));
-    }
-
-    public BooleanSupplier rollerCurrentSpikeDetected() {
-      return () -> pivotRollers.getOutputCurrent() >= DragonConstants.kRollerCurrentThreshold;
-    }
-
-    public Command stow() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)
+      setDragonSetpointCommand(setpoint),
+      new InstantCommand(
+      () -> {
+        switch (m_dragonSetpoint) {
+          case STOW:
+            pivotCurrentTarget = PivotSetpoints.kStow;
+            break;
+          case HANDOFF:
+            pivotCurrentTarget = PivotSetpoints.kHandoff;
+            break;
+          case L1:
+            pivotCurrentTarget = PivotSetpoints.kLevel1;
+            break;
+          case L2:
+            pivotCurrentTarget = PivotSetpoints.kLevel2;
+            break;
+          case L3:
+            pivotCurrentTarget = PivotSetpoints.kLevel3;
+            break;
+          case L4:
+            pivotCurrentTarget = PivotSetpoints.kLevel4;
+            break;
+        }}),
+        new InstantCommand(() -> moveToSetpoint()),
+        new WaitUntilCommand(atSetpoint())
       );
-    }
+  }
+
+  private Command setRollerPowerCommand(double power) {
+    return new InstantCommand(() -> pivotRollers.set(power));
+  }
+
+  public BooleanSupplier rollerCurrentSpikeDetected() {
+    return () -> pivotRollers.getOutputCurrent() >= DragonConstants.kRollerCurrentThreshold;
+  }
+
+  public Command stow() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.STOW),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.STOW));
+  }
+
+  public Command handoffReady() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.HANDOFF),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.HANDOFF_READY));
+  }
+
+  public Command handoff() {
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        setPivotCommand(DragonSetpoint.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kIntake)
+    ).andThen(setDragonStateCommand(DragonState.HANDOFF));
+  }
+
+  public Command poopReadyL1() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.STOW),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.POOP_READY));
+  }
+
+  public Command scoreReadyL1() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.L1),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+  }
+
+  public Command scoreReadyL2() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.L2),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+  }
+
+  public Command scoreReadyL3() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.L3),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+  }
+
+  public Command scoreReadyL4() {
+    return new ParallelCommandGroup(
+      setPivotCommand(DragonSetpoint.L4),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+  }
+
+  public Command score() {
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> coralOnDragon = false),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setDragonStateCommand(DragonState.SCORE));
+  }
   
-    public Command handoffReady() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
+  public double getSimulationCurrentDraw() {
+    return m_pivotSim.getCurrentDrawAmps();
+  }
 
-    public Command handoff() {
-      return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-          setPivotCommand(DragonSetpoints.HANDOFF),
-          setRollerPowerCommand(RollerSetpoints.kStop)
-        ),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
-      );
+  private void setCoralOnDragon() {
+    if (!coralOnDragon) {
+      coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
     }
+  }
 
-    public Command poopReadyL1() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
-  
-    public Command scoreReadyL1() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.L1),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
-  
-    public Command scoreReadyL2() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.L2),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
-  
-    public Command scoreReadyL3() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.L3),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
-  
-    public Command scoreReadyL4() {
-      return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoints.L4),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-      );
-    }
+  public BooleanSupplier isCoralOnDragon() {
+    return () -> coralOnDragon;
+  }
 
-    public Command score() {
-      return new SequentialCommandGroup(
-        new InstantCommand(() -> coralOnDragon = false),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-      );
-    }
-    
-    public double getSimulationCurrentDraw() {
-      return m_pivotSim.getCurrentDrawAmps();
-    }
-  
-    private void setCoralOnDragon() {
-      if (!coralOnDragon) {
-        coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
-      }
-    }
+  public DragonSetpoint getSetpoint()
+  {
+    return m_dragonSetpoint;
+  }
 
-    public BooleanSupplier isCoralOnDragon() {
-      // return () -> coralOnDragon;
-      return () -> true;
-    }
+  public DragonState getState()
+  {
+    return m_dragonState;
+  }
+
         
   @Override
   public void periodic() {

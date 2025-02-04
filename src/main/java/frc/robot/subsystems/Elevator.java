@@ -35,7 +35,7 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
 
-  private enum ElevatorSetpoints {
+  private enum ElevatorSetpoint {
     STOW,
     HANDOFF,
     POOP,
@@ -45,7 +45,18 @@ public class Elevator extends SubsystemBase {
     L4
   }
 
-  private ElevatorSetpoints m_elevatorState;
+  private enum ElevatorState {
+    STOW,
+    HANDOFF,
+    POOP,
+    L1,
+    L2,
+    L3,
+    L4
+  }
+
+  private ElevatorSetpoint m_elevatorSetpoint;
+  private ElevatorState m_elevatorState;
 
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
@@ -102,7 +113,8 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
     
 
-    m_elevatorState = ElevatorSetpoints.STOW;
+    m_elevatorSetpoint = ElevatorSetpoint.STOW;
+    m_elevatorState = ElevatorState.STOW;
 
     SmartDashboard.putData("Elevator", m_mech2d);
 
@@ -138,16 +150,20 @@ public class Elevator extends SubsystemBase {
     return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
   }
 
-  private Command setElevatorStateCommand(ElevatorSetpoints state) {
+  private Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {
+    return new InstantCommand(() -> m_elevatorSetpoint = setpoint);
+  }
+
+  private Command setElevatorStateCommand(ElevatorState state) {
     return new InstantCommand(() -> m_elevatorState = state);
   }
 
-  private Command setElevatorSetpointCommand(ElevatorSetpoints setpoint) {
+  private Command setLevelCommand(ElevatorSetpoint setpoint) {
     return new SequentialCommandGroup(
-        setElevatorStateCommand(setpoint),
+        setElevatorSetpointCommand(setpoint),
         new InstantCommand(
         () -> {
-          switch (m_elevatorState) {
+          switch (m_elevatorSetpoint) {
             case STOW:
               elevatorCurrentTarget = ElevatorLevels.kStow;
               break;
@@ -176,31 +192,48 @@ public class Elevator extends SubsystemBase {
   }
   
   public Command moveToStow() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.STOW);
+    return setLevelCommand(ElevatorSetpoint.STOW)
+      .andThen(setElevatorStateCommand(ElevatorState.STOW));
   }
 
   public Command moveToHandoff() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.HANDOFF);
+    return setLevelCommand(ElevatorSetpoint.HANDOFF)
+      .andThen(setElevatorStateCommand(ElevatorState.HANDOFF));
   }
 
   public Command moveToPoop() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.POOP);
+    return setLevelCommand(ElevatorSetpoint.POOP)
+      .andThen(setElevatorStateCommand(ElevatorState.POOP));
   }
 
   public Command moveToL1() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.L1);
+    return setLevelCommand(ElevatorSetpoint.L1)
+      .andThen(setElevatorStateCommand(ElevatorState.L1));
   }
 
   public Command moveToL2() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.L2);
+    return setLevelCommand(ElevatorSetpoint.L2)
+      .andThen(setElevatorStateCommand(ElevatorState.L2));
   }
 
   public Command moveToL3() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.L3);
+    return setLevelCommand(ElevatorSetpoint.L3)
+      .andThen(setElevatorStateCommand(ElevatorState.L3));
   }
 
   public Command moveToL4() {
-    return setElevatorSetpointCommand(ElevatorSetpoints.L4);
+    return setLevelCommand(ElevatorSetpoint.L4)
+      .andThen(setElevatorStateCommand(ElevatorState.L4));
+  }
+
+  public ElevatorSetpoint getSetpoint()
+  {
+    return m_elevatorSetpoint;
+  }
+
+  public ElevatorState getState()
+  {
+    return m_elevatorState;
   }
 
   @Override

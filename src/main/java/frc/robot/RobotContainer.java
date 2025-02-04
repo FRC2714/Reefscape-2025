@@ -120,7 +120,7 @@ public class RobotContainer {
 
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_stateMachine.scoreAlgae())
+      .onTrue(m_stateMachine.extakeAlgae())
       .onFalse(m_stateMachine.stowAlgae());
 
     m_driverController

@@ -172,7 +172,7 @@ public class StateMachine extends SubsystemBase {
           m_coralIntake.handoffReady()
         );
       }
-      return new InstantCommand(); //if its not ready it will do nothign
+      return new InstantCommand(); //if its not ready it will do nothing
     }
 
     public Command intakeReadyCoral() {
@@ -201,10 +201,6 @@ public class StateMachine extends SubsystemBase {
 
     public Command stowAlgae() {
       return m_algaeIntake.moveToStow();
-    }
-
-    public Command scoreAlgae() {
-      return m_algaeIntake.moveToScore();
     }
 
 
