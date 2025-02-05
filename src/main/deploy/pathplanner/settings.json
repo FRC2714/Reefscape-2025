@@ -3,12 +3,15 @@
   "robotLength": 0.61,
   "holonomicMode": true,
   "pathFolders": [
-    "Paths 2025",
-    "TEST"
+    "Archived Paths",
+    "Paths",
+    "TEST",
+    "Waypoints"
   ],
   "autoFolders": [
-    "TEST",
-    "Auto 2025"
+    "Archived Autos",
+    "Auto 2025",
+    "TEST"
   ],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 4.0,

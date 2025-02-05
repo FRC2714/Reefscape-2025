@@ -9,6 +9,18 @@
           "data": {
             "pathName": "Start to H"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to L"
+          }
         }
       ]
     }

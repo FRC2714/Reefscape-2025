@@ -70,6 +70,8 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
+  private final Field2d m_field = new Field2d();
+
   public final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -391,6 +393,10 @@ public class DriveSubsystem extends SubsystemBase {
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     update();
     m_fieldPose.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+
+        m_field.setRobotPose(getPose());
+    
+        SmartDashboard.putData("Field", m_field);
   }
 
   /**
@@ -538,4 +544,6 @@ public class DriveSubsystem extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
+
+
 }

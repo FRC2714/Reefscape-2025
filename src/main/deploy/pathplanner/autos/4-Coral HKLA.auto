@@ -13,25 +13,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "H to X"
+            "pathName": "H to Feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "X to K"
+            "pathName": "Feeder to K"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "K to Y"
+            "pathName": "K to Feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Y to A"
+            "pathName": "Feeder to L"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to A"
           }
         }
       ]

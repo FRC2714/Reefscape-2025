@@ -12,7 +12,7 @@
         "y": 1.8994999999999993
       },
       "isLocked": false,
-      "linkedName": "Z-Algea"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -45,7 +45,7 @@
     "rotation": 60.94539590092283
   },
   "reversed": false,
-  "folder": "Paths 2025",
+  "folder": "Archived Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 140.36563092663988

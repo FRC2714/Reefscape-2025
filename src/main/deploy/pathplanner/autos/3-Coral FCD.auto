@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "Start to F"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "F to Y"
+            "pathName": "F to Feeder"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Y to A"
+            "pathName": "Feeder to D"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D to Feeder"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder to C"
           }
         }
       ]

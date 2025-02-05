@@ -25,12 +25,14 @@ import frc.robot.subsystems.Dragon.DragonSetpoint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-
+import com.pathplanner.lib.auto.NamedCommands;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -43,13 +45,13 @@ public class RobotContainer {
   private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
-                                                           LimelightConstants.kRightCameraHeight,
-                                                           LimelightConstants.kRightMountingAngle,
-                                                           LimelightConstants.kReefTagHeight);
+      LimelightConstants.kRightCameraHeight,
+      LimelightConstants.kRightMountingAngle,
+      LimelightConstants.kReefTagHeight);
   private final Limelight m_leftLimelight = new Limelight(LimelightConstants.kLeftLimelightName,
-                                                         LimelightConstants.kLeftCameraHeight,
-                                                         LimelightConstants.kLeftMountingAngle,
-                                                         LimelightConstants.kReefTagHeight);
+      LimelightConstants.kLeftCameraHeight,
+      LimelightConstants.kLeftMountingAngle,
+      LimelightConstants.kReefTagHeight);
 
   private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
   LimelightConstants.kBackCameraHeight,
@@ -79,6 +81,18 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
+    NamedCommands.registerCommand("auto align left", 
+    new SequentialCommandGroup( 
+        new InstantCommand(() -> PPHolonomicDriveController.overrideXYFeedback(() -> 0.0,() -> 0.0)),  
+        new InstantCommand(() -> PPHolonomicDriveController.overrideRotationFeedback(() -> 0.0)),    
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline)
+    ));
+    NamedCommands.registerCommand("clear overrides", new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides()));
+    NamedCommands.registerCommand("auto align right", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+
+
 
     configureButtonBindings();
 
