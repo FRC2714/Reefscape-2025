@@ -17,7 +17,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -370,7 +369,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("right pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-right"));
     SmartDashboard.putNumber("back pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-back"));
 
-
     // Update the odometry in the periodic block
     m_odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
@@ -393,10 +391,7 @@ public class DriveSubsystem extends SubsystemBase {
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     update();
     m_fieldPose.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
-
-        m_field.setRobotPose(getPose());
-    
-        SmartDashboard.putData("Field", m_field);
+    SmartDashboard.putData("Field", m_field);
   }
 
   /**
@@ -408,6 +403,9 @@ public class DriveSubsystem extends SubsystemBase {
     return m_odometry.getPoseMeters();
   }
 
+  public Pose2d getEstimatedPose() {
+    return swerveDrivePoseEstimator.getEstimatedPosition();
+  }
   /**
    * Resets the odometry to the specified pose.
    *
@@ -544,6 +542,5 @@ public class DriveSubsystem extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
-
 
 }
