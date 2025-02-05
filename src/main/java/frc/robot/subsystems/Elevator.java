@@ -45,14 +45,11 @@ public class Elevator extends SubsystemBase {
     L4
   }
 
-  private enum ElevatorState {
+  public enum ElevatorState {
     STOW,
     HANDOFF,
     POOP,
-    L1,
-    L2,
-    L3,
-    L4
+    SCORE_READY
   }
 
   private ElevatorSetpoint m_elevatorSetpoint;
@@ -208,22 +205,22 @@ public class Elevator extends SubsystemBase {
 
   public Command moveToL1() {
     return setLevelCommand(ElevatorSetpoint.L1)
-      .andThen(setElevatorStateCommand(ElevatorState.L1));
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL2() {
     return setLevelCommand(ElevatorSetpoint.L2)
-      .andThen(setElevatorStateCommand(ElevatorState.L2));
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL3() {
     return setLevelCommand(ElevatorSetpoint.L3)
-      .andThen(setElevatorStateCommand(ElevatorState.L3));
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL4() {
     return setLevelCommand(ElevatorSetpoint.L4)
-      .andThen(setElevatorStateCommand(ElevatorState.L4));
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public ElevatorSetpoint getSetpoint()

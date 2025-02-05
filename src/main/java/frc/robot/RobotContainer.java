@@ -75,11 +75,13 @@ public class RobotContainer {
   private final JoystickButton L2Button = new JoystickButton(m_operatorController2, 2); // L2
   private final JoystickButton L3Button = new JoystickButton(m_operatorController2, 3); // L3
   private final JoystickButton L4Button = new JoystickButton(m_operatorController2, 4); // L4
-  private final JoystickButton coralIntakeButton = new JoystickButton(m_operatorController, 5); // Coral Station
-  private final JoystickButton coralExtakeButton = new JoystickButton(m_operatorController, 7);
-  private final JoystickButton handoffButton = new JoystickButton(m_operatorController, 6); // L4
-  private final JoystickButton stowButton = new JoystickButton(m_operatorController, 8); // Stow
-  
+  private final JoystickButton coralIntakeButton = new JoystickButton(m_operatorController2, 8); // Coral Station
+  private final JoystickButton coralExtakeButton = new JoystickButton(m_operatorController2, 7);
+  private final JoystickButton handoffButton = new JoystickButton(m_operatorController2, 6); // L4
+  private final JoystickButton stowButton = new JoystickButton(m_operatorController2, 5); // Stow
+  private final JoystickButton loadCoralButton = new JoystickButton(m_operatorController2, 10); // Stow
+  private final JoystickButton coralonDragonButton = new JoystickButton(m_operatorController2,9); // Stow
+
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -151,12 +153,13 @@ public class RobotContainer {
     // handoffButton.onTrue(m_stateMachine.handoffCoral());
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+
+    loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse()); // REMOVE AFTER TESTING OR SWITCH TO IS SIM
+    coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse()); // REMOVE AFTER TESTING OR SWITCH TO IS SIM
   }
 
   public void setTeleOpDefaultStates() {
-    m_stateMachine.stowAlgae().schedule();
-    m_stateMachine.stowElevator().schedule();
-    m_stateMachine.stowCoralIntake().schedule();
+    m_stateMachine.setDefaultStates().schedule();
     m_blinkin.setOrange(); //default lights are orange
   }
 

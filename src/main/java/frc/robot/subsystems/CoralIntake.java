@@ -66,6 +66,8 @@ public class CoralIntake extends SubsystemBase {
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
+  private boolean loaded;
+
   private SparkFlex pivotMotor = new SparkFlex(CoralIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
@@ -76,8 +78,6 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
   private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
-
-  private double pivotReference = 0;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -138,6 +138,8 @@ public class CoralIntake extends SubsystemBase {
 
     m_coralIntakeSetpoint = CoralIntakeSetpoint.STOW;
     m_coralIntakeState = CoralIntakeState.STOW;
+
+    loaded = false;
 
     // Display mechanism2d
     SmartDashboard.putData("Coral Intake", m_mech2d);
@@ -206,7 +208,8 @@ public class CoralIntake extends SubsystemBase {
   public Command intake() {
     return new ParallelCommandGroup(
       setPivotCommand(CoralIntakeSetpoint.INTAKE),
-      setRollerPowerCommand(RollerSetpoints.kIntake)
+      setRollerPowerCommand(RollerSetpoints.kIntake),
+      setCoralIntakeStateCommand(CoralIntakeState.INTAKE)
     ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE));
   }
 
@@ -279,7 +282,16 @@ public class CoralIntake extends SubsystemBase {
 
 
   public boolean isLoaded() {
-    return !beamBreak.get();
+    // return !beamBreak.get();
+    return loaded;
+  }
+
+  public Command setLoadedTrue() {
+    return new InstantCommand(() -> loaded = true);
+  }
+
+  public Command setLoadedFalse() {
+    return new InstantCommand(() -> loaded = false);
   }
 
   public CoralIntakeSetpoint getSetpoint()
@@ -308,10 +320,12 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotReference);
+    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotCurrentTarget);
 
-    SmartDashboard.putString("Dragon State", m_coralIntakeSetpoint.toString());
+    SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
     SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Loaded?", isLoaded());
+
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());

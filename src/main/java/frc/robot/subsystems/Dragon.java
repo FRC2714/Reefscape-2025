@@ -255,6 +255,16 @@ private final MechanismLigament2d m_DragonMech2D =
     return () -> coralOnDragon;
   }
 
+  public Command coralOnDragonTrue()
+  {
+    return new InstantCommand(() -> coralOnDragon = true);
+  }
+
+  public Command coralonDragonFalse()
+  {
+    return new InstantCommand(() -> coralOnDragon = false);
+  }
+
   public DragonSetpoint getSetpoint()
   {
     return m_dragonSetpoint;
@@ -276,6 +286,8 @@ private final MechanismLigament2d m_DragonMech2D =
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());
     SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Coral on Dragon", isCoralOnDragon().getAsBoolean());
+
 
     setCoralOnDragon();
 
