@@ -21,6 +21,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.StateMachine.State;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,6 +44,7 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final AlgaeIntake m_algaeSubsystem = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
+  private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
                                                            LimelightConstants.kRightCameraHeight,
                                                            LimelightConstants.kRightMountingAngle,
@@ -62,7 +64,7 @@ public class RobotContainer {
   private final Dragon m_dragon = new Dragon();
 
   private final Superstructure m_superstructure = new Superstructure(
-    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_leftLimelight, m_rightLimelight);
+    m_algaeSubsystem, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight);
 
   private final StateMachine m_stateMachine = new StateMachine(m_superstructure);
 
@@ -70,15 +72,19 @@ public class RobotContainer {
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
-  // Operator Controller
+  // ! Operator Controller: Change button configurations after button box is built
+  
+  // Stages
   private final JoystickButton L1Button = new JoystickButton(m_operatorController, 1); // L1
   private final JoystickButton L2Button = new JoystickButton(m_operatorController, 2); // L2
   private final JoystickButton L3Button = new JoystickButton(m_operatorController, 3); // L3
   private final JoystickButton L4Button = new JoystickButton(m_operatorController, 4); // L4
+
+  // Others
   private final JoystickButton coralStationButton = new JoystickButton(m_operatorController, 5); // Coral Station
   private final JoystickButton handoffButton = new JoystickButton(m_operatorController, 6); // L4
   private final JoystickButton stowButton = new JoystickButton(m_operatorController, 8); // Stow
-  
+
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -117,6 +123,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    // Driver Controller Actions
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
       .onTrue(m_stateMachine.algaeIntakeSelectCommand(State.EXTAKE))
@@ -135,12 +142,15 @@ public class RobotContainer {
     // Force Actions
     m_driverController.povLeft()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-  // TODO: add pov up down for coral station and processor
+    // TODO: add pov up down for coral station and processor
     // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
+    // Operator Controller Actions
+
     // Stages
     L1Button.onTrue(m_stateMachine.scoreLevel(State.L1));
     L2Button.onTrue(m_stateMachine.scoreLevel(State.L2));
@@ -153,13 +163,24 @@ public class RobotContainer {
 
     m_driverController.leftBumper()
     .whileTrue(m_stateMachine.coralHandoff());
- 
+
+    // Reef Branches for HUD
+    int[] stalkNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    for (int i = 0; i < stalkNumbers.length; i++) {
+      final int number = stalkNumbers[i]; // Capture the number for the lambda
+      new JoystickButton(m_operatorController, i + 1) // i + initial button number
+          .onTrue(new InstantCommand(() -> {
+              SmartDashboard.putNumber("Reef Stalk Number", number);
+          }));
   }
+}
 
   public void setTeleOpDefaultStates() {
     m_stateMachine.algaeIntakeSelectCommand(State.STOW).schedule();
     m_stateMachine.stowElevator().schedule();
     m_stateMachine.coralIntakeSelectCommand(State.STOW).schedule();
+    m_blinkin.setOrange(); //default lights are orange
   }
 
   /**
@@ -172,24 +193,4 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public boolean validTarget()
-  {
-    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both r able to see
-    {
-        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
-        {
-          return true;
-        }
-        return false;
-    }
-    else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
-    {
-      return true;
-    }
-    else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
-    {
-      return true;
-    }
-    return false;
-  }
 }

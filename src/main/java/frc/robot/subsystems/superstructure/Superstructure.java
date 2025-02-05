@@ -5,11 +5,13 @@
 package frc.robot.subsystems.superstructure;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DragonConstants;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.CoralIntake;
+import frc.robot.subsystems.Dragon;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.superstructure.StateMachine.State;
 
 public class Superstructure extends SubsystemBase {
@@ -18,6 +20,7 @@ public class Superstructure extends SubsystemBase {
   private CoralIntake m_coralIntake;
   private Dragon m_dragon;
   private Elevator m_elevator;
+  private LED m_blinkin;
   private Limelight m_leftLimelight;
   private Limelight m_rightLimelight;
 
@@ -26,6 +29,7 @@ public class Superstructure extends SubsystemBase {
                       CoralIntake m_coralIntake,
                       Dragon m_dragon,
                       Elevator m_elevator,
+                      LED m_blinkin,
                       Limelight m_leftLimelight,
                       Limelight m_rightLimelight) {
 
@@ -33,6 +37,7 @@ public class Superstructure extends SubsystemBase {
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
+    this.m_blinkin = m_blinkin;
     this.m_leftLimelight = m_leftLimelight;
     this.m_rightLimelight = m_rightLimelight;
 
@@ -79,6 +84,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   public Command scoreCoral() {
+    m_blinkin.setViolet(); //when it is scoring the LEDs should be purple
     return m_dragon.setRollerPowerCommand();
   }
 
@@ -90,9 +96,39 @@ public class Superstructure extends SubsystemBase {
     return m_dragon.setSetpointCommand(dragonState);
   }
 
+  public boolean readyToRotate()
+  {
+    if(m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) //if both r able to see
+    {
+        if(m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) //if both see the same tag
+        {
+          return true;
+        }
+        return false;
+    }
+    else if(m_leftLimelight.isTargetVisible()) //if only the left is able to see
+    {
+      return true;
+    }
+    else if(m_rightLimelight.isTargetVisible()) //if only the right is able to see
+    {
+      return true;
+    }
+    return false;
+  }
+
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // This methodwill be called once per scheduler run
+
+    if(readyToRotate()) //if a valid target is seen
+    {
+      m_blinkin.setYellow();
+    }
+
+      
+
   }
 
   @Override 

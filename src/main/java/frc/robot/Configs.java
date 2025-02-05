@@ -85,26 +85,13 @@ public final class Configs {
                         .maxAcceleration(6000)
                         .allowedClosedLoopError(0.5);
 
-                /*
-                * Configure the closed loop controller. We want to make sure we set the
-                * feedback sensor as the primary encoder.
-                */
-                // pivotConfig
-                //         .closedLoop
-                //         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                //         // Set PID values for position control. We don't need to pass a closed
-                //         // loop slot, as it will default to slot 0.
-                //         .p(0.1)
-                //         .outputRange(-0.5, 0.5);
-
-                // Configure basic settings of the intake motor
                 rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
         }
     }
 
     public static final class CoralIntake {
-                public static final SparkFlexConfig topRollerConfig = new SparkFlexConfig();
-                public static final SparkFlexConfig bottomRollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig rollerConfig = new SparkFlexConfig();
+                public static final SparkFlexConfig indexerConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig pivotFollowerConfig = new SparkFlexConfig();
         
@@ -138,21 +125,24 @@ public final class Configs {
                                 .follow(CoralIntakeConstants.kPivotMotorCanId);
                 
                         // Configure basic settings of the intake motor
-                        topRollerConfig
+                        rollerConfig
                                 .inverted(false)
                                 .idleMode(IdleMode.kCoast)
                                 .smartCurrentLimit(40)
                                 .voltageCompensation(12);
-                        bottomRollerConfig.follow(CoralIntakeConstants.kTopRollerMotorCanId)
-                                .inverted(true);
+
+                        // Configure indexer
+                        indexerConfig
+                                .inverted(false)
+                                .smartCurrentLimit(40)
+                                .idleMode(IdleMode.kBrake);
+
                 }
    }
 
     public static final class Elevator {
         public static final SparkFlexConfig elevatorConfig = new SparkFlexConfig();
         public static final SparkFlexConfig elevatorFollowerConfig = new SparkFlexConfig();
-        public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
-
         static {
                 elevatorConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(50).voltageCompensation(12);
 
@@ -160,6 +150,11 @@ public final class Configs {
                         .limitSwitch
                         .reverseLimitSwitchEnabled(true)
                         .reverseLimitSwitchType(Type.kNormallyOpen);
+
+                elevatorConfig
+                        .limitSwitch
+                        .forwardLimitSwitchEnabled(true)
+                        .forwardLimitSwitchType(Type.kNormallyOpen);
 
                 elevatorConfig
                         .closedLoop
@@ -174,25 +169,6 @@ public final class Configs {
                         .allowedClosedLoopError(0.5);
                 elevatorFollowerConfig
                         .follow(ElevatorConstants.kElevatorMotorCanId)
-                        .inverted(true);
-
-                pivotConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
-
-                pivotConfig
-                        .closedLoop
-                        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                        // Set PID values for position control
-                        .p(.1)
-                        .outputRange(-1, 1)
-                        .maxMotion
-                        //Set MAXMotion parameters for position control
-                        .maxVelocity(4200)
-                        .maxAcceleration(6000)
-                        .allowedClosedLoopError(0.5);
-                pivotConfig
-                        .absoluteEncoder
-                        // .positionConversionFactor(1)
-                        .zeroOffset(0)
                         .inverted(true);
         }
     }
