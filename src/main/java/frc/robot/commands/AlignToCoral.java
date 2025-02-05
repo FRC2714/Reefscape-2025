@@ -11,7 +11,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
+<<<<<<< HEAD
 import frc.robot.utils.LimelightHelpers.RawFiducial;
+=======
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+>>>>>>> pathplanner
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
@@ -37,8 +41,11 @@ public class AlignToCoral extends Command {
     this.m_leftLimelight = m_leftLimelight;
     this.pipelineNum = pipelineNum;
 
+<<<<<<< HEAD
     this.closestTagID = -1;
 
+=======
+>>>>>>> pathplanner
     xController = new PIDController(0.55, 0, 0); // tune these later
     yController = new PIDController(0.25, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
@@ -53,7 +60,6 @@ public class AlignToCoral extends Command {
     xController.setTolerance(.2);
     yController.setTolerance(.2);
     thetaController.setTolerance(.1);
-
   }
 
   // Called when the command is initially scheduled.
@@ -93,6 +99,7 @@ public class AlignToCoral extends Command {
   // which uses pipeline 1)
   @Override
   public void execute() {
+<<<<<<< HEAD
     if (m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {// if both are visible
       if (m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) { // checks if both see same april tag
         if (pipelineNum == 1) // driver align right so right camera
@@ -117,12 +124,90 @@ public class AlignToCoral extends Command {
       }
     } else if ((m_leftLimelight.isTargetVisible())) { // if can only see left, then do whatever we did before
       updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+=======
+    PPHolonomicDriveController.overrideXFeedback(() -> {
+      return 0.0;
+    });
+    PPHolonomicDriveController.overrideYFeedback(() -> {
+      return 0.0;
+    });
+    PPHolonomicDriveController.overrideRotationFeedback(() -> {
+      return 0.0;
+    });
+    if (m_leftLimelight.isTargetVisible()) {
+      switch (m_leftLimelight.getTargetID()) {
+        case 6:
+        case 19:
+          thetaController.setSetpoint(300);
+          break;
+
+        case 7:
+        case 18:
+          thetaController.setSetpoint(0);
+          break;
+
+        case 8:
+        case 17:
+          thetaController.setSetpoint(60);
+          break;
+
+        case 9:
+        case 16:
+          thetaController.setSetpoint(120);
+          break;
+
+        case 10:
+        case 15:
+          thetaController.setSetpoint(180);
+          break;
+
+        case 11:
+        case 14:
+          thetaController.setSetpoint(240);
+          break;
+      }
+>>>>>>> pathplanner
       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
           yController.calculate(m_leftLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
+<<<<<<< HEAD
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
       updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+=======
+    } else if (m_rightLimelight.isTargetVisible()) {
+      switch (m_rightLimelight.getTargetID()) {
+        case 6:
+        case 19:
+          thetaController.setSetpoint(300);
+          break;
+
+        case 7:
+        case 18:
+          thetaController.setSetpoint(0);
+          break;
+
+        case 8:
+        case 17:
+          thetaController.setSetpoint(60);
+          break;
+
+        case 9:
+        case 16:
+          thetaController.setSetpoint(120);
+          break;
+
+        case 10:
+        case 15:
+          thetaController.setSetpoint(180);
+          break;
+
+        case 11:
+        case 14:
+          thetaController.setSetpoint(240);
+          break;
+      }
+>>>>>>> pathplanner
       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
           yController.calculate(m_rightLimelight.getXOffsetRadians()),
           thetaController.calculate(m_drivetrain.getHeading()),
@@ -130,6 +215,7 @@ public class AlignToCoral extends Command {
     } else {
       m_drivetrain.drive(0, 0, 0, true);
     }
+<<<<<<< HEAD
 
   }
 
@@ -142,6 +228,11 @@ public class AlignToCoral extends Command {
       case 10, 15 -> thetaController.setSetpoint(180);
       case 11, 14 -> thetaController.setSetpoint(240);
     }
+=======
+    PPHolonomicDriveController.clearXFeedbackOverride();
+    PPHolonomicDriveController.clearYFeedbackOverride();
+    PPHolonomicDriveController.clearRotationFeedbackOverride();
+>>>>>>> pathplanner
   }
 
   // Called once the command ends or is interrupted.
