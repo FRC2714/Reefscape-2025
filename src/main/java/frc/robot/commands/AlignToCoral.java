@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
@@ -21,18 +22,18 @@ public class AlignToCoral extends Command {
 
   private int pipelineNum;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, int pipelineNum) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight,
+      int pipelineNum) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
     this.pipelineNum = pipelineNum;
 
-
-    xController = new PIDController(0.55, 0, 0); //tune these later
+    xController = new PIDController(0.55, 0, 0); // tune these later
     yController = new PIDController(0.25, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
-    
+
     addRequirements(m_drivetrain);
 
     xController.setSetpoint(.23);
@@ -43,19 +44,15 @@ public class AlignToCoral extends Command {
     xController.setTolerance(.2);
     yController.setTolerance(.2);
     thetaController.setTolerance(.1);
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(pipelineNum == 1)
-    {
-       m_rightLimelight.setCoralTagPipelineRight();
-       m_leftLimelight.setCoralTagPipelineRight();
-    }
-    else if(pipelineNum == 2)
-    {
+    if (pipelineNum == 1) {
+      m_rightLimelight.setCoralTagPipelineRight();
+      m_leftLimelight.setCoralTagPipelineRight();
+    } else if (pipelineNum == 2) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
     }
@@ -64,16 +61,24 @@ public class AlignToCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_leftLimelight.isTargetVisible())
-    {
-      switch(m_leftLimelight.getTargetID()) {
+    PPHolonomicDriveController.overrideXFeedback(() -> {
+      return 0.0;
+    });
+    PPHolonomicDriveController.overrideYFeedback(() -> {
+      return 0.0;
+    });
+    PPHolonomicDriveController.overrideRotationFeedback(() -> {
+      return 0.0;
+    });
+    if (m_leftLimelight.isTargetVisible()) {
+      switch (m_leftLimelight.getTargetID()) {
         case 6:
         case 19:
           thetaController.setSetpoint(300);
           break;
 
         case 7:
-        case 18: 
+        case 18:
           thetaController.setSetpoint(0);
           break;
 
@@ -88,7 +93,7 @@ public class AlignToCoral extends Command {
           break;
 
         case 10:
-        case 15: 
+        case 15:
           thetaController.setSetpoint(180);
           break;
 
@@ -97,20 +102,19 @@ public class AlignToCoral extends Command {
           thetaController.setSetpoint(240);
           break;
       }
-        m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_leftLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
+      m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+          yController.calculate(m_leftLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()),
           false);
-    }
-    else if (m_rightLimelight.isTargetVisible()) {
-      switch(m_rightLimelight.getTargetID()) {
+    } else if (m_rightLimelight.isTargetVisible()) {
+      switch (m_rightLimelight.getTargetID()) {
         case 6:
         case 19:
           thetaController.setSetpoint(300);
           break;
 
         case 7:
-        case 18: 
+        case 18:
           thetaController.setSetpoint(0);
           break;
 
@@ -125,7 +129,7 @@ public class AlignToCoral extends Command {
           break;
 
         case 10:
-        case 15: 
+        case 15:
           thetaController.setSetpoint(180);
           break;
 
@@ -135,13 +139,15 @@ public class AlignToCoral extends Command {
           break;
       }
       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-         yController.calculate(m_rightLimelight.getXOffsetRadians()),
-          thetaController.calculate(m_drivetrain.getHeading()), 
+          yController.calculate(m_rightLimelight.getXOffsetRadians()),
+          thetaController.calculate(m_drivetrain.getHeading()),
           false);
-    }
-    else {
+    } else {
       m_drivetrain.drive(0, 0, 0, true);
     }
+    PPHolonomicDriveController.clearXFeedbackOverride();
+    PPHolonomicDriveController.clearYFeedbackOverride();
+    PPHolonomicDriveController.clearRotationFeedbackOverride();
   }
 
   // Called once the command ends or is interrupted.

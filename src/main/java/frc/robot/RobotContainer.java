@@ -18,11 +18,15 @@ import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,13 +38,13 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final Limelight m_rightLimelight = new Limelight(LimelightConstants.kRightLimelightName,
-                                                           LimelightConstants.kRightCameraHeight,
-                                                           LimelightConstants.kRightMountingAngle,
-                                                           LimelightConstants.kReefTagHeight);
+      LimelightConstants.kRightCameraHeight,
+      LimelightConstants.kRightMountingAngle,
+      LimelightConstants.kReefTagHeight);
   private final Limelight m_leftLimelight = new Limelight(LimelightConstants.kLeftLimelightName,
-                                                         LimelightConstants.kLeftCameraHeight,
-                                                         LimelightConstants.kLeftMountingAngle,
-                                                         LimelightConstants.kReefTagHeight);
+      LimelightConstants.kLeftCameraHeight,
+      LimelightConstants.kLeftMountingAngle,
+      LimelightConstants.kReefTagHeight);
 
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -55,6 +59,18 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
+    NamedCommands.registerCommand("auto align left", 
+    new SequentialCommandGroup( 
+        new InstantCommand(() -> PPHolonomicDriveController.overrideXYFeedback(() -> 0.0,() -> 0.0)),  
+        new InstantCommand(() -> PPHolonomicDriveController.overrideRotationFeedback(() -> 0.0)),    
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline)
+    ));
+    NamedCommands.registerCommand("clear overrides", new InstantCommand(() -> PPHolonomicDriveController.clearFeedbackOverrides()));
+    NamedCommands.registerCommand("auto align right", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+
+
 
     configureButtonBindings();
 
@@ -85,13 +101,16 @@ public class RobotContainer {
 
     m_driverController.a().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-//     m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    // m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
     m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-//     m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-//     m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
-    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
-    m_driverController.leftBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
-    m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
+    // m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    // m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
+    // m_driverController.rightBumper().whileTrue(new AlignToCoral(m_robotDrive,
+    // m_rightLimelight, LimelightConstants.kRightReefBranchPipeline));
+    m_driverController.leftBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kLeftReefBranchPipeline));
+    m_driverController.rightBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, LimelightConstants.kRightReefBranchPipeline));
 
     m_driverController.x().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
   }

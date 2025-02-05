@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "align test"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "auto align left"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "F to Y"
+            "pathName": "align"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Y to A"
+            "name": null
           }
         }
       ]
