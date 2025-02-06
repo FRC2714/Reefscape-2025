@@ -154,7 +154,8 @@ public class CoralIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
+    return () -> true; // DELETE AFTER SIM TESTING
+    // return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
   }
 
   private Command setCoralIntakeSetpointCommand(CoralIntakeSetpoint state) {
@@ -208,8 +209,7 @@ public class CoralIntake extends SubsystemBase {
   public Command intake() {
     return new ParallelCommandGroup(
       setPivotCommand(CoralIntakeSetpoint.INTAKE),
-      setRollerPowerCommand(RollerSetpoints.kIntake),
-      setCoralIntakeStateCommand(CoralIntakeState.INTAKE)
+      setRollerPowerCommand(RollerSetpoints.kIntake)
     ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE));
   }
 

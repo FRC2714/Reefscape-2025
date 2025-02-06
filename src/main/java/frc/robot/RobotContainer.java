@@ -149,7 +149,7 @@ public class RobotContainer {
     L2Button.onTrue(m_stateMachine.setL2()); 
     L3Button.onTrue(m_stateMachine.setL3());
     L4Button.onTrue(m_stateMachine.setL4());
-    stowButton.onTrue(m_stateMachine.stowElevator());
+    stowButton.onTrue(m_stateMachine.stow());
     // handoffButton.onTrue(m_stateMachine.handoffCoral());
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());

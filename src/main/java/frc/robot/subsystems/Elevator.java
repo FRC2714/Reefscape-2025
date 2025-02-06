@@ -35,7 +35,7 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class Elevator extends SubsystemBase {
 
-  private enum ElevatorSetpoint {
+  public enum ElevatorSetpoint {
     STOW,
     HANDOFF,
     POOP,
@@ -144,10 +144,11 @@ public class Elevator extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+    return () -> true; // DELETE AFTER SIM TESTING
+    // return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
   }
 
-  private Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {
+  public Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {
     return new InstantCommand(() -> m_elevatorSetpoint = setpoint);
   }
 
@@ -223,13 +224,11 @@ public class Elevator extends SubsystemBase {
       .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
-  public ElevatorSetpoint getSetpoint()
-  {
+  public ElevatorSetpoint getSetpoint() {
     return m_elevatorSetpoint;
   }
 
-  public ElevatorState getState()
-  {
+  public ElevatorState getState() {
     return m_elevatorState;
   }
 
@@ -242,6 +241,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putString("Elevator State", m_elevatorState.toString());
+    SmartDashboard.putString("Elevator Setpoint", m_elevatorSetpoint.toString());
     SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
 
 

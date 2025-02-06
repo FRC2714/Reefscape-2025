@@ -126,7 +126,8 @@ private final MechanismLigament2d m_DragonMech2D =
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
+    return () -> true; // DELETE AFTER SIM TESTING
+    // return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
   private Command setDragonStateCommand(DragonState state) {
@@ -236,7 +237,7 @@ private final MechanismLigament2d m_DragonMech2D =
 
   public Command score() {
     return new SequentialCommandGroup(
-      new InstantCommand(() -> coralOnDragon = false),
+      // new InstantCommand(() -> coralOnDragon = false), // UNCOMMENT AFTER SIM TESTING
       setRollerPowerCommand(RollerSetpoints.kExtake)
     ).andThen(setDragonStateCommand(DragonState.SCORE));
   }

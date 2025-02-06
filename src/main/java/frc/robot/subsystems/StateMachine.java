@@ -4,17 +4,21 @@
 
 package frc.robot.subsystems;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorState;
+import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 
 public class StateMachine extends SubsystemBase {
 
@@ -67,7 +71,10 @@ public class StateMachine extends SubsystemBase {
             m_coralIntake.poopReadyL1(),
             m_dragon.poopReadyL1()
           ),
-          new InstantCommand(),
+          new SequentialCommandGroup(
+            moveElevatorToHandoff(),
+            m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.POOP)
+          ),
           () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
         ),
         m_dragon.isCoralOnDragon()
@@ -90,7 +97,10 @@ public class StateMachine extends SubsystemBase {
               m_dragon.scoreReadyL2()
             )
           ),
-          new InstantCommand(),
+          new SequentialCommandGroup(
+            moveElevatorToHandoff(),
+            m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L2)
+          ),
           () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
         ),
         m_dragon.isCoralOnDragon()
@@ -113,7 +123,10 @@ public class StateMachine extends SubsystemBase {
               m_dragon.scoreReadyL3()
             )
           ),
-          new InstantCommand(),
+          new SequentialCommandGroup(
+            moveElevatorToHandoff(),
+            m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L3)
+          ),
           () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
         ),
         m_dragon.isCoralOnDragon()
@@ -136,7 +149,10 @@ public class StateMachine extends SubsystemBase {
               m_dragon.scoreReadyL4()
             )
           ),
-          new InstantCommand(),
+          new SequentialCommandGroup(
+            moveElevatorToHandoff(),
+            m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L4)
+          ),
           () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
         ),
         m_dragon.isCoralOnDragon()
@@ -149,6 +165,7 @@ public class StateMachine extends SubsystemBase {
         m_elevator.moveToHandoff(),
         m_dragon.handoffReady(),
         new WaitUntilCommand(() -> (DragonState.HANDOFF_READY == m_dragon.getState() && ElevatorState.HANDOFF == m_elevator.getState())),
+        m_dragon.handoff(),
         m_coralIntake.handoff(),
         new WaitUntilCommand(m_dragon.isCoralOnDragon()),
         m_coralIntake.stow()
@@ -183,15 +200,30 @@ public class StateMachine extends SubsystemBase {
 
     public Command intakeCoral() {
       return new ConditionalCommand(
-        new SequentialCommandGroup(
-          m_coralIntake.intake(),
-          new WaitUntilCommand(() -> m_coralIntake.isLoaded()),
-          m_coralIntake.handoffReady()
-        ),
-        new InstantCommand(),
+        intakeSequence(),
+        new ConditionalCommand(
+          new SequentialCommandGroup(
+            m_coralIntake.intakeReady(),
+            intakeSequence()
+          ),
+          new InstantCommand(),
+          () -> CoralIntakeState.EXTAKE == m_coralIntake.getState() || CoralIntakeState.STOW == m_coralIntake.getState()),
         () -> CoralIntakeState.INTAKE_READY == m_coralIntake.getState()
       );
+    }
 
+    private Command intakeSequence() {
+      return new SequentialCommandGroup(
+        m_coralIntake.intake(),
+        new WaitUntilCommand(() -> m_coralIntake.isLoaded()),
+        m_coralIntake.handoffReady(),
+        new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
+          Map.entry(ElevatorSetpoint.POOP, setL1()),
+          Map.entry(ElevatorSetpoint.L2, setL2()),
+          Map.entry(ElevatorSetpoint.L3, setL3()),
+          Map.entry(ElevatorSetpoint.L4, setL4())
+        ), () -> m_elevator.getSetpoint())
+      );
     }
 
     public Command setDefaultStates() {
@@ -232,6 +264,22 @@ public class StateMachine extends SubsystemBase {
 
     public Command stowAlgae() {
       return m_algaeIntake.moveToStow();
+    }
+
+    public Command moveElevatorToHandoff() {
+      return new SequentialCommandGroup(
+        m_dragon.stow(),
+        m_elevator.moveToHandoff(),
+        m_dragon.handoffReady()
+      );
+    }
+
+    public Command stow() {
+      return new ParallelCommandGroup(
+        stowElevator(),
+        stowAlgae(),
+        stowCoralIntake()
+      );
     }
 
 

@@ -149,7 +149,8 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
+    return () -> true; // DELETE AFTER SIM TESTING
+    // return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
   private Command setAlgaeIntakeSetpointCommand(AlgaeIntakeSetpoint setpoint) {
