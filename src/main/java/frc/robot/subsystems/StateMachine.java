@@ -31,8 +31,6 @@ public class StateMachine extends SubsystemBase {
   private Limelight m_backLimelight;
   private LED m_blinkin;
 
-  private boolean overrideIntake;
-
 
   /** Creates a new StateMachine. */
   public StateMachine(Dragon m_dragon, Elevator m_elevator,CoralIntake m_coralIntake,AlgaeIntake m_algaeIntake,Limelight m_leftLimelight,
@@ -46,8 +44,6 @@ public class StateMachine extends SubsystemBase {
       this.m_leftLimelight = m_leftLimelight;
       this.m_rightLimelight = m_rightLimelight;
       this.m_backLimelight = m_backLimelight;
-
-      this.overrideIntake = false;
     }
 
     public Command stowElevator() {
