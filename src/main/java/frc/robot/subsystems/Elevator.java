@@ -29,21 +29,31 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Configs;
-import frc.robot.Constants.ElevatorConstants.ElevatorSetpoints;
+import frc.robot.Constants.ElevatorConstants.ElevatorLevels;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 
 public class Elevator extends SubsystemBase {
 
-  private enum ElevatorState {
+  public enum ElevatorSetpoint {
     STOW,
     HANDOFF,
+    POOP,
     L1,
     L2,
     L3,
     L4
   }
 
+  public enum ElevatorState {
+    STOW,
+    HANDOFF,
+    POOP,
+    SCORE_READY
+  }
+
+  private ElevatorSetpoint m_elevatorSetpoint;
   private ElevatorState m_elevatorState;
 
   // Elevator
@@ -54,7 +64,7 @@ public class Elevator extends SubsystemBase {
 
 
   private boolean wasResetByLimit = false;
-  private double elevatorCurrentTarget = ElevatorConstants.ElevatorSetpoints.kStow;
+  private double elevatorCurrentTarget = ElevatorConstants.ElevatorLevels.kStow;
 
   //Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
@@ -101,6 +111,7 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
     
 
+    m_elevatorSetpoint = ElevatorSetpoint.STOW;
     m_elevatorState = ElevatorState.STOW;
 
     SmartDashboard.putData("Elevator", m_mech2d);
@@ -134,36 +145,46 @@ public class Elevator extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
     return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+  }
+
+  public Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {
+    return new InstantCommand(() -> m_elevatorSetpoint = setpoint);
   }
 
   private Command setElevatorStateCommand(ElevatorState state) {
     return new InstantCommand(() -> m_elevatorState = state);
   }
 
-  private Command setSetpointCommand(ElevatorState setpoint) {
+  private Command setLevelCommand(ElevatorSetpoint setpoint) {
     return new SequentialCommandGroup(
-        setElevatorStateCommand(setpoint),
+        setElevatorSetpointCommand(setpoint),
         new InstantCommand(
         () -> {
-          switch (m_elevatorState) {
+          switch (m_elevatorSetpoint) {
             case STOW:
-              elevatorCurrentTarget = ElevatorSetpoints.kStow;
+              elevatorCurrentTarget = ElevatorLevels.kStow;
               break;
             case HANDOFF:
-              elevatorCurrentTarget = ElevatorSetpoints.kHandoff;
+              elevatorCurrentTarget = ElevatorLevels.kHandoff;
+              break;
+            case POOP:
+              elevatorCurrentTarget = ElevatorLevels.kPoop;
               break;
             case L1:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel1;
+              elevatorCurrentTarget = ElevatorLevels.kLevel1;
               break;
             case L2:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel2;
+              elevatorCurrentTarget = ElevatorLevels.kLevel2;
               break;
             case L3:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel3;
+              elevatorCurrentTarget = ElevatorLevels.kLevel3;
               break;
             case L4:
-              elevatorCurrentTarget = ElevatorSetpoints.kLevel4;
+              elevatorCurrentTarget = ElevatorLevels.kLevel4;
               break;
           }}),
           new InstantCommand(() -> moveToSetpoint()),
@@ -172,27 +193,46 @@ public class Elevator extends SubsystemBase {
   }
   
   public Command moveToStow() {
-    return setSetpointCommand(ElevatorState.STOW);
+    return setLevelCommand(ElevatorSetpoint.STOW)
+      .andThen(setElevatorStateCommand(ElevatorState.STOW));
   }
 
   public Command moveToHandoff() {
-    return setSetpointCommand(ElevatorState.HANDOFF);
+    return setLevelCommand(ElevatorSetpoint.HANDOFF)
+      .andThen(setElevatorStateCommand(ElevatorState.HANDOFF));
+  }
+
+  public Command moveToPoop() {
+    return setLevelCommand(ElevatorSetpoint.POOP)
+      .andThen(setElevatorStateCommand(ElevatorState.POOP));
   }
 
   public Command moveToL1() {
-    return setSetpointCommand(ElevatorState.L1);
+    return setLevelCommand(ElevatorSetpoint.L1)
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL2() {
-    return setSetpointCommand(ElevatorState.L2);
+    return setLevelCommand(ElevatorSetpoint.L2)
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL3() {
-    return setSetpointCommand(ElevatorState.L3);
+    return setLevelCommand(ElevatorSetpoint.L3)
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
   }
 
   public Command moveToL4() {
-    return setSetpointCommand(ElevatorState.L4);
+    return setLevelCommand(ElevatorSetpoint.L4)
+      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
+  }
+
+  public ElevatorSetpoint getSetpoint() {
+    return m_elevatorSetpoint;
+  }
+
+  public ElevatorState getState() {
+    return m_elevatorState;
   }
 
   @Override
@@ -204,6 +244,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putString("Elevator State", m_elevatorState.toString());
+    SmartDashboard.putString("Elevator Setpoint", m_elevatorSetpoint.toString());
     SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
 
 

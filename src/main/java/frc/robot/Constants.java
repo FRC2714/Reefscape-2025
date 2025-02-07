@@ -65,7 +65,7 @@ public final class Constants {
     public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
 
-    public static final double kPivotThreshold = 0; // tune
+    public static final double kPivotThreshold = 5; // tune
 
     public static final class PivotSetpoints {
       public static final double kStow = 15; // TBD
@@ -87,7 +87,7 @@ public final class Constants {
     public static final int kRollerMotorCanId = 41;
     public static final int kIndexerMotorCanId = 42;
 
-    public static final double kPivotThreshold = 0; // tune
+    public static final double kPivotThreshold = 5; // tune
 
     public static final int kBeamBreakDioChannel = 0;
 
@@ -98,6 +98,7 @@ public final class Constants {
       public static final double kIntake = 120; // TBD
       public static final double kExtake = 60; // TBD
       public static final double kHandoff = 270; // TBD
+      public static final double kEject = 360; //TBD
       public static final double kZeroOffsetDegrees = 270;
     }
 
@@ -206,6 +207,8 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kProcessorPipeline = 0; //TBD
+
+    public static final double kCoralStationDistanceThreshold = 0; // tune
   }
 
   // ! Update Values for AlphaBot
@@ -214,10 +217,11 @@ public final class Constants {
     public static final int kElevatorMotorCanId = 63; // TBD
     public static final int kElevatorFollowerCanId = 62; // TBD
 
-    public static final double kSetpointThreshold = 0; // tune
+    public static final double kSetpointThreshold = 5; // tune
 
-    public static final class ElevatorSetpoints {
+    public static final class ElevatorLevels {
       public static final double kStow = 0;
+      public static final double kPoop = 0;
       public static final double kHandoff = 90;
       public static final double kLevel1 = 20;
       public static final double kLevel2 = 30;
@@ -232,7 +236,8 @@ public final class Constants {
     public static final int kPivotMotorCanId = 50; // TBD
     public static final int kPivotRollerMotorCanID = 51; //TBD
     public static final double kPivotReduction = 1;  // TODO
-    public static final double kPivotThreshold = 0; // tune
+    public static final double kPivotThreshold = 5; // tune
+    public static final double kRollerCurrentThreshold = 5; // tune
     
     public static final class PivotSetpoints {
       public static final double kStow = 0;
@@ -246,6 +251,7 @@ public final class Constants {
     public static final class RollerSetpoints {
       public static final double kIntake = 0.5; //tune ts (pos when getting from station)
       public static final double kExtake = -0.5; /// tune ts (neg when scoring)
+      public static final double kStop = 0;
     }
   }
 

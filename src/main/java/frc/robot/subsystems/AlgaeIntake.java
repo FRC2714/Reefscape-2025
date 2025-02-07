@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs;
+import frc.robot.Robot;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaeIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
@@ -39,13 +40,20 @@ public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private enum AlgaeIntakeState {
+  private enum AlgaeIntakeSetpoint {
     STOW,
     INTAKE,
-    EXTAKE,
-    SCORE
+    EXTAKE
   }
 
+  public enum AlgaeIntakeState
+  {
+    STOW,
+    INTAKE,
+    EXTAKE
+  }
+
+  private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
   private AlgaeIntakeState m_algaeIntakeState;
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
@@ -127,6 +135,7 @@ public class AlgaeIntake extends SubsystemBase {
 
     
     m_algaeIntakeState = AlgaeIntakeState.STOW;
+    m_algaeIntakeSetpoint = AlgaeIntakeSetpoint.STOW;
 
     // Display mechanism2d
     SmartDashboard.putData("Algae Subsystem", m_mech2d);
@@ -141,19 +150,26 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
     return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
-  private Command setCoralIntakeStateCommand(AlgaeIntakeState state) {
+  private Command setAlgaeIntakeSetpointCommand(AlgaeIntakeSetpoint setpoint) {
+    return new InstantCommand(() -> m_algaeIntakeSetpoint = setpoint);
+  }
+
+  private Command setAlgaeIntakeStateCommand(AlgaeIntakeState state) {
     return new InstantCommand(() -> m_algaeIntakeState = state);
   }
 
-  private Command setSetpointCommand(AlgaeIntakeState setpoint) {
+  private Command setPivotCommand(AlgaeIntakeSetpoint setpoint) {
     return new SequentialCommandGroup(
-      setCoralIntakeStateCommand(setpoint),
+      setAlgaeIntakeSetpointCommand(setpoint),
       new InstantCommand(
       () -> {
-        switch (m_algaeIntakeState) {
+        switch (m_algaeIntakeSetpoint) {
           case STOW:
             pivotCurrentTarget = PivotSetpoints.kStow;
             break;
@@ -162,9 +178,6 @@ public class AlgaeIntake extends SubsystemBase {
             break;
           case EXTAKE:
             pivotCurrentTarget = PivotSetpoints.kExtake;
-            break;
-          case SCORE:
-            pivotCurrentTarget = PivotSetpoints.kScore;
             break;
         }}),
         new InstantCommand(() -> moveToSetpoint()),
@@ -183,30 +196,33 @@ public class AlgaeIntake extends SubsystemBase {
 
   public Command moveToIntake() {
     return new ParallelCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.INTAKE),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
-    );
+      setPivotCommand(AlgaeIntakeSetpoint.INTAKE),
+      setRollerPowerCommand(RollerSetpoints.kIntake)
+    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.INTAKE));
   }
 
   public Command moveToExtake() {
     return new SequentialCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.EXTAKE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
+      setPivotCommand(AlgaeIntakeSetpoint.EXTAKE),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.EXTAKE));
   }
 
   public Command moveToStow() {
     return new ParallelCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.STOW),
+        setPivotCommand(AlgaeIntakeSetpoint.STOW),
         setRollerPowerCommand(RollerSetpoints.kStop)
-    );
+    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.STOW));
   }
 
-  public Command moveToScore() {
-    return new SequentialCommandGroup(
-        setSetpointCommand(AlgaeIntakeState.SCORE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
+  public AlgaeIntakeSetpoint getSetpoint()
+  {
+    return m_algaeIntakeSetpoint;
+  }
+
+  public AlgaeIntakeState getState()
+  {
+    return m_algaeIntakeState;
   }
 
 

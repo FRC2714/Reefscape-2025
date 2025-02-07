@@ -26,8 +26,8 @@ import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.superstructure.StateMachine;
 import frc.robot.subsystems.LED;
 
 /*
@@ -62,22 +62,26 @@ public class RobotContainer {
     LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-    m_algaeIntake, m_coralIntake, m_dragon, m_elevator, m_blinkin, m_leftLimelight, m_rightLimelight, m_backLimelight
+    m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
   );
 
   Joystick m_operatorController = new Joystick(1);
+  Joystick m_operatorController2 = new Joystick(2);
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   // Operator Controller
-  private final JoystickButton L1Button = new JoystickButton(m_operatorController, 1); // L1
-  private final JoystickButton L2Button = new JoystickButton(m_operatorController, 2); // L2
-  private final JoystickButton L3Button = new JoystickButton(m_operatorController, 3); // L3
-  private final JoystickButton L4Button = new JoystickButton(m_operatorController, 4); // L4
-  private final JoystickButton coralStationButton = new JoystickButton(m_operatorController, 5); // Coral Station
-  private final JoystickButton handoffButton = new JoystickButton(m_operatorController, 6); // L4
-  private final JoystickButton stowButton = new JoystickButton(m_operatorController, 8); // Stow
-  
+  private final JoystickButton L1Button = new JoystickButton(m_operatorController2, 1); // L1
+  private final JoystickButton L2Button = new JoystickButton(m_operatorController2, 2); // L2
+  private final JoystickButton L3Button = new JoystickButton(m_operatorController2, 3); // L3
+  private final JoystickButton L4Button = new JoystickButton(m_operatorController2, 4); // L4
+  private final JoystickButton coralIntakeButton = new JoystickButton(m_operatorController2, 8); // Coral Station
+  private final JoystickButton coralExtakeButton = new JoystickButton(m_operatorController2, 7);
+  private final JoystickButton handoffButton = new JoystickButton(m_operatorController2, 6); // L4
+  private final JoystickButton stowButton = new JoystickButton(m_operatorController2, 5); // Stow
+  private final JoystickButton loadCoralButton = new JoystickButton(m_operatorController2, 10); // Stow
+  private final JoystickButton coralonDragonButton = new JoystickButton(m_operatorController2,9); // Stow
+
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -118,42 +122,46 @@ public class RobotContainer {
 
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_algaeIntake.moveToScore())
-      .onFalse(m_algaeIntake.moveToStow());
+      .onTrue(m_stateMachine.extakeAlgae())
+      .onFalse(m_stateMachine.stowAlgae());
 
     m_driverController
       .rightTrigger(OIConstants.kTriggerButtonThreshold)
-      .onTrue(m_algaeIntake.moveToIntake())
-      .onFalse(m_algaeIntake.moveToStow());
+      .onTrue(m_stateMachine.intakeAlgae())
+      .onFalse(m_stateMachine.stowAlgae());
 
 
     m_driverController.leftBumper()
       .onTrue(m_stateMachine.scoreCoral());
 
-    // Force Actions
+  //   // Force Actions
     m_driverController.povLeft()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
 
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-  // TODO: add pov up down for coral station and processor
-    // Additional
+  // // TODO: add pov up down for coral station and processor
+  //   // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
-    // Stages
-    L1Button.onTrue(m_stateMachine.elevator_moveToL1());
-    L2Button.onTrue(m_stateMachine.elevator_moveToL2()); 
-    L3Button.onTrue(m_stateMachine.elevator_moveToL3());
-    L4Button.onTrue(m_stateMachine.elevator_moveToL4());
-    stowButton.onTrue(m_stateMachine.elevator_moveToStow());
-    handoffButton.onTrue(m_stateMachine.handoffCoral());
-    coralStationButton.onTrue(m_coralIntake.moveToIntake());
+  //   // Stages
+    L1Button.onTrue(m_stateMachine.setL1());
+    L2Button.onTrue(m_stateMachine.setL2()); 
+    L3Button.onTrue(m_stateMachine.setL3());
+    L4Button.onTrue(m_stateMachine.setL4());
+    stowButton.onTrue(m_stateMachine.stow());
+    // handoffButton.onTrue(m_stateMachine.handoffCoral());
+    coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
+    coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+
+    if (Robot.isSimulation()) {
+      loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse());
+      coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse());
+    }
   }
 
   public void setTeleOpDefaultStates() {
-    m_algaeIntake.moveToStow().schedule();
-    m_stateMachine.elevator_moveToStow().schedule();
-    m_coralIntake.moveToStow().schedule();
+    m_stateMachine.setDefaultStates().schedule();
     m_blinkin.setOrange(); //default lights are orange
   }
 

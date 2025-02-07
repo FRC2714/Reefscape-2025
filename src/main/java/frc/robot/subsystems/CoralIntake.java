@@ -34,21 +34,40 @@ import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
   // initialize the closed loop controller and encoder.
 
-  private enum CoralIntakeState {
+  private enum CoralIntakeSetpoint {
     STOW,
     HANDOFF,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    POOP
   }
 
+  public enum CoralIntakeState
+  {
+    STOW,
+    INTAKE_READY,
+    INTAKE,
+    EXTAKE_READY,
+    EXTAKE,
+    HANDOFF_READY,
+    HANDOFF,
+    POOP_READY,
+    POOP_SCORE
+  }
+
+  private CoralIntakeSetpoint m_coralIntakeSetpoint;
   private CoralIntakeState m_coralIntakeState;
+  
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
+
+  private boolean loaded;
 
   private SparkFlex pivotMotor = new SparkFlex(CoralIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId, MotorType.kBrushless);
@@ -60,8 +79,6 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
   private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
-
-  private double pivotReference = 0;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -120,7 +137,10 @@ public class CoralIntake extends SubsystemBase {
       ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
+    m_coralIntakeSetpoint = CoralIntakeSetpoint.STOW;
     m_coralIntakeState = CoralIntakeState.STOW;
+
+    loaded = false;
 
     // Display mechanism2d
     SmartDashboard.putData("Coral Intake", m_mech2d);
@@ -135,19 +155,26 @@ public class CoralIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
     return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
+  }
+
+  private Command setCoralIntakeSetpointCommand(CoralIntakeSetpoint state) {
+    return new InstantCommand(() -> m_coralIntakeSetpoint = state);
   }
 
   private Command setCoralIntakeStateCommand(CoralIntakeState state) {
     return new InstantCommand(() -> m_coralIntakeState = state);
   }
 
-  private Command setSetpointCommand(CoralIntakeState setpoint) {
+  private Command setPivotCommand(CoralIntakeSetpoint setpoint) {
     return new SequentialCommandGroup(
-      setCoralIntakeStateCommand(setpoint),
+      setCoralIntakeSetpointCommand(setpoint),
       new InstantCommand(
       () -> {
-        switch (m_coralIntakeState) {
+        switch (m_coralIntakeSetpoint) {
           case STOW:
             pivotCurrentTarget = PivotSetpoints.kStow;
             break;
@@ -160,6 +187,10 @@ public class CoralIntake extends SubsystemBase {
           case EXTAKE:
             pivotCurrentTarget = PivotSetpoints.kExtake;
             break;
+          case POOP:
+            pivotCurrentTarget = PivotSetpoints.kEject;
+            break;
+
         }}),
         new InstantCommand(() -> moveToSetpoint()),
         new WaitUntilCommand(atSetpoint())
@@ -178,44 +209,102 @@ public class CoralIntake extends SubsystemBase {
     return new InstantCommand(() -> setRollerPower(power));
   }
 
-  public Command moveToIntake() {
-    return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.INTAKE),
-        setRollerPowerCommand(RollerSetpoints.kIntake)
-    );
-  }
-
-  public Command moveToExtake() {
-    return new SequentialCommandGroup(
-        setSetpointCommand(CoralIntakeState.EXTAKE),
-        setRollerPowerCommand(RollerSetpoints.kExtake)
-    );
-  }
-
-  public Command moveToStow() {
-    return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-    );
-  }
-
-  public Command moveToHandoff() {
-    return new ParallelCommandGroup(
-        setSetpointCommand(CoralIntakeState.HANDOFF),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-    );
-  }
-
   public Command intake() {
-    return setRollerPowerCommand(RollerSetpoints.kIntake);
+    return new ParallelCommandGroup(
+      setPivotCommand(CoralIntakeSetpoint.INTAKE),
+      setRollerPowerCommand(RollerSetpoints.kIntake)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE));
+  }
+
+  public Command intakeReady() {
+    return new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.INTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.INTAKE_READY));
+  }
+
+  public Command extakeReady() {
+    return new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.EXTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.EXTAKE_READY));
   }
 
   public Command extake() {
-    return setRollerPowerCommand(RollerSetpoints.kExtake);
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.EXTAKE),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.EXTAKE));
   }
 
+  public Command stow() {
+    return new ParallelCommandGroup(
+      setPivotCommand(CoralIntakeSetpoint.STOW),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.STOW));
+  }
+
+  public Command handoffReady()
+  {
+    return new ParallelCommandGroup(
+      setPivotCommand(CoralIntakeSetpoint.HANDOFF),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.HANDOFF_READY));
+  }
+
+  public Command handoff() {
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.HANDOFF),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.HANDOFF));
+  }
+
+  public Command poopReadyL1()
+  {
+    return new ParallelCommandGroup(
+      setPivotCommand(CoralIntakeSetpoint.POOP),
+      setRollerPowerCommand(RollerSetpoints.kStop)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.POOP_READY));
+  }
+
+  public Command poopL1() {
+    return new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        setPivotCommand(CoralIntakeSetpoint.POOP),
+        setRollerPowerCommand(RollerSetpoints.kStop)
+      ),
+      setRollerPowerCommand(RollerSetpoints.kExtake)
+    ).andThen(setCoralIntakeStateCommand(CoralIntakeState.POOP_SCORE));
+  }
+
+
   public boolean isLoaded() {
-    return !beamBreak.get();
+    // return !beamBreak.get();
+    return loaded;
+  }
+
+  public Command setLoadedTrue() {
+    return new InstantCommand(() -> loaded = true);
+  }
+
+  public Command setLoadedFalse() {
+    return new InstantCommand(() -> loaded = false);
+  }
+
+  public CoralIntakeSetpoint getSetpoint()
+  {
+    return m_coralIntakeSetpoint;
+  }
+
+  public CoralIntakeState getState()
+  {
+    return m_coralIntakeState;
   }
 
 
@@ -234,10 +323,12 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotReference);
+    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotCurrentTarget);
 
-    SmartDashboard.putString("Dragon State", m_coralIntakeState.toString());
+    SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
     SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Loaded?", isLoaded());
+
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
