@@ -211,8 +211,9 @@ public class StateMachine extends SubsystemBase {
     private Command intakeSequence() {
       return new SequentialCommandGroup(
         m_coralIntake.intake(),
-        new WaitUntilCommand(() -> m_coralIntake.isLoaded()),
-        m_coralIntake.handoffReady(),
+        new WaitUntilCommand(() -> m_coralIntake.isLoaded())
+          .until(() -> CoralIntakeState.EXTAKE == m_coralIntake.getState() || CoralIntakeState.STOW == m_coralIntake.getState()),
+        CoralIntakeState.INTAKE_READY == m_coralIntake.getState() ? m_coralIntake.handoffReady() : new InstantCommand(),
         new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
           Map.entry(ElevatorSetpoint.POOP, setL1()),
           Map.entry(ElevatorSetpoint.L2, setL2()),
