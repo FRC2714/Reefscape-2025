@@ -243,7 +243,10 @@ public class StateMachine extends SubsystemBase {
     }
 
     public Command extakeCoral() {
-      return m_coralIntake.extake();
+      return new SequentialCommandGroup(
+        m_coralIntake.extakeReady(),
+        m_coralIntake.extake()
+      );
     }
 
     public Command stowCoralIntake() {
