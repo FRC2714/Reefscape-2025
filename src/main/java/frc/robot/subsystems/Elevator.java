@@ -32,6 +32,7 @@ import frc.robot.Configs;
 import frc.robot.Constants.ElevatorConstants.ElevatorLevels;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 
 public class Elevator extends SubsystemBase {
 
@@ -144,8 +145,10 @@ public class Elevator extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> true; // DELETE AFTER SIM TESTING
-    // return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
+    return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
   }
 
   public Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {

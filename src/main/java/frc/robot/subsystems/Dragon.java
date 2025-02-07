@@ -32,6 +32,7 @@ import frc.robot.Configs;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 import frc.robot.Constants.DragonConstants;
 
 public class Dragon extends SubsystemBase {
@@ -126,8 +127,10 @@ private final MechanismLigament2d m_DragonMech2D =
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> true; // DELETE AFTER SIM TESTING
-    // return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
+    return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
   private Command setDragonStateCommand(DragonState state) {

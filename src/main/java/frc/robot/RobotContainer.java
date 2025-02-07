@@ -154,8 +154,10 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
-    loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse()); // REMOVE AFTER TESTING OR SWITCH TO IS SIM
-    coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse()); // REMOVE AFTER TESTING OR SWITCH TO IS SIM
+    if (Robot.isSimulation()) {
+      loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse());
+      coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse());
+    }
   }
 
   public void setTeleOpDefaultStates() {

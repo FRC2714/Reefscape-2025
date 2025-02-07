@@ -34,6 +34,7 @@ import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
@@ -154,8 +155,10 @@ public class CoralIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> true; // DELETE AFTER SIM TESTING
-    // return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
+    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
   }
 
   private Command setCoralIntakeSetpointCommand(CoralIntakeSetpoint state) {

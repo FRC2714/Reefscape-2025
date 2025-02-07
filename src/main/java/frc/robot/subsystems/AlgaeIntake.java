@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs;
+import frc.robot.Robot;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaeIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
@@ -149,8 +150,10 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   private BooleanSupplier atSetpoint() {
-    return () -> true; // DELETE AFTER SIM TESTING
-    // return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
+    if (Robot.isSimulation()) {
+      return () -> true;
+    }
+    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
   private Command setAlgaeIntakeSetpointCommand(AlgaeIntakeSetpoint setpoint) {
