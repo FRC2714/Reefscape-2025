@@ -237,6 +237,7 @@ private final MechanismLigament2d m_DragonMech2D =
 
   public Command score() {
     return new SequentialCommandGroup(
+      // Instead of setting coralOnDragon to false, experiment with current
       // new InstantCommand(() -> coralOnDragon = false), // UNCOMMENT AFTER SIM TESTING
       setRollerPowerCommand(RollerSetpoints.kExtake)
     ).andThen(setDragonStateCommand(DragonState.SCORE));

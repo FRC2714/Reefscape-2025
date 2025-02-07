@@ -75,7 +75,7 @@ public class StateMachine extends SubsystemBase {
             moveElevatorToHandoff(),
             m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.POOP)
           ),
-          () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState() || CoralIntakeState.POOP_READY == m_coralIntake.getState())
         ),
         m_dragon.isCoralOnDragon()
       );
@@ -101,7 +101,7 @@ public class StateMachine extends SubsystemBase {
             moveElevatorToHandoff(),
             m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L2)
           ),
-          () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState() || CoralIntakeState.POOP_READY == m_coralIntake.getState())
         ),
         m_dragon.isCoralOnDragon()
       );
@@ -127,7 +127,7 @@ public class StateMachine extends SubsystemBase {
             moveElevatorToHandoff(),
             m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L3)
           ),
-          () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState() || CoralIntakeState.POOP_READY == m_coralIntake.getState())
         ),
         m_dragon.isCoralOnDragon()
       );
@@ -153,7 +153,7 @@ public class StateMachine extends SubsystemBase {
             moveElevatorToHandoff(),
             m_elevator.setElevatorSetpointCommand(ElevatorSetpoint.L4)
           ),
-          () -> CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState() || CoralIntakeState.POOP_READY == m_coralIntake.getState())
         ),
         m_dragon.isCoralOnDragon()
       );
@@ -168,7 +168,7 @@ public class StateMachine extends SubsystemBase {
         m_dragon.handoff(),
         m_coralIntake.handoff(),
         new WaitUntilCommand(m_dragon.isCoralOnDragon()),
-        m_coralIntake.stow()
+        m_coralIntake.intakeReady()
       );
     }
 
