@@ -144,6 +144,10 @@ public class AlgaeIntake extends SubsystemBase {
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
   }
 
+  public double getPivotPosition() {
+    return pivotEncoder.getPosition();
+  }
+
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
