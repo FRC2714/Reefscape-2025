@@ -66,7 +66,7 @@ public class RobotContainer {
   );
 
   //Mech2d Stuff
-  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon);
+  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake);
   public Mech2dManager getMech2dManager() {
     return m_mech2dManager;
   }

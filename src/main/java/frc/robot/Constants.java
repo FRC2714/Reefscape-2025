@@ -148,8 +148,8 @@ public final class Constants {
 
     public static final double kIntakeShortBarLength = Units.inchesToMeters(11);
     public static final double kIntakeLongBarLength = Units.inchesToMeters(13);
-    public static final double kCoralIntakeLength = Units.inchesToMeters(11);
-    public static final double kCoralStandLength = Units.inchesToMeters(29.5);
+    public static final double kCoralIntakeLength = Units.inchesToMeters(11*20);
+    public static final double kCoralStandLength = Units.inchesToMeters(35.2*20);
     public static final double kIntakeBarAngleRads = Units.degreesToRadians(-90);
   }
 

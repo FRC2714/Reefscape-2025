@@ -109,8 +109,7 @@ public class CoralIntake extends SubsystemBase {
       coralStand.append(
           new MechanismLigament2d(
               "Coral Pivot",
-              SimulationRobotConstants.kCoralIntakeLength
-                  * SimulationRobotConstants.kPixelsPerMeter,
+              SimulationRobotConstants.kCoralIntakeLength,
                   CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
@@ -152,6 +151,10 @@ public class CoralIntake extends SubsystemBase {
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
+  }
+
+  public double getPosition() {
+    return pivotEncoder.getPosition();
   }
 
   /** Set the arm motor position. This will use closed loop position control. */
