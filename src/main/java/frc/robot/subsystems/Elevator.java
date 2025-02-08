@@ -121,6 +121,10 @@ public class Elevator extends SubsystemBase {
 
   }
 
+  public double getElevatorPosition() {
+    return elevatorEncoder.getPosition();
+  }
+
   private void moveToSetpoint() {
     elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
   }

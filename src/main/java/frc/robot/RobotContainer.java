@@ -65,6 +65,12 @@ public class RobotContainer {
     m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
   );
 
+  //Mech2d Stuff
+  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon);
+  public Mech2dManager getMech2dManager() {
+    return m_mech2dManager;
+  }
+
   Joystick m_reefController = new Joystick(1); // operator controller 1
   Joystick m_mechanismController = new Joystick(2); // operator controller 2
   // The driver's controller
