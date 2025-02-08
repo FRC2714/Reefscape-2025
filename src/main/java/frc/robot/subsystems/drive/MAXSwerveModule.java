@@ -186,7 +186,7 @@ public class MAXSwerveModule extends SubsystemBase {
     m_driveSim.update(0.020);
 
     m_turningSim.setInput(turningMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage());
-    m_turningSim.update(0.020);
+    m_turningSim.update(0.02);
 
     drivingMotorSim.iterate(
       Units.radiansPerSecondToRotationsPerMinute(

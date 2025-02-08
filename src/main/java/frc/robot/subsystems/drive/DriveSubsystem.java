@@ -25,6 +25,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.simulation.ADIS16470_IMUSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -58,6 +59,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+
+  private final ADIS16470_IMUSim m_gyroSimulator = new ADIS16470_IMUSim(m_gyro);
 
   private final Field2d m_field = new Field2d();
 
@@ -217,9 +220,20 @@ PPHolonomicDriveController.clearFeedbackOverrides();
 
         m_field.setRobotPose(getPose());
     
+        m_gyroSimulator.setGyroAngleX(m_gyro.getAngle(IMUAxis.kX));
+        m_gyroSimulator.setGyroAngleY(m_gyro.getAngle(IMUAxis.kY));
+        m_gyroSimulator.setGyroAngleZ(m_gyro.getAngle(IMUAxis.kZ));
+        m_gyroSimulator.setAccelX(m_gyro.getAccelX());
+        m_gyroSimulator.setAccelY(m_gyro.getAccelY());
+        m_gyroSimulator.setAccelZ(m_gyro.getAccelZ());
+        m_gyroSimulator.setGyroRateX(m_gyro.getRate(IMUAxis.kX));
+        m_gyroSimulator.setGyroRateY(m_gyro.getRate(IMUAxis.kY));
+        m_gyroSimulator.setGyroRateZ(m_gyro.getRate(IMUAxis.kZ));
+
+
         SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
         SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
+      SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
         SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
   }
 
