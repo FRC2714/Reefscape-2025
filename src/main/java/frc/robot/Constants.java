@@ -108,14 +108,15 @@ public final class Constants {
   }
 
   public static final class SimulationRobotConstants {
-    public static final double kPixelsPerMeter = 1;
+    //! Remove *20 from all values for final Robot Testing
+    public static final double kPixelsPerMeter = 1*20;
 
     public static final double kElevatorGearing = 25; // 25:1
     public static final double kCarriageMass =
         4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
     public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
-    public static final double kMinElevatorHeightMeters = Units.inchesToMeters(35.2); // m
-    public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(66.7); // m
+    public static final double kMinElevatorHeightMeters = Units.inchesToMeters(35.2*20); // m
+    public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(66.7*20); // m
 
     public static final double kArmReduction = 60; // 60:1
     public static final double kArmLength = 0.433; // m
