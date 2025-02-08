@@ -65,22 +65,22 @@ public class RobotContainer {
     m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
   );
 
-  Joystick m_operatorController = new Joystick(1);
-  Joystick m_operatorController2 = new Joystick(2);
+  Joystick m_reefController = new Joystick(1); // operator controller 1
+  Joystick m_mechanismController = new Joystick(2); // operator controller 2
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   // Operator Controller
-  private final JoystickButton L1Button = new JoystickButton(m_operatorController2, 1); // L1
-  private final JoystickButton L2Button = new JoystickButton(m_operatorController2, 2); // L2
-  private final JoystickButton L3Button = new JoystickButton(m_operatorController2, 3); // L3
-  private final JoystickButton L4Button = new JoystickButton(m_operatorController2, 4); // L4
-  private final JoystickButton coralIntakeButton = new JoystickButton(m_operatorController2, 8); // Coral Station
-  private final JoystickButton coralExtakeButton = new JoystickButton(m_operatorController2, 7);
-  private final JoystickButton handoffButton = new JoystickButton(m_operatorController2, 6); // L4
-  private final JoystickButton stowButton = new JoystickButton(m_operatorController2, 5); // Stow
-  private final JoystickButton loadCoralButton = new JoystickButton(m_operatorController2, 10); // Stow
-  private final JoystickButton coralonDragonButton = new JoystickButton(m_operatorController2,9); // Stow
+  private final JoystickButton L1Button = new JoystickButton(m_mechanismController, 1); // L1
+  private final JoystickButton L2Button = new JoystickButton(m_mechanismController, 2); // L2
+  private final JoystickButton L3Button = new JoystickButton(m_mechanismController, 3); // L3
+  private final JoystickButton L4Button = new JoystickButton(m_mechanismController, 4); // L4
+  private final JoystickButton coralIntakeButton = new JoystickButton(m_mechanismController, 8); // Coral Station
+  private final JoystickButton coralExtakeButton = new JoystickButton(m_mechanismController, 7);
+  private final JoystickButton handoffButton = new JoystickButton(m_mechanismController, 6); // L4
+  private final JoystickButton stowButton = new JoystickButton(m_mechanismController, 5); // Stow
+  private final JoystickButton loadCoralButton = new JoystickButton(m_mechanismController, 10); // Stow
+  private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController,9); // Stow
 
   private SendableChooser<Command> autoChooser;
 
@@ -161,7 +161,7 @@ public class RobotContainer {
 
     for (int i = 0; i < stalkNumbers.length; i++) {
       final int number = stalkNumbers[i]; // Capture the number for the lambda
-      new JoystickButton(m_operatorController, i + 1) // i + initial button number
+      new JoystickButton(m_reefController, i + 1) // i + initial button number
           .onTrue(new InstantCommand(() -> {
               SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
