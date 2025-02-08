@@ -175,62 +175,74 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.STOW);
-    });
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.STOW));
   }
 
   public Command handoffReady() {
     return this.run(() -> {
-        setPivot(DragonSetpoint.HANDOFF);
-        setRollerPower(RollerSetpoints.kStop);
-        
-    }).finallyDo(setDragonState(DragonState.HANDOFF_READY););
-      }
+      setPivot(DragonSetpoint.HANDOFF);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.HANDOFF_READY));
+  }
 
   public Command handoff() {
-    return new SequentialCommandGroup(
-        new ParallelCommandGroup(
-            setPivotCommand(DragonSetpoint.HANDOFF),
-            setRollerPowerCommand(RollerSetpoints.kStop)),
-        setRollerPowerCommand(RollerSetpoints.kIntake)).andThen(setDragonStateCommand(DragonState.HANDOFF));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.HANDOFF);
+      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kIntake);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.HANDOFF));
   }
 
   public Command poopReadyL1() {
-    return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoint.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)).andThen(setDragonStateCommand(DragonState.POOP_READY));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.POOP_READY));
   }
 
   public Command scoreReadyL1() {
-    return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoint.L1),
-        setRollerPowerCommand(RollerSetpoints.kStop)).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.L1);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
   }
 
   public Command scoreReadyL2() {
-    return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoint.L2),
-        setRollerPowerCommand(RollerSetpoints.kStop)).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.L2);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
   }
 
   public Command scoreReadyL3() {
-    return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoint.L3),
-        setRollerPowerCommand(RollerSetpoints.kStop)).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.L3);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
   }
 
   public Command scoreReadyL4() {
-    return new ParallelCommandGroup(
-        setPivotCommand(DragonSetpoint.L4),
-        setRollerPowerCommand(RollerSetpoints.kStop)).andThen(setDragonStateCommand(DragonState.SCORE_READY));
+    return this.run(() -> {
+      setPivot(DragonSetpoint.L4);
+      setRollerPower(RollerSetpoints.kStop);
+    }).until(atSetpoint())
+        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
   }
 
   public Command score() {
-    return new SequentialCommandGroup(
-        // Instead of setting coralOnDragon to false, experiment with current
-        // new InstantCommand(() -> coralOnDragon = false), // UNCOMMENT AFTER SIM
-        // TESTING
-        setRollerPowerCommand(RollerSetpoints.kExtake)).andThen(setDragonStateCommand(DragonState.SCORE));
+    return this.run(() -> {
+      // Instead of setting coralOnDragon to false, experiment with current
+      // new InstantCommand(() -> coralOnDragon = false), // UNCOMMENT AFTER SIM
+      // TESTING
+      setRollerPower(RollerSetpoints.kExtake);
+    }).finallyDo(() -> setDragonState(DragonState.SCORE));
   }
 
   public double getSimulationCurrentDraw() {
@@ -247,12 +259,12 @@ public class Dragon extends SubsystemBase {
     return () -> coralOnDragon;
   }
 
-  public Command coralOnDragonTrue() {
-    return new InstantCommand(() -> coralOnDragon = true);
+  public void coralOnDragonTrue() {
+    coralOnDragon = true;
   }
 
-  public Command coralonDragonFalse() {
-    return new InstantCommand(() -> coralOnDragon = false);
+  public void coralonDragonFalse() {
+    coralOnDragon = false;
   }
 
   public DragonSetpoint getSetpoint() {
