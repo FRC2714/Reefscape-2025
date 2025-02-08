@@ -155,9 +155,9 @@ public class RobotContainer {
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
     if (Robot.isSimulation()) {
-      loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse());
       coralonDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
                          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue())).onFalse(new InstantCommand(() ->m_coralIntake.setLoadedFalse()));
     }
   }
 
