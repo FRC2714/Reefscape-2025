@@ -120,6 +120,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    // Driver Controller Actions
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
       .onTrue(m_stateMachine.extakeAlgae())
@@ -140,8 +141,6 @@ public class RobotContainer {
 
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-  // // TODO: add pov up down for coral station and processor
-  //   // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
   //   // Stages
@@ -154,11 +153,25 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
+    m_driverController.leftBumper()
+    .whileTrue(m_stateMachine.handoff());
+
+    // Reef Branches for HUD
+    int[] stalkNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    for (int i = 0; i < stalkNumbers.length; i++) {
+      final int number = stalkNumbers[i]; // Capture the number for the lambda
+      new JoystickButton(m_operatorController, i + 1) // i + initial button number
+          .onTrue(new InstantCommand(() -> {
+              SmartDashboard.putNumber("Reef Stalk Number", number);
+          }));
+
     if (Robot.isSimulation()) {
       loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse());
       coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse());
     }
   }
+}
 
   public void setTeleOpDefaultStates() {
     m_stateMachine.setDefaultStates().schedule();

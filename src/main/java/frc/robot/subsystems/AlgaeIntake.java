@@ -86,7 +86,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 28, 3);
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 25.2, 0);
   private final MechanismLigament2d intakePivotMechanism =
       m_mech2dRoot.append(
           new MechanismLigament2d(
