@@ -129,7 +129,7 @@ public final class Constants {
     public static final double kArmMass = 4.3; // Kg
 
     public static final double kPivotReduction = 60; // 60:1
-    public static final double kPivotLength = 0.433; // m
+    public static final double kPivotLength = Units.inchesToMeters(10); // m
     public static final double kPivotMass = 4.3; // Kg
 
     public static final double kMinAngleRads =
@@ -138,7 +138,7 @@ public final class Constants {
         Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
 
     public static final double kIntakeReduction = 135; // 135:1
-    public static final double kIntakeLength = Units.inchesToMeters(11); // m
+    public static final double kIntakeLength = Units.inchesToMeters(15); // m
     public static final double kIntakeMass = 5.8738; // Kg
     public static final double kIntakeMinAngleRads = Units.degreesToRadians(80);
     public static final double kIntakeMaxAngleRads = Units.degreesToRadians(180);
@@ -148,9 +148,9 @@ public final class Constants {
 
     public static final double kIntakeShortBarLength = Units.inchesToMeters(11);
     public static final double kIntakeLongBarLength = Units.inchesToMeters(13);
-    public static final double kCoralIntakeLength = Units.inchesToMeters(11);
-    public static final double kCoralStandLength = Units.inchesToMeters(29.5);
-    public static final double kIntakeBarAngleRads = Units.degreesToRadians(-90);
+    public static final double kCoralIntakeLength = Units.inchesToMeters(11*20);
+    public static final double kCoralStandLength = Units.inchesToMeters(35.2*20);
+    public static final double kIntakeBarAngleRads = Units.degreesToRadians(90);
   }
 
   public static final class ModuleConstants {

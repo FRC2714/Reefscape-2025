@@ -122,6 +122,10 @@ private final MechanismLigament2d m_DragonMech2D =
     coralOnDragon = false;
   }
 
+  public double getPivotPosition() {
+    return pivotAbsoluteEncoder.getPosition();
+  }
+
   private void moveToSetpoint() {
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
