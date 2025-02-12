@@ -17,7 +17,7 @@ import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorState;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 
-public class StateMachine extends SubsystemBase {
+public class StateMachine {
 
   private Dragon m_dragon;
   private Elevator m_elevator;
@@ -166,14 +166,14 @@ public class StateMachine extends SubsystemBase {
 
   private Command intakeSequence() {
     return m_coralIntake.intake()
-        .until(m_coralIntake::isLoaded)
-        .andThen(m_coralIntake.handoffReady()).until(m_coralIntake.atSetpoint())
-        .andThen(
-            new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
-                Map.entry(ElevatorSetpoint.POOP, setL1()),
-                Map.entry(ElevatorSetpoint.L2, setL2()),
-                Map.entry(ElevatorSetpoint.L3, setL3()),
-                Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint()));
+      .until(m_coralIntake::isLoaded)
+      .andThen(m_coralIntake.handoffReady().until(m_coralIntake.atSetpoint()))
+      .andThen(
+        new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
+          Map.entry(ElevatorSetpoint.POOP, setL1()),
+          Map.entry(ElevatorSetpoint.L2, setL2()),
+          Map.entry(ElevatorSetpoint.L3, setL3()),
+          Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint()));
   }
 
   public Command setDefaultStates() {
@@ -215,10 +215,5 @@ public class StateMachine extends SubsystemBase {
     return stowElevator().until(m_elevator.atSetpoint())
         .alongWith(stowAlgae().until(m_algaeIntake.atSetpoint()))
         .alongWith(stowCoralIntake().until(m_coralIntake.atSetpoint()));
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 }
