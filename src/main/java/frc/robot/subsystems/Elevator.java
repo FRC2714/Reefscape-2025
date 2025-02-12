@@ -135,7 +135,7 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  private BooleanSupplier atSetpoint() {
+  public BooleanSupplier atSetpoint() {
     if (Robot.isSimulation()) {
       return () -> true;
     }

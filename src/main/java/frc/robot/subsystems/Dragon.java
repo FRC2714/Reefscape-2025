@@ -123,7 +123,7 @@ public class Dragon extends SubsystemBase {
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  private BooleanSupplier atSetpoint() {
+  public BooleanSupplier atSetpoint() {
     if (Robot.isSimulation()) {
       return () -> true;
     }

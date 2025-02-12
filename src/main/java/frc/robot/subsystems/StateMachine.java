@@ -46,9 +46,8 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stowElevator() {
-    return new SequentialCommandGroup(
-        m_dragon.stow(),
-        m_elevator.moveToStow());
+    return m_dragon.stow().until(m_dragon.atSetpoint())
+      .andThen(m_elevator.moveToStow());
   }
 
   public Command setL1() {
@@ -135,71 +134,58 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command handoff() {
-    return new SequentialCommandGroup(
-        m_dragon.stow(),
-        m_elevator.moveToHandoff(),
-        m_dragon.handoffReady(),
-        new WaitUntilCommand(
-            () -> (DragonState.HANDOFF_READY == m_dragon.getState() && ElevatorState.HANDOFF == m_elevator.getState())),
-        m_dragon.handoff(),
-        m_coralIntake.handoff(),
-        new WaitUntilCommand(m_dragon.isCoralOnDragon()),
-        m_coralIntake.intakeReady());
+    return m_dragon.stow().until(m_dragon.atSetpoint())
+      .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
+      .andThen(m_dragon.handoffReady()
+      .until(m_dragon.atSetpoint())
+      .until(() ->
+        DragonState.HANDOFF_READY == m_dragon.getState()
+        && ElevatorState.HANDOFF == m_elevator.getState()))
+      .andThen(m_dragon.handoff().until(m_dragon.atSetpoint()))
+      .andThen(m_coralIntake.handoff().until(m_coralIntake.atSetpoint()))
+      .until(m_dragon.isCoralOnDragon())
+      .andThen(m_coralIntake.intakeReady());
   }
 
   public Command scoreCoral() {
     return new ConditionalCommand(
-        new SequentialCommandGroup(
-            m_dragon.score(),
-            new WaitUntilCommand(() -> !m_dragon.isCoralOnDragon().getAsBoolean()),
-            m_dragon.stow(),
-            m_elevator.moveToHandoff(),
-            m_dragon.handoffReady(),
-            m_coralIntake.intakeReady()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                m_coralIntake.poopL1(),
-                new WaitUntilCommand(() -> !m_coralIntake.isLoaded()),
-                m_dragon.stow(),
-                m_elevator.moveToHandoff(),
-                m_dragon.handoffReady(),
-                m_coralIntake.intakeReady()),
-            new InstantCommand(),
-            () -> (CoralIntakeState.POOP_READY == m_coralIntake.getState()
-                && DragonState.POOP_READY == m_dragon.getState() && ElevatorState.POOP == m_elevator.getState())),
-        () -> (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
-            && ElevatorState.SCORE_READY == m_elevator.getState()));
+      m_dragon.score().until(() -> !m_dragon.isCoralOnDragon().getAsBoolean())
+        .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
+        .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()))
+        .andThen(m_coralIntake.intakeReady()),
+      m_coralIntake.poopL1().until(() -> !m_coralIntake.isLoaded())
+        .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
+        .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()))
+        .andThen(m_coralIntake.intakeReady())
+      .onlyIf(() -> (CoralIntakeState.POOP_READY == m_coralIntake.getState()
+        && DragonState.POOP_READY == m_dragon.getState() && ElevatorState.POOP == m_elevator.getState())),
+    () -> (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
+      && ElevatorState.SCORE_READY == m_elevator.getState()));
   }
 
   public Command intakeCoral() {
     return new ConditionalCommand(
         intakeSequence(),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                m_coralIntake.intakeReady(),
-                intakeSequence()),
-            new InstantCommand(),
-            () -> CoralIntakeState.EXTAKE == m_coralIntake.getState()
-                || CoralIntakeState.STOW == m_coralIntake.getState()),
+        m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
+        .andThen(intakeSequence()).onlyIf(
+          () -> CoralIntakeState.EXTAKE == m_coralIntake.getState()
+          || CoralIntakeState.STOW == m_coralIntake.getState()),
         () -> CoralIntakeState.INTAKE_READY == m_coralIntake.getState());
   }
 
   private Command intakeSequence() {
-    return new SequentialCommandGroup(
-        m_coralIntake.intake(),
-        new WaitUntilCommand(() -> m_coralIntake.isLoaded())
-            .until(() -> CoralIntakeState.EXTAKE == m_coralIntake.getState()
-                || CoralIntakeState.STOW == m_coralIntake.getState()),
-        new InstantCommand(() -> {
-          if (CoralIntakeState.INTAKE == m_coralIntake.getState()) {
-            m_coralIntake.handoffReady().schedule();
-          }
-        }),
+    return m_coralIntake.intake()
+      .until(m_coralIntake::isLoaded)
+      .andThen(m_coralIntake.handoffReady()).until(m_coralIntake.atSetpoint())
+      .andThen(
         new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
             Map.entry(ElevatorSetpoint.POOP, setL1()),
             Map.entry(ElevatorSetpoint.L2, setL2()),
             Map.entry(ElevatorSetpoint.L3, setL3()),
-            Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint()));
+            Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint())
+      );
   }
 
   public Command setDefaultStates() {
