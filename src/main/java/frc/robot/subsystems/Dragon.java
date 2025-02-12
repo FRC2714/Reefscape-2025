@@ -175,6 +175,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.STOW);
     });
   }
 
@@ -182,6 +183,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.HANDOFF_READY);
     });
   }
 
@@ -190,6 +192,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
       setRollerPower(RollerSetpoints.kIntake);
+      setDragonState(DragonState.HANDOFF);
     }));
   }
 
@@ -197,6 +200,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.POOP_READY);
     });
   }
 
@@ -204,6 +208,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.L1);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
     });
   }
 
@@ -211,6 +216,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.L2);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
     });
   }
 
@@ -218,6 +224,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.L3);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
     });
   }
 
@@ -225,6 +232,7 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.L4);
       setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
     });
   }
 
@@ -232,7 +240,8 @@ public class Dragon extends SubsystemBase {
     return 
     this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
-    }).onlyIf(atSetpoint()); 
+      setDragonState(DragonState.SCORE);
+    }).onlyIf(atSetpoint());
   }
 
   public double getSimulationCurrentDraw() {

@@ -180,14 +180,12 @@ public class AlgaeIntake extends SubsystemBase {
     rollerMotor.set(power);
   }
 
-  private void setRollerPowerCommand(double power) {
-    setRollerPower(power);
-  }
 
   public Command intake() {
     return this.runEnd(() -> {
       setPivot(AlgaeIntakeSetpoint.INTAKE);
       setRollerPower(RollerSetpoints.kIntake);
+      setAlgaeIntakeState(AlgaeIntakeState.INTAKE);
     }, () -> {
       setPivot(AlgaeIntakeSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
@@ -198,6 +196,7 @@ public class AlgaeIntake extends SubsystemBase {
     return this.runEnd(() -> {
         setPivot(AlgaeIntakeSetpoint.EXTAKE);
         setRollerPower(RollerSetpoints.kExtake);
+        setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
       }, () -> {
         setPivot(AlgaeIntakeSetpoint.STOW);
         setRollerPower(RollerSetpoints.kStop);
@@ -208,6 +207,7 @@ public class AlgaeIntake extends SubsystemBase {
     return this.run(() -> {
         setPivot(AlgaeIntakeSetpoint.STOW);
         setRollerPower(RollerSetpoints.kStop);
+        setAlgaeIntakeState(AlgaeIntakeState.STOW);
       });
   }
 
