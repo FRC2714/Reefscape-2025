@@ -180,9 +180,6 @@ public class AlgaeIntake extends SubsystemBase {
     rollerMotor.set(power);
   }
 
-  private void setRollerPowerCommand(double power) {
-    setRollerPower(power);
-  }
 
   public Command intake() {
     return this.runEnd(() -> {
