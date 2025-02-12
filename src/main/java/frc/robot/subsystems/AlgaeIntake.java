@@ -144,7 +144,7 @@ public class AlgaeIntake extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  private BooleanSupplier atSetpoint() {
+  public BooleanSupplier atSetpoint() {
     if (Robot.isSimulation()) {
       return () -> true;
     }

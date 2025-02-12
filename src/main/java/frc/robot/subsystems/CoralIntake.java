@@ -199,12 +199,10 @@ public class CoralIntake extends SubsystemBase {
 
   public Command intake() {
     return intakeReady().until(atSetpoint()).andThen(
-      this.runEnd(() -> {
+      this.run(() -> {
         setRollerPower(RollerSetpoints.kIntake);
         setCoralIntakeState(CoralIntakeState.INTAKE);
-      }, () -> {
-        setRollerPower(RollerSetpoints.kStop);
-      }).until(this::isLoaded));
+      }));
   }
 
   public Command intakeReady() {

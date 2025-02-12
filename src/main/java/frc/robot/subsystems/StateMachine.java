@@ -6,15 +6,12 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorState;
@@ -189,31 +186,21 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command setDefaultStates() {
-    return new ParallelCommandGroup(
-        m_coralIntake.intakeReady(),
-        m_algaeIntake.stow(),
-        new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToHandoff(),
-            m_dragon.handoffReady()));
-  }
-
-  public Command intakeReadyCoral() {
-    return m_coralIntake.intakeReady();
+    return m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
+      .alongWith(m_algaeIntake.stow()).until(m_algaeIntake.atSetpoint())
+      .alongWith(
+        m_dragon.stow().until(m_dragon.atSetpoint())
+        .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
+        .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()))
+      );
   }
 
   public Command extakeCoral() {
-    return new SequentialCommandGroup(
-        m_coralIntake.extakeReady(),
-        m_coralIntake.extake());
+    return m_coralIntake.extake();
   }
 
   public Command stowCoralIntake() {
     return m_coralIntake.stow();
-  }
-
-  public Command handoffReady() {
-    return m_coralIntake.handoffReady();
   }
 
   public Command intakeAlgae() {
@@ -229,17 +216,15 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command moveElevatorToHandoff() {
-    return new SequentialCommandGroup(
-        m_dragon.stow(),
-        m_elevator.moveToHandoff(),
-        m_dragon.handoffReady());
+    return m_dragon.stow().until(m_dragon.atSetpoint())
+      .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
+      .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()));
   }
 
   public Command stow() {
-    return new ParallelCommandGroup(
-        stowElevator(),
-        stowAlgae(),
-        stowCoralIntake());
+    return stowElevator().until(m_elevator.atSetpoint())
+    .alongWith(stowAlgae().until(m_algaeIntake.atSetpoint()))
+    .alongWith(stowCoralIntake().until(m_coralIntake.atSetpoint()));
   }
 
   @Override
