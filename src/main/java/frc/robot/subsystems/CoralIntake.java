@@ -198,105 +198,77 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return this.run(() -> {
-      setPivotPosition(CoralIntakeSetpoint.INTAKE);
-      setRollerPower(RollerSetpoints.kIntake);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setCoralIntakeState(CoralIntakeState.INTAKE);
-        });
+    return intakeReady().until(atSetpoint()).andThen(
+      this.runEnd(() -> {
+        setRollerPower(RollerSetpoints.kIntake);
+        setCoralIntakeState(CoralIntakeState.INTAKE);
+      }, () -> {
+        setRollerPower(RollerSetpoints.kStop);
+      }).until(this::isLoaded));
   }
 
   public Command intakeReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.INTAKE);
       setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setCoralIntakeState(CoralIntakeState.INTAKE_READY);
-        });
+      setCoralIntakeState(CoralIntakeState.INTAKE_READY);
+    });
   }
 
   public Command extakeReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.EXTAKE);
       setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setCoralIntakeState(CoralIntakeState.EXTAKE_READY);
-        });
+      setCoralIntakeState(CoralIntakeState.EXTAKE_READY);
+    });
   }
 
   public Command extake() {
-    return this.run(() -> {
-      setPivotPosition(CoralIntakeSetpoint.EXTAKE);
-      setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
-          setCoralIntakeState(CoralIntakeState.EXTAKE);
-        });
+    return extakeReady().until(atSetpoint()).andThen(
+      this.run(() -> {
+        setRollerPower(RollerSetpoints.kExtake);
+        setCoralIntakeState(CoralIntakeState.EXTAKE);
+      }));
   }
 
   public Command stow() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setCoralIntakeState(CoralIntakeState.STOW);
-        });
+      setCoralIntakeState(CoralIntakeState.STOW);
+    });
   }
 
   public Command handoffReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setCoralIntakeState(CoralIntakeState.HANDOFF_READY);
-        });
+      setCoralIntakeState(CoralIntakeState.HANDOFF_READY);
+    });
   }
 
   public Command handoff() {
-    return this.run(() -> {
-      setPivotPosition(CoralIntakeSetpoint.HANDOFF);
-      setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
-          setCoralIntakeState(CoralIntakeState.HANDOFF);
-        });
+    return handoffReady().until(atSetpoint()).andThen(
+      this.run(() -> {
+        setRollerPower(RollerSetpoints.kExtake);
+        setCoralIntakeState(CoralIntakeState.HANDOFF);
+      }));
   }
 
   public Command poopReadyL1() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.POOP);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setRollerPower(RollerSetpoints.kStop);
-          setCoralIntakeState(CoralIntakeState.POOP_READY);
-        });
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.POOP_READY);
+    });
   }
 
   public Command poopL1() {
-    return this.run(() -> {
-      setPivotPosition(CoralIntakeSetpoint.POOP);
-      setRollerPower(RollerSetpoints.kStop);
-    })
-        .until(atSetpoint())
-        .finallyDo(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
-          setCoralIntakeState(CoralIntakeState.POOP_SCORE);
-        });
+    return poopReadyL1().until(atSetpoint()).andThen(
+      this.run(() -> {
+        setRollerPower(RollerSetpoints.kExtake);
+        setCoralIntakeState(CoralIntakeState.POOP_SCORE);
+      }));
   }
 
   public boolean isLoaded() {

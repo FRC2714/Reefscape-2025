@@ -151,7 +151,7 @@ public class Elevator extends SubsystemBase {
     m_elevatorState = state;
   }
 
-  private void setLevelCommand(ElevatorSetpoint setpoint) {
+  private void setLevel(ElevatorSetpoint setpoint) {
     setElevatorSetpoint(setpoint);
     switch (m_elevatorSetpoint) {
       case STOW:
@@ -181,44 +181,51 @@ public class Elevator extends SubsystemBase {
 
   public Command moveToStow() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.STOW);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.STOW));
+      setLevel(ElevatorSetpoint.STOW);
+      setElevatorState(ElevatorState.STOW);
+    });
   }
 
   public Command moveToHandoff() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.HANDOFF);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.HANDOFF));
+      setLevel(ElevatorSetpoint.HANDOFF);
+      setElevatorState(ElevatorState.HANDOFF);
+    });
   }
 
   public Command moveToPoop() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.POOP);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.POOP));
+      setLevel(ElevatorSetpoint.POOP);
+      setElevatorState(ElevatorState.POOP);
+    });
   }
 
   public Command moveToL1() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.L1);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.SCORE_READY));
+      setLevel(ElevatorSetpoint.L1);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL2() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.L2);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.SCORE_READY));
+      setLevel(ElevatorSetpoint.L2);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL3() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.L3);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.SCORE_READY));
+      setLevel(ElevatorSetpoint.L3);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL4() {
     return this.run(() -> {
-      setLevelCommand(ElevatorSetpoint.L4);
-    }).until(atSetpoint()).finallyDo(() -> setElevatorState(ElevatorState.SCORE_READY));
+      setLevel(ElevatorSetpoint.L4);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public ElevatorSetpoint getSetpoint() {
