@@ -205,7 +205,7 @@ public class StateMachine extends SubsystemBase {
   public Command setDefaultStates() {
     return new ParallelCommandGroup(
         m_coralIntake.intakeReady(),
-        m_algaeIntake.moveToStow(),
+        m_algaeIntake.stow(),
         new SequentialCommandGroup(
             m_dragon.stow(),
             m_elevator.moveToHandoff(),
@@ -231,15 +231,15 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command intakeAlgae() {
-    return m_algaeIntake.moveToIntake();
+    return m_algaeIntake.intake();
   }
 
   public Command extakeAlgae() {
-    return m_algaeIntake.moveToExtake();
+    return m_algaeIntake.extake();
   }
 
   public Command stowAlgae() {
-    return m_algaeIntake.moveToStow();
+    return m_algaeIntake.stow();
   }
 
   public Command moveElevatorToHandoff() {

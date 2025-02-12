@@ -184,25 +184,31 @@ public class AlgaeIntake extends SubsystemBase {
     setRollerPower(power);
   }
 
-  public Command moveToIntake() {
-    return this.run(() -> {
+  public Command intake() {
+    return this.runEnd(() -> {
       setPivot(AlgaeIntakeSetpoint.INTAKE);
       setRollerPower(RollerSetpoints.kIntake);
-    }).until(atSetpoint()).finallyDo(() -> setAlgaeIntakeState(AlgaeIntakeState.INTAKE));
+    }, () -> {
+      setPivot(AlgaeIntakeSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+    });
   }
 
-  public Command moveToExtake() {
-    return this.run(() -> {
+  public Command extake() {
+    return this.runEnd(() -> {
         setPivot(AlgaeIntakeSetpoint.EXTAKE);
         setRollerPower(RollerSetpoints.kExtake);
-      }).until(atSetpoint()).finallyDo(() -> setAlgaeIntakeState(AlgaeIntakeState.EXTAKE)); 
+      }, () -> {
+        setPivot(AlgaeIntakeSetpoint.STOW);
+        setRollerPower(RollerSetpoints.kStop);
+      });
   }
 
-  public Command moveToStow() {
+  public Command stow() {
     return this.run(() -> {
         setPivot(AlgaeIntakeSetpoint.STOW);
         setRollerPower(RollerSetpoints.kStop);
-      }).until(atSetpoint()).finallyDo(() -> setAlgaeIntakeState(AlgaeIntakeState.STOW));
+      });
   }
 
   public AlgaeIntakeSetpoint getSetpoint() {

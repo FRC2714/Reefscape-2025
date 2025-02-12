@@ -175,74 +175,64 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.STOW));
+    });
   }
 
   public Command handoffReady() {
     return this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.HANDOFF_READY));
+    });
   }
 
   public Command handoff() {
-    return this.run(() -> {
+    return handoffReady().until(atSetpoint()).andThen(this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
       setRollerPower(RollerSetpoints.kIntake);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.HANDOFF));
+    }));
   }
 
   public Command poopReadyL1() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.POOP_READY));
+    });
   }
 
   public Command scoreReadyL1() {
     return this.run(() -> {
       setPivot(DragonSetpoint.L1);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
+    });
   }
 
   public Command scoreReadyL2() {
     return this.run(() -> {
       setPivot(DragonSetpoint.L2);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
+    });
   }
 
   public Command scoreReadyL3() {
     return this.run(() -> {
       setPivot(DragonSetpoint.L3);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
+    });
   }
 
   public Command scoreReadyL4() {
     return this.run(() -> {
       setPivot(DragonSetpoint.L4);
       setRollerPower(RollerSetpoints.kStop);
-    }).until(atSetpoint())
-        .finallyDo(() -> setDragonState(DragonState.SCORE_READY));
+    });
   }
 
   public Command score() {
-    return this.run(() -> {
-      // Instead of setting coralOnDragon to false, experiment with current
-      // new InstantCommand(() -> coralOnDragon = false), // UNCOMMENT AFTER SIM
-      // TESTING
+    return 
+    this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
-    }).finallyDo(() -> setDragonState(DragonState.SCORE));
+    }).onlyIf(atSetpoint()); 
   }
 
   public double getSimulationCurrentDraw() {
