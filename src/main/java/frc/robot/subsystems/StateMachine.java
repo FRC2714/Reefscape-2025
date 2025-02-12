@@ -49,40 +49,37 @@ public class StateMachine extends SubsystemBase {
 
   public Command setL1() {
     return new ConditionalCommand(
-        new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL1(),
-            m_dragon.scoreReadyL1()),
+            m_dragon.stow()
+              .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
+              .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())),
         new ConditionalCommand(
-            new SequentialCommandGroup(
-                m_dragon.stow(),
-                m_elevator.moveToPoop(),
-                m_coralIntake.poopReadyL1(),
-                m_dragon.poopReadyL1()),
-            new SequentialCommandGroup(
-                moveElevatorToHandoff(),
-                new InstantCommand(() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.POOP))),
-            () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+                m_dragon.stow()
+                  .andThen(m_elevator.moveToPoop()).until(m_elevator.atSetpoint())
+                  .andThen(m_coralIntake.poopReadyL1().until(m_coralIntake.atSetpoint()))
+                  .andThen(m_dragon.poopReadyL1().until(m_dragon.atSetpoint())),
+
+                moveElevatorToHandoff()
+                  .andThen(new InstantCommand( () -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.POOP))),
+
+                () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
                 || CoralIntakeState.POOP_READY == m_coralIntake.getState())),
         m_dragon.isCoralOnDragon());
   }
 
   public Command setL2() {
     return new ConditionalCommand(
-        new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL2(),
-            m_dragon.scoreReadyL2()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                handoff(),
-                new SequentialCommandGroup(
-                    m_dragon.stow(),
-                    m_elevator.moveToL2(),
-                    m_dragon.scoreReadyL2())),
-            new SequentialCommandGroup(
-                moveElevatorToHandoff(),
-                new InstantCommand(()-> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L2))),
+            m_dragon.stow()
+              .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
+              .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())),
+            
+            new ConditionalCommand(
+                handoff()
+                  .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
+                  .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
+                  .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())),
+
+                moveElevatorToHandoff()
+                  .andThen(new InstantCommand (() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L2))),
             () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
                 || CoralIntakeState.POOP_READY == m_coralIntake.getState())),
         m_dragon.isCoralOnDragon());
@@ -90,41 +87,37 @@ public class StateMachine extends SubsystemBase {
 
   public Command setL3() {
     return new ConditionalCommand(
-        new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL3(),
-            m_dragon.scoreReadyL3()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                handoff(),
-                new SequentialCommandGroup(
-                    m_dragon.stow(),
-                    m_elevator.moveToL3(),
-                    m_dragon.scoreReadyL3())),
-            new SequentialCommandGroup(
-                moveElevatorToHandoff(),
-                new InstantCommand(() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L3))),
-            () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-                || CoralIntakeState.POOP_READY == m_coralIntake.getState())),
-        m_dragon.isCoralOnDragon());
+      m_dragon.stow()
+        .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
+        .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())),
+      
+      new ConditionalCommand(
+          handoff()
+            .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
+            .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
+            .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())),
+
+          moveElevatorToHandoff()
+            .andThen(new InstantCommand (() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L3))),
+      () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          || CoralIntakeState.POOP_READY == m_coralIntake.getState())),
+      m_dragon.isCoralOnDragon());
   }
 
   public Command setL4() {
     return new ConditionalCommand(
-        new SequentialCommandGroup(
-            m_dragon.stow(),
-            m_elevator.moveToL4(),
-            m_dragon.scoreReadyL4()),
-        new ConditionalCommand(
-            new SequentialCommandGroup(
-                handoff(),
-                new SequentialCommandGroup(
-                    m_dragon.stow(),
-                    m_elevator.moveToL4(),
-                    m_dragon.scoreReadyL4())),
-            new SequentialCommandGroup(
-                moveElevatorToHandoff(),
-                new InstantCommand(() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L4))),
+            m_dragon.stow()
+              .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
+              .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())),
+            
+            new ConditionalCommand(
+                handoff()
+                  .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
+                  .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
+                  .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())),
+
+                moveElevatorToHandoff()
+                  .andThen(new InstantCommand (() -> m_elevator.setElevatorSetpoint(ElevatorSetpoint.L4))),
             () -> (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
                 || CoralIntakeState.POOP_READY == m_coralIntake.getState())),
         m_dragon.isCoralOnDragon());
