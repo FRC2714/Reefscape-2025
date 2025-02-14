@@ -65,22 +65,28 @@ public class RobotContainer {
     m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
   );
 
-  Joystick m_operatorController = new Joystick(1);
-  Joystick m_operatorController2 = new Joystick(2);
+  //Mech2d Stuff
+  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  public Mech2dManager getMech2dManager() {
+    return m_mech2dManager;
+  }
+
+  Joystick m_reefController = new Joystick(1); // operator controller 1
+  Joystick m_mechanismController = new Joystick(2); // operator controller 2
   // The driver's controller
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   // Operator Controller
-  private final JoystickButton L1Button = new JoystickButton(m_operatorController2, 1); // L1
-  private final JoystickButton L2Button = new JoystickButton(m_operatorController2, 2); // L2
-  private final JoystickButton L3Button = new JoystickButton(m_operatorController2, 3); // L3
-  private final JoystickButton L4Button = new JoystickButton(m_operatorController2, 4); // L4
-  private final JoystickButton coralIntakeButton = new JoystickButton(m_operatorController2, 8); // Coral Station
-  private final JoystickButton coralExtakeButton = new JoystickButton(m_operatorController2, 7);
-  private final JoystickButton handoffButton = new JoystickButton(m_operatorController2, 6); // L4
-  private final JoystickButton stowButton = new JoystickButton(m_operatorController2, 5); // Stow
-  private final JoystickButton loadCoralButton = new JoystickButton(m_operatorController2, 10); // Stow
-  private final JoystickButton coralonDragonButton = new JoystickButton(m_operatorController2,9); // Stow
+  private final JoystickButton L1Button = new JoystickButton(m_mechanismController, 1); // L1
+  private final JoystickButton L2Button = new JoystickButton(m_mechanismController, 2); // L2
+  private final JoystickButton L3Button = new JoystickButton(m_mechanismController, 3); // L3
+  private final JoystickButton L4Button = new JoystickButton(m_mechanismController, 4); // L4
+  private final JoystickButton coralIntakeButton = new JoystickButton(m_mechanismController, 8); // Coral Station
+  private final JoystickButton coralExtakeButton = new JoystickButton(m_mechanismController, 7);
+  private final JoystickButton handoffButton = new JoystickButton(m_mechanismController, 6); // L4
+  private final JoystickButton stowButton = new JoystickButton(m_mechanismController, 5); // Stow
+  private final JoystickButton loadCoralButton = new JoystickButton(m_mechanismController, 10); // Stow
+  private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController,9); // Stow
 
   private SendableChooser<Command> autoChooser;
 
@@ -120,6 +126,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    // Driver Controller Actions
     m_driverController
       .leftTrigger(OIConstants.kTriggerButtonThreshold)
       .onTrue(m_stateMachine.extakeAlgae())
@@ -140,8 +147,6 @@ public class RobotContainer {
 
     m_driverController.povRight()
       .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-  // // TODO: add pov up down for coral station and processor
-  //   // Additional
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
     
   //   // Stages
@@ -154,12 +159,26 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
+    m_driverController.leftBumper()
+    .whileTrue(m_stateMachine.handoff());
+
+    // Reef Branches for HUD
+    int[] stalkNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+
+    for (int i = 0; i < stalkNumbers.length; i++) {
+      final int number = stalkNumbers[i]; // Capture the number for the lambda
+      new JoystickButton(m_reefController, i + 1) // i + initial button number
+          .onTrue(new InstantCommand(() -> {
+              SmartDashboard.putNumber("Reef Stalk Number", number);
+          }));
+
     if (Robot.isSimulation()) {
       coralonDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
                          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
       loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue())).onFalse(new InstantCommand(() ->m_coralIntake.setLoadedFalse()));
     }
   }
+}
 
   public void setTeleOpDefaultStates() {
     m_stateMachine.setDefaultStates().schedule();

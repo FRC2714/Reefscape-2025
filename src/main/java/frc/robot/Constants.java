@@ -59,6 +59,10 @@ public final class Constants {
     public static final int kRearRightTurningCanId = 9;
 
     public static final boolean kGyroReversed = false;
+
+    public static final double kTurningEncoderPositionFactor = 2 * Math.PI;
+    public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
+    / ModuleConstants.kDrivingMotorReduction;
   }
 
   public static final class AlgaeIntakeConstants {
@@ -110,21 +114,22 @@ public final class Constants {
   }
 
   public static final class SimulationRobotConstants {
-    public static final double kPixelsPerMeter = 20;
+    //! Remove *20 from all values for final Robot Testing
+    public static final double kPixelsPerMeter = 1*20;
 
     public static final double kElevatorGearing = 25; // 25:1
     public static final double kCarriageMass =
         4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
     public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
-    public static final double kMinElevatorHeightMeters = 0.922; // m
-    public static final double kMaxElevatorHeightMeters = 1.62; // m
+    public static final double kMinElevatorHeightMeters = Units.inchesToMeters(35.2*20); // m
+    public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(66.7*20); // m
 
     public static final double kArmReduction = 60; // 60:1
     public static final double kArmLength = 0.433; // m
     public static final double kArmMass = 4.3; // Kg
 
     public static final double kPivotReduction = 60; // 60:1
-    public static final double kPivotLength = 0.433; // m
+    public static final double kPivotLength = Units.inchesToMeters(10); // m
     public static final double kPivotMass = 4.3; // Kg
 
     public static final double kMinAngleRads =
@@ -133,7 +138,7 @@ public final class Constants {
         Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
 
     public static final double kIntakeReduction = 135; // 135:1
-    public static final double kIntakeLength = 0.4032262; // m
+    public static final double kIntakeLength = Units.inchesToMeters(15); // m
     public static final double kIntakeMass = 5.8738; // Kg
     public static final double kIntakeMinAngleRads = Units.degreesToRadians(80);
     public static final double kIntakeMaxAngleRads = Units.degreesToRadians(180);
@@ -141,10 +146,11 @@ public final class Constants {
     public static final double kCoralIntakeMinAngleRads = Units.degreesToRadians(0);
     public static final double kCoralIntakeMaxAngleRads = Units.degreesToRadians(360 * kIntakeReduction);
 
-    public static final double kIntakeShortBarLength = 0.1524;
-    public static final double kIntakeLongBarLength = 0.3048;
-    public static final double kCoralIntakeLength = 0.5;
-    public static final double kIntakeBarAngleRads = Units.degreesToRadians(-60);
+    public static final double kIntakeShortBarLength = Units.inchesToMeters(11);
+    public static final double kIntakeLongBarLength = Units.inchesToMeters(13);
+    public static final double kCoralIntakeLength = Units.inchesToMeters(11*20);
+    public static final double kCoralStandLength = Units.inchesToMeters(35.2*20);
+    public static final double kIntakeBarAngleRads = Units.degreesToRadians(90);
   }
 
   public static final class ModuleConstants {
@@ -160,6 +166,7 @@ public final class Constants {
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
     public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+    public static final double kTurningMotorReduction = 1;
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
   }

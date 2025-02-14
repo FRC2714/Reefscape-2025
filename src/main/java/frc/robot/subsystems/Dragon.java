@@ -119,6 +119,10 @@ public class Dragon extends SubsystemBase {
     coralOnDragon = false;
   }
 
+  public double getPivotPosition() {
+    return pivotAbsoluteEncoder.getPosition();
+  }
+
   private void moveToSetpoint() {
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }

@@ -85,13 +85,15 @@ public class AlgaeIntake extends SubsystemBase {
 
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
-  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 28, 3);
-  private final MechanismLigament2d intakePivotMechanism = m_mech2dRoot.append(
-      new MechanismLigament2d(
-          "Intake Pivot",
-          SimulationRobotConstants.kIntakeShortBarLength
-              * SimulationRobotConstants.kPixelsPerMeter,
-          Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
+  private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 25.2, 0);
+  private final MechanismLigament2d intakePivotMechanism =
+      m_mech2dRoot.append(
+          new MechanismLigament2d(
+              "Intake Pivot",
+              SimulationRobotConstants.kIntakeShortBarLength
+                  * SimulationRobotConstants.kPixelsPerMeter,
+              Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
+
 
   @SuppressWarnings("unused")
   private final MechanismLigament2d intakePivotSecondMechanism = intakePivotMechanism.append(
@@ -137,6 +139,10 @@ public class AlgaeIntake extends SubsystemBase {
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
+  }
+
+  public double getPivotPosition() {
+    return pivotEncoder.getPosition();
   }
 
   /** Set the arm motor position. This will use closed loop position control. */
