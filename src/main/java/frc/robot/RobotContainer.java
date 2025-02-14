@@ -159,9 +159,6 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
-    m_driverController.leftBumper()
-    .whileTrue(m_stateMachine.handoff());
-
     // Reef Branches for HUD
     int[] stalkNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
