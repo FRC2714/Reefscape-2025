@@ -155,13 +155,17 @@ public class StateMachine {
   }
 
   public Command intakeCoral() {
-    return new ConditionalCommand(
-        intakeSequence(),
-        m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
-            .andThen(intakeSequence()).onlyIf(
-                () -> CoralIntakeState.EXTAKE == m_coralIntake.getState()
-                    || CoralIntakeState.STOW == m_coralIntake.getState()),
-        () -> CoralIntakeState.INTAKE_READY == m_coralIntake.getState());
+    return new InstantCommand( () -> {
+      if(CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) 
+      {
+         intakeSequence().schedule();
+      }
+      else if(CoralIntakeState.EXTAKE == m_coralIntake.getState() || CoralIntakeState.STOW == m_coralIntake.getState())
+      {
+          m_coralIntake.intakeReady();
+          intakeSequence().schedule();
+      }
+    });
   }
 
   private Command intakeSequence() {
@@ -176,6 +180,13 @@ public class StateMachine {
           Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint()));
   }
 
+  private Command extakeSequence()
+  {
+    return m_coralIntake.extake()
+      .until(() -> !m_coralIntake.isLoaded())
+      .andThen(m_coralIntake.intakeReady());
+  }
+
   public Command setDefaultStates() {
     return m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
         .alongWith(m_algaeIntake.stow()).until(m_algaeIntake.atSetpoint())
@@ -186,7 +197,18 @@ public class StateMachine {
   }
 
   public Command extakeCoral() {
-    return m_coralIntake.extake();
+    return new InstantCommand( () -> {
+      if(CoralIntakeState.EXTAKE_READY == m_coralIntake.getState())
+      {
+          extakeSequence().schedule();
+      }
+      else
+      {
+          m_coralIntake.extakeReady();
+          extakeSequence().schedule();
+      }
+    }
+    );
   }
 
   public Command stowCoralIntake() {
