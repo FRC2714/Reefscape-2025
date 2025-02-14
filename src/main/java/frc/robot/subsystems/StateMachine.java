@@ -6,15 +6,17 @@ package frc.robot.subsystems;
 
 import java.util.Map;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-public class StateMachine {
+public class StateMachine extends SubsystemBase {
 
   private Dragon m_dragon;
   private Elevator m_elevator;
@@ -24,6 +26,8 @@ public class StateMachine {
   private Limelight m_rightLimelight;
   private Limelight m_backLimelight;
   private LED m_blinkin;
+
+  private boolean manualOverride;
 
   /** Creates a new StateMachine. */
   public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
@@ -37,6 +41,16 @@ public class StateMachine {
     this.m_leftLimelight = m_leftLimelight;
     this.m_rightLimelight = m_rightLimelight;
     this.m_backLimelight = m_backLimelight;
+
+    manualOverride = false;
+  }
+
+  public Command enableManualOverride() {
+    return new InstantCommand(() -> manualOverride = true);
+  }
+
+  public Command disableManualOverride() {
+    return new InstantCommand(() -> manualOverride = false);
   }
 
   public Command stowElevator() {
@@ -47,7 +61,12 @@ public class StateMachine {
   public Command setL1() {
     return new InstantCommand(
         () -> {
-          if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          if (manualOverride) {
+            m_dragon.stow().until(m_dragon.atSetpoint())
+                .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
+                .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())).schedule();
+          }
+          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())).schedule();
@@ -67,7 +86,12 @@ public class StateMachine {
   public Command setL2() {
     return new InstantCommand(
         () -> {
-          if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          if (manualOverride) {
+            m_dragon.stow().until(m_dragon.atSetpoint())
+                .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
+                .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())).schedule();
+          }
+          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())).schedule();
@@ -88,7 +112,12 @@ public class StateMachine {
   public Command setL3() {
     return new InstantCommand(
         () -> {
-          if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          if (manualOverride) {
+            m_dragon.stow().until(m_dragon.atSetpoint())
+                .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
+                .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())).schedule();
+          }
+          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())).schedule();
@@ -109,7 +138,12 @@ public class StateMachine {
   public Command setL4() {
     return new InstantCommand(
         () -> {
-          if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          if (manualOverride) {
+            m_dragon.stow().until(m_dragon.atSetpoint())
+                .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
+                .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())).schedule();
+          }
+          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())).schedule();
@@ -140,7 +174,10 @@ public class StateMachine {
   public Command scoreCoral() {
     return new InstantCommand(
         () -> {
-          if (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
+          if (manualOverride) {
+            m_dragon.score().schedule();
+          }
+          else if (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
               && ElevatorState.SCORE_READY == m_elevator.getState()) {
             m_dragon.score().until(() -> !m_dragon.isCoralOnDragon().getAsBoolean())
                 .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
@@ -161,7 +198,11 @@ public class StateMachine {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if (CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
+      if(manualOverride)
+      {
+        intakeSequence().schedule();
+      }
+      else if (CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
         intakeSequence().schedule();
       } else if (CoralIntakeState.EXTAKE == m_coralIntake.getState()
           || CoralIntakeState.STOW == m_coralIntake.getState()) {
@@ -191,13 +232,18 @@ public class StateMachine {
               m_dragon.stow().until(m_dragon.atSetpoint())
                   .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
                   .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint())))
+          .alongWith(disableManualOverride())
           .schedule();
     });
   }
 
   public Command extakeCoral() {
     return new InstantCommand(() -> {
-      if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
+      if(manualOverride)
+      {
+        m_coralIntake.extake().schedule();
+      }
+      else if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
       } else {
         m_coralIntake.extakeReady().until(m_coralIntake.atSetpoint())
@@ -232,5 +278,10 @@ public class StateMachine {
     return new InstantCommand(() -> stowElevator().until(m_elevator.atSetpoint())
         .alongWith(stowAlgae().until(m_algaeIntake.atSetpoint()))
         .alongWith(stowCoralIntake().until(m_coralIntake.atSetpoint())).schedule());
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("Manual Override", manualOverride);
   }
 }
