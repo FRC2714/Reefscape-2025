@@ -16,11 +16,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -28,9 +23,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
-import frc.robot.Constants.ElevatorConstants.ElevatorLevels;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ElevatorConstants.ElevatorLevels;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
 
@@ -62,11 +59,10 @@ public class Elevator extends SubsystemBase {
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
 
-
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorConstants.ElevatorLevels.kStow;
 
-  //Simulation testing
+  // Simulation testing
   private DCMotor elevatorMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim elevatorMotorSim;
   private SparkLimitSwitchSim elevatorLimitSwitchSim;
@@ -108,13 +104,11 @@ public class Elevator extends SubsystemBase {
         Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
-    
 
     m_elevatorSetpoint = ElevatorSetpoint.STOW;
     m_elevatorState = ElevatorState.STOW;
 
     SmartDashboard.putData("Elevator", m_mech2d);
-
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
@@ -136,98 +130,106 @@ public class Elevator extends SubsystemBase {
       // prevent constant zeroing while pressed
       elevatorEncoder.setPosition(0);
       wasResetByLimit = true;
-    }
-    else if(!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed())
-    {
+    } else if (!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed()) {
       elevatorEncoder.setPosition(32);
       wasResetByLimit = true;
-    }
-    else if (!elevatorMotor.getReverseLimitSwitch().isPressed() && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
+    } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()
+        && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
     }
   }
 
-  private BooleanSupplier atSetpoint() {
+  public BooleanSupplier atSetpoint() {
     if (Robot.isSimulation()) {
       return () -> true;
     }
-    return () -> Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+    return () -> Math
+        .abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
   }
 
-  public Command setElevatorSetpointCommand(ElevatorSetpoint setpoint) {
-    return new InstantCommand(() -> m_elevatorSetpoint = setpoint);
+  public void setElevatorSetpoint(ElevatorSetpoint setpoint) {
+    m_elevatorSetpoint = setpoint;
   }
 
-  private Command setElevatorStateCommand(ElevatorState state) {
-    return new InstantCommand(() -> m_elevatorState = state);
+  private void setElevatorState(ElevatorState state) {
+    m_elevatorState = state;
   }
 
-  private Command setLevelCommand(ElevatorSetpoint setpoint) {
-    return new SequentialCommandGroup(
-        setElevatorSetpointCommand(setpoint),
-        new InstantCommand(
-        () -> {
-          switch (m_elevatorSetpoint) {
-            case STOW:
-              elevatorCurrentTarget = ElevatorLevels.kStow;
-              break;
-            case HANDOFF:
-              elevatorCurrentTarget = ElevatorLevels.kHandoff;
-              break;
-            case POOP:
-              elevatorCurrentTarget = ElevatorLevels.kPoop;
-              break;
-            case L1:
-              elevatorCurrentTarget = ElevatorLevels.kLevel1;
-              break;
-            case L2:
-              elevatorCurrentTarget = ElevatorLevels.kLevel2;
-              break;
-            case L3:
-              elevatorCurrentTarget = ElevatorLevels.kLevel3;
-              break;
-            case L4:
-              elevatorCurrentTarget = ElevatorLevels.kLevel4;
-              break;
-          }}),
-          new InstantCommand(() -> moveToSetpoint()),
-          new WaitUntilCommand(atSetpoint())
-        );
+  private void setLevel(ElevatorSetpoint setpoint) {
+    setElevatorSetpoint(setpoint);
+    switch (m_elevatorSetpoint) {
+      case STOW:
+        elevatorCurrentTarget = ElevatorLevels.kStow;
+        break;
+      case HANDOFF:
+        elevatorCurrentTarget = ElevatorLevels.kHandoff;
+        break;
+      case POOP:
+        elevatorCurrentTarget = ElevatorLevels.kPoop;
+        break;
+      case L1:
+        elevatorCurrentTarget = ElevatorLevels.kLevel1;
+        break;
+      case L2:
+        elevatorCurrentTarget = ElevatorLevels.kLevel2;
+        break;
+      case L3:
+        elevatorCurrentTarget = ElevatorLevels.kLevel3;
+        break;
+      case L4:
+        elevatorCurrentTarget = ElevatorLevels.kLevel4;
+        break;
+    }
+    moveToSetpoint();
   }
-  
+
   public Command moveToStow() {
-    return setLevelCommand(ElevatorSetpoint.STOW)
-      .andThen(setElevatorStateCommand(ElevatorState.STOW));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.STOW);
+      setElevatorState(ElevatorState.STOW);
+    });
   }
 
   public Command moveToHandoff() {
-    return setLevelCommand(ElevatorSetpoint.HANDOFF)
-      .andThen(setElevatorStateCommand(ElevatorState.HANDOFF));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.HANDOFF);
+      setElevatorState(ElevatorState.HANDOFF);
+    });
   }
 
   public Command moveToPoop() {
-    return setLevelCommand(ElevatorSetpoint.POOP)
-      .andThen(setElevatorStateCommand(ElevatorState.POOP));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.POOP);
+      setElevatorState(ElevatorState.POOP);
+    });
   }
 
   public Command moveToL1() {
-    return setLevelCommand(ElevatorSetpoint.L1)
-      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.L1);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL2() {
-    return setLevelCommand(ElevatorSetpoint.L2)
-      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.L2);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL3() {
-    return setLevelCommand(ElevatorSetpoint.L3)
-      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.L3);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public Command moveToL4() {
-    return setLevelCommand(ElevatorSetpoint.L4)
-      .andThen(setElevatorStateCommand(ElevatorState.SCORE_READY));
+    return this.run(() -> {
+      setLevel(ElevatorSetpoint.L4);
+      setElevatorState(ElevatorState.SCORE_READY);
+    });
   }
 
   public ElevatorSetpoint getSetpoint() {
@@ -249,7 +251,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putString("Elevator State", m_elevatorState.toString());
     SmartDashboard.putString("Elevator Setpoint", m_elevatorSetpoint.toString());
     SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
-
+    SmartDashboard.putString("Elevator Current Comamand", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
 
 
     m_elevatorMech2d.setLength(
@@ -270,8 +272,6 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
 
-    
-
     // Update sim limit switch
     elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);
 
@@ -288,11 +288,9 @@ public class Elevator extends SubsystemBase {
         ((m_elevatorSim.getVelocityMetersPerSecond()
             / (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI))
             * SimulationRobotConstants.kElevatorGearing)
-            * 60.0, 
+            * 60.0,
         RobotController.getBatteryVoltage(),
         0.02);
-
- 
 
     // SimBattery is updated in Robot.java
   }

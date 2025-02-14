@@ -159,9 +159,6 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
-    m_driverController.leftBumper()
-    .whileTrue(m_stateMachine.handoff());
-
     // Reef Branches for HUD
     int[] stalkNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 
@@ -173,8 +170,9 @@ public class RobotContainer {
           }));
 
     if (Robot.isSimulation()) {
-      loadCoralButton.onTrue(m_coralIntake.setLoadedTrue()).onFalse(m_coralIntake.setLoadedFalse());
-      coralonDragonButton.onTrue(m_dragon.coralOnDragonTrue()).onFalse(m_dragon.coralonDragonFalse());
+      coralonDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+                         .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue())).onFalse(new InstantCommand(() ->m_coralIntake.setLoadedFalse()));
     }
   }
 }

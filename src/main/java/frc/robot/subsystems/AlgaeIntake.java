@@ -37,7 +37,8 @@ import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 
 public class AlgaeIntake extends SubsystemBase {
-  // Initialize arm SPARK. We will use MAXMotion position control for the arm, so we also need to
+  // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
+  // we also need to
   // initialize the closed loop controller and encoder.
 
   private enum AlgaeIntakeSetpoint {
@@ -46,8 +47,7 @@ public class AlgaeIntake extends SubsystemBase {
     EXTAKE
   }
 
-  public enum AlgaeIntakeState
-  {
+  public enum AlgaeIntakeState {
     STOW,
     INTAKE,
     EXTAKE
@@ -70,19 +70,18 @@ public class AlgaeIntake extends SubsystemBase {
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;
-  private final SingleJointedArmSim m_intakeSim =
-      new SingleJointedArmSim(
-          armMotorModel,
-          SimulationRobotConstants.kIntakeReduction,
-          SingleJointedArmSim.estimateMOI(
-              SimulationRobotConstants.kIntakeLength, SimulationRobotConstants.kIntakeMass),
-          SimulationRobotConstants.kIntakeLength,
-          SimulationRobotConstants.kIntakeMinAngleRads,
-          SimulationRobotConstants.kIntakeMaxAngleRads,
-          true,
-          SimulationRobotConstants.kIntakeMinAngleRads,
-          0.0,
-          0.0);
+  private final SingleJointedArmSim m_intakeSim = new SingleJointedArmSim(
+      armMotorModel,
+      SimulationRobotConstants.kIntakeReduction,
+      SingleJointedArmSim.estimateMOI(
+          SimulationRobotConstants.kIntakeLength, SimulationRobotConstants.kIntakeMass),
+      SimulationRobotConstants.kIntakeLength,
+      SimulationRobotConstants.kIntakeMinAngleRads,
+      SimulationRobotConstants.kIntakeMaxAngleRads,
+      true,
+      SimulationRobotConstants.kIntakeMinAngleRads,
+      0.0,
+      0.0);
 
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
@@ -95,14 +94,14 @@ public class AlgaeIntake extends SubsystemBase {
                   * SimulationRobotConstants.kPixelsPerMeter,
               Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
 
+
   @SuppressWarnings("unused")
-  private final MechanismLigament2d intakePivotSecondMechanism =
-      intakePivotMechanism.append(
-          new MechanismLigament2d(
-              "Intake Pivot Second Bar",
-              SimulationRobotConstants.kIntakeLongBarLength
-                  * SimulationRobotConstants.kPixelsPerMeter,
-              Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
+  private final MechanismLigament2d intakePivotSecondMechanism = intakePivotMechanism.append(
+      new MechanismLigament2d(
+          "Intake Pivot Second Bar",
+          SimulationRobotConstants.kIntakeLongBarLength
+              * SimulationRobotConstants.kPixelsPerMeter,
+          Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeIntake() {
     /*
@@ -117,13 +116,12 @@ public class AlgaeIntake extends SubsystemBase {
      */
     // pivotMotor = new SparkFlex(0, MotorType.kBrushless); //CANID later
     // rollerMotor = new SparkFlex(1, MotorType.kBrushless); //CANID later
-    
+
     // pivotController = pivotMotor.getClosedLoopController();
     // pivotReference = 0;
-    
+
     // pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  
     rollerMotor.configure(
         Configs.AlgaeSubsystem.rollerConfig,
         ResetMode.kResetSafeParameters,
@@ -133,7 +131,6 @@ public class AlgaeIntake extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    
     m_algaeIntakeState = AlgaeIntakeState.STOW;
     m_algaeIntakeSetpoint = AlgaeIntakeSetpoint.STOW;
 
@@ -153,40 +150,35 @@ public class AlgaeIntake extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  private BooleanSupplier atSetpoint() {
+  public BooleanSupplier atSetpoint() {
     if (Robot.isSimulation()) {
       return () -> true;
     }
     return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
-  private Command setAlgaeIntakeSetpointCommand(AlgaeIntakeSetpoint setpoint) {
-    return new InstantCommand(() -> m_algaeIntakeSetpoint = setpoint);
+  private void setAlgaeIntakeSetpoint(AlgaeIntakeSetpoint setpoint) {
+    m_algaeIntakeSetpoint = setpoint;
   }
 
-  private Command setAlgaeIntakeStateCommand(AlgaeIntakeState state) {
-    return new InstantCommand(() -> m_algaeIntakeState = state);
+  private void setAlgaeIntakeState(AlgaeIntakeState state) {
+    m_algaeIntakeState = state;
   }
 
-  private Command setPivotCommand(AlgaeIntakeSetpoint setpoint) {
-    return new SequentialCommandGroup(
-      setAlgaeIntakeSetpointCommand(setpoint),
-      new InstantCommand(
-      () -> {
-        switch (m_algaeIntakeSetpoint) {
-          case STOW:
-            pivotCurrentTarget = PivotSetpoints.kStow;
-            break;
-          case INTAKE:
-            pivotCurrentTarget = PivotSetpoints.kIntake;
-            break;
-          case EXTAKE:
-            pivotCurrentTarget = PivotSetpoints.kExtake;
-            break;
-        }}),
-        new InstantCommand(() -> moveToSetpoint()),
-        new WaitUntilCommand(atSetpoint())
-      );
+  private void setPivot(AlgaeIntakeSetpoint setpoint) {
+    setAlgaeIntakeSetpoint(setpoint);
+    switch (m_algaeIntakeSetpoint) {
+      case STOW:
+        pivotCurrentTarget = PivotSetpoints.kStow;
+        break;
+      case INTAKE:
+        pivotCurrentTarget = PivotSetpoints.kIntake;
+        break;
+      case EXTAKE:
+        pivotCurrentTarget = PivotSetpoints.kExtake;
+        break;
+    }
+    moveToSetpoint();
   }
 
   /** Set the pivot motor power in the range of [-1, 1]. */
@@ -194,46 +186,52 @@ public class AlgaeIntake extends SubsystemBase {
     rollerMotor.set(power);
   }
 
-  private Command setRollerPowerCommand(double power) {
-    return new InstantCommand(() -> setRollerPower(power));
+
+  public Command intake() {
+    return this.runEnd(() -> {
+      setPivot(AlgaeIntakeSetpoint.INTAKE);
+      setRollerPower(RollerSetpoints.kIntake);
+      setAlgaeIntakeState(AlgaeIntakeState.INTAKE);
+    }, () -> {
+      setPivot(AlgaeIntakeSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+    });
   }
 
-  public Command moveToIntake() {
-    return new ParallelCommandGroup(
-      setPivotCommand(AlgaeIntakeSetpoint.INTAKE),
-      setRollerPowerCommand(RollerSetpoints.kIntake)
-    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.INTAKE));
+  public Command extake() {
+    return this.runEnd(() -> {
+        setPivot(AlgaeIntakeSetpoint.EXTAKE);
+        setRollerPower(RollerSetpoints.kExtake);
+        setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
+      }, () -> {
+        setPivot(AlgaeIntakeSetpoint.STOW);
+        setRollerPower(RollerSetpoints.kStop);
+      });
   }
 
-  public Command moveToExtake() {
-    return new SequentialCommandGroup(
-      setPivotCommand(AlgaeIntakeSetpoint.EXTAKE),
-      setRollerPowerCommand(RollerSetpoints.kExtake)
-    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.EXTAKE));
+  public Command stow() {
+    return this.run(() -> {
+        setPivot(AlgaeIntakeSetpoint.STOW);
+        setRollerPower(RollerSetpoints.kStop);
+        setAlgaeIntakeState(AlgaeIntakeState.STOW);
+      });
   }
 
-  public Command moveToStow() {
-    return new ParallelCommandGroup(
-        setPivotCommand(AlgaeIntakeSetpoint.STOW),
-        setRollerPowerCommand(RollerSetpoints.kStop)
-    ).andThen(setAlgaeIntakeStateCommand(AlgaeIntakeState.STOW));
-  }
-
-  public AlgaeIntakeSetpoint getSetpoint()
-  {
+  public AlgaeIntakeSetpoint getSetpoint() {
     return m_algaeIntakeSetpoint;
   }
 
-  public AlgaeIntakeState getState()
-  {
+  public AlgaeIntakeState getState() {
     return m_algaeIntakeState;
   }
 
-
   /**
-   * Command to run when the intake is not actively running. When in the "hold" state, the intake
-   * will stay in the "hold" position and run the motor at its "hold" power to hold onto the ball.
-   * When in the "stow" state, the intake will stow the arm in the "stow" position and stop the
+   * Command to run when the intake is not actively running. When in the "hold"
+   * state, the intake
+   * will stay in the "hold" position and run the motor at its "hold" power to
+   * hold onto the ball.
+   * When in the "stow" state, the intake will stow the arm in the "stow" position
+   * and stop the
    * motor.
    */
 
