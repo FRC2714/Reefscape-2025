@@ -48,13 +48,13 @@ public class StateMachine {
     return new InstantCommand(
         () -> {
           if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-            m_dragon.stow()
+            m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())).schedule();
           } else if (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
               || CoralIntakeState.POOP_READY == m_coralIntake.getState()) {
-            m_dragon.stow()
-                .andThen(m_elevator.moveToPoop()).until(m_elevator.atSetpoint())
+                m_dragon.stow().until(m_dragon.atSetpoint())
+                .andThen(m_elevator.moveToPoop().until(m_elevator.atSetpoint()))
                 .andThen(m_coralIntake.poopReadyL1().until(m_coralIntake.atSetpoint()))
                 .andThen(m_dragon.poopReadyL1().until(m_dragon.atSetpoint())).schedule();
           } else {
@@ -68,7 +68,7 @@ public class StateMachine {
     return new InstantCommand(
         () -> {
           if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-            m_dragon.stow()
+            m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
@@ -89,7 +89,7 @@ public class StateMachine {
     return new InstantCommand(
         () -> {
           if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-            m_dragon.stow()
+            m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
@@ -110,7 +110,7 @@ public class StateMachine {
     return new InstantCommand(
         () -> {
           if (m_dragon.isCoralOnDragon().getAsBoolean()) {
-            m_dragon.stow()
+            m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
@@ -131,14 +131,11 @@ public class StateMachine {
     return m_dragon.stow().until(m_dragon.atSetpoint())
         .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
         .andThen(m_dragon.handoffReady()
-            .until(m_dragon.atSetpoint())
-            .until(() -> DragonState.HANDOFF_READY == m_dragon.getState()
-                && ElevatorState.HANDOFF == m_elevator.getState()))
-        .andThen(m_dragon.handoff().until(m_dragon.atSetpoint()))
-        .andThen(m_coralIntake.handoff().until(m_coralIntake.atSetpoint()))
-        .until(m_dragon.isCoralOnDragon())
-        .andThen(m_coralIntake.intakeReady());
-  };
+            .until(() -> m_dragon.atSetpoint().getAsBoolean() && DragonState.HANDOFF_READY == m_dragon.getState()
+            && ElevatorState.HANDOFF == m_elevator.getState()))
+        .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint().getAsBoolean() && m_dragon.isCoralOnDragon().getAsBoolean()))
+        .andThen(m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint()));
+  }
 
   public Command scoreCoral() {
     return new InstantCommand(
@@ -151,7 +148,7 @@ public class StateMachine {
                 .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()))
                 .andThen(m_coralIntake.intakeReady()).schedule();
           } else if ((CoralIntakeState.POOP_READY == m_coralIntake.getState()
-              && DragonState.POOP_READY == m_dragon.getState() && ElevatorState.POOP == m_elevator.getState())) {
+              && DragonState.POOP_READY == m_dragon.getState() && ElevatorSetpoint.POOP == m_elevator.getSetpoint())) {
             m_coralIntake.poopL1().until(() -> !m_coralIntake.isLoaded())
                 .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
                 .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
@@ -168,8 +165,8 @@ public class StateMachine {
         intakeSequence().schedule();
       } else if (CoralIntakeState.EXTAKE == m_coralIntake.getState()
           || CoralIntakeState.STOW == m_coralIntake.getState()) {
-        m_coralIntake.intakeReady();
-        intakeSequence().schedule();
+        m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
+        .andThen(intakeSequence()).schedule();
       }
     });
   }
@@ -189,7 +186,7 @@ public class StateMachine {
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
       m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
-          .alongWith(m_algaeIntake.stow()).until(m_algaeIntake.atSetpoint())
+          .alongWith(m_algaeIntake.stow().until(m_algaeIntake.atSetpoint()))
           .alongWith(
               m_dragon.stow().until(m_dragon.atSetpoint())
                   .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
@@ -203,8 +200,8 @@ public class StateMachine {
       if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
       } else {
-        m_coralIntake.extakeReady();
-        m_coralIntake.extake().schedule();
+        m_coralIntake.extakeReady().until(m_coralIntake.atSetpoint())
+        .andThen(m_coralIntake.extake()).schedule();
       }
     });
   }
@@ -226,9 +223,9 @@ public class StateMachine {
   }
 
   public Command moveElevatorToHandoff() {
-    return new InstantCommand(() -> m_dragon.stow().until(m_dragon.atSetpoint())
+    return m_dragon.stow().until(m_dragon.atSetpoint())
         .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
-        .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint())).schedule());
+        .andThen(m_dragon.handoffReady().until(m_dragon.atSetpoint()));
   }
 
   public Command stow() {
