@@ -80,7 +80,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
   // Operator Controller
-  private final JoystickButton L1Button = new JoystickButton(m_mechanismController, 1); // L1
+  private final JoystickButton L1Button = new JoystickButton(m_mechanismController, 11); // L1
   private final JoystickButton L2Button = new JoystickButton(m_mechanismController, 2); // L2
   private final JoystickButton L3Button = new JoystickButton(m_mechanismController, 3); // L3
   private final JoystickButton L4Button = new JoystickButton(m_mechanismController, 4); // L4
@@ -91,6 +91,7 @@ public class RobotContainer {
   private final JoystickButton stowButton = new JoystickButton(m_mechanismController, 5); // Stow
   private final JoystickButton loadCoralButton = new JoystickButton(m_mechanismController, 10); // Stow
   private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController, 9); // Stow
+  private final JoystickButton climbButton = new JoystickButton(m_mechanismController, 1);
 
   private SendableChooser<Command> autoChooser;
 
@@ -177,6 +178,7 @@ public class RobotContainer {
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+    climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
