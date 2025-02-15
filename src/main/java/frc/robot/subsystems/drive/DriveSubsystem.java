@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.simulation.ADIS16470_IMUSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants.DriveConstants;
@@ -63,6 +64,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final ADIS16470_IMUSim m_gyroSimulator = new ADIS16470_IMUSim(m_gyro);
 
   private final Field2d m_field = new Field2d();
+
+
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -235,6 +238,12 @@ PPHolonomicDriveController.clearFeedbackOverrides();
         SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
       SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
         SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+
+
+    // Do this in either robot or subsystem init
+    SmartDashboard.putData("Field", m_field);
+    // Do this in either robot periodic or subsystem periodic
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   /**

@@ -34,6 +34,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 
+
 public class MAXSwerveModule extends SubsystemBase {
   private final SparkFlex m_drivingFlex;
   private final SparkMax m_turningSpark;
@@ -55,13 +56,15 @@ public class MAXSwerveModule extends SubsystemBase {
 
   private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
-
+  private double encoderSetPoint = 0.0;
+  
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
    * encoder, and PID controller. This configuration is specific to the REV
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
+
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingFlex = new SparkFlex(drivingCANId, MotorType.kBrushless);
     m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
@@ -135,6 +138,7 @@ public class MAXSwerveModule extends SubsystemBase {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
+    
     // Apply chassis angular offset to the desired state.
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
@@ -146,7 +150,7 @@ public class MAXSwerveModule extends SubsystemBase {
     // Command driving and turning SPARKS towards their respective setpoints.
     m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
-
+    encoderSetPoint = correctedDesiredState.angle.getDegrees();
     m_desiredState = desiredState;
   }
 
@@ -177,6 +181,8 @@ public class MAXSwerveModule extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("drive sim", drivingMotorSim.getAppliedOutput());
     SmartDashboard.putNumber("turn sim", turningMotorSim.getAppliedOutput());
+    SmartDashboard.putNumber("turningModuleSetpoint", encoderSetPoint);
+    SmartDashboard.putNumber("turning encoder position", m_turningEncoder.getPosition());
   }
 
   @Override
