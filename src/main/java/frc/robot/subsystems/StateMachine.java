@@ -31,7 +31,8 @@ public class StateMachine extends SubsystemBase {
   private boolean manualOverride;
 
   /** Creates a new StateMachine. */
-  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake, Climber m_climber,
+  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
+      Climber m_climber,
       Limelight m_leftLimelight,
       Limelight m_rightLimelight, Limelight m_backLimelight, LED m_blinkin) {
     this.m_algaeIntake = m_algaeIntake;
@@ -67,14 +68,13 @@ public class StateMachine extends SubsystemBase {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())).schedule();
-          }
-          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          } else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL1().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL1().until(m_dragon.atSetpoint())).schedule();
           } else if (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
               || CoralIntakeState.POOP_READY == m_coralIntake.getState()) {
-                m_dragon.stow().until(m_dragon.atSetpoint())
+            m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToPoop().until(m_elevator.atSetpoint()))
                 .andThen(m_coralIntake.poopReadyL1().until(m_coralIntake.atSetpoint()))
                 .andThen(m_dragon.poopReadyL1().until(m_dragon.atSetpoint())).schedule();
@@ -92,8 +92,7 @@ public class StateMachine extends SubsystemBase {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())).schedule();
-          }
-          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          } else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL2().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL2().until(m_dragon.atSetpoint())).schedule();
@@ -118,8 +117,7 @@ public class StateMachine extends SubsystemBase {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())).schedule();
-          }
-          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          } else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL3().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL3().until(m_dragon.atSetpoint())).schedule();
@@ -144,8 +142,7 @@ public class StateMachine extends SubsystemBase {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())).schedule();
-          }
-          else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
+          } else if (m_dragon.isCoralOnDragon().getAsBoolean()) {
             m_dragon.stow().until(m_dragon.atSetpoint())
                 .andThen(m_elevator.moveToL4().until(m_elevator.atSetpoint()))
                 .andThen(m_dragon.scoreReadyL4().until(m_dragon.atSetpoint())).schedule();
@@ -168,8 +165,9 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator.atSetpoint()))
         .andThen(m_dragon.handoffReady()
             .until(() -> m_dragon.atSetpoint().getAsBoolean() && DragonState.HANDOFF_READY == m_dragon.getState()
-            && ElevatorState.HANDOFF == m_elevator.getState()))
-        .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint().getAsBoolean() && m_dragon.isCoralOnDragon().getAsBoolean()))
+                && ElevatorState.HANDOFF == m_elevator.getState()))
+        .andThen(m_coralIntake.handoff()
+            .until(() -> m_coralIntake.atSetpoint().getAsBoolean() && m_dragon.isCoralOnDragon().getAsBoolean()))
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint()));
   }
 
@@ -186,8 +184,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride) {
             m_dragon.score().schedule();
-          }
-          else if (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
+          } else if (m_dragon.isCoralOnDragon().getAsBoolean() && DragonState.SCORE_READY == m_dragon.getState()
               && ElevatorState.SCORE_READY == m_elevator.getState()) {
             m_dragon.score().until(() -> !m_dragon.isCoralOnDragon().getAsBoolean())
                 .andThen(m_dragon.stow().until(m_dragon.atSetpoint()))
@@ -208,16 +205,14 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if(manualOverride)
-      {
+      if (manualOverride) {
         intakeSequence().schedule();
-      }
-      else if (CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
+      } else if (CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
         intakeSequence().schedule();
       } else if (CoralIntakeState.EXTAKE == m_coralIntake.getState()
           || CoralIntakeState.STOW == m_coralIntake.getState()) {
         m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint())
-        .andThen(intakeSequence()).schedule();
+            .andThen(intakeSequence()).schedule();
       }
     });
   }
@@ -249,15 +244,13 @@ public class StateMachine extends SubsystemBase {
 
   public Command extakeCoral() {
     return new InstantCommand(() -> {
-      if(manualOverride)
-      {
+      if (manualOverride) {
         m_coralIntake.extake().schedule();
-      }
-      else if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
+      } else if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
       } else {
         m_coralIntake.extakeReady().until(m_coralIntake.atSetpoint())
-        .andThen(m_coralIntake.extake()).schedule();
+            .andThen(m_coralIntake.extake()).schedule();
       }
     });
   }
@@ -275,15 +268,20 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stowAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.stow().schedule());
+    return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
+        .andThen(m_algaeIntake.stow().until(m_algaeIntake.atSetpoint())).schedule());
   }
 
   public Command stowClimber() {
-    return new InstantCommand(() -> m_climber.stow().schedule());
+    return new InstantCommand(() -> intakeAlgae().until(m_algaeIntake.atSetpoint())
+        .andThen(stowClimber().until(m_climber.atSetpoint()))
+        .andThen(stowAlgae().until(m_algaeIntake.atSetpoint())).schedule());
   }
 
   public Command deployClimber() {
-    return new InstantCommand(() -> m_climber.deploy().schedule());
+    return new InstantCommand(() -> intakeAlgae().until(m_algaeIntake.atSetpoint())
+        .andThen(m_climber.deploy()).until(m_climber.atSetpoint())
+        .andThen(stowAlgae()).until(m_algaeIntake.atSetpoint()).schedule());
   }
 
   public Command retractClimber() {
@@ -298,6 +296,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command stow() {
     return new InstantCommand(() -> stowElevator().until(m_elevator.atSetpoint())
+        .alongWith(stowClimber().until(m_climber.atSetpoint()))
         .alongWith(stowAlgae().until(m_algaeIntake.atSetpoint()))
         .alongWith(stowCoralIntake().until(m_coralIntake.atSetpoint())).schedule());
   }
