@@ -48,15 +48,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 6;
-    public static final int kRearLeftDrivingCanId = 12;
-    public static final int kFrontRightDrivingCanId = 8;
-    public static final int kRearRightDrivingCanId = 10;
+    public static final int kFrontLeftDrivingCanId = 1;
+    public static final int kFrontRightDrivingCanId = 3;
+    public static final int kRearRightDrivingCanId = 5;
+    public static final int kRearLeftDrivingCanId = 7;
 
-    public static final int kFrontLeftTurningCanId = 5;
-    public static final int kRearLeftTurningCanId = 11;
-    public static final int kFrontRightTurningCanId = 7;
-    public static final int kRearRightTurningCanId = 9;
+    public static final int kFrontLeftTurningCanId = 2;
+    public static final int kFrontRightTurningCanId = 4;
+    public static final int kRearRightTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 8;
 
     public static final boolean kGyroReversed = false;
 
@@ -66,8 +66,8 @@ public final class Constants {
   }
 
   public static final class AlgaeIntakeConstants {
-    public static final int kRollerMotorCanId = 13; //tune ts
-    public static final int kPivotMotorCanId = 14; //tune ts
+    public static final int kRollerMotorCanId = 9; //tune ts
+    public static final int kPivotMotorCanId = 10; //tune ts
 
     public static final double kPivotThreshold = 5; // tune
 
@@ -86,10 +86,10 @@ public final class Constants {
   }
 
   public static final class CoralIntakeConstants {
-    public static final int kPivotMotorCanId = 40;
-    public static final int kPivotFollowerMotorCanId = 39;
-    public static final int kRollerMotorCanId = 41;
-    public static final int kIndexerMotorCanId = 42;
+    public static final int kRollerMotorCanId = 11;
+    public static final int kPivotMotorCanId = 12;
+    // public static final int kPivotFollowerMotorCanId = 39;
+    public static final int kIndexerMotorCanId = 13;
 
     public static final double kPivotThreshold = 5; // tune
 
@@ -221,8 +221,8 @@ public final class Constants {
   // ! Update Values for AlphaBot
   public static final class ElevatorConstants {
 
-    public static final int kElevatorMotorCanId = 63; // TBD
-    public static final int kElevatorFollowerCanId = 62; // TBD
+    public static final int kElevatorMotorCanId = 14; // TBD
+    public static final int kElevatorFollowerCanId = 15; // TBD
 
     public static final double kSetpointThreshold = 5; // tune
 
@@ -240,8 +240,8 @@ public final class Constants {
   public static final class DragonConstants
   {
 
-    public static final int kPivotMotorCanId = 50; // TBD
-    public static final int kPivotRollerMotorCanID = 51; //TBD
+    public static final int kPivotMotorCanId = 16; // TBD
+    public static final int kPivotRollerMotorCanID = 17; //TBD
     public static final double kPivotReduction = 1;  // TODO
     public static final double kPivotThreshold = 5; // tune
     public static final double kRollerCurrentThreshold = 5; // tune
