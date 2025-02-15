@@ -22,17 +22,13 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Configs;
-import frc.robot.Robot;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaeIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
+import frc.robot.Robot;
 
 public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -84,14 +80,12 @@ public class AlgaeIntake extends SubsystemBase {
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 25.2, 0);
-  private final MechanismLigament2d intakePivotMechanism =
-      m_mech2dRoot.append(
-          new MechanismLigament2d(
-              "Intake Pivot",
-              SimulationRobotConstants.kIntakeShortBarLength
-                  * SimulationRobotConstants.kPixelsPerMeter,
-              Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
-
+  private final MechanismLigament2d intakePivotMechanism = m_mech2dRoot.append(
+      new MechanismLigament2d(
+          "Intake Pivot",
+          SimulationRobotConstants.kIntakeShortBarLength
+              * SimulationRobotConstants.kPixelsPerMeter,
+          Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
 
   @SuppressWarnings("unused")
   private final MechanismLigament2d intakePivotSecondMechanism = intakePivotMechanism.append(
@@ -184,7 +178,6 @@ public class AlgaeIntake extends SubsystemBase {
     rollerMotor.set(power);
   }
 
-
   public Command intake() {
     return this.runEnd(() -> {
       setPivot(AlgaeIntakeSetpoint.INTAKE);
@@ -198,21 +191,21 @@ public class AlgaeIntake extends SubsystemBase {
 
   public Command extake() {
     return this.runEnd(() -> {
-        setPivot(AlgaeIntakeSetpoint.EXTAKE);
-        setRollerPower(RollerSetpoints.kExtake);
-        setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
-      }, () -> {
-        setPivot(AlgaeIntakeSetpoint.STOW);
-        setRollerPower(RollerSetpoints.kStop);
-      });
+      setPivot(AlgaeIntakeSetpoint.EXTAKE);
+      setRollerPower(RollerSetpoints.kExtake);
+      setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
+    }, () -> {
+      setPivot(AlgaeIntakeSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+    });
   }
 
   public Command stow() {
     return this.run(() -> {
-        setPivot(AlgaeIntakeSetpoint.STOW);
-        setRollerPower(RollerSetpoints.kStop);
-        setAlgaeIntakeState(AlgaeIntakeState.STOW);
-      });
+      setPivot(AlgaeIntakeSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+      setAlgaeIntakeState(AlgaeIntakeState.STOW);
+    });
   }
 
   public AlgaeIntakeSetpoint getSetpoint() {

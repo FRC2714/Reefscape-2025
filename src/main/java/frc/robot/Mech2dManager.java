@@ -21,44 +21,40 @@ public class Mech2dManager extends SubsystemBase {
 
     // Elevator visualization
     private final MechanismLigament2d m_elevatorMech2d = m_mech2dRoot.append(
-        new MechanismLigament2d(
-            "Elevator",
-            SimulationRobotConstants.kMinElevatorHeightMeters,
-            90));
+            new MechanismLigament2d(
+                    "Elevator",
+                    SimulationRobotConstants.kMinElevatorHeightMeters,
+                    90));
 
     // Dragon visualization
     private final MechanismLigament2d m_dragonMech2d = m_elevatorMech2d.append(
-        new MechanismLigament2d(
-            "Pivot",
-            SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
-            180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
+            new MechanismLigament2d(
+                    "Pivot",
+                    SimulationRobotConstants.kPivotLength * SimulationRobotConstants.kPixelsPerMeter,
+                    180 - Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads) - 90));
     // Coral intake visualization
-    private final MechanismLigament2d coralStand =
-    m_coralRoot.append(
-      new MechanismLigament2d(
-        "Coral Stand", SimulationRobotConstants.kCoralStandLength, 90)
-    );
+    private final MechanismLigament2d coralStand = m_coralRoot.append(
+            new MechanismLigament2d(
+                    "Coral Stand", SimulationRobotConstants.kCoralStandLength, 90));
     private final MechanismLigament2d m_coralIntakeMech2d = coralStand.append(
-        new MechanismLigament2d(
-            "Coral Pivot", SimulationRobotConstants.kCoralIntakeLength,
-            CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
+            new MechanismLigament2d(
+                    "Coral Pivot", SimulationRobotConstants.kCoralIntakeLength,
+                    CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
     // Algae Intake visualization
-    private final MechanismLigament2d algaePivotMechanism =
-      m_algaeRoot.append(
-          new MechanismLigament2d(
-              "Algae Pivot",
-              SimulationRobotConstants.kIntakeShortBarLength
-                  * SimulationRobotConstants.kPixelsPerMeter,
-              Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
+    private final MechanismLigament2d algaePivotMechanism = m_algaeRoot.append(
+            new MechanismLigament2d(
+                    "Algae Pivot",
+                    SimulationRobotConstants.kIntakeShortBarLength
+                            * SimulationRobotConstants.kPixelsPerMeter,
+                    Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
 
-  @SuppressWarnings("unused")
-  private final MechanismLigament2d algaePivotSecondMechanism =
-      algaePivotMechanism.append(
-          new MechanismLigament2d(
-              "Intake Pivot Second Bar",
-              SimulationRobotConstants.kIntakeLongBarLength
-                  * SimulationRobotConstants.kPixelsPerMeter,
-              Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
+    @SuppressWarnings("unused")
+    private final MechanismLigament2d algaePivotSecondMechanism = algaePivotMechanism.append(
+            new MechanismLigament2d(
+                    "Intake Pivot Second Bar",
+                    SimulationRobotConstants.kIntakeLongBarLength
+                            * SimulationRobotConstants.kPixelsPerMeter,
+                    Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
     private final Elevator m_elevator;
     private final Dragon m_dragon;
@@ -78,16 +74,16 @@ public class Mech2dManager extends SubsystemBase {
         // Update elevator visualization
         double elevatorHeight = SimulationRobotConstants.kMinElevatorHeightMeters
                 + (m_elevator.getElevatorPosition() / SimulationRobotConstants.kElevatorGearing)
-                * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI);
+                        * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI);
         m_elevatorMech2d.setLength(elevatorHeight);
 
         // Update dragon visualization
         double dragonAngle = 180
-            - ( // mirror the angles so they display in the correct direction
-            Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
-                + Units.rotationsToDegrees(
-                    m_dragon.getPivotPosition() / SimulationRobotConstants.kPivotReduction))
-            + 180; // subtract 90 degrees to account for the elevator
+                - ( // mirror the angles so they display in the correct direction
+                Units.radiansToDegrees(SimulationRobotConstants.kMinAngleRads)
+                        + Units.rotationsToDegrees(
+                                m_dragon.getPivotPosition() / SimulationRobotConstants.kPivotReduction))
+                + 180; // subtract 90 degrees to account for the elevator
         m_dragonMech2d.setAngle(dragonAngle);
 
         // Update coral visualization
@@ -96,9 +92,9 @@ public class Mech2dManager extends SubsystemBase {
 
         // Update algae intake visualization
         algaePivotMechanism.setAngle(
-            Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
-                + -Units.rotationsToDegrees(
-                    m_algae.getPivotPosition() / SimulationRobotConstants.kIntakeReduction));
+                Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
+                        + -Units.rotationsToDegrees(
+                                m_algae.getPivotPosition() / SimulationRobotConstants.kIntakeReduction));
 
         // Debug values
         SmartDashboard.putNumber("Mech2D/Elevator Height", elevatorHeight);

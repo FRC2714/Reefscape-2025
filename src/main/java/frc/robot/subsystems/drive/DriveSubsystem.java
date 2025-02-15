@@ -82,7 +82,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
     RobotConfig config;
-    try{
+    try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
@@ -92,57 +92,60 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
-      this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-      new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-      ),
-      config, // The robot configuration
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
+                                                              // ChassisSpeeds. Also optionally outputs individual
+                                                              // module feedforwards
+        new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic
+                                        // drive trains
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+        ),
+        config, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this // Reference to this subsystem to set requirements
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
     );
 
-
     // Override the X feedback
-PPHolonomicDriveController.overrideXFeedback(() -> {
-    // Calculate feedback from your custom PID controller
-    //override w aligntocoral pid values
-    return 0.0;
-});
-// Clear x feedback once autoaling is done
-PPHolonomicDriveController.clearXFeedbackOverride();
+    PPHolonomicDriveController.overrideXFeedback(() -> {
+      // Calculate feedback from your custom PID controller
+      // override w aligntocoral pid values
+      return 0.0;
+    });
+    // Clear x feedback once autoaling is done
+    PPHolonomicDriveController.clearXFeedbackOverride();
 
-// Override the Y feedback
-PPHolonomicDriveController.overrideYFeedback(() -> {
-    // Calculate feedback from your custom PID controller
-    return 0.0;
-});
-// Clear the Y feedback override
-PPHolonomicDriveController.clearYFeedbackOverride();
+    // Override the Y feedback
+    PPHolonomicDriveController.overrideYFeedback(() -> {
+      // Calculate feedback from your custom PID controller
+      return 0.0;
+    });
+    // Clear the Y feedback override
+    PPHolonomicDriveController.clearYFeedbackOverride();
 
-// Override the rotation feedback
-PPHolonomicDriveController.overrideRotationFeedback(() -> {
-    // Calculate feedback from your custom PID controller
-    return 0.0;
-});
-// Clear the rotation feedback override
-PPHolonomicDriveController.clearRotationFeedbackOverride();
+    // Override the rotation feedback
+    PPHolonomicDriveController.overrideRotationFeedback(() -> {
+      // Calculate feedback from your custom PID controller
+      return 0.0;
+    });
+    // Clear the rotation feedback override
+    PPHolonomicDriveController.clearRotationFeedbackOverride();
 
-// Clear all feedback overrides
-PPHolonomicDriveController.clearFeedbackOverrides();
+    // Clear all feedback overrides
+    PPHolonomicDriveController.clearFeedbackOverrides();
   }
 
   public SysIdRoutine sysIdDrive() {
@@ -161,30 +164,26 @@ PPHolonomicDriveController.clearFeedbackOverrides();
 
   public Command translationalQuasistatic() {
     return new SequentialCommandGroup(
-      sysIdDrive().quasistatic(SysIdRoutine.Direction.kForward),
-      sysIdDrive().quasistatic(SysIdRoutine.Direction.kReverse)
-    );
+        sysIdDrive().quasistatic(SysIdRoutine.Direction.kForward),
+        sysIdDrive().quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command rotationalQuasistatic() {
     return new SequentialCommandGroup(
-      sysIdRotation().quasistatic(SysIdRoutine.Direction.kForward),
-      sysIdRotation().quasistatic(SysIdRoutine.Direction.kReverse)
-    );
+        sysIdRotation().quasistatic(SysIdRoutine.Direction.kForward),
+        sysIdRotation().quasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command translationalDynamic() {
     return new SequentialCommandGroup(
-      sysIdDrive().dynamic(SysIdRoutine.Direction.kForward),
-      sysIdDrive().dynamic(SysIdRoutine.Direction.kReverse)
-    );
+        sysIdDrive().dynamic(SysIdRoutine.Direction.kForward),
+        sysIdDrive().dynamic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command rotationalDynamic() {
     return new SequentialCommandGroup(
-      sysIdRotation().dynamic(SysIdRoutine.Direction.kForward),
-      sysIdRotation().dynamic(SysIdRoutine.Direction.kReverse)
-    );
+        sysIdRotation().dynamic(SysIdRoutine.Direction.kForward),
+        sysIdRotation().dynamic(SysIdRoutine.Direction.kReverse));
   }
 
   private void driveVoltageForwardTest(double voltage) {
@@ -214,13 +213,12 @@ PPHolonomicDriveController.clearFeedbackOverrides();
             m_rearRight.getPosition()
         });
 
+    m_field.setRobotPose(getPose());
 
-        m_field.setRobotPose(getPose());
-    
-        SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
-        SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
   }
 
   /**
@@ -325,11 +323,11 @@ PPHolonomicDriveController.clearFeedbackOverrides();
   }
 
   public SwerveModuleState[] getModuleStates() {
-    return new SwerveModuleState[]{
-      m_frontLeft.getState(),
-      m_frontRight.getState(),
-      m_rearLeft.getState(),
-      m_rearRight.getState()
+    return new SwerveModuleState[] {
+        m_frontLeft.getState(),
+        m_frontRight.getState(),
+        m_rearLeft.getState(),
+        m_rearRight.getState()
     };
   }
 
