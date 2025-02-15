@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkLimitSwitchSim;
@@ -78,8 +76,7 @@ public class Elevator extends SubsystemBase {
       0.0,
       0.0);
 
-
-  //Mechanism2d for visualization
+  // Mechanism2d for visualization
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ElevatorArm Root", 24.8, 0);
   private final MechanismLigament2d m_elevatorMech2d = m_mech2dRoot.append(
@@ -139,12 +136,11 @@ public class Elevator extends SubsystemBase {
     }
   }
 
-  public BooleanSupplier atSetpoint() {
+  public boolean atSetpoint() {
     if (Robot.isSimulation()) {
-      return () -> true;
+      return true;
     }
-    return () -> Math
-        .abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
+    return Math.abs(elevatorCurrentTarget - elevatorEncoder.getPosition()) <= ElevatorConstants.kSetpointThreshold;
   }
 
   public void setElevatorSetpoint(ElevatorSetpoint setpoint) {
@@ -250,13 +246,13 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
     SmartDashboard.putString("Elevator State", m_elevatorState.toString());
     SmartDashboard.putString("Elevator Setpoint", m_elevatorSetpoint.toString());
-    SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint().getAsBoolean());
-    SmartDashboard.putString("Elevator Current Comamand", this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
-
+    SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint());
+    SmartDashboard.putString("Elevator Current Comamand",
+        this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
 
     m_elevatorMech2d.setLength(
-      SimulationRobotConstants.kMinElevatorHeightMeters
-                + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
+        SimulationRobotConstants.kMinElevatorHeightMeters
+            + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
                 * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
   }
 
@@ -279,9 +275,9 @@ public class Elevator extends SubsystemBase {
     m_elevatorSim.update(0.020);
 
     m_elevatorMech2d.setLength(
-      SimulationRobotConstants.kMinElevatorHeightMeters
-          + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
-              * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
+        SimulationRobotConstants.kMinElevatorHeightMeters
+            + (elevatorEncoder.getPosition() / SimulationRobotConstants.kElevatorGearing)
+                * (SimulationRobotConstants.kElevatorDrumRadius * 2.0 * Math.PI));
 
     // Iterate the elevator SPARK simulations
     elevatorMotorSim.iterate(

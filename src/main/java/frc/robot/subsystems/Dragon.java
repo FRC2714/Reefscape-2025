@@ -14,12 +14,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,12 +23,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
-import frc.robot.Constants.DragonConstants;
 
 public class Dragon extends SubsystemBase {
 
@@ -129,11 +126,11 @@ public class Dragon extends SubsystemBase {
     pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public BooleanSupplier atSetpoint() {
+  public boolean atSetpoint() {
     if (Robot.isSimulation()) {
-      return () -> true;
+      return true;
     }
-    return () -> Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
+    return Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
   }
 
   private void setDragonState(DragonState state) {
@@ -197,7 +194,7 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command handoff() {
-    return handoffReady().until(atSetpoint()).andThen(this.run(() -> {
+    return handoffReady().until(this::atSetpoint).andThen(this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
       setRollerPower(RollerSetpoints.kIntake);
@@ -254,11 +251,10 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command score() {
-    return 
-    this.run(() -> {
+    return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-    }).onlyIf(atSetpoint());
+    }).onlyIf(this::atSetpoint);
   }
 
   public double getSimulationCurrentDraw() {
@@ -271,8 +267,8 @@ public class Dragon extends SubsystemBase {
     }
   }
 
-  public BooleanSupplier isCoralOnDragon() {
-    return () -> coralOnDragon;
+  public boolean isCoralOnDragon() {
+    return coralOnDragon;
   }
 
   public void coralOnDragonTrue() {
@@ -300,8 +296,8 @@ public class Dragon extends SubsystemBase {
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());
-    SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint().getAsBoolean());
-    SmartDashboard.putBoolean("Coral on Dragon", isCoralOnDragon().getAsBoolean());
+    SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint());
+    SmartDashboard.putBoolean("Coral on Dragon", isCoralOnDragon());
 
     setCoralOnDragon();
 
