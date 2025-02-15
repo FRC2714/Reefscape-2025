@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
@@ -26,6 +25,7 @@ import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.LED;
@@ -43,6 +43,7 @@ public class RobotContainer {
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
+  private final Climber m_climber = new Climber();
 
   private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(
@@ -62,7 +63,7 @@ public class RobotContainer {
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight,
+      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight,
       m_blinkin);
 
   // Mech2d Stuff
@@ -152,15 +153,19 @@ public class RobotContainer {
 
     // // Stages
     L1Button.onTrue(m_stateMachine.setL1());
-    L2Button.onTrue(m_stateMachine.setL2());
-    L3Button.onTrue(m_stateMachine.setL3());
-    L4Button.onTrue(m_stateMachine.setL4());
+    // L2Button.onTrue(m_stateMachine.setL2());
+    // L3Button.onTrue(m_stateMachine.setL3());
+    // L4Button.onTrue(m_stateMachine.setL4());
     stowButton.onTrue(m_stateMachine.stow());
 
     handoffButton.onTrue(m_stateMachine.handoffManual());
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+
+    L4Button.onTrue(m_stateMachine.deployClimber());
+    L3Button.onTrue(m_stateMachine.retractClimber());
+    //L2Button.onTrue(m_stateMachine.stowClimber());
 
     // Reef Branches for HUD
     int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };

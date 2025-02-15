@@ -38,13 +38,15 @@ public class AlgaeIntake extends SubsystemBase {
   private enum AlgaeIntakeSetpoint {
     STOW,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    CLIMB
   }
 
   public enum AlgaeIntakeState {
     STOW,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    CLIMB
   }
 
   private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
@@ -169,6 +171,9 @@ public class AlgaeIntake extends SubsystemBase {
       case EXTAKE:
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -199,6 +204,13 @@ public class AlgaeIntake extends SubsystemBase {
       setRollerPower(RollerSetpoints.kStop);
     });
   }
+
+  public Command climb() {
+    return this.run(() -> {
+        setPivot(AlgaeIntakeSetpoint.CLIMB);
+        setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
+    });
+    }
 
   public Command stow() {
     return this.run(() -> {
