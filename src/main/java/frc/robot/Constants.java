@@ -88,7 +88,6 @@ public final class Constants {
   public static final class CoralIntakeConstants {
     public static final int kRollerMotorCanId = 11;
     public static final int kPivotMotorCanId = 12;
-    // public static final int kPivotFollowerMotorCanId = 39;
     public static final int kIndexerMotorCanId = 13;
 
     public static final double kPivotThreshold = 5; // tune
