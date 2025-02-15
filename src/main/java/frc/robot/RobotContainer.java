@@ -165,7 +165,7 @@ public class RobotContainer {
 
     L4Button.onTrue(m_stateMachine.deployClimber());
     L3Button.onTrue(m_stateMachine.retractClimber());
-    L2Button.onTrue(m_stateMachine.stowClimber());
+    //L2Button.onTrue(m_stateMachine.stowClimber());
 
     // Reef Branches for HUD
     int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };

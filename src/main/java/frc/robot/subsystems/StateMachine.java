@@ -254,9 +254,9 @@ public class StateMachine extends SubsystemBase {
     });
   }
 
-  public Command stowCoralIntake() {
-    return new InstantCommand(() -> m_coralIntake.stow().schedule());
-  }
+  // public Command stowCoralIntake() {
+  // return new InstantCommand(() -> m_coralIntake.stow().schedule());
+  // }
 
   public Command intakeAlgae() {
     return new InstantCommand(() -> m_algaeIntake.intake().schedule());
@@ -270,37 +270,23 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
-  public Command stowClimberSequence() {
-    return m_algaeIntake.climb()
-        .alongWith(m_coralIntake.climb())
-        .alongWith(m_dragon.climb())
-        .until(() -> m_algaeIntake.atSetpoint()
-            && m_coralIntake.atSetpoint()
-            && m_dragon.atSetpoint())
-        .andThen(m_climber.stow().until(m_climber.atSetpoint()));
-  }
+  // public Command stowClimber() {
+  // return new InstantCommand(() -> m_climber.stow().schedule());
+  // }
 
-  public Command stowClimber() {
-    return new InstantCommand(() -> stowClimberSequence().schedule());
+  public Command climbSequence()
+  {
+    return m_algaeIntake.climb().alongWith(m_coralIntake.climb()).alongWith(m_dragon.climb())
+        .until(() -> m_algaeIntake.atSetpoint() && m_coralIntake.atSetpoint() && m_dragon.atSetpoint());
   }
 
   public Command deployClimber() {
-    return new InstantCommand(() -> m_algaeIntake.climb()
-        .alongWith(m_coralIntake.climb())
-        .alongWith(m_dragon.climb())
-        .until(() -> m_algaeIntake.atSetpoint()
-            && m_coralIntake.atSetpoint()
-            && m_dragon.atSetpoint())
+    return new InstantCommand(() -> climbSequence()
         .andThen(m_climber.deploy().until(m_climber.atSetpoint())).schedule());
   }
 
   public Command retractClimber() {
-    return new InstantCommand(() -> m_algaeIntake.climb()
-        .alongWith(m_coralIntake.climb())
-        .alongWith(m_dragon.climb())
-        .until(() -> m_algaeIntake.atSetpoint()
-            && m_coralIntake.atSetpoint()
-            && m_dragon.atSetpoint())
+    return new InstantCommand(() -> climbSequence()
         .andThen(m_climber.retract().until(m_climber.atSetpoint())).schedule());
   }
 
@@ -310,14 +296,26 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint));
   }
 
+  public Command stowSequence() {
+    return m_algaeIntake.climb().alongWith(m_coralIntake.climb()).alongWith(m_dragon.climb())
+        .until(() -> m_algaeIntake.atSetpoint() && m_coralIntake.atSetpoint() && m_dragon.atSetpoint());
+  }
+
   public Command stow() {
-    return new InstantCommand(() -> stowClimberSequence().until(m_climber.atSetpoint())
-        .andThen(stowElevator()
-            .alongWith(stowCoralIntake())
-            .until(() -> m_elevator.atSetpoint()
-                && m_coralIntake.atSetpoint()))
-        .andThen(stowAlgae().until(m_algaeIntake::atSetpoint))
+    return new InstantCommand(() -> stowSequence().andThen(m_climber.stow().until(m_elevator::atSetpoint))
+        .andThen(m_dragon.stow().until(m_dragon::atSetpoint))
+        .andThen(m_coralIntake.stow().until(m_coralIntake::atSetpoint))
+        .andThen(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
+        .andThen(m_elevator.moveToStow().until(m_climber.atSetpoint()))
         .schedule());
+
+    // return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
+    // .andThen(stowElevator()
+    // .alongWith(stowCoralIntake())
+    // .until(() -> m_elevator.atSetpoint().getAsBoolean()
+    // && m_coralIntake.atSetpoint().getAsBoolean()))
+    // .andThen(stowAlgae().until(m_algaeIntake.atSetpoint()))
+    // .schedule());
   }
 
   @Override
