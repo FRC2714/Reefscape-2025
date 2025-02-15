@@ -76,14 +76,14 @@ public class MAXSwerveModule extends SubsystemBase {
     turningMotorSim = new SparkFlexSim(m_turningSpark, m_turningMotorModel);
 
     m_driveSim = new DCMotorSim(
-      LinearSystemId.createDCMotorSystem(m_driveFeedforward.getKv(), m_driveFeedforward.getKa()),
-      m_drivingMotorModel,
-      new double[]{0.001, 0.001});
-    
+        LinearSystemId.createDCMotorSystem(m_driveFeedforward.getKv(), m_driveFeedforward.getKa()),
+        m_drivingMotorModel,
+        new double[] { 0.001, 0.001 });
+
     m_turningSim = new DCMotorSim(
-      LinearSystemId.createDCMotorSystem(m_turningFeedforward.getKv(), m_turningFeedforward.getKa()),
-      m_turningMotorModel,
-      new double[]{0.001, 0.001});
+        LinearSystemId.createDCMotorSystem(m_turningFeedforward.getKv(), m_turningFeedforward.getKa()),
+        m_turningMotorModel,
+        new double[] { 0.001, 0.001 });
 
     m_drivingEncoder = m_drivingFlex.getEncoder();
     m_turningEncoder = m_turningSpark.getAbsoluteEncoder();
@@ -128,7 +128,7 @@ public class MAXSwerveModule extends SubsystemBase {
         m_drivingEncoder.getPosition(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
-  
+
   /**
    * Sets the desired state for the module.
    *
@@ -152,7 +152,7 @@ public class MAXSwerveModule extends SubsystemBase {
 
   public void setVoltageAngle(double voltage, Rotation2d angle) {
     // Apply chassis angular offset to the desired state.
-    SwerveModuleState desiredState = new SwerveModuleState(0, angle); 
+    SwerveModuleState desiredState = new SwerveModuleState(0, angle);
     SwerveModuleState correctedDesiredState = new SwerveModuleState();
     correctedDesiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
@@ -161,7 +161,8 @@ public class MAXSwerveModule extends SubsystemBase {
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
-    // m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    // m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond,
+    // ControlType.kVelocity);
     m_drivingFlex.setVoltage(voltage);
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
 
@@ -174,7 +175,8 @@ public class MAXSwerveModule extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+  }
 
   @Override
   public void simulationPeriodic() {
@@ -186,16 +188,16 @@ public class MAXSwerveModule extends SubsystemBase {
     m_turningSim.update(0.020);
 
     drivingMotorSim.iterate(
-      Units.radiansPerSecondToRotationsPerMinute(
+        Units.radiansPerSecondToRotationsPerMinute(
             m_driveSim.getAngularVelocityRadPerSec() * ModuleConstants.kDrivingMotorReduction),
-      RobotController.getBatteryVoltage(),
-      0.02);
-    
+        RobotController.getBatteryVoltage(),
+        0.02);
+
     turningMotorSim.iterate(
-      Units.radiansPerSecondToRotationsPerMinute(
+        Units.radiansPerSecondToRotationsPerMinute(
             m_turningSim.getAngularVelocityRadPerSec() * ModuleConstants.kTurningMotorReduction),
-      RobotController.getBatteryVoltage(),
-      0.02);
+        RobotController.getBatteryVoltage(),
+        0.02);
 
     SmartDashboard.putNumber("drive sim", drivingMotorSim.getAppliedOutput());
     SmartDashboard.putNumber("turn sim", turningMotorSim.getAppliedOutput());
