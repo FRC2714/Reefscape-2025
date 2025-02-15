@@ -36,12 +36,12 @@ import frc.robot.Constants.SimulationRobotConstants;
 
 public class MAXSwerveModule extends SubsystemBase {
   private final SparkFlex m_drivingFlex;
-  private final SparkMax m_turningSpark;
+  private final SparkFlex m_turningSpark;
 
   private final DCMotor m_drivingMotorModel;
   private final DCMotor m_turningMotorModel;
   private final SparkFlexSim drivingMotorSim;
-  private final SparkMaxSim turningMotorSim;
+  private final SparkFlexSim turningMotorSim;
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -64,7 +64,7 @@ public class MAXSwerveModule extends SubsystemBase {
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingFlex = new SparkFlex(drivingCANId, MotorType.kBrushless);
-    m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
+    m_turningSpark = new SparkFlex(turningCANId, MotorType.kBrushless);
 
     m_driveFeedforward = new SimpleMotorFeedforward(0.17, 2.15, 0.30895);
     m_turningFeedforward = new SimpleMotorFeedforward(0.35233, 0.39185, 0.0058658);
@@ -73,7 +73,7 @@ public class MAXSwerveModule extends SubsystemBase {
     m_turningMotorModel = DCMotor.getNeo550(1);
 
     drivingMotorSim = new SparkFlexSim(m_drivingFlex, m_drivingMotorModel);
-    turningMotorSim = new SparkMaxSim(m_turningSpark, m_turningMotorModel);
+    turningMotorSim = new SparkFlexSim(m_turningSpark, m_turningMotorModel);
 
     m_driveSim = new DCMotorSim(
       LinearSystemId.createDCMotorSystem(m_driveFeedforward.getKv(), m_driveFeedforward.getKa()),
@@ -174,10 +174,7 @@ public class MAXSwerveModule extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboard.putNumber("drive sim", drivingMotorSim.getAppliedOutput());
-    SmartDashboard.putNumber("turn sim", turningMotorSim.getAppliedOutput());
-  }
+  public void periodic() {}
 
   @Override
   public void simulationPeriodic() {
@@ -199,5 +196,8 @@ public class MAXSwerveModule extends SubsystemBase {
             m_turningSim.getAngularVelocityRadPerSec() * ModuleConstants.kTurningMotorReduction),
       RobotController.getBatteryVoltage(),
       0.02);
+
+    SmartDashboard.putNumber("drive sim", drivingMotorSim.getAppliedOutput());
+    SmartDashboard.putNumber("turn sim", turningMotorSim.getAppliedOutput());
   }
 }
