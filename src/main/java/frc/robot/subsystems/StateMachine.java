@@ -268,8 +268,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stowAlgae() {
-    return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
-        .andThen(m_algaeIntake.stow().until(m_algaeIntake.atSetpoint())).schedule());
+    return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
   public Command stowClimber() {
@@ -309,10 +308,13 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stow() {
-    return new InstantCommand(() -> stowElevator().until(m_elevator.atSetpoint())
-        .alongWith(stowClimber().until(m_climber.atSetpoint()))
-        .alongWith(stowAlgae().until(m_algaeIntake.atSetpoint()))
-        .alongWith(stowCoralIntake().until(m_coralIntake.atSetpoint())).schedule());
+    return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
+        .andThen(stowElevator()
+        .alongWith(stowCoralIntake())
+        .until(() -> m_elevator.atSetpoint().getAsBoolean()
+        && m_coralIntake.atSetpoint().getAsBoolean()))
+        .andThen(stowAlgae().until(m_algaeIntake.atSetpoint()))
+        .schedule());
   }
 
   @Override
