@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -31,6 +32,7 @@ import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class Dragon extends SubsystemBase {
 
@@ -51,6 +53,10 @@ public class Dragon extends SubsystemBase {
     SCORE,
     POOP_READY
   }
+
+  // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.Dragon.pivotConfig;
 
   private DragonSetpoint m_dragonSetpoint;
   private DragonState m_dragonState;
@@ -95,6 +101,10 @@ public class Dragon extends SubsystemBase {
   /** Creates a new Elevator and Pivot. */
 
   public Dragon() {
+    tunableAngle = new TunableNumber("TunableDragonPivot");
+    tunableP = new TunableNumber("TunableDragonPivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
 
     pivotMotor.configure(
         Configs.Dragon.pivotConfig,
@@ -296,6 +306,16 @@ public class Dragon extends SubsystemBase {
                     pivotAbsoluteEncoder.getPosition() / SimulationRobotConstants.kPivotReduction))
             - 90 // subtract 90 degrees to account for the elevator
     );
+
+    // Tunable If's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   @Override

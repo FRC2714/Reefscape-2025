@@ -109,7 +109,7 @@ public class CoralIntake extends SubsystemBase {
 
   public CoralIntake() {
     tunableAngle = new TunableNumber("TunableCoralPivot");
-    tunableP = new TunableNumber("TunableCoralPivotP");
+    tunableP = new TunableNumber("TunableCoralPivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
     /*
