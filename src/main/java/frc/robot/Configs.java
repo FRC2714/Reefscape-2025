@@ -91,7 +91,6 @@ public final class Configs {
                 public static final SparkFlexConfig rollerConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig indexerConfig = new SparkFlexConfig();
                 public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
-                public static final SparkFlexConfig pivotFollowerConfig = new SparkFlexConfig();
         
                 static {
                         // Configure basic setting of the arm motor
@@ -115,12 +114,6 @@ public final class Configs {
                                 .maxVelocity(4200)
                                 .maxAcceleration(6000)
                                 .allowedClosedLoopError(0.5);
-                        
-                        pivotFollowerConfig.smartCurrentLimit(40)
-                                .idleMode(IdleMode.kBrake)
-                                .inverted(false)
-                                .voltageCompensation(12)
-                                .follow(CoralIntakeConstants.kPivotMotorCanId);
                 
                         // Configure basic settings of the intake motor
                         rollerConfig

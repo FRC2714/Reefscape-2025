@@ -69,8 +69,6 @@ public class CoralIntake extends SubsystemBase {
   private boolean loaded;
 
   private SparkFlex pivotMotor = new SparkFlex(CoralIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
-  private SparkFlex pivotFollowerMotor = new SparkFlex(CoralIntakeConstants.kPivotFollowerMotorCanId,
-      MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
   private SparkFlex rollerMotor = new SparkFlex(CoralIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
@@ -134,10 +132,6 @@ public class CoralIntake extends SubsystemBase {
         PersistMode.kPersistParameters);
     pivotMotor.configure(
         Configs.CoralIntake.pivotConfig,
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-    pivotFollowerMotor.configure(
-        Configs.CoralIntake.pivotFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
