@@ -68,11 +68,11 @@ public class Climber extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public BooleanSupplier atSetpoint() {
+  public boolean atSetpoint() {
     if (Robot.isSimulation()) {
-      return () -> true;
+      return true;
     }
-    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= ClimberConstants.kPivotThreshold;
+    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= ClimberConstants.kPivotThreshold;
   }
 
   private void setClimberSetpoint(ClimberSetpoint setpoint) {
@@ -98,7 +98,6 @@ public class Climber extends SubsystemBase {
     }
     moveToSetpoint();
   }
-
 
   public Command deploy() {
     return this.run(() -> {
@@ -137,6 +136,6 @@ public class Climber extends SubsystemBase {
 
     SmartDashboard.putString("Climber State", m_climberState.toString());
     SmartDashboard.putString("Climber Setpoint", m_climberSetpoint.toString());
-    SmartDashboard.putBoolean("Climber Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Climber Pivot at Setpoint?", atSetpoint());
   }
 }
