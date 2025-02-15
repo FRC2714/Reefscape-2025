@@ -34,13 +34,14 @@ import frc.robot.Robot;
 
 public class Dragon extends SubsystemBase {
 
-  private enum DragonSetpoint {
+  public enum DragonSetpoint {
     STOW,
     HANDOFF,
     L1,
     L2,
     L3,
-    L4
+    L4,
+    CLIMB
   }
 
   public enum DragonState {
@@ -49,7 +50,8 @@ public class Dragon extends SubsystemBase {
     HANDOFF,
     SCORE_READY,
     SCORE,
-    POOP_READY
+    POOP_READY,
+    CLIMB
   }
 
   private DragonSetpoint m_dragonSetpoint;
@@ -160,6 +162,9 @@ public class Dragon extends SubsystemBase {
       case L4:
         pivotCurrentTarget = PivotSetpoints.kLevel4;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -197,7 +202,7 @@ public class Dragon extends SubsystemBase {
     }));
   }
 
-  public Command poopReadyL1() {
+  public Command poopReady() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
@@ -205,35 +210,19 @@ public class Dragon extends SubsystemBase {
     });
   }
 
-  public Command scoreReadyL1() {
+  public Command scoreReadyLevel(DragonSetpoint level) {
     return this.run(() -> {
-      setPivot(DragonSetpoint.L1);
+      setPivot(level);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
     });
   }
 
-  public Command scoreReadyL2() {
+  public Command climb() {
     return this.run(() -> {
-      setPivot(DragonSetpoint.L2);
+      setPivot(DragonSetpoint.CLIMB);
       setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL3() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L3);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL4() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L4);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
+      setDragonState(DragonState.CLIMB);
     });
   }
 

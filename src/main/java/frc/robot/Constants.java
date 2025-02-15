@@ -65,6 +65,18 @@ public final class Constants {
         / ModuleConstants.kDrivingMotorReduction;
   }
 
+  public static final class ClimberConstants {
+    public static final int kPivotMotorCanId = 51;
+
+    public static final double kPivotThreshold = 5;
+
+    public static final class PivotSetpoints {
+      public static final double kStow = -15;
+      public static final double kDeploy = 0;
+      public static final double kRetract = -7;
+    }
+  }
+
   public static final class AlgaeIntakeConstants {
     public static final int kRollerMotorCanId = 9; // tune ts
     public static final int kPivotMotorCanId = 10; // tune ts
@@ -75,7 +87,8 @@ public final class Constants {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 0; // TBD
       public static final double kExtake = 0;
-      public static final double kScore = 7; // TBD (extake position)
+      public static final double kScore = 7; //TBD (extake position)
+      public static final double kClimb = 3;
     }
 
     public static final class RollerSetpoints {
@@ -103,6 +116,7 @@ public final class Constants {
       public static final double kHandoff = 270; // TBD
       public static final double kEject = 360; // TBD
       public static final double kZeroOffsetDegrees = 270;
+      public static final double kClimb = 90;
     }
 
     public static final class RollerSetpoints {
@@ -246,8 +260,9 @@ public final class Constants {
       public static final double kHandoff = 33;
       public static final double kLevel1 = 1;
       public static final double kLevel2 = 2;
-      public static final double kLevel3 = 2;
-      public static final double kLevel4 = 19;
+      public static final double kLevel3 = 2; 
+      public static final double kLevel4 =  19;
+      public static final double kClimb =  1;
     }
 
     public static final class RollerSetpoints {
