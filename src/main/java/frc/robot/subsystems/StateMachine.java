@@ -271,14 +271,18 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
+  public Command stowClimberSequence() {
+    return m_algaeIntake.climb()
+    .alongWith(m_coralIntake.climb())
+    .alongWith(m_dragon.climb())
+    .until(() -> m_algaeIntake.atSetpoint().getAsBoolean()
+    && m_coralIntake.atSetpoint().getAsBoolean()
+    && m_dragon.atSetpoint().getAsBoolean())
+    .andThen(m_climber.stow().until(m_climber.atSetpoint()));
+  }
+
   public Command stowClimber() {
-    return new InstantCommand(() -> m_algaeIntake.climb()
-        .alongWith(m_coralIntake.climb())
-        .alongWith(m_dragon.climb())
-        .until(() -> m_algaeIntake.atSetpoint().getAsBoolean()
-        && m_coralIntake.atSetpoint().getAsBoolean()
-        && m_dragon.atSetpoint().getAsBoolean())
-        .andThen(m_climber.stow().until(m_climber.atSetpoint())).schedule());
+    return new InstantCommand(() -> stowClimberSequence().schedule());
   }
 
   public Command deployClimber() {
@@ -308,11 +312,11 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stow() {
-    return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
+    return new InstantCommand(() -> stowClimberSequence().until(m_climber.atSetpoint())
         .andThen(stowElevator()
-        .alongWith(stowCoralIntake())
-        .until(() -> m_elevator.atSetpoint().getAsBoolean()
-        && m_coralIntake.atSetpoint().getAsBoolean()))
+            .alongWith(stowCoralIntake())
+            .until(() -> m_elevator.atSetpoint().getAsBoolean()
+                && m_coralIntake.atSetpoint().getAsBoolean()))
         .andThen(stowAlgae().until(m_algaeIntake.atSetpoint()))
         .schedule());
   }
