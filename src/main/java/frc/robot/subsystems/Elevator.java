@@ -200,30 +200,9 @@ public class Elevator extends SubsystemBase {
     });
   }
 
-  public Command moveToL1() {
+  public Command moveToLevel(ElevatorSetpoint level) {
     return this.run(() -> {
-      setLevel(ElevatorSetpoint.L1);
-      setElevatorState(ElevatorState.SCORE_READY);
-    });
-  }
-
-  public Command moveToL2() {
-    return this.run(() -> {
-      setLevel(ElevatorSetpoint.L2);
-      setElevatorState(ElevatorState.SCORE_READY);
-    });
-  }
-
-  public Command moveToL3() {
-    return this.run(() -> {
-      setLevel(ElevatorSetpoint.L3);
-      setElevatorState(ElevatorState.SCORE_READY);
-    });
-  }
-
-  public Command moveToL4() {
-    return this.run(() -> {
-      setLevel(ElevatorSetpoint.L4);
+      setLevel(level);
       setElevatorState(ElevatorState.SCORE_READY);
     });
   }

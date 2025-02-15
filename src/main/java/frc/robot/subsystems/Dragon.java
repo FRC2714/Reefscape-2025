@@ -34,7 +34,7 @@ import frc.robot.Robot;
 
 public class Dragon extends SubsystemBase {
 
-  private enum DragonSetpoint {
+  public enum DragonSetpoint {
     STOW,
     HANDOFF,
     L1,
@@ -202,7 +202,7 @@ public class Dragon extends SubsystemBase {
     }));
   }
 
-  public Command poopReadyL1() {
+  public Command poopReady() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
@@ -210,33 +210,9 @@ public class Dragon extends SubsystemBase {
     });
   }
 
-  public Command scoreReadyL1() {
+  public Command scoreReadyLevel(DragonSetpoint level) {
     return this.run(() -> {
-      setPivot(DragonSetpoint.L1);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL2() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L2);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL3() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L3);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL4() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L4);
+      setPivot(level);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
     });
