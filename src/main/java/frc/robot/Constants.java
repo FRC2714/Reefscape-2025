@@ -88,6 +88,7 @@ public final class Constants {
       public static final double kIntake = 0; // TBD
       public static final double kExtake = 0;
       public static final double kScore = 7; //TBD (extake position)
+      public static final double kTransition = 3;
     }
 
     public static final class RollerSetpoints {

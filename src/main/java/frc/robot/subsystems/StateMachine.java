@@ -267,25 +267,28 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.extake().schedule());
   }
 
+  public Command transitionAlgae() {
+    return new InstantCommand(() -> m_algaeIntake.transition().schedule());
+  }
+
   public Command stowAlgae() {
     return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
         .andThen(m_algaeIntake.stow().until(m_algaeIntake.atSetpoint())).schedule());
   }
 
   public Command stowClimber() {
-    return new InstantCommand(() -> intakeAlgae().until(m_algaeIntake.atSetpoint())
-        .andThen(stowClimber().until(m_climber.atSetpoint()))
-        .andThen(stowAlgae().until(m_algaeIntake.atSetpoint())).schedule());
+    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
+        .andThen(stowClimber().until(m_climber.atSetpoint())));
   }
 
   public Command deployClimber() {
-    return new InstantCommand(() -> intakeAlgae().until(m_algaeIntake.atSetpoint())
-        .andThen(m_climber.deploy()).until(m_climber.atSetpoint())
-        .andThen(stowAlgae()).until(m_algaeIntake.atSetpoint()).schedule());
+    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
+        .andThen(m_climber.deploy()).until(m_climber.atSetpoint()));
   }
 
   public Command retractClimber() {
-    return new InstantCommand(() -> m_climber.retract().schedule());
+    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
+        .andThen(m_climber.retract()).until(m_climber.atSetpoint()));
   }
 
   public Command moveElevatorToHandoff() {
