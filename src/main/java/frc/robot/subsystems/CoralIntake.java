@@ -30,6 +30,7 @@ import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -55,6 +56,8 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE
   }
+
+  // Tunables
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
   private CoralIntakeState m_coralIntakeState;

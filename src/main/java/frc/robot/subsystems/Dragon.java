@@ -304,7 +304,7 @@ public class Dragon extends SubsystemBase {
     // First, we set our "inputs" (voltages)
     m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
     SmartDashboard.putNumber("Pivot Position", pivotAbsoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
+    // SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
     SmartDashboard.putNumber("roller speed", pivotRollers.getAppliedOutput());
 
     // Update sim limit switch

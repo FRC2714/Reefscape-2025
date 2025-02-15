@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -24,11 +25,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
+import frc.robot.Constants;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaeIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -47,6 +50,10 @@ public class AlgaeIntake extends SubsystemBase {
     EXTAKE
   }
 
+  // Tunable Number
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.AlgaeIntake.pivotConfig;
+
   private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
   private AlgaeIntakeState m_algaeIntakeState;
 
@@ -58,8 +65,6 @@ public class AlgaeIntake extends SubsystemBase {
   private SparkFlex rollerMotor = new SparkFlex(AlgaeIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
-
-  private double pivotReference = 0;
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -96,6 +101,10 @@ public class AlgaeIntake extends SubsystemBase {
           Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeIntake() {
+    tunableAngle = new TunableNumber("TunableAlgaePivot");
+    tunableP = new TunableNumber("TunablePivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -115,11 +124,11 @@ public class AlgaeIntake extends SubsystemBase {
     // pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
     rollerMotor.configure(
-        Configs.AlgaeSubsystem.rollerConfig,
+        Configs.AlgaeIntake.rollerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     pivotMotor.configure(
-        Configs.AlgaeSubsystem.pivotConfig,
+        Configs.AlgaeIntake.pivotConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -232,7 +241,7 @@ public class AlgaeIntake extends SubsystemBase {
     // Display subsystem values
     SmartDashboard.putNumber("Algae/Arm/Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Algae/Arm/Pivot setpoint", pivotReference);
+    SmartDashboard.putNumber("Algae/Arm/Pivot setpoint", pivotCurrentTarget);
 
     SmartDashboard.putString("Algae Intake State", m_algaeIntakeState.toString());
     SmartDashboard.putBoolean("Algae Pivot at Setpoint?", atSetpoint());
@@ -242,6 +251,16 @@ public class AlgaeIntake extends SubsystemBase {
         Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
             + Units.rotationsToDegrees(
                 pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
+
+
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   /** Get the current drawn by each simulation physics model */
@@ -263,7 +282,6 @@ public class AlgaeIntake extends SubsystemBase {
             m_intakeSim.getVelocityRadPerSec() * SimulationRobotConstants.kArmReduction),
         RobotController.getBatteryVoltage(),
         0.02);
-
     // SimBattery is updated in Robot.java
   }
 }

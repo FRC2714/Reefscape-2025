@@ -59,7 +59,7 @@ public final class Configs {
         }
     }
 
-    public static final class AlgaeSubsystem {
+    public static final class AlgaeIntake {
         public static final SparkFlexConfig rollerConfig = new SparkFlexConfig();
         public static final SparkFlexConfig pivotConfig = new SparkFlexConfig();
 
