@@ -171,6 +171,14 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake.atSetpoint()));
   }
 
+  public Command handoffManual() {
+    return new InstantCommand(() -> {
+      if (manualOverride) {
+        handoff().schedule();
+      }
+    });
+  }
+
   public Command scoreCoral() {
     return new InstantCommand(
         () -> {
