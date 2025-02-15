@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -150,11 +148,11 @@ public class AlgaeIntake extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public BooleanSupplier atSetpoint() {
+  public boolean atSetpoint() {
     if (Robot.isSimulation()) {
-      return () -> true;
+      return true;
     }
-    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
+    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
   private void setAlgaeIntakeSetpoint(AlgaeIntakeSetpoint setpoint) {
@@ -244,7 +242,7 @@ public class AlgaeIntake extends SubsystemBase {
     SmartDashboard.putNumber("Algae/Arm/Pivot setpoint", pivotReference);
 
     SmartDashboard.putString("Algae Intake State", m_algaeIntakeState.toString());
-    SmartDashboard.putBoolean("Algae Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Algae Pivot at Setpoint?", atSetpoint());
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(
