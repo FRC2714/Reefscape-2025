@@ -56,11 +56,6 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> manualOverride = false);
   }
 
-  public Command stowElevator() {
-    return new InstantCommand(() -> m_dragon.stow().until(m_dragon::atSetpoint)
-        .andThen(m_elevator.moveToStow()).schedule());
-  }
-
   public Command setL1() {
     return new InstantCommand(
         () -> {
@@ -254,9 +249,6 @@ public class StateMachine extends SubsystemBase {
     });
   }
 
-  // public Command stowCoralIntake() {
-  // return new InstantCommand(() -> m_coralIntake.stow().schedule());
-  // }
 
   public Command intakeAlgae() {
     return new InstantCommand(() -> m_algaeIntake.intake().schedule());
@@ -270,9 +262,6 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
-  // public Command stowClimber() {
-  // return new InstantCommand(() -> m_climber.stow().schedule());
-  // }
 
   public Command climbSequence() {
     return m_algaeIntake.climb().alongWith(m_coralIntake.climb()).alongWith(m_dragon.climb())
@@ -307,14 +296,6 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
         .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
         .schedule());
-
-    // return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
-    // .andThen(stowElevator()
-    // .alongWith(stowCoralIntake())
-    // .until(() -> m_elevator.atSetpoint().getAsBoolean()
-    // && m_coralIntake.atSetpoint().getAsBoolean()))
-    // .andThen(stowAlgae().until(m_algaeIntake.atSetpoint()))
-    // .schedule());
   }
 
   @Override
