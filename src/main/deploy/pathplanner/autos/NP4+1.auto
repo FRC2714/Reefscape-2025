@@ -11,6 +11,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "J to station 1NP"
@@ -20,6 +32,18 @@
           "type": "path",
           "data": {
             "pathName": "station to K 1NP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
@@ -35,6 +59,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "L to station 3NP"
@@ -44,6 +80,18 @@
           "type": "path",
           "data": {
             "pathName": "station to A 3NP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
