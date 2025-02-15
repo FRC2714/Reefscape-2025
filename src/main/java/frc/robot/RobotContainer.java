@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
@@ -116,6 +117,20 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral());
+    NamedCommands.registerCommand("Intake Algae",
+        m_stateMachine.intakeAlgae().withTimeout(1).andThen(m_stateMachine.stowAlgae()));
+    NamedCommands.registerCommand("Extake Algae",
+        m_stateMachine.extakeAlgae().withTimeout(1).andThen(m_stateMachine.stowAlgae()));
+    NamedCommands.registerCommand("L4", m_stateMachine.setL4());
+    NamedCommands.registerCommand("L3", m_stateMachine.setL3());
+    NamedCommands.registerCommand("L2", m_stateMachine.setL2());
+    NamedCommands.registerCommand("L1", m_stateMachine.setL1());
+    NamedCommands.registerCommand("Stow", m_stateMachine.stow());
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeCoral());
+    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral());
+
   }
 
   /**
