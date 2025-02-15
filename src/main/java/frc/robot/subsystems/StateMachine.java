@@ -22,6 +22,7 @@ public class StateMachine extends SubsystemBase {
   private Elevator m_elevator;
   private CoralIntake m_coralIntake;
   private AlgaeIntake m_algaeIntake;
+  private Climber m_climber;
   private Limelight m_leftLimelight;
   private Limelight m_rightLimelight;
   private Limelight m_backLimelight;
@@ -30,13 +31,14 @@ public class StateMachine extends SubsystemBase {
   private boolean manualOverride;
 
   /** Creates a new StateMachine. */
-  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
+  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake, Climber m_climber,
       Limelight m_leftLimelight,
       Limelight m_rightLimelight, Limelight m_backLimelight, LED m_blinkin) {
     this.m_algaeIntake = m_algaeIntake;
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
+    this.m_climber = m_climber;
     this.m_blinkin = m_blinkin;
     this.m_leftLimelight = m_leftLimelight;
     this.m_rightLimelight = m_rightLimelight;
@@ -274,6 +276,18 @@ public class StateMachine extends SubsystemBase {
 
   public Command stowAlgae() {
     return new InstantCommand(() -> m_algaeIntake.stow().schedule());
+  }
+
+  public Command stowClimber() {
+    return new InstantCommand(() -> m_climber.stow().schedule());
+  }
+
+  public Command deployClimber() {
+    return new InstantCommand(() -> m_climber.deploy().schedule());
+  }
+
+  public Command retractClimber() {
+    return new InstantCommand(() -> m_climber.retract().schedule());
   }
 
   public Command moveElevatorToHandoff() {

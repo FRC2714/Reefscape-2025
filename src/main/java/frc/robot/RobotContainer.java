@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
@@ -26,6 +25,7 @@ import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.LED;
@@ -43,6 +43,7 @@ public class RobotContainer {
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
+  private final Climber m_climber = new Climber();
 
   private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(
@@ -62,7 +63,7 @@ public class RobotContainer {
     LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-    m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
+    m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight, m_blinkin
   );
 
   //Mech2d Stuff

@@ -65,6 +65,18 @@ public final class Constants {
     / ModuleConstants.kDrivingMotorReduction;
   }
 
+  public static final class ClimberConstants {
+    public static final int kPivotMotorCanId = 51;
+
+    public static final double kPivotThreshold = 5;
+
+    public static final class PivotSetpoints {
+      public static final double kStow = -15;
+      public static final double kDeploy = 0;
+      public static final double kRetract = -7;
+    }
+  }
+
   public static final class AlgaeIntakeConstants {
     public static final int kRollerMotorCanId = 13; //tune ts
     public static final int kPivotMotorCanId = 14; //tune ts
