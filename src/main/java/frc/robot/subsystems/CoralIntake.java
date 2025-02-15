@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -58,6 +59,8 @@ public class CoralIntake extends SubsystemBase {
   }
 
   // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.CoralIntake.pivotConfig;
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
   private CoralIntakeState m_coralIntakeState;
@@ -105,6 +108,10 @@ public class CoralIntake extends SubsystemBase {
           CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
+    tunableAngle = new TunableNumber("TunableCoralPivot");
+    tunableP = new TunableNumber("TunableCoralPivotP");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -318,6 +325,16 @@ public class CoralIntake extends SubsystemBase {
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
+
+    // Tunable if's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   /** Get the current drawn by each simulation physics model */

@@ -102,7 +102,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   public AlgaeIntake() {
     tunableAngle = new TunableNumber("TunableAlgaePivot");
-    tunableP = new TunableNumber("TunablePivot P");
+    tunableP = new TunableNumber("TunableAlgaePivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
     /*
