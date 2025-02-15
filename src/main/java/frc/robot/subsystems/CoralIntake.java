@@ -248,7 +248,7 @@ public class CoralIntake extends SubsystemBase {
         })).withName("handoff");
   }
 
-  public Command poopReadyL1() {
+  public Command poopReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.POOP);
       setRollerPower(RollerSetpoints.kStop);
@@ -257,7 +257,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command poopL1() {
-    return poopReadyL1().until(this::atSetpoint).andThen(
+    return poopReady().until(this::atSetpoint).andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kExtake);
           setCoralIntakeState(CoralIntakeState.POOP_SCORE);
