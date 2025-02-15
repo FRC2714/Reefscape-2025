@@ -97,18 +97,14 @@ public class CoralIntake extends SubsystemBase {
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Coral Intake Root", 25.1, 0);
-  private final MechanismLigament2d coralStand =
-      m_mech2dRoot.append(
-        new MechanismLigament2d(
-          "Coral Stand", SimulationRobotConstants.kCoralStandLength, 90)
-      );
-  private final MechanismLigament2d intakePivotMechanism =
-      coralStand.append(
-          new MechanismLigament2d(
-              "Coral Pivot",
-              SimulationRobotConstants.kCoralIntakeLength,
-                  CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
-
+  private final MechanismLigament2d coralStand = m_mech2dRoot.append(
+      new MechanismLigament2d(
+          "Coral Stand", SimulationRobotConstants.kCoralStandLength, 90));
+  private final MechanismLigament2d intakePivotMechanism = coralStand.append(
+      new MechanismLigament2d(
+          "Coral Pivot",
+          SimulationRobotConstants.kCoralIntakeLength,
+          CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
     /*
@@ -156,11 +152,11 @@ public class CoralIntake extends SubsystemBase {
     pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
   }
 
-  public BooleanSupplier atSetpoint() {
+  public boolean atSetpoint() {
     if (Robot.isSimulation()) {
-      return () -> true;
+      return true;
     }
-    return () -> Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
+    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= CoralIntakeConstants.kPivotThreshold;
   }
 
   private void setCoralIntakeSetpoint(CoralIntakeSetpoint state) {
@@ -202,11 +198,11 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return intakeReady().until(atSetpoint()).andThen(
-      this.run(() -> {
-        setRollerPower(RollerSetpoints.kIntake);
-        setCoralIntakeState(CoralIntakeState.INTAKE);
-      })).withName("intake");
+    return intakeReady().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kIntake);
+          setCoralIntakeState(CoralIntakeState.INTAKE);
+        })).withName("intake");
   }
 
   public Command intakeReady() {
@@ -226,11 +222,11 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command extake() {
-    return extakeReady().until(atSetpoint()).andThen(
-      this.run(() -> {
-        setRollerPower(RollerSetpoints.kExtake);
-        setCoralIntakeState(CoralIntakeState.EXTAKE);
-      })).withName("extake");
+    return extakeReady().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kExtake);
+          setCoralIntakeState(CoralIntakeState.EXTAKE);
+        })).withName("extake");
   }
 
   public Command stow() {
@@ -250,11 +246,11 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command handoff() {
-    return handoffReady().until(atSetpoint()).andThen(
-      this.run(() -> {
-        setRollerPower(RollerSetpoints.kExtake);
-        setCoralIntakeState(CoralIntakeState.HANDOFF);
-      })).withName("handoff");
+    return handoffReady().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kExtake);
+          setCoralIntakeState(CoralIntakeState.HANDOFF);
+        })).withName("handoff");
   }
 
   public Command poopReadyL1() {
@@ -266,11 +262,11 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command poopL1() {
-    return poopReadyL1().until(atSetpoint()).andThen(
-      this.run(() -> {
-        setRollerPower(RollerSetpoints.kExtake);
-        setCoralIntakeState(CoralIntakeState.POOP_SCORE);
-      })).withName("poop l1");
+    return poopReadyL1().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kExtake);
+          setCoralIntakeState(CoralIntakeState.POOP_SCORE);
+        })).withName("poop l1");
   }
 
   public boolean isLoaded() {
@@ -316,10 +312,11 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotCurrentTarget);
 
     SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
-    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint().getAsBoolean());
+    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint());
     SmartDashboard.putBoolean("Loaded?", isLoaded());
 
-    SmartDashboard.putString("Coral intake current command", this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
+    SmartDashboard.putString("Coral intake current command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
