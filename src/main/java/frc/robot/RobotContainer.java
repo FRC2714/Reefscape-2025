@@ -83,7 +83,8 @@ public class RobotContainer {
   private final JoystickButton L4Button = new JoystickButton(m_mechanismController, 4); // L4
   private final JoystickButton coralIntakeButton = new JoystickButton(m_mechanismController, 8); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_mechanismController, 7);
-  private final JoystickButton handoffButton = new JoystickButton(m_mechanismController, 6); // L4
+  private final JoystickButton manualOverrideButton = new JoystickButton(m_mechanismController, 12); // L4
+  private final JoystickButton handoffButton = new JoystickButton(m_mechanismController, 6);
   private final JoystickButton stowButton = new JoystickButton(m_mechanismController, 5); // Stow
   private final JoystickButton loadCoralButton = new JoystickButton(m_mechanismController, 10); // Stow
   private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController,9); // Stow
@@ -155,7 +156,9 @@ public class RobotContainer {
     L3Button.onTrue(m_stateMachine.setL3());
     L4Button.onTrue(m_stateMachine.setL4());
     stowButton.onTrue(m_stateMachine.stow());
-    // handoffButton.onTrue(m_stateMachine.handoffCoral());
+
+    handoffButton.onTrue(m_stateMachine.handoffManual());
+
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
@@ -174,6 +177,8 @@ public class RobotContainer {
                          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
       loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue())).onFalse(new InstantCommand(() ->m_coralIntake.setLoadedFalse()));
     }
+
+    manualOverrideButton.onTrue(m_stateMachine.enableManualOverride()).onFalse(m_stateMachine.disableManualOverride());
   }
 }
 
