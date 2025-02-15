@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "barge to E P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E to station 1P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "station to D 1P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "D to station 2P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "station to C 2P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C to station 3P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "station to B 3P"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "B to station 4P"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "PROCESSOR",
+  "choreoAuto": false
+}

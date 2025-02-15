@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to H"
+            "pathName": "barge to J NP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "H to Y"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Y to A"
+            "pathName": "J to station 1NP"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

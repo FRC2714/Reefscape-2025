@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to F"
+            "pathName": "barge to E P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "F to Z"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Z to D"
+            "pathName": "E to station 1P"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "PROCESSOR",
   "choreoAuto": false
 }

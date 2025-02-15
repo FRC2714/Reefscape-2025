@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to F"
+            "pathName": "barge to H C"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "CENTER",
   "choreoAuto": false
 }

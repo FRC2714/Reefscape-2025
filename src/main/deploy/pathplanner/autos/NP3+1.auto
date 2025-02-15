@@ -7,37 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to H"
+            "pathName": "barge to J NP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "H to X"
+            "pathName": "J to station 1NP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "X to K"
+            "pathName": "station to K 1NP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "K to Y"
+            "pathName": "K to station 2NP"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Y to A"
+            "pathName": "station to L 2NP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L to station 3NP"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

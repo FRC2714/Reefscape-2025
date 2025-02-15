@@ -7,49 +7,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to H"
+            "pathName": "barge to E P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "H to X"
+            "pathName": "E to station 1P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "X to K"
+            "pathName": "station to D 1P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "K to Y"
+            "pathName": "D to station 2P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Y to A"
+            "pathName": "station to C 2P"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "A to Z"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Z to C"
+            "pathName": "C to station 3P"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "PROCESSOR",
   "choreoAuto": false
 }
