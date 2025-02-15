@@ -46,7 +46,8 @@ public class CoralIntake extends SubsystemBase {
     HANDOFF,
     INTAKE,
     EXTAKE,
-    POOP
+    POOP,
+    CLIMB
   }
 
   public enum CoralIntakeState {
@@ -58,7 +59,8 @@ public class CoralIntake extends SubsystemBase {
     HANDOFF_READY,
     HANDOFF,
     POOP_READY,
-    POOP_SCORE
+    POOP_SCORE,
+    CLIMB,
   }
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
@@ -195,6 +197,9 @@ public class CoralIntake extends SubsystemBase {
       case POOP:
         pivotCurrentTarget = PivotSetpoints.kEject;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -277,6 +282,14 @@ public class CoralIntake extends SubsystemBase {
         setRollerPower(RollerSetpoints.kExtake);
         setCoralIntakeState(CoralIntakeState.POOP_SCORE);
       })).withName("poop l1");
+  }
+
+  public Command climb(){
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.CLIMB);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.CLIMB);
+    }).withName("climb");
   }
 
   public boolean isLoaded() {

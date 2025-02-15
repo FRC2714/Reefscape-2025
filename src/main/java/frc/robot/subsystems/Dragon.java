@@ -43,7 +43,8 @@ public class Dragon extends SubsystemBase {
     L1,
     L2,
     L3,
-    L4
+    L4,
+    CLIMB
   }
 
   public enum DragonState {
@@ -52,7 +53,8 @@ public class Dragon extends SubsystemBase {
     HANDOFF,
     SCORE_READY,
     SCORE,
-    POOP_READY
+    POOP_READY,
+    CLIMB
   }
 
   private DragonSetpoint m_dragonSetpoint;
@@ -163,6 +165,9 @@ public class Dragon extends SubsystemBase {
       case L4:
         pivotCurrentTarget = PivotSetpoints.kLevel4;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -237,6 +242,14 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.L4);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
+    });
+  }
+
+  public Command climb() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.CLIMB);
+      setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.CLIMB);
     });
   }
 

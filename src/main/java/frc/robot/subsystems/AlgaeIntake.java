@@ -45,14 +45,14 @@ public class AlgaeIntake extends SubsystemBase {
     STOW,
     INTAKE,
     EXTAKE,
-    TRANSITION
+    CLIMB
   }
 
   public enum AlgaeIntakeState {
     STOW,
     INTAKE,
     EXTAKE,
-    TRANSITION
+    CLIMB
   }
 
   private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
@@ -179,8 +179,8 @@ public class AlgaeIntake extends SubsystemBase {
       case EXTAKE:
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
-      case TRANSITION:
-        pivotCurrentTarget = PivotSetpoints.kTransition;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
         break;
     }
     moveToSetpoint();
@@ -214,12 +214,11 @@ public class AlgaeIntake extends SubsystemBase {
       });
   }
 
-  public Command transition() {
-    return this.runEnd(() -> {
-        setPivot(AlgaeIntakeSetpoint.TRANSITION);
-    }, () -> {
-        setPivot(AlgaeIntakeSetpoint.STOW);
-      });
+  public Command climb() {
+    return this.run(() -> {
+        setPivot(AlgaeIntakeSetpoint.CLIMB);
+        setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
+    });
     }
 
   public Command stow() {

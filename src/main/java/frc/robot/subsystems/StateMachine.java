@@ -267,28 +267,39 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.extake().schedule());
   }
 
-  public Command transitionAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.transition().schedule());
-  }
-
   public Command stowAlgae() {
     return new InstantCommand(() -> stowClimber().until(m_climber.atSetpoint())
         .andThen(m_algaeIntake.stow().until(m_algaeIntake.atSetpoint())).schedule());
   }
 
   public Command stowClimber() {
-    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
-        .andThen(stowClimber().until(m_climber.atSetpoint())));
+    return new InstantCommand(() -> m_algaeIntake.climb()
+        .alongWith(m_coralIntake.climb())
+        .alongWith(m_dragon.climb())
+        .until(() -> m_algaeIntake.atSetpoint().getAsBoolean()
+        && m_coralIntake.atSetpoint().getAsBoolean()
+        && m_dragon.atSetpoint().getAsBoolean())
+        .andThen(m_climber.stow().until(m_climber.atSetpoint())).schedule());
   }
 
   public Command deployClimber() {
-    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
-        .andThen(m_climber.deploy()).until(m_climber.atSetpoint()));
+    return new InstantCommand(() -> m_algaeIntake.climb()
+        .alongWith(m_coralIntake.climb())
+        .alongWith(m_dragon.climb())
+        .until(() -> m_algaeIntake.atSetpoint().getAsBoolean()
+            && m_coralIntake.atSetpoint().getAsBoolean()
+            && m_dragon.atSetpoint().getAsBoolean())
+        .andThen(m_climber.deploy().until(m_climber.atSetpoint())).schedule());
   }
 
   public Command retractClimber() {
-    return new InstantCommand(() -> transitionAlgae().until(m_algaeIntake.atSetpoint())
-        .andThen(m_climber.retract()).until(m_climber.atSetpoint()));
+    return new InstantCommand(() -> m_algaeIntake.climb()
+        .alongWith(m_coralIntake.climb())
+        .alongWith(m_dragon.climb())
+        .until(() -> m_algaeIntake.atSetpoint().getAsBoolean()
+            && m_coralIntake.atSetpoint().getAsBoolean()
+            && m_dragon.atSetpoint().getAsBoolean())
+        .andThen(m_climber.retract().until(m_climber.atSetpoint())).schedule());
   }
 
   public Command moveElevatorToHandoff() {

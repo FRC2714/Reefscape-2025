@@ -88,7 +88,7 @@ public final class Constants {
       public static final double kIntake = 0; // TBD
       public static final double kExtake = 0;
       public static final double kScore = 7; //TBD (extake position)
-      public static final double kTransition = 3;
+      public static final double kClimb = 3;
     }
 
     public static final class RollerSetpoints {
@@ -117,6 +117,7 @@ public final class Constants {
       public static final double kHandoff = 270; // TBD
       public static final double kEject = 360; //TBD
       public static final double kZeroOffsetDegrees = 270;
+      public static final double kClimb = 90;
     }
 
     public static final class RollerSetpoints {
@@ -254,7 +255,7 @@ public final class Constants {
   {
 
     public static final int kPivotMotorCanId = 50; // TBD
-    public static final int kPivotRollerMotorCanID = 51; //TBD
+    public static final int kPivotRollerMotorCanID = 52; //TBD
     public static final double kPivotReduction = 1;  // TODO
     public static final double kPivotThreshold = 5; // tune
     public static final double kRollerCurrentThreshold = 5; // tune
@@ -266,6 +267,7 @@ public final class Constants {
       public static final double kLevel2 = 2;
       public static final double kLevel3 = 2; 
       public static final double kLevel4 =  19;
+      public static final double kClimb =  1;
     }
 
     public static final class RollerSetpoints {
