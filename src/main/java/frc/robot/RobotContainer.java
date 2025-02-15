@@ -153,9 +153,9 @@ public class RobotContainer {
 
     // // Stages
     L1Button.onTrue(m_stateMachine.setL1());
-    // L2Button.onTrue(m_stateMachine.setL2());
-    // L3Button.onTrue(m_stateMachine.setL3());
-    // L4Button.onTrue(m_stateMachine.setL4());
+    L2Button.onTrue(m_stateMachine.setL2());
+    L3Button.onTrue(m_stateMachine.setL3());
+    L4Button.onTrue(m_stateMachine.setL4());
     stowButton.onTrue(m_stateMachine.stow());
 
     handoffButton.onTrue(m_stateMachine.handoffManual());
@@ -163,9 +163,9 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
 
-    L4Button.onTrue(m_stateMachine.deployClimber());
-    L3Button.onTrue(m_stateMachine.retractClimber());
-    //L2Button.onTrue(m_stateMachine.stowClimber());
+    // L4Button.onTrue(m_stateMachine.deployClimber());
+    // L3Button.onTrue(m_stateMachine.retractClimber());
+    // //L2Button.onTrue(m_stateMachine.stowClimber());
 
     // Reef Branches for HUD
     int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
