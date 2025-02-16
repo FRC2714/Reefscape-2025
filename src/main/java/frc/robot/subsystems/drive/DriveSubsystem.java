@@ -109,8 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
-        this::getPose, // Robot pose supplier
-        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getEstimatedPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE
                                                               // ChassisSpeeds. Also optionally outputs individual
@@ -245,6 +245,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetOdometryPose(Pose2d pose) {
     m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition() },
+        pose);
+  }
+
+  public void resetPose(Pose2d pose) {
+    swerveDrivePoseEstimator.resetPosition(Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
