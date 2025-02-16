@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
@@ -257,7 +258,9 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void update() {
-    if (DriverStation.getAlliance().get().toString().equals("Red")) {
+    if (Robot.isSimulation()) {
+      return;
+    } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
       swerveDrivePoseEstimator.update(
           Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
           new SwerveModulePosition[] {
@@ -319,7 +322,8 @@ public class DriveSubsystem extends SubsystemBase {
       }
     } else if (useMegaTag2 == true) {
       LimelightHelpers.PoseEstimate mt2back = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
-      LimelightHelpers.PoseEstimate mt2right = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+      LimelightHelpers.PoseEstimate mt2right = LimelightHelpers
+          .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
       LimelightHelpers.PoseEstimate mt2left = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
       if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
