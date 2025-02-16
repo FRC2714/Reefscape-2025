@@ -242,12 +242,12 @@ public class AlgaeIntake extends SubsystemBase {
   public void periodic() {
 
     // Display subsystem values
-    SmartDashboard.putNumber("Algae/Arm/Pivot Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Arm/Pivot Setpoint", pivotReference);
-    SmartDashboard.putBoolean("Algae/Arm/Algae Pivot at Setpoint?", atSetpoint());
+    SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotReference);
+    SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
     
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putString("Algae/Algae Subsystem State", m_algaeIntakeState.toString());
+    SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
     
 
     // Update mechanism2d
