@@ -251,7 +251,15 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-    }).onlyIf(this::atSetpoint);
+    // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+    });
+  }
+
+  public Command stopRoller() {
+    return this.run(() -> {
+      setRollerPower(RollerSetpoints.kStop);
+    // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+    });
   }
 
   public double getSimulationCurrentDraw() {
@@ -288,8 +296,8 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Dragon/Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Dragon/Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon Target Position", pivotCurrentTarget);
+    SmartDashboard.putNumber("Dragon Actual Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
 
     SmartDashboard.putString("Dragon State", m_dragonState.toString());

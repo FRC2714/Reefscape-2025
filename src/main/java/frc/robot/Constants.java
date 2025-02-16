@@ -94,20 +94,25 @@ public final class Constants {
 
     public static final int kBeamBreakDioChannel = 0;
 
+    public static final double kP = .08;
+
     public static final double kPivotReduction = 1;
+    public static final double kMinAngle = 10;
+    public static final double kMaxAngle = 162;
+    public static final double kZeroOffsetDegrees = 159.0;
+
 
     public static final class PivotSetpoints {
-      public static final double kStow = 0; // TBD
+      public static final double kStow = 15; // TBD
       public static final double kIntake = 120; // TBD
       public static final double kExtake = 60; // TBD
-      public static final double kHandoff = 270; // TBD
+      public static final double kHandoff = 69.8; // TBD
       public static final double kEject = 360; // TBD
-      public static final double kZeroOffsetDegrees = 270;
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = 0.5; // tune ts
-      public static final double kExtake = -0.5; // tune ts
+      public static final double kIntake = -0.1; // tune ts
+      public static final double kExtake = 0.4; // tune ts
       public static final double kStop = 0;
     }
   }
@@ -225,14 +230,14 @@ public final class Constants {
     public static final double kMinLimit = 0;
     public static final double kMaxLimit = 9.62;
 
-    public static final double kP = 0.3;
+    public static final double kP = .05;
 
     public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;
-      public static final double kHandoff = 90;
+      public static final double kHandoff = 0;
       public static final double kLevel1 = 20;
-      public static final double kLevel2 = 30;
+      public static final double kLevel2 = 0;
       public static final double kLevel3 = 100;
       public static final double kLevel4 = 150;
     }
@@ -246,18 +251,24 @@ public final class Constants {
     public static final double kPivotThreshold = 5; // tune
     public static final double kRollerCurrentThreshold = 5; // tune
 
+    public static final double kPivotMinAngle = 10.0;
+    public static final double kPivotMaxAngle = 305.0;
+    public static final double kPivotZeroOffset = 149.0;
+
+    public static final double kP = 0.03;
+
     public static final class PivotSetpoints {
-      public static final double kStow = 0;
-      public static final double kHandoff = 33;
+      public static final double kStow = 58;
+      public static final double kHandoff = 224.6;
       public static final double kLevel1 = 1;
-      public static final double kLevel2 = 2;
-      public static final double kLevel3 = 2;
+      public static final double kLevel2 = 95;
+      public static final double kLevel3 = 61;
       public static final double kLevel4 = 19;
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = 0.5; // tune ts (pos when getting from station)
-      public static final double kExtake = -0.5; /// tune ts (neg when scoring)
+      public static final double kIntake = -0.1; // tune ts (pos when getting from station)
+      public static final double kExtake = .6; /// tune ts (neg when scoring)
       public static final double kStop = 0;
     }
   }

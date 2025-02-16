@@ -39,10 +39,10 @@ import frc.robot.subsystems.LED;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  // private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
-  // private final CoralIntake m_coralIntake = new CoralIntake();
+  private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
+  private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
-  // private final Dragon m_dragon = new Dragon();
+  private final Dragon m_dragon = new Dragon();
 
   private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(
@@ -141,6 +141,8 @@ public class RobotContainer {
 
     // m_driverController.leftBumper()
     //     .onTrue(m_stateMachine.scoreCoral());
+        m_driverController.leftBumper()
+        .whileTrue(m_dragon.score()).whileFalse(m_dragon.stopRoller());
 
     // // Force Actions
     m_driverController.povLeft()
@@ -150,6 +152,9 @@ public class RobotContainer {
         .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
+
+    m_driverController.a().onTrue(m_dragon.handoff());
+    m_driverController.b().onTrue(m_coralIntake.handoff());
     // // Stages
     // L1Button.onTrue(m_stateMachine.setL1());
     // L2Button.onTrue(m_stateMachine.setL2());

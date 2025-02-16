@@ -105,12 +105,12 @@ public class CoralIntake extends SubsystemBase {
       new MechanismLigament2d(
           "Coral Pivot",
           SimulationRobotConstants.kCoralIntakeLength,
-          CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
+          CoralIntakeConstants.kZeroOffsetDegrees));
 
   public CoralIntake() {
     tunableAngle = new TunableNumber("TunableCoralPivot");
     tunableP = new TunableNumber("TunableCoralPivot P");
-    tunableAngle.setDefault(0);
+    tunableAngle.setDefault(10);
     tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
@@ -199,7 +199,7 @@ public class CoralIntake extends SubsystemBase {
     rollerMotor.set(power);
 
     // TODO: Control this separately
-    indexerMotor.set(power);
+    indexerMotor.set(-power);
   }
 
   public Command intake() {
@@ -311,10 +311,10 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
 
     // Display subsystem values
-    SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("ACtual coral pivot position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotCurrentTarget);
+    SmartDashboard.putNumber("actualy coral pivot setpoint", pivotCurrentTarget);
 
     SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
     SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint());
@@ -324,7 +324,7 @@ public class CoralIntake extends SubsystemBase {
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
 
     // Update mechanism2d
-    intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
+    intakePivotMechanism.setAngle(CoralIntakeConstants.kZeroOffsetDegrees + pivotEncoder.getPosition());
 
     // Tunable if's
     if (tunableAngle.hasChanged()) {
