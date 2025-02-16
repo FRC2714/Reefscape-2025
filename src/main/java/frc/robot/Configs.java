@@ -151,6 +151,8 @@ public final class Configs {
                     .maxVelocity(4200)
                     .maxAcceleration(6000)
                     .allowedClosedLoopError(0.5);
+            elevatorConfig.externalEncoder
+                    .inverted(true);
             elevatorFollowerConfig
                     .follow(ElevatorConstants.kElevatorMotorCanId)
                     .inverted(true);

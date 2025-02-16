@@ -222,6 +222,11 @@ public final class Constants {
 
     public static final double kSetpointThreshold = 5; // tune
 
+    public static final double kMinLimit = 0;
+    public static final double kMaxLimit = 9.62;
+
+    public static final double kP = 0.3;
+
     public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;

@@ -61,7 +61,7 @@ public class Elevator extends SubsystemBase {
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkFlex elevatorFollower = new SparkFlex(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
-  private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
+  private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorConstants.ElevatorLevels.kStow;
@@ -99,11 +99,6 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     elevatorFollower.configure(
-        Configs.Elevator.elevatorConfig,
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-
-    elevatorFollower.configure(
         Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
@@ -136,10 +131,10 @@ public class Elevator extends SubsystemBase {
       // Zero the encoder only when the limit switch is switches from "unpressed" to
       // "pressed" to
       // prevent constant zeroing while pressed
-      elevatorEncoder.setPosition(0);
+      elevatorEncoder.setPosition(ElevatorConstants.kMinLimit);
       wasResetByLimit = true;
     } else if (!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed()) {
-      elevatorEncoder.setPosition(32);
+      elevatorEncoder.setPosition(ElevatorConstants.kMaxLimit);
       wasResetByLimit = true;
     } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()
         && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
