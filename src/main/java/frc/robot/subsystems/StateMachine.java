@@ -317,6 +317,6 @@ public class StateMachine extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Manual Override", manualOverride);
+    SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
   }
 }

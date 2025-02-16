@@ -113,7 +113,7 @@ public class Dragon extends SubsystemBase {
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
-    SmartDashboard.putData("dragon", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Dragon", m_mech2d);
 
     coralOnDragon = false;
   }
@@ -267,13 +267,14 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Dragon/Pivot/Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Dragon/Pivot/Actual Position", pivotAbsoluteEncoder.getPosition());
-    SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
+    SmartDashboard.putNumber("Dragon/Pivot/Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
 
-    SmartDashboard.putString("Dragon State", m_dragonState.toString());
-    SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint());
-    SmartDashboard.putBoolean("Coral on Dragon", isCoralOnDragon());
+    SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
+
+    SmartDashboard.putString("Dragon/Dragon State", m_dragonState.toString());
+    SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
     setCoralOnDragon();
 
@@ -292,9 +293,6 @@ public class Dragon extends SubsystemBase {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Pivot Position", pivotAbsoluteEncoder.getPosition());
-    SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
-    SmartDashboard.putNumber("roller speed", pivotRollers.getAppliedOutput());
 
     // Update sim limit switch
     // Next, we update it. The standard loop time is 20ms.
