@@ -26,8 +26,12 @@ public class Limelight extends SubsystemBase {
   private double m_mountingAngle;
   private double m_goalHeight;
   Field2d m_field = new Field2d();
-
   LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("m_limelight");
+
+  public enum Align {
+    LEFT,
+    RIGHT
+  }
 
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
@@ -117,6 +121,11 @@ public class Limelight extends SubsystemBase {
     LimelightHelpers.setPipelineIndex(m_limelightName, pipeline);
   }
 
+  public boolean coralStationInRange() {
+    return getDistanceToGoalMeters() < LimelightConstants.kCoralStationDistanceThreshold;
+  }
+
+  // Pipline Stuff
   public void setCoralTagPipelineRight() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kRightReefBranchPipeline);
   }

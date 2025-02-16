@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.6973076923076915,
+        "y": 5.015769230769231
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0258205128205122,
+        "y": 5.676371794871795
+      },
+      "isLocked": false,
+      "linkedName": "L-Coral"
+    },
+    {
+      "anchor": {
+        "x": 1.7467307692307688,
+        "y": 7.451410256410257
+      },
+      "prevControl": {
+        "x": 2.5104487179487176,
+        "y": 6.378076923076923
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "NP station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 126.15818543980836
+  },
+  "reversed": false,
+  "folder": "NONPROCESSOR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 120.96375653207352
+  },
+  "useDefaultConstraints": true
+}

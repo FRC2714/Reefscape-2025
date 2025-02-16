@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -40,6 +41,8 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -83,15 +86,14 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  /** Creates a new DriveSubsystem. */
   private Field2d m_fieldPose = new Field2d();
 
-  /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-
-    SmartDashboard.putData(m_fieldPose);
-
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+
+    SmartDashboard.putData("Field", m_fieldPose);
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -379,6 +381,8 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         });
 
+    m_field.setRobotPose(getPose());
+
     SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
     SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
@@ -406,6 +410,7 @@ public class DriveSubsystem extends SubsystemBase {
   public Pose2d getEstimatedPose() {
     return swerveDrivePoseEstimator.getEstimatedPosition();
   }
+
   /**
    * Resets the odometry to the specified pose.
    *
@@ -449,7 +454,6 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
-
   }
 
   public void drive(ChassisSpeeds speeds, boolean fieldRelative) {
@@ -542,5 +546,4 @@ public class DriveSubsystem extends SubsystemBase {
   public ChassisSpeeds getRobotRelativeSpeeds() {
     return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
-
 }

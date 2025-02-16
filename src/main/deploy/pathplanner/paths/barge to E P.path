@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.35076923076923,
+        "y": 1.6203205128205127
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.339358974358975,
+        "y": 1.6306410256410264
+      },
+      "isLocked": false,
+      "linkedName": "Processor side start"
+    },
+    {
+      "anchor": {
+        "x": 4.966730769230768,
+        "y": 2.8175
+      },
+      "prevControl": {
+        "x": 5.5137179487179475,
+        "y": 1.8680128205128197
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "E-Coral"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.9314171781375
+  },
+  "reversed": false,
+  "folder": "PROCESSOR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

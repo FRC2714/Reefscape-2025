@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.2122435897435895,
+        "y": 3.870192307692308
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.634294871794871,
+        "y": 3.756666666666667
+      },
+      "isLocked": false,
+      "linkedName": "B-Coral"
+    },
+    {
+      "anchor": {
+        "x": 2.0357051282051275,
+        "y": 0.34057692307692267
+      },
+      "prevControl": {
+        "x": 1.9015384615384607,
+        "y": 1.0010897435897426
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Processor side station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -130.91438322002512
+  },
+  "reversed": false,
+  "folder": "PROCESSOR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 179.6021190381654
+  },
+  "useDefaultConstraints": true
+}
