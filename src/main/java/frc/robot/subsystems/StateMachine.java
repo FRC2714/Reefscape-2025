@@ -85,15 +85,6 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> manualOverride = false);
   }
 
-  private Command setElevatorSetpoint(ElevatorSetpoint setpoint) {
-    return new InstantCommand(() -> m_elevator.setElevatorSetpoint(setpoint));
-  }
-
-  public Command stowElevator() {
-    return new InstantCommand(() -> m_dragon.stow().until(m_dragon::atSetpoint)
-        .andThen(m_elevator.moveToStow()).schedule());
-  }
-
   private Command scoreReadySequence(ScoreLevel level) {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
@@ -283,12 +274,6 @@ public class StateMachine extends SubsystemBase {
   public Command retractClimber() {
     return new InstantCommand(() -> climbSequence()
         .andThen(m_climber.retract().until(m_climber::atSetpoint)).schedule());
-  }
-
-  public Command moveElevatorToHandoff() {
-    return m_dragon.stow().until(m_dragon::atSetpoint)
-        .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
-        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint));
   }
 
   @Override
