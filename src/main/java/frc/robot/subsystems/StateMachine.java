@@ -9,6 +9,7 @@ import java.util.Map;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,12 +23,12 @@ public class StateMachine extends SubsystemBase {
   enum State {
     IDLE,
     INTAKE,
-    POOP_STANDBY, // TODO: implement
+    POOP_STANDBY,
     POOP_READY,
     POOP_SCORE,
     EXTAKE,
     HANDOFF,
-    DRAGON_STANDBY, // TODO: implement
+    DRAGON_STANDBY,
     DRAGON_READY,
     DRAGON_SCORE
   }
@@ -151,6 +152,11 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
+  private Command dragonStandbySequence() {
+    return Commands.none() // TODO: implement
+        .beforeStarting(() -> m_state = State.DRAGON_STANDBY);
+  }
+
   private Command scoreReadySequence(ScoreLevel level) {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
@@ -162,6 +168,11 @@ public class StateMachine extends SubsystemBase {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
+  private Command poopStandbySequenece() {
+    return Commands.none() // TODO: implement
+        .beforeStarting(() -> m_state = State.POOP_STANDBY);
   }
 
   private Command poopReadySequence() {
