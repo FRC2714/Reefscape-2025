@@ -138,7 +138,7 @@ public class MAXSwerveModule extends SubsystemBase {
         m_drivingEncoder.getPosition(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
-  
+
   /**
    * Sets the desired state for the module.
    *
