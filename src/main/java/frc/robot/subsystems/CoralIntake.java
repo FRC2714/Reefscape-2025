@@ -110,8 +110,8 @@ public class CoralIntake extends SubsystemBase {
           CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
-    tunableAngle = new TunableNumber("TunableCoralPivot");
-    tunableP = new TunableNumber("TunableCoralPivot P");
+    tunableAngle = new TunableNumber("Coral Intake/Tunable Pivot Angle");
+    tunableP = new TunableNumber("Coral Intake/Tunable Pivot P");
     tunableAngle.setDefault(10);
     tunableP.setDefault(0);
     /*

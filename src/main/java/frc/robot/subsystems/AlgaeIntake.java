@@ -103,8 +103,8 @@ public class AlgaeIntake extends SubsystemBase {
           Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeIntake() {
-    tunableAngle = new TunableNumber("TunableAlgaePivot");
-    tunableP = new TunableNumber("TunableAlgaePivot P");
+    tunableAngle = new TunableNumber("Algae/Tunable Pivot Angle");
+    tunableP = new TunableNumber("Algae/Tunable Pivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
     /*

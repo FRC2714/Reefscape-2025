@@ -116,8 +116,8 @@ public class Elevator extends SubsystemBase {
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
 
-    tunableSetpoint = new TunableNumber("Tunable Elevator Setpoint");
-    tunableP = new TunableNumber("Tunable Elevator P");
+    tunableSetpoint = new TunableNumber("Elevator/Tunable Elevator Setpoint");
+    tunableP = new TunableNumber("Elevator/Tunable Elevator P");
     tunableSetpoint.setDefault(0);
     tunableP.setDefault(0);
 

@@ -103,8 +103,8 @@ public class Dragon extends SubsystemBase {
   /** Creates a new Elevator and Pivot. */
 
   public Dragon() {
-    tunableAngle = new TunableNumber("TunableDragonPivot");
-    tunableP = new TunableNumber("TunableDragonPivot P");
+    tunableAngle = new TunableNumber("Dragon/Pivot Angle");
+    tunableP = new TunableNumber("Dragon/Pivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
 
@@ -240,14 +240,14 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-    // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+      // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
     });
   }
 
   public Command stopRoller() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
-    // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+      // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
     });
   }
 
@@ -285,7 +285,7 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Dragon/Pivot/Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
 
