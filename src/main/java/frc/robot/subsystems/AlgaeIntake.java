@@ -256,7 +256,10 @@ public class AlgaeIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
 
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
+
     SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
+    SmartDashboard.putString("Algae/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(

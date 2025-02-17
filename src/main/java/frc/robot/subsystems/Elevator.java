@@ -253,7 +253,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putString("Elevator/State", m_elevatorState.toString());
     SmartDashboard.putBoolean("Elevator/at Setpoint?", atSetpoint());
     SmartDashboard.putString("Elevator/Current Comamand",
-        this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
+        this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
     m_elevatorMech2d.setLength(
         SimulationRobotConstants.kMinElevatorHeightMeters

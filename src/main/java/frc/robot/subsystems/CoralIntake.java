@@ -112,7 +112,7 @@ public class CoralIntake extends SubsystemBase {
   public CoralIntake() {
     tunableAngle = new TunableNumber("Coral Intake/Tunable Pivot Angle");
     tunableP = new TunableNumber("Coral Intake/Tunable Pivot P");
-    tunableAngle.setDefault(10);
+    tunableAngle.setDefault(0);
     tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
@@ -333,8 +333,8 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/State", m_coralIntakeState.toString());
-    SmartDashboard.putString("Coral Intake/Current command",
-        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
+    SmartDashboard.putString("Coral Intake/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());

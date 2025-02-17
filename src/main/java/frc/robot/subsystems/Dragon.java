@@ -291,7 +291,9 @@ public class Dragon extends SubsystemBase {
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
 
-    SmartDashboard.putString("Dragon/Dragon State", m_dragonState.toString());
+    SmartDashboard.putString("Dragon/State", m_dragonState.toString());
+    SmartDashboard.putString("Dragon/Current Command",
+      this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
     setCoralOnDragon();
