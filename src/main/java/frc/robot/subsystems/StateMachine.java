@@ -118,7 +118,7 @@ public class StateMachine extends SubsystemBase {
             scoreReadySequence(ScoreLevel.L2).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
               || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
-            handoff()
+            handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L2)).schedule();
           }
         });
@@ -131,7 +131,7 @@ public class StateMachine extends SubsystemBase {
             scoreReadySequence(ScoreLevel.L3).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
               || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
-            handoff()
+            handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L3)).schedule();
           }
 
@@ -145,14 +145,14 @@ public class StateMachine extends SubsystemBase {
             scoreReadySequence(ScoreLevel.L4).schedule();
           } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
               || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
-            handoff()
+            handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L4)).schedule();
           }
 
         });
   }
 
-  public Command handoff() {
+  private Command handoffSequence() {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoff()
@@ -165,7 +165,7 @@ public class StateMachine extends SubsystemBase {
   public Command handoffManual() {
     return new InstantCommand(() -> {
       if (manualOverride) {
-        handoff().schedule();
+        handoffSequence().schedule();
       }
     });
   }
@@ -259,7 +259,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
-  public Command climbSequence() {
+  private Command climbSequence() {
     return m_algaeIntake.climb().alongWith(m_coralIntake.climb()).alongWith(m_dragon.climb())
         .alongWith(m_elevator.moveToStow())
         .until(() -> m_algaeIntake.atSetpoint() && m_coralIntake.atSetpoint() && m_dragon.atSetpoint()
