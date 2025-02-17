@@ -44,6 +44,7 @@ public class StateMachine extends SubsystemBase {
   private LED m_blinkin;
 
   private boolean manualOverride;
+  private boolean autoHandoff;
   private State m_state = State.IDLE;
 
   private enum ScoreLevel {
@@ -72,6 +73,7 @@ public class StateMachine extends SubsystemBase {
     this.m_backLimelight = m_backLimelight;
 
     manualOverride = false;
+    autoHandoff = true;
 
     populateElevatorMap();
     populateDragonMap();
@@ -197,9 +199,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride) {
-        intakeSequence().schedule();
-      } else if (CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
+      if (manualOverride || CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
         intakeSequence().schedule();
       } else if (CoralIntakeState.EXTAKE == m_coralIntake.getState()
           || CoralIntakeState.STOW == m_coralIntake.getState()) {
@@ -211,10 +211,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command extakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride) {
-        m_coralIntake.extake().schedule();
-
-      } else if (CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
+      if (manualOverride || CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
       } else if (CoralIntakeState.INTAKE == m_coralIntake.getState()
           || CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()) {
@@ -336,6 +333,7 @@ public class StateMachine extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
+    SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
   }
 }
