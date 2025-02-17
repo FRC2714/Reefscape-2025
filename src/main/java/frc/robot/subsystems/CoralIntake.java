@@ -269,7 +269,7 @@ public class CoralIntake extends SubsystemBase {
         })).withName("poop l1");
   }
 
-  public Command climb(){
+  public Command climb() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.CLIMB);
       setRollerPower(RollerSetpoints.kStop);
@@ -315,7 +315,7 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
-    
+
     SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 

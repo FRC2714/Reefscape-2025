@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
@@ -17,6 +22,7 @@ public class Limelight extends SubsystemBase {
   private double m_cameraHeight;
   private double m_mountingAngle;
   private double m_goalHeight;
+  LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("m_limelight");
 
   public enum Align {
     LEFT,
@@ -104,6 +110,11 @@ public class Limelight extends SubsystemBase {
     return rawFiducial.tync;
   }
 
+  // Pipline Stuff
+  public void setPipeline(int pipeline) {
+    LimelightHelpers.setPipelineIndex(m_limelightName, pipeline);
+  }
+
   public boolean coralStationInRange() {
     return getDistanceToGoalMeters() < LimelightConstants.kCoralStationDistanceThreshold;
   }
@@ -121,16 +132,38 @@ public class Limelight extends SubsystemBase {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kProcessorPipeline);
   }
 
+  public static Pose2d getBotPose2d(Limelight limelight) {
+    return LimelightHelpers.getBotPose2d_wpiBlue("limelight_back");
+  }
+
+  public static Pose3d getBotPose3d(Limelight limelight) {
+    return LimelightHelpers.getBotPose3d_wpiBlue("limelight_back");
+  }
+
+  public static Pose2d getBotPose2d_TargetSpace(Limelight limelight) {
+    return LimelightHelpers.getBotPose3d_TargetSpace("limelight_back").toPose2d();
+  }
+
+  public static Pose3d getBotPose3d_TargetSpace(Limelight limelight) {
+    return LimelightHelpers.getBotPose3d_TargetSpace("limelight_back");
+  }
+
   public int getTargetID() {
     return (int) LimelightHelpers.getFiducialID(m_limelightName);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Limelight/X offset", getXAngleOffsetDegrees());
-    SmartDashboard.putNumber("Limelight/Y offset", getYAngleOffsetDegrees());
-    SmartDashboard.putNumber("Limelight/Distance to goal", getDistanceToGoalMeters());
+    if (Robot.isSimulation()) {
+
+    } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
+      setPipeline(Constants.LimelightConstants.kRedPosePipeline);
+    } else {
+      setPipeline(Constants.LimelightConstants.kBluePosePipeline);
+      SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
+      SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
+      SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
+    }
 
   }
-
 }

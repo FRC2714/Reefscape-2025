@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -87,7 +91,7 @@ public final class Constants {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 0; // TBD
       public static final double kExtake = 0;
-      public static final double kScore = 7; //TBD (extake position)
+      public static final double kScore = 7; // TBD (extake position)
       public static final double kClimb = 3;
     }
 
@@ -210,12 +214,14 @@ public final class Constants {
 
   // ! Update Values for AlphaBot
   public static final class LimelightConstants {
+    public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // needs tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
     public static final double kRightCameraHeight = 17 + 2.75;
     public static final double kLeftCameraHeight = 17.5 + 2.75;
-    public static final double kBackCameraHeight = 0; // tune later
+    public static final double kBackCameraHeight = 2.75 + 15.5; // tune later
     public static final double kRightMountingAngle = -21;
     public static final double kLeftMountingAngle = -23;
     public static final double kBackMountingAngle = 0; // tune later
@@ -224,6 +230,8 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kProcessorPipeline = 0; // TBD
+    public static final int kRedPosePipeline = 0; // TBD
+    public static final int kBluePosePipeline = 6; // TBD
 
     public static final double kCoralStationDistanceThreshold = 0; // tune
   }
@@ -260,9 +268,9 @@ public final class Constants {
       public static final double kHandoff = 33;
       public static final double kLevel1 = 1;
       public static final double kLevel2 = 2;
-      public static final double kLevel3 = 2; 
-      public static final double kLevel4 =  19;
-      public static final double kClimb =  1;
+      public static final double kLevel3 = 2;
+      public static final double kLevel4 = 19;
+      public static final double kClimb = 1;
     }
 
     public static final class RollerSetpoints {
