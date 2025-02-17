@@ -205,12 +205,21 @@ public class StateMachine extends SubsystemBase {
 
   public Command idle() {
     return new InstantCommand(() -> {
-      if (!autoHandoff) {
-        poopStandbySequence().schedule();
-      } else if (m_dragon.isCoralOnDragon()) {
-        dragonStandbySequence().schedule();
-      } else {
+      if (manualOverride) {
         idleSequence().schedule();
+      } else if (m_state == State.INTAKE || m_state == State.EXTAKE) {
+        idleSequence().schedule();
+      } else if (m_state == State.DRAGON_READY || m_state == State.POOP_READY) {
+        if (m_state == State.DRAGON_READY && m_dragon.isCoralOnDragon()) {
+          // Go to dragon standby if dragon is still loaded
+          dragonStandbySequence().schedule();
+        } else if (m_state == State.POOP_READY && m_coralIntake.isLoaded()) {
+          // Go to poop standby if coral is still loaded
+          poopStandbySequence().schedule();
+        } else {
+          // Go to true idle if there is no coral loaded at all
+          idleSequence().schedule();
+        }
       }
     });
   }
