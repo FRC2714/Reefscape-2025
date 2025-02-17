@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -30,6 +31,7 @@ import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -57,6 +59,10 @@ public class CoralIntake extends SubsystemBase {
     POOP_SCORE,
     CLIMB,
   }
+
+  // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.CoralIntake.pivotConfig;
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
   private CoralIntakeState m_coralIntakeState;
@@ -101,9 +107,13 @@ public class CoralIntake extends SubsystemBase {
       new MechanismLigament2d(
           "Coral Pivot",
           SimulationRobotConstants.kCoralIntakeLength,
-          CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
+          CoralIntakeConstants.kZeroOffsetDegrees));
 
   public CoralIntake() {
+    tunableAngle = new TunableNumber("TunableCoralPivot");
+    tunableP = new TunableNumber("TunableCoralPivot P");
+    tunableAngle.setDefault(10);
+    tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -194,7 +204,7 @@ public class CoralIntake extends SubsystemBase {
     rollerMotor.set(power);
 
     // TODO: Control this separately
-    indexerMotor.set(power);
+    indexerMotor.set(-power);
   }
 
   public Command intake() {
@@ -327,7 +337,17 @@ public class CoralIntake extends SubsystemBase {
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
 
     // Update mechanism2d
-    intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
+    intakePivotMechanism.setAngle(CoralIntakeConstants.kZeroOffsetDegrees + pivotEncoder.getPosition());
+
+    // Tunable if's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   /** Get the current drawn by each simulation physics model */

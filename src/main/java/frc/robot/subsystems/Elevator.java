@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,6 +29,8 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ElevatorConstants.ElevatorLevels;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+
+import frc.robot.utils.TunableNumber;
 
 public class Elevator extends SubsystemBase {
 
@@ -51,11 +54,14 @@ public class Elevator extends SubsystemBase {
   private ElevatorSetpoint m_elevatorSetpoint;
   private ElevatorState m_elevatorState;
 
+  private TunableNumber tunableSetpoint, tunableP;
+  private SparkFlexConfig tunableLeaderConfig = Configs.Elevator.elevatorConfig;
+
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkFlex elevatorFollower = new SparkFlex(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
-  private RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
+  private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
   private boolean wasResetByLimit = false;
   private double elevatorCurrentTarget = ElevatorConstants.ElevatorLevels.kStow;
@@ -93,11 +99,6 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     elevatorFollower.configure(
-        Configs.Elevator.elevatorConfig,
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-
-    elevatorFollower.configure(
         Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
@@ -109,6 +110,11 @@ public class Elevator extends SubsystemBase {
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
+
+    tunableSetpoint = new TunableNumber("Tunable Elevator Setpoint");
+    tunableP = new TunableNumber("Tunable Elevator P");
+    tunableSetpoint.setDefault(0);
+    tunableP.setDefault(0);
 
   }
 
@@ -125,14 +131,21 @@ public class Elevator extends SubsystemBase {
       // Zero the encoder only when the limit switch is switches from "unpressed" to
       // "pressed" to
       // prevent constant zeroing while pressed
-      elevatorEncoder.setPosition(0);
+      elevatorEncoder.setPosition(ElevatorConstants.kMinLimit);
       wasResetByLimit = true;
+      // elevatorMotor.set(0);
+      // elevatorCurrentTarget = ElevatorConstants.kMinLimit;
+      // moveToSetpoint();
     } else if (!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed()) {
-      elevatorEncoder.setPosition(32);
+      elevatorEncoder.setPosition(ElevatorConstants.kMaxLimit);
       wasResetByLimit = true;
+      // elevatorMotor.set(0);
+      // elevatorCurrentTarget = ElevatorConstants.kMaxLimit;
+      // moveToSetpoint();
     } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()
         && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
+      elevatorMotor.set(0);
     }
   }
 
@@ -218,6 +231,15 @@ public class Elevator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (tunableSetpoint.hasChanged()) {
+      elevatorCurrentTarget = tunableSetpoint.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableLeaderConfig.closedLoop.p(tunableP.get());
+      elevatorMotor.configure(tunableLeaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 
     zeroElevatorOnLimitSwitch();
 

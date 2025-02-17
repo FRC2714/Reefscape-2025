@@ -39,7 +39,7 @@ public class Mech2dManager extends SubsystemBase {
     private final MechanismLigament2d m_coralIntakeMech2d = coralStand.append(
             new MechanismLigament2d(
                     "Coral Pivot", SimulationRobotConstants.kCoralIntakeLength,
-                    CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
+                    CoralIntakeConstants.kZeroOffsetDegrees));
     // Algae Intake visualization
     private final MechanismLigament2d algaePivotMechanism = m_algaeRoot.append(
             new MechanismLigament2d(
@@ -87,7 +87,7 @@ public class Mech2dManager extends SubsystemBase {
         m_dragonMech2d.setAngle(dragonAngle);
 
         // Update coral visualization
-        double coralAngle = CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + m_coral.getPosition();
+        double coralAngle = CoralIntakeConstants.kZeroOffsetDegrees + m_coral.getPosition();
         m_coralIntakeMech2d.setAngle(coralAngle);
 
         // Update algae intake visualization
