@@ -42,7 +42,7 @@ public class CoralIntake extends SubsystemBase {
     INTAKE,
     EXTAKE,
     POOP,
-    CLIMB,
+    CLIMB
   }
 
   public enum CoralIntakeState {
