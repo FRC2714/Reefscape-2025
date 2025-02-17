@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     // In Robot.java, add in robotInit():
-    // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
+    CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
     URCL.start();
   }
@@ -112,7 +112,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // m_robotContainer.setTeleOpDefaultStates();
+    m_robotContainer.setTeleOpDefaultStates();
   }
 
   /** This function is called periodically during operator control. */

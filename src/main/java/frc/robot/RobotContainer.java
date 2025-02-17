@@ -63,16 +63,16 @@ public class RobotContainer {
       LimelightConstants.kBackMountingAngle,
       LimelightConstants.kProcessorTagHeight);
 
-  // private final StateMachine m_stateMachine = new StateMachine(
-  //     m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_leftLimelight, m_rightLimelight, m_backLimelight,
-  //     m_blinkin);
+  private final StateMachine m_stateMachine = new StateMachine(
+      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight,
+      m_blinkin);
 
   // Mech2d Stuff
-  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
 
-  // public Mech2dManager getMech2dManager() {
-  //   return m_mech2dManager;
-  // }
+  public Mech2dManager getMech2dManager() {
+    return m_mech2dManager;
+  }
 
   Joystick m_reefController = new Joystick(1); // operator controller 1
   Joystick m_mechanismController = new Joystick(2); // operator controller 2
@@ -146,20 +146,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // Driver Controller Actions
-    // m_driverController
-    //     .leftTrigger(OIConstants.kTriggerButtonThreshold)
-    //     .onTrue(m_stateMachine.extakeAlgae())
-    //     .onFalse(m_stateMachine.stowAlgae());
+    m_driverController
+        .leftTrigger(OIConstants.kTriggerButtonThreshold)
+        .onTrue(m_stateMachine.extakeAlgae())
+        .onFalse(m_stateMachine.stowAlgae());
 
-    // m_driverController
-    //     .rightTrigger(OIConstants.kTriggerButtonThreshold)
-    //     .onTrue(m_stateMachine.intakeAlgae())
-    //     .onFalse(m_stateMachine.stowAlgae());
+    m_driverController
+        .rightTrigger(OIConstants.kTriggerButtonThreshold)
+        .onTrue(m_stateMachine.intakeAlgae())
+        .onFalse(m_stateMachine.stowAlgae());
 
-    // m_driverController.leftBumper()
-    //     .onTrue(m_stateMachine.scoreCoral());
-        m_driverController.leftBumper()
-        .whileTrue(m_dragon.score()).whileFalse(m_dragon.stopRoller());
+    m_driverController.leftBumper()
+        .onTrue(m_stateMachine.scoreCoral());
 
     // // Force Actions
     m_driverController.povLeft()
@@ -169,25 +167,22 @@ public class RobotContainer {
         .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
+    // // Stages
+    L1Button.onTrue(m_stateMachine.setL1());
+    L2Button.onTrue(m_stateMachine.setL2());
+    L3Button.onTrue(m_stateMachine.setL3());
+    L4Button.onTrue(m_stateMachine.setL4());
+    stowButton.onTrue(m_stateMachine.idle());
 
-    m_driverController.a().onTrue(m_dragon.handoff());
-    m_driverController.b().onTrue(m_coralIntake.handoff());
-    // Stages
-    // L1Button.onTrue(m_stateMachine.setL1());
-    // L2Button.onTrue(m_stateMachine.setL2());
-    // L3Button.onTrue(m_stateMachine.setL3());
-    // L4Button.onTrue(m_stateMachine.setL4());
-    // stowButton.onTrue(m_stateMachine.idle());
+    handoffButton.onTrue(m_stateMachine.handoffManual());
 
-    // handoffButton.onTrue(m_stateMachine.handoffManual());
-
-    // coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
-    // coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
-    // climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
+    coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+    climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
-    // L2Button.onTrue(m_stateMachine.stowClimber());
+    // //L2Button.onTrue(m_stateMachine.stowClimber());
 
     // Reef Branches for HUD
     int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
@@ -199,22 +194,22 @@ public class RobotContainer {
             SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
 
-      // if (Robot.isSimulation()) {
-      //   coralonDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-      //       .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-      //   loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-      //       .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      // }
+      if (Robot.isSimulation()) {
+        coralonDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+            .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+        loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+            .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+      }
 
-      // manualOverrideButton.onTrue(m_stateMachine.enableManualOverride())
-      //     .onFalse(m_stateMachine.disableManualOverride());
+      manualOverrideButton.onTrue(m_stateMachine.enableManualOverride())
+          .onFalse(m_stateMachine.disableManualOverride());
     }
   }
 
-  // public void setTeleOpDefaultStates() {
-  //   m_stateMachine.setDefaultStates().schedule();
-  //   m_blinkin.setOrange(); // default lights are orange
-  // }
+  public void setTeleOpDefaultStates() {
+    m_stateMachine.setDefaultStates().schedule();
+    m_blinkin.setOrange(); // default lights are orange
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
