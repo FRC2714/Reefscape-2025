@@ -24,12 +24,12 @@ public class StateMachine extends SubsystemBase {
     INTAKE,
     POOP_STANDBY, // TODO: implement
     POOP_READY,
-    POOP_SCORE, // TODO: use
+    POOP_SCORE,
     EXTAKE,
     HANDOFF,
     DRAGON_STANDBY, // TODO: implement
     DRAGON_READY,
-    DRAGON_SCORE // TODO: use
+    DRAGON_SCORE
   }
 
   private Dragon m_dragon;
@@ -158,12 +158,24 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
+  private Command dragonScoreSequence() {
+    return m_dragon.score()
+        .until(() -> !m_dragon.isCoralOnDragon())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
   private Command poopReadySequence() {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToPoop().until(m_elevator::atSetpoint))
         .andThen(m_coralIntake.poopReady().until(m_coralIntake::atSetpoint))
         .andThen(m_dragon.poopReady().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.POOP_READY);
+  }
+
+  private Command poopScoreSequence() {
+    return m_coralIntake.poopL1()
+        .until(() -> !m_coralIntake.isLoaded())
+        .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
   public Command idle() {
@@ -261,10 +273,10 @@ public class StateMachine extends SubsystemBase {
             m_dragon.score().schedule();
           } else if (m_dragon.isCoralOnDragon() && DragonState.SCORE_READY == m_dragon.getState()
               && ElevatorState.SCORE_READY == m_elevator.getState()) {
-            m_dragon.score().until(() -> !m_dragon.isCoralOnDragon()).schedule();
+            dragonScoreSequence().schedule();
           } else if ((CoralIntakeState.POOP_READY == m_coralIntake.getState()
               && DragonState.POOP_READY == m_dragon.getState() && ElevatorSetpoint.POOP == m_elevator.getSetpoint())) {
-            m_coralIntake.poopL1().until(() -> !m_coralIntake.isLoaded()).schedule();
+            poopScoreSequence().schedule();
           }
         });
   }
