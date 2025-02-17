@@ -10,6 +10,7 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -129,11 +130,10 @@ public class StateMachine extends SubsystemBase {
         .until(m_coralIntake::isLoaded)
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
-            new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
-                Map.entry(ElevatorSetpoint.POOP, setL1()),
-                Map.entry(ElevatorSetpoint.L2, setL2()),
-                Map.entry(ElevatorSetpoint.L3, setL3()),
-                Map.entry(ElevatorSetpoint.L4, setL4())), () -> m_elevator.getSetpoint()))
+            new ConditionalCommand(
+                handoffSequence(),
+                poopStandbySequence(),
+                () -> autoHandoff))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -151,11 +151,20 @@ public class StateMachine extends SubsystemBase {
                 && ElevatorState.HANDOFF == m_elevator.getState()))
         .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint() && m_dragon.isCoralOnDragon()))
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
+        .andThen(new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
+            Map.entry(ElevatorSetpoint.POOP, setL1()),
+            Map.entry(ElevatorSetpoint.L2, setL2()),
+            Map.entry(ElevatorSetpoint.L3, setL3()),
+            Map.entry(ElevatorSetpoint.L4, setL4()),
+            Map.entry(ElevatorSetpoint.HANDOFF, dragonStandbySequence()),
+            Map.entry(ElevatorSetpoint.STOW, dragonStandbySequence())), () -> m_elevator.getSetpoint()))
         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
   private Command dragonStandbySequence() {
-    return Commands.none() // TODO: implement
+    return m_dragon.stow()
+        .andThen(m_elevator.moveToStow())
+        .andThen(m_dragon.scoreStandby())
         .beforeStarting(() -> m_state = State.DRAGON_STANDBY);
   }
 
@@ -172,8 +181,11 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
-  private Command poopStandbySequenece() {
-    return Commands.none() // TODO: implement
+  private Command poopStandbySequence() {
+    return m_dragon.stow().until(m_dragon::atSetpoint)
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
+        .andThen(m_coralIntake.poopStandby().until(m_coralIntake::atSetpoint))
+        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.POOP_STANDBY);
   }
 
@@ -193,7 +205,13 @@ public class StateMachine extends SubsystemBase {
 
   public Command idle() {
     return new InstantCommand(() -> {
-      idleSequence().schedule();
+      if (!autoHandoff) {
+        poopStandbySequence().schedule();
+      } else if (m_dragon.isCoralOnDragon()) {
+        dragonStandbySequence().schedule();
+      } else {
+        idleSequence().schedule();
+      }
     });
   }
 

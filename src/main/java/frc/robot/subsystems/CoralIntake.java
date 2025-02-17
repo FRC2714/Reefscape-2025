@@ -42,7 +42,7 @@ public class CoralIntake extends SubsystemBase {
     INTAKE,
     EXTAKE,
     POOP,
-    CLIMB
+    CLIMB,
   }
 
   public enum CoralIntakeState {
@@ -56,6 +56,7 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
+    POOP_STANDBY
   }
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
@@ -261,6 +262,14 @@ public class CoralIntake extends SubsystemBase {
     }).withName("poop ready l1");
   }
 
+  public Command poopStandby() {
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.POOP);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.POOP_STANDBY);
+    }).withName("poop standby");
+  }
+
   public Command poopL1() {
     return poopReady().until(this::atSetpoint).andThen(
         this.run(() -> {
@@ -269,7 +278,7 @@ public class CoralIntake extends SubsystemBase {
         })).withName("poop l1");
   }
 
-  public Command climb(){
+  public Command climb() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.CLIMB);
       setRollerPower(RollerSetpoints.kStop);
@@ -315,7 +324,7 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
-    
+
     SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
