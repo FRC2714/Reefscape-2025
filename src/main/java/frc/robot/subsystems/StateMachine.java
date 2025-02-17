@@ -291,20 +291,6 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint));
   }
 
-  public Command stowSequence() {
-    return m_algaeIntake.climb().alongWith(m_coralIntake.climb()).alongWith(m_dragon.climb())
-        .until(() -> m_algaeIntake.atSetpoint() && m_coralIntake.atSetpoint() && m_dragon.atSetpoint());
-  }
-
-  public Command stow() {
-    return new InstantCommand(() -> stowSequence().andThen(m_climber.stow().until(m_climber::atSetpoint))
-        .andThen(m_dragon.stow().until(m_dragon::atSetpoint))
-        .andThen(m_coralIntake.stow().until(m_coralIntake::atSetpoint))
-        .andThen(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
-        .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
-        .schedule());
-  }
-
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
