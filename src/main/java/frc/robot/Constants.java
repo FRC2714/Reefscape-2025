@@ -230,6 +230,8 @@ public final class Constants {
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kProcessorPipeline = 0; // TBD
+    public static final int kRedPosePipeline = 0; // TBD
+    public static final int kBluePosePipeline = 6; // TBD
 
     public static final double kCoralStationDistanceThreshold = 0; // tune
   }

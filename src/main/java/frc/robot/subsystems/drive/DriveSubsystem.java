@@ -243,16 +243,6 @@ public class DriveSubsystem extends SubsystemBase {
         new Pose2d(swerveDrivePoseEstimator.getEstimatedPosition().getTranslation(), rotation));
   }
 
-  public void resetOdometryPose(Pose2d pose) {
-    m_odometry.resetPosition(Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition() },
-        pose);
-  }
-
   public void resetPose(Pose2d pose) {
     swerveDrivePoseEstimator.resetPosition(Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
         new SwerveModulePosition[] {
@@ -261,10 +251,6 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition() },
         pose);
-  }
-
-  public Command resetOdometryToEstimated() {
-    return Commands.runOnce(() -> resetOdometryPose(swerveDrivePoseEstimator.getEstimatedPosition()));
   }
 
   public void update() {
@@ -386,16 +372,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("back pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-back"));
 
     // Update the odometry in the periodic block
-    m_odometry.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
-
-    m_field.setRobotPose(getPose());
 
     SmartDashboard.putNumber("Drive/Pose/Front Left Position", m_frontLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("Drive/Pose/Front Right Position", m_frontRight.getPosition().distanceMeters);
@@ -417,9 +393,6 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @return The pose.
    */
-  public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
-  }
 
   public Pose2d getEstimatedPose() {
     return swerveDrivePoseEstimator.getEstimatedPosition();
@@ -430,17 +403,6 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param pose The pose to which to set the odometry.
    */
-  public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        },
-        pose);
-  }
 
   /**
    * Method to drive the robot using joystick info.

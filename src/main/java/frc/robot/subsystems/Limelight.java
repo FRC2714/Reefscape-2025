@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
@@ -26,7 +27,6 @@ public class Limelight extends SubsystemBase {
   private double m_cameraHeight;
   private double m_mountingAngle;
   private double m_goalHeight;
-  Field2d m_field = new Field2d();
   LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("m_limelight");
 
   public enum Align {
@@ -40,8 +40,6 @@ public class Limelight extends SubsystemBase {
     this.m_cameraHeight = m_cameraHeight;
     this.m_mountingAngle = m_mountingAngle;
     this.m_goalHeight = m_goalHeight;
-
-    SmartDashboard.putData(m_field);
 
   }
 
@@ -162,28 +160,14 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     if (Robot.isSimulation()) {
-      // LimelightHelpers.setBotPose2d_wpiBlue("limelight_back", new Pose2d(0, 0, new
-      // Rotation2d()));
-      // LimelightHelpers.setBotPose3d_wpiBlue("limelight_back", new Pose3d(0, 0, 0,
-      // new Rotation3d()));
-      // LimelightHelpers.setBotPose2d_wpiBlue("limelight_back", new Pose2d(0, 0, new
-      // Rotation2d()));
-      // LimelightHelpers.setBotPose3d_wpiBlue("limelight_back", new Pose3d(0, 0, 0,
-      // new Rotation3d()));
+
     } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
-      setProcessorTagPipeline();
+      setPipeline(Constants.LimelightConstants.kRedPosePipeline);
     } else {
-      setPipeline(6);
-      // SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-      // SmartDashboard.putString("asdfas", "limelight_back");
+      setPipeline(Constants.LimelightConstants.kBluePosePipeline);
       SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
       SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
       SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-      // Pose2d LLpose = LimelightHelpers.getBotPose2d_wpiBlue("limelight-back");
-      // if(LimelightHelpers.getTV("limelight-back")){
-      // m_field.setRobotPose(LLpose);
-      // }
-      // direct odometry editing
     }
 
   }
