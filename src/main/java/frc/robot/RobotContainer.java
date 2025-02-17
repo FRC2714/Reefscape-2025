@@ -131,7 +131,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", m_stateMachine.setL3());
     NamedCommands.registerCommand("L2", m_stateMachine.setL2());
     NamedCommands.registerCommand("L1", m_stateMachine.setL1());
-    NamedCommands.registerCommand("Stow", m_stateMachine.stow());
     NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeCoral());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral());
 
