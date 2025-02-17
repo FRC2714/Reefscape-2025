@@ -129,11 +129,10 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Climber Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Climber Pivot reference", pivotCurrentTarget);
+    SmartDashboard.putNumber("Climber/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Climber/Setpoint", pivotCurrentTarget);
 
-    SmartDashboard.putString("Climber State", m_climberState.toString());
-    SmartDashboard.putString("Climber Setpoint", m_climberSetpoint.toString());
-    SmartDashboard.putBoolean("Climber Pivot at Setpoint?", atSetpoint());
+    SmartDashboard.putString("Climber/State", m_climberState.toString());
+    SmartDashboard.putBoolean("Climber/at Setpoint?", atSetpoint());
   }
 }

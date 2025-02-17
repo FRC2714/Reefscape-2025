@@ -397,10 +397,10 @@ public class DriveSubsystem extends SubsystemBase {
 
     m_field.setRobotPose(getPose());
 
-    SmartDashboard.putNumber("Front Left Position", m_frontLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("Front Right Position", m_frontRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("Rear Left Position", m_rearLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("Rear Right Position", m_rearRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Drive/Pose/Front Left Position", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Drive/Pose/Front Right Position", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Drive/Pose/Rear Left Position", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Drive/Pose/Rear Right Position", m_rearRight.getPosition().distanceMeters);
     LimelightHelpers.SetRobotOrientation("limelight-back",
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation("limelight-right",
