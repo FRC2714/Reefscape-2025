@@ -128,7 +128,7 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Limelight/X offset", getXAngleOffsetDegrees());
-    SmartDashboard.putNumber("Limlight/Y offset", getYAngleOffsetDegrees());
+    SmartDashboard.putNumber("Limelight/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber("Limelight/Distance to goal", getDistanceToGoalMeters());
 
   }
