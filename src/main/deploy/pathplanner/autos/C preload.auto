@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to H"
+            "pathName": "barge to H C"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "H to Y"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Y to A"
+            "name": "Score Coral"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "CENTER",
   "choreoAuto": false
 }

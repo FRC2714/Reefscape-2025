@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.054749999999999,
-        "y": 4.2005
+        "x": 4.997692307692307,
+        "y": 5.201538461538462
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.501144366197183,
-        "y": 7.865757042253521
+        "x": 4.553602564102563,
+        "y": 5.862269230769231
       },
       "isLocked": false,
-      "linkedName": "H-Coral"
+      "linkedName": "J-Coral"
     },
     {
       "anchor": {
-        "x": 1.482,
-        "y": 4.3077499999999995
+        "x": 1.7467307692307688,
+        "y": 7.451410256410257
       },
       "prevControl": {
-        "x": 1.9863556338028159,
-        "y": 4.5210387323943655
+        "x": 2.8097435897435887,
+        "y": 6.336794871794872
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Y-Algea"
+      "linkedName": "NP station"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.61605990839925
+    "rotation": 126.15818543980836
   },
   "reversed": false,
-  "folder": "Paths 2025",
+  "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -176.9872124958166
+    "rotation": 60.78075330951541
   },
   "useDefaultConstraints": true
 }

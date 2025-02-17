@@ -36,13 +36,14 @@ import frc.robot.utils.TunableNumber;
 
 public class Dragon extends SubsystemBase {
 
-  private enum DragonSetpoint {
+  public enum DragonSetpoint {
     STOW,
     HANDOFF,
     L1,
     L2,
     L3,
-    L4
+    L4,
+    CLIMB
   }
 
   public enum DragonState {
@@ -51,7 +52,8 @@ public class Dragon extends SubsystemBase {
     HANDOFF,
     SCORE_READY,
     SCORE,
-    POOP_READY
+    POOP_READY,
+    CLIMB
   }
 
   // Tunables
@@ -121,7 +123,7 @@ public class Dragon extends SubsystemBase {
 
     pivotMotorSim = new SparkFlexSim(pivotMotor, pivotMotorModel);
 
-    SmartDashboard.putData("dragon", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Dragon", m_mech2d);
 
     coralOnDragon = false;
   }
@@ -170,6 +172,9 @@ public class Dragon extends SubsystemBase {
       case L4:
         pivotCurrentTarget = PivotSetpoints.kLevel4;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -207,7 +212,7 @@ public class Dragon extends SubsystemBase {
     }));
   }
 
-  public Command poopReadyL1() {
+  public Command poopReady() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
@@ -215,35 +220,19 @@ public class Dragon extends SubsystemBase {
     });
   }
 
-  public Command scoreReadyL1() {
+  public Command scoreReadyLevel(DragonSetpoint level) {
     return this.run(() -> {
-      setPivot(DragonSetpoint.L1);
+      setPivot(level);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
     });
   }
 
-  public Command scoreReadyL2() {
+  public Command climb() {
     return this.run(() -> {
-      setPivot(DragonSetpoint.L2);
+      setPivot(DragonSetpoint.CLIMB);
       setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL3() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L3);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
-    });
-  }
-
-  public Command scoreReadyL4() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.L4);
-      setRollerPower(RollerSetpoints.kStop);
-      setDragonState(DragonState.SCORE_READY);
+      setDragonState(DragonState.CLIMB);
     });
   }
 
@@ -296,13 +285,14 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Dragon Target Position", pivotCurrentTarget);
-    SmartDashboard.putNumber("Dragon Actual Position", pivotAbsoluteEncoder.getPosition());
-    SmartDashboard.putNumber("roller power", pivotRollers.getAppliedOutput());
+    SmartDashboard.putNumber("Dragon/Pivot/Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
 
-    SmartDashboard.putString("Dragon State", m_dragonState.toString());
-    SmartDashboard.putBoolean("Dragon Pivot at Setpoint?", atSetpoint());
-    SmartDashboard.putBoolean("Coral on Dragon", isCoralOnDragon());
+    SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
+
+    SmartDashboard.putString("Dragon/Dragon State", m_dragonState.toString());
+    SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
     setCoralOnDragon();
 
@@ -331,9 +321,6 @@ public class Dragon extends SubsystemBase {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_pivotSim.setInput(pivotMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Pivot Position", pivotAbsoluteEncoder.getPosition());
-    // SmartDashboard.putNumber("Pivot Setpoint", pivotCurrentTarget);
-    SmartDashboard.putNumber("roller speed", pivotRollers.getAppliedOutput());
 
     // Update sim limit switch
     // Next, we update it. The standard loop time is 20ms.

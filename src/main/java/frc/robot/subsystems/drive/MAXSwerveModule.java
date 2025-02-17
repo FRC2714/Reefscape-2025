@@ -193,7 +193,7 @@ public class MAXSwerveModule extends SubsystemBase {
         RobotController.getBatteryVoltage(),
         0.02);
 
-    SmartDashboard.putNumber("drive sim", drivingMotorSim.getAppliedOutput());
-    SmartDashboard.putNumber("turn sim", turningMotorSim.getAppliedOutput());
+    SmartDashboard.putNumber("Drive/Sim/drive sim", drivingMotorSim.getAppliedOutput());
+    SmartDashboard.putNumber("Drive/Sim/turn sim", turningMotorSim.getAppliedOutput());
   }
 }

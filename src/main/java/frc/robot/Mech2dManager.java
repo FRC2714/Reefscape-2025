@@ -39,7 +39,7 @@ public class Mech2dManager extends SubsystemBase {
     private final MechanismLigament2d m_coralIntakeMech2d = coralStand.append(
             new MechanismLigament2d(
                     "Coral Pivot", SimulationRobotConstants.kCoralIntakeLength,
-                    CoralIntakeConstants.kZeroOffsetDegrees));
+                    CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
     // Algae Intake visualization
     private final MechanismLigament2d algaePivotMechanism = m_algaeRoot.append(
             new MechanismLigament2d(
@@ -66,7 +66,7 @@ public class Mech2dManager extends SubsystemBase {
         m_dragon = dragon;
         m_coral = coral;
         m_algae = algae;
-        SmartDashboard.putData("Superstructure", m_mech2d);
+        SmartDashboard.putData("Mech2D's/Superstructure", m_mech2d);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Mech2dManager extends SubsystemBase {
         m_dragonMech2d.setAngle(dragonAngle);
 
         // Update coral visualization
-        double coralAngle = CoralIntakeConstants.kZeroOffsetDegrees + m_coral.getPosition();
+        double coralAngle = CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + m_coral.getPosition();
         m_coralIntakeMech2d.setAngle(coralAngle);
 
         // Update algae intake visualization
@@ -96,9 +96,5 @@ public class Mech2dManager extends SubsystemBase {
                         + -Units.rotationsToDegrees(
                                 m_algae.getPivotPosition() / SimulationRobotConstants.kIntakeReduction));
 
-        // Debug values
-        SmartDashboard.putNumber("Mech2D/Elevator Height", elevatorHeight);
-        SmartDashboard.putNumber("Mech2D/Dragon Angle", dragonAngle);
-        SmartDashboard.putNumber("Mech2D/Coral Angle", coralAngle);
     }
 }

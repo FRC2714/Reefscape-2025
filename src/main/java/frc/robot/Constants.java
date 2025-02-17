@@ -65,6 +65,18 @@ public final class Constants {
         / ModuleConstants.kDrivingMotorReduction;
   }
 
+  public static final class ClimberConstants {
+    public static final int kPivotMotorCanId = 51;
+
+    public static final double kPivotThreshold = 5;
+
+    public static final class PivotSetpoints {
+      public static final double kStow = -15;
+      public static final double kDeploy = 0;
+      public static final double kRetract = -7;
+    }
+  }
+
   public static final class AlgaeIntakeConstants {
     public static final int kRollerMotorCanId = 9; // tune ts
     public static final int kPivotMotorCanId = 10; // tune ts
@@ -75,7 +87,8 @@ public final class Constants {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 0; // TBD
       public static final double kExtake = 0;
-      public static final double kScore = 7; // TBD (extake position)
+      public static final double kScore = 7; //TBD (extake position)
+      public static final double kClimb = 3;
     }
 
     public static final class RollerSetpoints {
@@ -93,7 +106,6 @@ public final class Constants {
     public static final double kPivotThreshold = 5; // tune
 
     public static final int kBeamBreakDioChannel = 0;
-
     public static final double kP = .08;
 
     public static final double kPivotReduction = 1;
@@ -101,13 +113,14 @@ public final class Constants {
     public static final double kMaxAngle = 162;
     public static final double kZeroOffsetDegrees = 159.0;
 
-
     public static final class PivotSetpoints {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 120; // TBD
       public static final double kExtake = 60; // TBD
       public static final double kHandoff = 69.8; // TBD
       public static final double kEject = 360; // TBD
+      public static final double kZeroOffsetDegrees = 270;
+      public static final double kClimb = 90;
     }
 
     public static final class RollerSetpoints {
@@ -264,11 +277,12 @@ public final class Constants {
       public static final double kLevel2 = 95;
       public static final double kLevel3 = 61;
       public static final double kLevel4 = 19;
+      public static final double kClimb =  1;
     }
 
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // tune ts (pos when getting from station)
-      public static final double kExtake = .6; /// tune ts (neg when scoring)
+      public static final double kExtake = .6; // tune ts (neg when scoring)
       public static final double kStop = 0;
     }
   }

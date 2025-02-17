@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.51125,
-        "y": 1.9677499999999997
+        "x": 2.0357051282051275,
+        "y": 0.34057692307692267
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3985000000000003,
-        "y": 1.8994999999999993
+        "x": 2.603333333333333,
+        "y": 1.1971794871794872
       },
       "isLocked": false,
-      "linkedName": "Z-Algea"
+      "linkedName": "Processor side station"
     },
     {
       "anchor": {
-        "x": 4.04625,
-        "y": 2.864749999999999
+        "x": 3.686987179487179,
+        "y": 3.003269230769231
       },
       "prevControl": {
-        "x": 3.3735000000000004,
-        "y": 2.22125
+        "x": 3.284487179487179,
+        "y": 2.301474358974359
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "C-Coral"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.94539590092283
+    "rotation": -120.85420450589702
   },
   "reversed": false,
-  "folder": "Paths 2025",
+  "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 140.36563092663988
+    "rotation": -130.91438322002512
   },
   "useDefaultConstraints": true
 }

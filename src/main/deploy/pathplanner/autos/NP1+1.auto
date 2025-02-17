@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to F"
+            "pathName": "barge to J NP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "F to Z"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Z to D"
+            "pathName": "J to station 1NP"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Auto 2025",
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

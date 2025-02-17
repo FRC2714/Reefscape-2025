@@ -41,13 +41,15 @@ public class AlgaeIntake extends SubsystemBase {
   private enum AlgaeIntakeSetpoint {
     STOW,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    CLIMB
   }
 
   public enum AlgaeIntakeState {
     STOW,
     INTAKE,
-    EXTAKE
+    EXTAKE,
+    CLIMB
   }
 
   // Tunable Number
@@ -136,7 +138,7 @@ public class AlgaeIntake extends SubsystemBase {
     m_algaeIntakeSetpoint = AlgaeIntakeSetpoint.STOW;
 
     // Display mechanism2d
-    SmartDashboard.putData("Algae Subsystem", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Algae Intake", m_mech2d);
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
@@ -178,6 +180,9 @@ public class AlgaeIntake extends SubsystemBase {
       case EXTAKE:
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
+        break;
     }
     moveToSetpoint();
   }
@@ -206,6 +211,13 @@ public class AlgaeIntake extends SubsystemBase {
     }, () -> {
       setPivot(AlgaeIntakeSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
+    });
+  }
+
+  public Command climb() {
+    return this.run(() -> {
+      setPivot(AlgaeIntakeSetpoint.CLIMB);
+      setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
     });
   }
 
@@ -239,19 +251,18 @@ public class AlgaeIntake extends SubsystemBase {
   public void periodic() {
 
     // Display subsystem values
-    SmartDashboard.putNumber("actual algae position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("actualy algae position", pivotCurrentTarget);
+    SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
 
-    SmartDashboard.putString("Algae Intake State", m_algaeIntakeState.toString());
-    SmartDashboard.putBoolean("Algae Pivot at Setpoint?", atSetpoint());
+    SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
+    SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(
         Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
             + Units.rotationsToDegrees(
                 pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
-
 
     if (tunableAngle.hasChanged()) {
       pivotCurrentTarget = tunableAngle.get();
@@ -282,6 +293,7 @@ public class AlgaeIntake extends SubsystemBase {
             m_intakeSim.getVelocityRadPerSec() * SimulationRobotConstants.kArmReduction),
         RobotController.getBatteryVoltage(),
         0.02);
+
     // SimBattery is updated in Robot.java
   }
 }

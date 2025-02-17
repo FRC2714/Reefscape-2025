@@ -43,7 +43,8 @@ public class CoralIntake extends SubsystemBase {
     HANDOFF,
     INTAKE,
     EXTAKE,
-    POOP
+    POOP,
+    CLIMB
   }
 
   public enum CoralIntakeState {
@@ -55,7 +56,8 @@ public class CoralIntake extends SubsystemBase {
     HANDOFF_READY,
     HANDOFF,
     POOP_READY,
-    POOP_SCORE
+    POOP_SCORE,
+    CLIMB,
   }
 
   // Tunables
@@ -105,7 +107,7 @@ public class CoralIntake extends SubsystemBase {
       new MechanismLigament2d(
           "Coral Pivot",
           SimulationRobotConstants.kCoralIntakeLength,
-          CoralIntakeConstants.kZeroOffsetDegrees));
+          CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
     tunableAngle = new TunableNumber("TunableCoralPivot");
@@ -142,7 +144,7 @@ public class CoralIntake extends SubsystemBase {
     loaded = false;
 
     // Display mechanism2d
-    SmartDashboard.putData("Coral Intake", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Coral Intake", m_mech2d);
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
@@ -189,6 +191,9 @@ public class CoralIntake extends SubsystemBase {
         break;
       case POOP:
         pivotCurrentTarget = PivotSetpoints.kEject;
+        break;
+      case CLIMB:
+        pivotCurrentTarget = PivotSetpoints.kClimb;
         break;
     }
     moveToSetpoint();
@@ -258,7 +263,7 @@ public class CoralIntake extends SubsystemBase {
         })).withName("handoff");
   }
 
-  public Command poopReadyL1() {
+  public Command poopReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.POOP);
       setRollerPower(RollerSetpoints.kStop);
@@ -267,11 +272,19 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command poopL1() {
-    return poopReadyL1().until(this::atSetpoint).andThen(
+    return poopReady().until(this::atSetpoint).andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kExtake);
           setCoralIntakeState(CoralIntakeState.POOP_SCORE);
         })).withName("poop l1");
+  }
+
+  public Command climb(){
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.CLIMB);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.CLIMB);
+    }).withName("climb");
   }
 
   public boolean isLoaded() {
@@ -308,23 +321,23 @@ public class CoralIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
-
     // Display subsystem values
-    SmartDashboard.putNumber("ACtual coral pivot position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("actualy coral pivot setpoint", pivotCurrentTarget);
+    SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
+    
+    SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
-    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint());
-    SmartDashboard.putBoolean("Loaded?", isLoaded());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.get());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
-    SmartDashboard.putString("Coral intake current command",
+    SmartDashboard.putString("Coral Intake/State", m_coralIntakeState.toString());
+    SmartDashboard.putString("Coral Intake/Current command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
 
     // Update mechanism2d
-    intakePivotMechanism.setAngle(CoralIntakeConstants.kZeroOffsetDegrees + pivotEncoder.getPosition());
+    intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
 
     // Tunable if's
     if (tunableAngle.hasChanged()) {
