@@ -134,7 +134,7 @@ public class CoralIntake extends SubsystemBase {
     loaded = false;
 
     // Display mechanism2d
-    SmartDashboard.putData("Coral Intake", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Coral Intake", m_mech2d);
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
@@ -311,19 +311,19 @@ public class CoralIntake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("CoralIntake/Beam Break", beamBreak.get());
-
     // Display subsystem values
-    SmartDashboard.putNumber("CoralIntake/Pivot/Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("CoralIntake/Roller/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Indexer/Applied Output", indexerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("CoralIntake/Pivot/Pivot setpoint", pivotCurrentTarget);
+    SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
+    
+    SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putString("Coral Intake State", m_coralIntakeState.toString());
-    SmartDashboard.putBoolean("Coral Intake Pivot at Setpoint?", atSetpoint());
-    SmartDashboard.putBoolean("Loaded?", isLoaded());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.get());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
-    SmartDashboard.putString("Coral intake current command",
+    SmartDashboard.putString("Coral Intake/State", m_coralIntakeState.toString());
+    SmartDashboard.putString("Coral Intake/Current command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
 
     // Update mechanism2d

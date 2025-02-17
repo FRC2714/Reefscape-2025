@@ -105,7 +105,7 @@ public class Elevator extends SubsystemBase {
     m_elevatorSetpoint = ElevatorSetpoint.STOW;
     m_elevatorState = ElevatorState.STOW;
 
-    SmartDashboard.putData("Elevator", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Elevator", m_mech2d);
 
     elevatorMotorSim = new SparkFlexSim(elevatorMotor, elevatorMotorModel);
     elevatorLimitSwitchSim = new SparkLimitSwitchSim(elevatorMotor, false);
@@ -221,12 +221,11 @@ public class Elevator extends SubsystemBase {
 
     zeroElevatorOnLimitSwitch();
 
-    SmartDashboard.putNumber("Elevator/Target Position", elevatorCurrentTarget);
-    SmartDashboard.putNumber("Elevator/Actual Position", elevatorEncoder.getPosition());
-    SmartDashboard.putString("Elevator State", m_elevatorState.toString());
-    SmartDashboard.putString("Elevator Setpoint", m_elevatorSetpoint.toString());
-    SmartDashboard.putBoolean("Elevator at Setpoint?", atSetpoint());
-    SmartDashboard.putString("Elevator Current Comamand",
+    SmartDashboard.putNumber("Elevator/Current Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Setpoint", elevatorCurrentTarget);
+    SmartDashboard.putString("Elevator/State", m_elevatorState.toString());
+    SmartDashboard.putBoolean("Elevator/at Setpoint?", atSetpoint());
+    SmartDashboard.putString("Elevator/Current Comamand",
         this.getCurrentCommand() == null ? "none" : this.getCurrentCommand().getName());
 
     m_elevatorMech2d.setLength(
@@ -244,8 +243,6 @@ public class Elevator extends SubsystemBase {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
     m_elevatorSim.setInput(elevatorMotor.getAppliedOutput() * RobotController.getBatteryVoltage());
-    SmartDashboard.putNumber("Elevator Position", elevatorEncoder.getPosition());
-    SmartDashboard.putNumber("Elevator Setpoint", elevatorCurrentTarget);
 
     // Update sim limit switch
     elevatorLimitSwitchSim.setPressed(m_elevatorSim.getPositionMeters() == 0);

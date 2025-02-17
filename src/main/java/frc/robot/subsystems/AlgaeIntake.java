@@ -61,8 +61,6 @@ public class AlgaeIntake extends SubsystemBase {
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
-  private double pivotReference = 0;
-
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;
@@ -129,7 +127,7 @@ public class AlgaeIntake extends SubsystemBase {
     m_algaeIntakeSetpoint = AlgaeIntakeSetpoint.STOW;
 
     // Display mechanism2d
-    SmartDashboard.putData("Algae Subsystem", m_mech2d);
+    SmartDashboard.putData("Mech2D's/Algae Intake", m_mech2d);
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
@@ -242,12 +240,13 @@ public class AlgaeIntake extends SubsystemBase {
   public void periodic() {
 
     // Display subsystem values
-    SmartDashboard.putNumber("Algae/Arm/Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
+    
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Algae/Arm/Pivot setpoint", pivotReference);
-
-    SmartDashboard.putString("Algae Intake State", m_algaeIntakeState.toString());
-    SmartDashboard.putBoolean("Algae Pivot at Setpoint?", atSetpoint());
+    SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
+    
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(

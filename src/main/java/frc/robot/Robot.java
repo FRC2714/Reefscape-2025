@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+    SmartDashboard.putNumber("Match Info/Match Time", DriverStation.getMatchTime());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
