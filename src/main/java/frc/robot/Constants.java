@@ -73,6 +73,7 @@ public final class Constants {
     public static final int kPivotMotorCanId = 51;
 
     public static final double kPivotThreshold = 5;
+    public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
       public static final double kStow = -15;
