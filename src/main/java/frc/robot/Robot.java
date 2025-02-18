@@ -8,6 +8,7 @@ import org.littletonrobotics.urcl.URCL;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,7 +57,23 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    // Smartdashboard information
     SmartDashboard.putNumber("Match Info/Match Time", DriverStation.getMatchTime());
+
+    if (isDisabled())
+      SmartDashboard.putString("Robot/Status", "Disabled");
+    else {
+      if (isAutonomous()) {
+        SmartDashboard.putString("Robot/Status", "Autonomous");
+      } else if (isTeleop()) {
+        SmartDashboard.putString("Robot/Status", "Teleoperated");
+      } else if (isTest()) {
+        SmartDashboard.putString("Robot/Status", "Test");
+      }
+    }
+
+    SmartDashboard.putNumber("Robot/Battery", RobotController.getBatteryVoltage());
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
