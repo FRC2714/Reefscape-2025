@@ -355,4 +355,31 @@ public class StateMachineTests {
                 m_stateMachine.setL4(),
                 m_stateMachine.scoreCoral());
     }
+
+    @Test
+    void dragonStandbyToDragonReady() {
+        setState(State.DRAGON_STANDBY);
+        m_dragon.coralOnDragonTrue(); // TODO: test without coral?
+
+        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
+                m_stateMachine.setL4() };
+        for (Command c : commands) {
+            c.schedule();
+            runScheduler();
+            assertState(State.DRAGON_READY,
+                    "DRAGON_READY should be reachable from DRAGON_STANDBY via " + c.getName()
+                            + "  if dragon is loaded");
+        }
+    }
+
+    @Test
+    void dragonStandbyInvalidTransitions() {
+        setState(State.DRAGON_STANDBY);
+        m_dragon.coralonDragonFalse();
+        assertCommandHasNoEffect(State.DRAGON_STANDBY,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.scoreCoral());
+    }
 }
