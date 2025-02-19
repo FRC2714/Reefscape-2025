@@ -275,7 +275,7 @@ public class StateMachine extends SubsystemBase {
             m_dragon.score().schedule();
           } else if (m_state == State.DRAGON_READY) {
             dragonScoreSequence().schedule();
-          } else if ((m_state == State.POOP_READY && ElevatorSetpoint.POOP == m_elevator.getSetpoint())) {
+          } else if (m_state == State.POOP_READY) {
             poopScoreSequence().schedule();
           }
         });
