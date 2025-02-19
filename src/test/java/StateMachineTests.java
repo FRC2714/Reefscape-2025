@@ -51,6 +51,8 @@ public class StateMachineTests {
         DriverStationSim.notifyNewData();
 
         m_scheduler.cancelAll();
+        m_dragon.coralonDragonFalse();
+        m_coralIntake.setLoadedFalse();
     }
 
     void runScheduler() {
