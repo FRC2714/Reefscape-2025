@@ -64,8 +64,7 @@ public class RobotContainer {
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight,
-      m_blinkin);
+      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
   // Mech2d Stuff
   private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
