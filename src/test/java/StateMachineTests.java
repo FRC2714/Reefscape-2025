@@ -96,4 +96,55 @@ public class StateMachineTests {
                 m_stateMachine.setL4(),
                 m_stateMachine.scoreCoral());
     }
+
+    @Test
+    void intakeToIdle() {
+        setState(State.INTAKE);
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.IDLE, "IDLE should be reachable from INTAKE");
+    }
+
+    @Test
+    void intakeToHandoff() {
+        setState(State.IDLE);
+        m_coralIntake.setLoadedFalse();
+        m_stateMachine.setAutoHandoff(true);
+
+        m_stateMachine.intakeCoral().schedule();
+        runScheduler();
+        m_coralIntake.setLoadedTrue();
+        runScheduler();
+        assertState(State.HANDOFF,
+                "INTAKE should transition to HANDOFF after loading coral if auto handoff is enabled");
+    }
+
+    @Test
+    void intakeToPoopStandby() {
+        setState(State.IDLE);
+        m_coralIntake.setLoadedFalse();
+        m_stateMachine.setAutoHandoff(false);
+
+        m_stateMachine.intakeCoral().schedule();
+        runScheduler();
+        m_coralIntake.setLoadedTrue();
+        runScheduler();
+        assertState(State.POOP_STANDBY,
+                "INTAKE should transition to POOP_STANDBY after loading coral if auto handoff is disabled");
+    }
+
+    @Test
+    void intakeInvalidTransitions() {
+        setState(State.INTAKE);
+        m_coralIntake.setLoadedFalse();
+        assertCommandHasNoEffect(State.INTAKE,
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4(),
+                m_stateMachine.scoreCoral());
+    }
 }
