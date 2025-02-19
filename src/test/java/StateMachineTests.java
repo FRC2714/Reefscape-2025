@@ -147,4 +147,6 @@ public class StateMachineTests {
                 m_stateMachine.setL4(),
                 m_stateMachine.scoreCoral());
     }
+
+    // TODO(jan): extake tests
 }
