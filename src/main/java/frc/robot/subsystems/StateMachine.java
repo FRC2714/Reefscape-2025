@@ -211,8 +211,6 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> {
       if (manualOverride) {
         m_coralIntake.extake().schedule();
-      } else if (m_state == State.EXTAKE) {
-        m_coralIntake.extake().schedule();
       } else if (m_state == State.INTAKE || m_state == State.POOP_STANDBY) {
         extakeSequence().schedule();
       }
@@ -292,15 +290,15 @@ public class StateMachine extends SubsystemBase {
   /* Algae commands */
 
   public Command intakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.intake().until(m_algaeIntake::atSetpoint).schedule());
+    return new InstantCommand(() -> m_algaeIntake.intake().schedule());
   }
 
   public Command extakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.extake().until(m_algaeIntake::atSetpoint).schedule());
+    return new InstantCommand(() -> m_algaeIntake.extake().schedule());
   }
 
   public Command stowAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.stow().until(m_algaeIntake::atSetpoint).schedule());
+    return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
   /* Climber commands */
