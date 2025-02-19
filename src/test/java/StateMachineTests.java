@@ -3,6 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -259,5 +260,38 @@ public class StateMachineTests {
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
                 m_stateMachine.setL1());
+    }
+
+    @Test
+    @Disabled // See TODOs
+    void poopScoreToPoopReady() {
+        setState(State.POOP_SCORE);
+        m_coralIntake.setLoadedTrue();
+
+        // TODO: implement stopScore() or whatever command
+        runScheduler();
+        assertState(State.POOP_READY,
+                "POOP_READY should be reachable from POOP_SCORE via stopScore() with coral loaded");
+
+        setState(State.POOP_SCORE);
+        // TODO: implement stopScore() or whatever command
+        runScheduler();
+        m_coralIntake.setLoadedFalse();
+        runScheduler();
+        assertState(State.POOP_READY,
+                "POOP_READY should be reachable from POOP_SCORE via stopScore() with no coral loaded");
+    }
+
+    @Test
+    void poopScoreInvalidTransitions() {
+        setState(State.POOP_SCORE);
+        assertCommandHasNoEffect(State.POOP_SCORE,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4());
     }
 }
