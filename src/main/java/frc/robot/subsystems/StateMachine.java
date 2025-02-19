@@ -145,7 +145,7 @@ public class StateMachine extends SubsystemBase {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoff()
-            .until(() -> m_dragon.atSetpoint() && m_state == State.HANDOFF))
+            .until(m_dragon::atSetpoint))
         .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint() && m_dragon.isCoralOnDragon()))
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
         .beforeStarting(() -> m_state = State.HANDOFF);
