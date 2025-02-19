@@ -102,11 +102,6 @@ public class Elevator extends SubsystemBase {
         PersistMode.kPersistParameters);
 
     elevatorFollower.configure(
-        Configs.Elevator.elevatorConfig,
-        ResetMode.kResetSafeParameters,
-        PersistMode.kPersistParameters);
-
-    elevatorFollower.configure(
         Configs.Elevator.elevatorFollowerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
