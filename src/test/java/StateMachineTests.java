@@ -149,4 +149,54 @@ public class StateMachineTests {
     }
 
     // TODO(jan): extake tests
+
+    @Test
+    void poopStandbyToPoopReady() {
+        setState(State.POOP_STANDBY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.setL1().schedule();
+        runScheduler();
+        assertState(State.POOP_READY, "POOP_READY should be reachable from POOP_STANDBY via setL1()");
+    }
+
+    @Test
+    void poopStandbyToHandoff() {
+        setState(State.POOP_STANDBY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.setL2().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL2()");
+
+        setState(State.POOP_STANDBY);
+        m_stateMachine.setL3().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL3()");
+
+        setState(State.POOP_STANDBY);
+        m_stateMachine.setL4().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL4()");
+    }
+
+    @Test
+    void poopStandbyToExtake() {
+        setState(State.POOP_STANDBY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.extakeCoral().schedule();
+        runScheduler();
+        assertState(State.EXTAKE, "EXTAKE should be reachable from POOP_STANDBY via extakeCoral()");
+    }
+
+    @Test
+    void poopStandbyInvalidTransitions() {
+        setState(State.POOP_STANDBY);
+        m_coralIntake.setLoadedTrue();
+        assertCommandHasNoEffect(State.POOP_STANDBY,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.scoreCoral());
+    }
 }
