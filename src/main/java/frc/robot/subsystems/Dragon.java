@@ -51,7 +51,8 @@ public class Dragon extends SubsystemBase {
     SCORE_READY,
     SCORE,
     POOP_READY,
-    CLIMB
+    CLIMB,
+    SCORE_STANDBY
   }
 
   private DragonSetpoint m_dragonSetpoint;
@@ -231,6 +232,14 @@ public class Dragon extends SubsystemBase {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
     }).onlyIf(this::atSetpoint);
+  }
+
+  public Command scoreStandby() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_STANDBY);
+    }).withName("score standby");
   }
 
   public double getSimulationCurrentDraw() {

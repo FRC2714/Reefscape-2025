@@ -56,6 +56,7 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
+    POOP_STANDBY
   }
 
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
@@ -259,6 +260,14 @@ public class CoralIntake extends SubsystemBase {
       setRollerPower(RollerSetpoints.kStop);
       setCoralIntakeState(CoralIntakeState.POOP_READY);
     }).withName("poop ready l1");
+  }
+
+  public Command poopStandby() {
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.POOP);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.POOP_STANDBY);
+    }).withName("poop standby");
   }
 
   public Command poopL1() {
