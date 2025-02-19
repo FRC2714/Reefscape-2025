@@ -437,4 +437,37 @@ public class StateMachineTests {
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral());
     }
+
+    @Test
+    @Disabled // See TODOs
+    void dragonScoreToDragonReady() {
+        setState(State.DRAGON_SCORE);
+        m_dragon.coralOnDragonTrue();
+
+        // TODO: implement stopScore() or whatever command
+        runScheduler();
+        assertState(State.DRAGON_READY,
+                "DRAGON_READY should be reachable from DRAGON_SCORE via stopScore() with coral loaded");
+
+        setState(State.DRAGON_SCORE);
+        // TODO: implement stopScore() or whatever command
+        runScheduler();
+        m_coralIntake.setLoadedFalse();
+        runScheduler();
+        assertState(State.DRAGON_READY,
+                "DRAGON_READY should be reachable from DRAGON_SCORE via stopScore() with no coral loaded");
+    }
+
+    @Test
+    void dragonScoreInvalidTransitions() {
+        setState(State.DRAGON_SCORE);
+        assertCommandHasNoEffect(State.DRAGON_SCORE,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4());
+    }
 }
