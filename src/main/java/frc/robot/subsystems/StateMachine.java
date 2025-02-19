@@ -102,6 +102,14 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> manualOverride = false);
   }
 
+  public Command enableAutoHandoff() {
+    return new InstantCommand(() -> autoHandoff = true);
+  }
+
+  public Command disableAutoHandoff() {
+    return new InstantCommand(() -> autoHandoff = false);
+  }
+
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
       m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
@@ -243,7 +251,8 @@ public class StateMachine extends SubsystemBase {
       if (manualOverride || CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
       } else if (CoralIntakeState.INTAKE == m_coralIntake.getState()
-          || CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()) {
+          || CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
+          || CoralIntakeState.POOP_STANDBY == m_coralIntake.getState()) {
         extakeSequence().schedule();
       }
     });
@@ -255,7 +264,7 @@ public class StateMachine extends SubsystemBase {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L1).schedule();
           } else if (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-              || CoralIntakeState.POOP_READY == m_coralIntake.getState()) {
+              || CoralIntakeState.POOP_STANDBY == m_coralIntake.getState()) {
             poopReadySequence().schedule();
 
           }
@@ -364,5 +373,6 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
+
   }
 }
