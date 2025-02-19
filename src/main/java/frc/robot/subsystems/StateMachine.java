@@ -121,7 +121,7 @@ public class StateMachine extends SubsystemBase {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
-        .andThen(m_coralIntake.intakeReady())
+        .andThen(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
         .beforeStarting(() -> m_state = State.IDLE);
   }
 
@@ -178,6 +178,7 @@ public class StateMachine extends SubsystemBase {
   private Command dragonScoreSequence() {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())
+        .andThen(idleSequence())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
@@ -200,6 +201,7 @@ public class StateMachine extends SubsystemBase {
   private Command poopScoreSequence() {
     return m_coralIntake.poopL1()
         .until(() -> !m_coralIntake.isLoaded())
+        .andThen(idleSequence())
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
