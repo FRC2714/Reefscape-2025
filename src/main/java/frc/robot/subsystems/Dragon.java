@@ -11,11 +11,13 @@ import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -68,6 +70,7 @@ public class Dragon extends SubsystemBase {
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
+  private ArmFeedforward pivotFF = new ArmFeedforward(0, DragonConstants.kG, 0);
   private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   // Pivot rollers
@@ -133,7 +136,7 @@ public class Dragon extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -293,7 +296,7 @@ public class Dragon extends SubsystemBase {
 
     SmartDashboard.putString("Dragon/State", m_dragonState.toString());
     SmartDashboard.putString("Dragon/Current Command",
-      this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
     setCoralOnDragon();

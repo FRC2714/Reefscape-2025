@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralIntakeConstants;
+import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -80,6 +81,12 @@ public final class Configs {
                                         .maxVelocity(4200 * 360)
                                         .maxAcceleration(6000 * 360)
                                         .allowedClosedLoopError(0.5);
+                        
+                        pivotConfig.softLimit
+                                        .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
+                                        .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
+                                        .forwardSoftLimitEnabled(true)
+                                        .reverseSoftLimitEnabled(true);
                 }
         }
 
@@ -104,6 +111,13 @@ public final class Configs {
                                         .maxVelocity(4200 * 360)
                                         .maxAcceleration(6000 * 360)
                                         .allowedClosedLoopError(0.5);
+                        
+                        // TODO
+                        // pivotConfig.softLimit
+                        //                 .forwardSoftLimit(AlgaeIntakeConstants.kPivotMaxAngle)
+                        //                 .reverseSoftLimit(AlgaeIntakeConstants.kPivotMinAngle)
+                        //                 .forwardSoftLimitEnabled(true)
+                        //                 .reverseSoftLimitEnabled(true);
 
                         rollerConfig.inverted(true).idleMode(IdleMode.kCoast).smartCurrentLimit(40)
                                         .voltageCompensation(12);
@@ -135,6 +149,12 @@ public final class Configs {
                                         .maxVelocity(4200 * 360)
                                         .maxAcceleration(6000 * 360)
                                         .allowedClosedLoopError(0.5);
+                        
+                        pivotConfig.softLimit
+                                        .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
+                                        .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
+                                        .forwardSoftLimitEnabled(true)
+                                        .reverseSoftLimitEnabled(true);
 
                         // Configure basic settings of the intake motor
                         rollerConfig
@@ -167,6 +187,12 @@ public final class Configs {
                         elevatorConfig.limitSwitch
                                         .forwardLimitSwitchEnabled(true)
                                         .forwardLimitSwitchType(Type.kNormallyOpen);
+                        
+                        elevatorConfig.softLimit
+                                        .forwardSoftLimit(ElevatorConstants.kMinLimit)
+                                        .reverseSoftLimit(ElevatorConstants.kMaxLimit)
+                                        .forwardSoftLimitEnabled(true)
+                                        .reverseSoftLimitEnabled(true);
 
                         elevatorConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
@@ -174,7 +200,7 @@ public final class Configs {
                                         .p(Constants.ElevatorConstants.kP)
                                         .outputRange(-1, 1).maxMotion
                                         // Set MAXMotion parameters for position control
-                                        .maxVelocity(4200)
+                                        .maxVelocity(1200)
                                         .maxAcceleration(6000)
                                         .allowedClosedLoopError(0.1);
                         elevatorConfig.externalEncoder
@@ -206,6 +232,11 @@ public final class Configs {
                                         .zeroOffset(DragonConstants.kPivotZeroOffset / 360)
                                         .inverted(false)
                                         .positionConversionFactor(360 / DragonConstants.kPivotReduction);
+                        pivotConfig.softLimit
+                                        .forwardSoftLimit(DragonConstants.kPivotMaxAngle)
+                                        .reverseSoftLimit(DragonConstants.kPivotMinAngle)
+                                        .forwardSoftLimitEnabled(true)
+                                        .reverseSoftLimitEnabled(true);
 
                         pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
 

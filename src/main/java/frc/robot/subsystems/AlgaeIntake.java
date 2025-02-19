@@ -150,7 +150,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition);
   }
 
   public boolean atSetpoint() {

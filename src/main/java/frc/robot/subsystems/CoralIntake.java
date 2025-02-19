@@ -9,11 +9,13 @@ import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -78,6 +80,7 @@ public class CoralIntake extends SubsystemBase {
   private SparkFlex indexerMotor = new SparkFlex(CoralIntakeConstants.kIndexerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+  private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
   private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
 
@@ -156,7 +159,7 @@ public class CoralIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {

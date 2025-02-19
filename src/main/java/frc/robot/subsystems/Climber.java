@@ -74,7 +74,7 @@ public class Climber extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition);
   }
 
   public boolean atSetpoint() {
@@ -144,10 +144,10 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putNumber("Climber/Setpoint", pivotCurrentTarget);
 
     SmartDashboard.putBoolean("Climber/at Setpoint?", atSetpoint());
-    
+
     SmartDashboard.putString("Climber/State", m_climberState.toString());
     SmartDashboard.putString("Climber/Current Command",
-      this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
     // Tunable If's
     if (tunableAngle.hasChanged()) {

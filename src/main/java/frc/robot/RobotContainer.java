@@ -39,12 +39,12 @@ import frc.robot.subsystems.LED;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
-  private final CoralIntake m_coralIntake = new CoralIntake();
+  // private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  // private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
+  // private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
-  private final Dragon m_dragon = new Dragon();
-  private final Climber m_climber = new Climber();
+  // private final Dragon m_dragon = new Dragon();
+  // private final Climber m_climber = new Climber();
 
   private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight = new Limelight(
@@ -63,16 +63,16 @@ public class RobotContainer {
       LimelightConstants.kBackMountingAngle,
       LimelightConstants.kProcessorTagHeight);
 
-  private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight,
-      m_blinkin);
+  // private final StateMachine m_stateMachine = new StateMachine(
+  //     m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight,
+  //     m_blinkin);
 
   // Mech2d Stuff
-  private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
 
-  public Mech2dManager getMech2dManager() {
-    return m_mech2dManager;
-  }
+  // public Mech2dManager getMech2dManager() {
+  //   return m_mech2dManager;
+  // }
 
   Joystick m_reefController = new Joystick(1); // operator controller 1
   Joystick m_mechanismController = new Joystick(2); // operator controller 2
@@ -101,35 +101,35 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureButtonBindings();
 
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true),
-            m_robotDrive));
+    // m_robotDrive.setDefaultCommand(
+    //     // The left stick controls translation of the robot.
+    //     // Turning is controlled by the X axis of the right stick.
+    //     new RunCommand(
+    //         () -> m_robotDrive.drive(
+    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+    //             true),
+    //         m_robotDrive));
 
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral());
+    NamedCommands.registerCommand("Score Coral", new InstantCommand());
     NamedCommands.registerCommand("Intake Algae",
-        m_stateMachine.intakeAlgae().withTimeout(1).andThen(m_stateMachine.stowAlgae()));
+    new InstantCommand());
     NamedCommands.registerCommand("Extake Algae",
-        m_stateMachine.extakeAlgae().withTimeout(1).andThen(m_stateMachine.stowAlgae()));
-    NamedCommands.registerCommand("L4", m_stateMachine.setL4());
-    NamedCommands.registerCommand("L3", m_stateMachine.setL3());
-    NamedCommands.registerCommand("L2", m_stateMachine.setL2());
-    NamedCommands.registerCommand("L1", m_stateMachine.setL1());
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeCoral());
-    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral());
+    new InstantCommand());
+    NamedCommands.registerCommand("L4", new InstantCommand());
+    NamedCommands.registerCommand("L3",new InstantCommand());
+    NamedCommands.registerCommand("L2", new InstantCommand());
+    NamedCommands.registerCommand("L1", new InstantCommand());
+    NamedCommands.registerCommand("Intake Coral", new InstantCommand());
+    NamedCommands.registerCommand("Extake Coral", new InstantCommand());
 
   }
 
@@ -145,29 +145,29 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     // Driver Controller Actions
-    m_driverController
-        .leftTrigger(OIConstants.kTriggerButtonThreshold)
-        .onTrue(m_stateMachine.extakeAlgae())
-        .onFalse(m_stateMachine.stowAlgae());
+    // m_driverController
+    //     .leftTrigger(OIConstants.kTriggerButtonThreshold)
+    //     .onTrue(m_stateMachine.extakeAlgae())
+    //     .onFalse(m_stateMachine.stowAlgae());
 
-    m_driverController
-        .rightTrigger(OIConstants.kTriggerButtonThreshold)
-        .onTrue(m_stateMachine.intakeAlgae())
-        .onFalse(m_stateMachine.stowAlgae());
+    // m_driverController
+    //     .rightTrigger(OIConstants.kTriggerButtonThreshold)
+    //     .onTrue(m_stateMachine.intakeAlgae())
+    //     .onFalse(m_stateMachine.stowAlgae());
 
-    m_driverController.leftBumper()
-        .onTrue(m_stateMachine.scoreCoral());
+    // m_driverController.leftBumper()
+    //     .onTrue(m_stateMachine.scoreCoral());
 
     // // Force Actions
-    m_driverController.povLeft()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+    // m_driverController.povLeft()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
 
-    m_driverController.povRight()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
-    m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+    // m_driverController.povRight()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
+    // m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-    m_driverController.a().onTrue(m_dragon.handoff());
-    m_driverController.b().onTrue(m_coralIntake.handoff());
+    // m_driverController.a().onTrue(m_dragon.handoff());
+    // m_driverController.b().onTrue(m_coralIntake.handoff());
     // // Stages
     // L1Button.onTrue(m_stateMachine.setL1());
     // L2Button.onTrue(m_stateMachine.setL2());

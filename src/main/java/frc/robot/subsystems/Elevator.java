@@ -10,11 +10,13 @@ import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -60,6 +62,7 @@ public class Elevator extends SubsystemBase {
   // Elevator
   private SparkFlex elevatorMotor = new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkFlex elevatorFollower = new SparkFlex(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
+  private ElevatorFeedforward elevatorFF = new ElevatorFeedforward(0, ElevatorConstants.kG, 0);
   private SparkClosedLoopController elevatorSparkClosedLoopController = elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();
 
@@ -128,7 +131,7 @@ public class Elevator extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kMAXMotionPositionControl);
+    elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFF.calculate(0));
   }
 
   private void zeroElevatorOnLimitSwitch() {
