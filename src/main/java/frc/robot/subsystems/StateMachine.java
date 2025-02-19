@@ -21,7 +21,7 @@ import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
 public class StateMachine extends SubsystemBase {
-  enum State {
+  public enum State {
     IDLE,
     INTAKE,
     POOP_STANDBY,
@@ -92,6 +92,10 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> manualOverride = false);
   }
 
+  public void setAutoHandoff(boolean enable) {
+    autoHandoff = enable;
+  }
+
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
       m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
@@ -103,6 +107,10 @@ public class StateMachine extends SubsystemBase {
           .alongWith(disableManualOverride())
           .schedule();
     });
+  }
+
+  public State getState() {
+    return m_state;
   }
 
   /* Coral intake, dragon, and elevator commands */
@@ -212,7 +220,7 @@ public class StateMachine extends SubsystemBase {
           idleSequence().schedule();
         }
       }
-    });
+    }).withName("idle()");
   }
 
   public Command intakeCoral() {
@@ -220,7 +228,7 @@ public class StateMachine extends SubsystemBase {
       if (manualOverride || m_state == State.IDLE || m_state == State.EXTAKE) {
         intakeSequence().schedule();
       }
-    });
+    }).withName("intakeCoral()");
   }
 
   public Command extakeCoral() {
@@ -230,7 +238,7 @@ public class StateMachine extends SubsystemBase {
       } else if (m_state == State.INTAKE || m_state == State.POOP_STANDBY) {
         extakeSequence().schedule();
       }
-    });
+    }).withName("extakeCoral()");
   }
 
   public Command setL1() {
@@ -241,7 +249,7 @@ public class StateMachine extends SubsystemBase {
           } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
             poopReadySequence().schedule();
           }
-        });
+        }).withName("setL1()");
   }
 
   public Command setL2() {
@@ -253,7 +261,7 @@ public class StateMachine extends SubsystemBase {
             handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L2)).schedule();
           }
-        });
+        }).withName("setL2()");
   }
 
   public Command setL3() {
@@ -266,7 +274,7 @@ public class StateMachine extends SubsystemBase {
                 .andThen(scoreReadySequence(ScoreLevel.L3)).schedule();
           }
 
-        });
+        }).withName("setL3()");
   }
 
   public Command setL4() {
@@ -279,7 +287,7 @@ public class StateMachine extends SubsystemBase {
                 .andThen(scoreReadySequence(ScoreLevel.L4)).schedule();
           }
 
-        });
+        }).withName("setL4()");
   }
 
   public Command scoreCoral() {
@@ -292,7 +300,7 @@ public class StateMachine extends SubsystemBase {
           } else if (m_state == State.POOP_READY) {
             poopScoreSequence().schedule();
           }
-        });
+        }).withName("scoreCoral()");
   }
 
   public Command handoffManual() {
@@ -300,7 +308,7 @@ public class StateMachine extends SubsystemBase {
       if (manualOverride) {
         handoffSequence().schedule();
       }
-    });
+    }).withName("handoffManual()");
   }
 
   /* Algae commands */
