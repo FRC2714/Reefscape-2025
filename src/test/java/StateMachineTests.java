@@ -285,6 +285,20 @@ public class StateMachineTests {
     @Test
     void poopScoreInvalidTransitions() {
         setState(State.POOP_SCORE);
+        m_coralIntake.setLoadedTrue();
+        m_dragon.coralonDragonFalse();
+        assertCommandHasNoEffect(State.POOP_SCORE,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4());
+
+        setState(State.POOP_SCORE);
+        m_coralIntake.setLoadedFalse();
+        m_dragon.coralonDragonFalse();
         assertCommandHasNoEffect(State.POOP_SCORE,
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
@@ -461,6 +475,20 @@ public class StateMachineTests {
     @Test
     void dragonScoreInvalidTransitions() {
         setState(State.DRAGON_SCORE);
+        m_coralIntake.setLoadedFalse();
+        m_dragon.coralOnDragonTrue();
+        assertCommandHasNoEffect(State.DRAGON_SCORE,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4());
+
+        setState(State.DRAGON_SCORE);
+        m_coralIntake.setLoadedFalse();
+        m_dragon.coralonDragonFalse();
         assertCommandHasNoEffect(State.DRAGON_SCORE,
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
