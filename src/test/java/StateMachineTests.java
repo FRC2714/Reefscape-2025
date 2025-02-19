@@ -199,4 +199,65 @@ public class StateMachineTests {
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.scoreCoral());
     }
+
+    @Test
+    void poopReadyToPoopStandby() {
+        setState(State.POOP_READY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.POOP_STANDBY,
+                "POOP_STANDBY should be reachable from POOP_READY via idle() if coral is loaded");
+    }
+
+    @Test
+    void poopReadyToHandoff() {
+        setState(State.POOP_STANDBY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.setL2().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL2()");
+
+        setState(State.POOP_STANDBY);
+        m_stateMachine.setL3().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL3()");
+
+        setState(State.POOP_STANDBY);
+        m_stateMachine.setL4().schedule();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL4()");
+    }
+
+    @Test
+    void poopReadyToPoopScore() {
+        setState(State.POOP_READY);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.scoreCoral().schedule();
+        runScheduler();
+        assertState(State.POOP_SCORE, "POOP_SCORE should be reachable from POOP_READY via scoreCoral()");
+    }
+
+    @Test
+    void poopReadyToIdle() {
+        setState(State.POOP_READY);
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.IDLE, "IDLE should be reachable from POOP_READY via idle() if coral is not loaded");
+    }
+
+    @Test
+    void poopReadyInvalidTransitions() {
+        setState(State.POOP_READY);
+        m_coralIntake.setLoadedTrue();
+        assertCommandHasNoEffect(State.POOP_READY,
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1());
+    }
 }
