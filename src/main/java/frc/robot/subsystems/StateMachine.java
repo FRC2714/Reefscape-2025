@@ -260,7 +260,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L4).schedule();
-          } else if ((m_state == State.HANDOFF || m_state == State.POOP_READY)) {
+          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L4)).schedule();
           }
