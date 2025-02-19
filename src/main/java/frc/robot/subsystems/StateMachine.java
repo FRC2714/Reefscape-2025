@@ -273,8 +273,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride) {
             m_dragon.score().schedule();
-          } else if (m_dragon.isCoralOnDragon() && m_state == State.DRAGON_READY
-              && ElevatorState.SCORE_READY == m_elevator.getState()) {
+          } else if (m_state == State.DRAGON_READY) {
             dragonScoreSequence().schedule();
           } else if ((m_state == State.POOP_READY && ElevatorSetpoint.POOP == m_elevator.getSetpoint())) {
             poopScoreSequence().schedule();
