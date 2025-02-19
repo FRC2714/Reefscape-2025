@@ -294,4 +294,65 @@ public class StateMachineTests {
                 m_stateMachine.setL3(),
                 m_stateMachine.setL4());
     }
+
+    @Test
+    void handoffToDragonStandby() {
+        setState(State.IDLE);
+        m_coralIntake.setLoadedFalse();
+        m_dragon.coralonDragonFalse();
+        m_stateMachine.setAutoHandoff(true);
+
+        m_stateMachine.intakeCoral().schedule();
+        runScheduler();
+        m_coralIntake.setLoadedTrue();
+        runScheduler();
+        assertState(State.HANDOFF,
+                "HANDOFF should be reachable when auto handoff is enabled and coral intake is loaded");
+        m_dragon.coralOnDragonTrue();
+        runScheduler();
+        assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
+        m_coralIntake.setLoadedFalse();
+        runScheduler();
+        assertState(State.DRAGON_STANDBY,
+                "DRAGON_STANDBY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded");
+    }
+
+    @Test
+    void handoffToDragonReady() {
+        Command[] commands = { m_stateMachine.setL2(), m_stateMachine.setL3(), m_stateMachine.setL4() };
+        State[] states = { State.POOP_READY, State.POOP_STANDBY };
+        for (State s : states) {
+            for (Command c : commands) {
+                setState(s);
+                m_coralIntake.setLoadedTrue();
+                m_dragon.coralonDragonFalse();
+
+                c.schedule();
+                runScheduler();
+                assertState(State.HANDOFF, "HANDOFF should be reachable from " + s.toString() + " via " + c.getName());
+                m_dragon.coralOnDragonTrue();
+                runScheduler();
+                assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
+                m_coralIntake.setLoadedFalse();
+                runScheduler();
+                assertState(State.DRAGON_READY,
+                        "DRAGON_READY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded after "
+                                + c.getName());
+            }
+        }
+    }
+
+    @Test
+    void handoffInvalidTransitions() {
+        setState(State.HANDOFF);
+        assertCommandHasNoEffect(State.HANDOFF,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4(),
+                m_stateMachine.scoreCoral());
+    }
 }
