@@ -213,7 +213,7 @@ public class StateMachine extends SubsystemBase {
         m_coralIntake.extake().schedule();
       } else if (m_state == State.EXTAKE) {
         m_coralIntake.extake().schedule();
-      } else if (m_state == State.INTAKE || m_state == State.HANDOFF) {
+      } else if (m_state == State.INTAKE || m_state == State.POOP_STANDBY) {
         extakeSequence().schedule();
       }
     });
