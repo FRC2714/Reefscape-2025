@@ -382,4 +382,59 @@ public class StateMachineTests {
                 m_stateMachine.extakeCoral(),
                 m_stateMachine.scoreCoral());
     }
+
+    @Test
+    void dragonReadyToDragonScore() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralOnDragonTrue();
+
+        m_stateMachine.scoreCoral().schedule();
+        runScheduler();
+        assertState(State.DRAGON_SCORE, "DRAGON_SCORE should be reachable from DRAGON_READY via scoreCoral()");
+    }
+
+    @Test
+    void dragonReadyToDragonStandby() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralOnDragonTrue();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.DRAGON_STANDBY,
+                "DRAGON_STANDBY should be reachable from DRAGON_READY via idle() if dragon is loaded");
+    }
+
+    @Test
+    void dragonReadyToIdle() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralonDragonFalse();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.IDLE, "IDLE should be reachable from DRAGON_READY via idle() if dragon is not loaded");
+    }
+
+    @Test
+    void dragonReadyToDragonReady() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralOnDragonTrue();
+
+        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
+                m_stateMachine.setL4() };
+        for (Command c : commands) {
+            c.schedule();
+            runScheduler();
+            assertState(State.DRAGON_READY,
+                    "DRAGON_READY should be reachable from DRAGON_READY via " + c.getName());
+            // TODO: verify level change
+        }
+    }
+
+    @Test
+    void dragonReadyInvalidTransitions() {
+        setState(State.DRAGON_READY);
+        assertCommandHasNoEffect(State.DRAGON_READY,
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral());
+    }
 }
