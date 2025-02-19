@@ -196,13 +196,8 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride) {
+      if (manualOverride || m_state == State.IDLE || m_state == State.EXTAKE) {
         intakeSequence().schedule();
-      } else if (m_state == State.INTAKE) {
-        intakeSequence().schedule();
-      } else if (m_state == State.EXTAKE || CoralIntakeState.STOW == m_coralIntake.getState()) {
-        m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
-            .andThen(intakeSequence()).schedule();
       }
     });
   }
