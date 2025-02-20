@@ -258,6 +258,14 @@ public class StateMachine extends SubsystemBase {
     }).withName("extakeCoral()");
   }
 
+  public Command stopExtakeCoral() {
+    return new InstantCommand(() -> {
+      if (manualOverride || m_state == State.EXTAKE) {
+        poopStandbySequence().schedule();
+      }
+    }).withName("stopExtakeCoral()");
+  }
+
   public Command setL1() {
     return new InstantCommand(
         () -> {

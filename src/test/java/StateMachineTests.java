@@ -156,16 +156,16 @@ public class StateMachineTests {
         setState(State.EXTAKE);
         m_coralIntake.setLoadedTrue();
 
-        m_stateMachine.idle().schedule();
+        m_stateMachine.stopExtakeCoral().schedule();
         runScheduler();
-        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via idle() with coral loaded");
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with coral loaded");
 
         setState(State.EXTAKE);
         m_coralIntake.setLoadedFalse();
 
-        m_stateMachine.idle().schedule();
+        m_stateMachine.stopExtakeCoral().schedule();
         runScheduler();
-        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via idle() with no coral loaded");
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with no coral loaded");
     }
 
     @Test
