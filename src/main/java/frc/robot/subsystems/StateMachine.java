@@ -146,7 +146,8 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoff()
             .until(m_dragon::atSetpoint))
-        .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint() && m_dragon.isCoralOnDragon()))
+        .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint()
+          && m_dragon.isCoralOnDragon() && !m_coralIntake.isLoaded()))
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
         .andThen(new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
             Map.entry(ElevatorSetpoint.POOP, setL1()),
@@ -244,7 +245,7 @@ public class StateMachine extends SubsystemBase {
   public Command setL1() {
     return new InstantCommand(
         () -> {
-          if (manualOverride || m_dragon.isCoralOnDragon()) {
+          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
             scoreReadySequence(ScoreLevel.L1).schedule();
           } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
             poopReadySequence().schedule();
@@ -255,7 +256,7 @@ public class StateMachine extends SubsystemBase {
   public Command setL2() {
     return new InstantCommand(
         () -> {
-          if (manualOverride || m_dragon.isCoralOnDragon()) {
+          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
             scoreReadySequence(ScoreLevel.L2).schedule();
           } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
@@ -267,7 +268,7 @@ public class StateMachine extends SubsystemBase {
   public Command setL3() {
     return new InstantCommand(
         () -> {
-          if (manualOverride || m_dragon.isCoralOnDragon()) {
+          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
             scoreReadySequence(ScoreLevel.L3).schedule();
           } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
@@ -280,7 +281,7 @@ public class StateMachine extends SubsystemBase {
   public Command setL4() {
     return new InstantCommand(
         () -> {
-          if (manualOverride || m_dragon.isCoralOnDragon()) {
+          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
             scoreReadySequence(ScoreLevel.L4).schedule();
           } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
