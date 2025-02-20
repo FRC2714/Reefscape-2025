@@ -83,6 +83,7 @@ public class RobotContainer {
   private final JoystickButton L2Button = new JoystickButton(m_mechanismController, 2); // L2
   private final JoystickButton L3Button = new JoystickButton(m_mechanismController, 3); // L3
   private final JoystickButton L4Button = new JoystickButton(m_mechanismController, 4); // L4
+
   private final JoystickButton coralIntakeButton = new JoystickButton(m_mechanismController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_mechanismController, 6);
   private final JoystickButton manualOverrideButton = new JoystickButton(m_mechanismController, 97); // L4
@@ -156,7 +157,8 @@ public class RobotContainer {
         .onFalse(m_stateMachine.stowAlgae());
 
     m_driverController.leftBumper()
-        .onTrue(m_stateMachine.scoreCoral());
+        .onTrue(m_stateMachine.scoreCoral())
+        .onFalse(m_stateMachine.stopScore());
 
     // // Force Actions
     m_driverController.povLeft()
