@@ -265,18 +265,17 @@ public class StateMachineTests {
     }
 
     @Test
-    @Disabled // See TODOs
     void poopScoreToPoopReady() {
         setState(State.POOP_SCORE);
         m_coralIntake.setLoadedTrue();
 
-        // TODO: implement stopScore() or whatever command
+        m_stateMachine.stopScore().schedule();
         runScheduler();
         assertState(State.POOP_READY,
                 "POOP_READY should be reachable from POOP_SCORE via stopScore() with coral loaded");
 
         setState(State.POOP_SCORE);
-        // TODO: implement stopScore() or whatever command
+        m_stateMachine.stopScore().schedule();
         runScheduler();
         m_coralIntake.setLoadedFalse();
         runScheduler();
@@ -455,18 +454,17 @@ public class StateMachineTests {
     }
 
     @Test
-    @Disabled // See TODOs
     void dragonScoreToDragonReady() {
         setState(State.DRAGON_SCORE);
         m_dragon.coralOnDragonTrue();
 
-        // TODO: implement stopScore() or whatever command
+        m_stateMachine.stopScore().schedule();
         runScheduler();
         assertState(State.DRAGON_READY,
                 "DRAGON_READY should be reachable from DRAGON_SCORE via stopScore() with coral loaded");
 
         setState(State.DRAGON_SCORE);
-        // TODO: implement stopScore() or whatever command
+        m_stateMachine.stopScore().schedule();
         runScheduler();
         m_coralIntake.setLoadedFalse();
         runScheduler();

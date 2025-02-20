@@ -173,6 +173,17 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
+  public Command stopScore() {
+    return new InstantCommand(() -> {
+      if (m_state == State.DRAGON_SCORE)
+        m_dragon.stopScore()
+        .beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
+      else if (m_state == State.POOP_SCORE)
+        m_coralIntake.stopPoopL1()
+        .beforeStarting(() -> m_state = State.POOP_READY).schedule();
+    });
+  }
+
   private Command dragonScoreSequence() {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())

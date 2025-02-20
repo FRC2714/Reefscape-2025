@@ -234,6 +234,13 @@ public class Dragon extends SubsystemBase {
     }).onlyIf(this::atSetpoint);
   }
 
+  public Command stopScore() {
+    return this.run(() -> {
+      setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
+    });
+  }
+
   public Command scoreStandby() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);

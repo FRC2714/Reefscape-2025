@@ -155,7 +155,8 @@ public class RobotContainer {
         .onFalse(m_stateMachine.stowAlgae());
 
     m_driverController.leftBumper()
-        .onTrue(m_stateMachine.scoreCoral());
+        .onTrue(m_stateMachine.scoreCoral())
+        .onFalse(m_stateMachine.stopScore());
 
     // // Force Actions
     m_driverController.povLeft()

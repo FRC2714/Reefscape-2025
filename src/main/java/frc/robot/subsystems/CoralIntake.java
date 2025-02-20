@@ -278,6 +278,13 @@ public class CoralIntake extends SubsystemBase {
         })).withName("poop l1");
   }
 
+  public Command stopPoopL1() {
+    return this.run(() -> {
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.POOP_READY);
+    });
+  }
+
   public Command climb() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.CLIMB);
