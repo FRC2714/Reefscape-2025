@@ -90,8 +90,8 @@ public class RobotContainer {
   private final JoystickButton coralIntakeButton = new JoystickButton(m_rightController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 6);
   private final Trigger OverrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
-  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 11);
-  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 5);
+  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 5);
+  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton stowButton = new JoystickButton(m_rightController, 8); // Stow
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
@@ -187,8 +187,8 @@ public class RobotContainer {
     handoffButton.onTrue(m_stateMachine.handoffManual());
 
     autoHandoffButton
-        .onTrue(m_stateMachine.enableAutoHandoff())
-        .onFalse(m_stateMachine.disableAutoHandoff());
+        .onTrue(m_stateMachine.disableAutoHandoff())
+        .onFalse(m_stateMachine.enableAutoHandoff());
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
