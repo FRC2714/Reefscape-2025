@@ -133,8 +133,8 @@ public final class Constants {
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = -0.1; // tune ts
-      public static final double kExtake = 0.4; // tune ts
+      public static final double kIntake = 0.1; // tune ts
+      public static final double kExtake = -0.4; // tune ts
       public static final double kStop = 0;
     }
   }
@@ -292,7 +292,7 @@ public final class Constants {
       public static final double kLevel2 = 95;
       public static final double kLevel3 = 61;
       public static final double kLevel4 = 19;
-      public static final double kClimb =  1;
+      public static final double kClimb = 1;
     }
 
     public static final class RollerSetpoints {

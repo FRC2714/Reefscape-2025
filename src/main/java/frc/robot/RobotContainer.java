@@ -68,10 +68,11 @@ public class RobotContainer {
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
   // Mech2d Stuff
-  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
+  // m_dragon, m_coralIntake, m_algaeIntake);
 
   // public Mech2dManager getMech2dManager() {
-  //   return m_mech2dManager;
+  // return m_mech2dManager;
   // }
 
   Joystick m_leftController = new Joystick(1); // operator controller 1
@@ -89,8 +90,8 @@ public class RobotContainer {
   private final JoystickButton coralIntakeButton = new JoystickButton(m_rightController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 6);
   private final Trigger OverrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
-  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 5);
-  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 11);
+  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 11);
+  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 5);
   private final JoystickButton stowButton = new JoystickButton(m_rightController, 8); // Stow
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
@@ -112,24 +113,27 @@ public class RobotContainer {
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
     // m_robotDrive.setDefaultCommand(
-    //     // The left stick controls translation of the robot.
-    //     // Turning is controlled by the X axis of the right stick.
-    //     new RunCommand(
-    //         () -> m_robotDrive.drive(
-    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-    //             true),
-    //         m_robotDrive));
+    // // The left stick controls translation of the robot.
+    // // Turning is controlled by the X axis of the right stick.
+    // new RunCommand(
+    // () -> m_robotDrive.drive(
+    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getRightX(),
+    // OIConstants.kDriveDeadband),
+    // true),
+    // m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
     NamedCommands.registerCommand("Intake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("Extake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("L4", new InstantCommand());
-    NamedCommands.registerCommand("L3",new InstantCommand());
+    NamedCommands.registerCommand("L3", new InstantCommand());
     NamedCommands.registerCommand("L2", new InstantCommand());
     NamedCommands.registerCommand("L1", new InstantCommand());
     NamedCommands.registerCommand("Intake Coral", new InstantCommand());
@@ -183,12 +187,8 @@ public class RobotContainer {
     handoffButton.onTrue(m_stateMachine.handoffManual());
 
     autoHandoffButton
-        .onTrue(m_stateMachine.disableAutoHandoff())
-        .onFalse(m_stateMachine.enableAutoHandoff());
-
-    autoHandoffButton
-        .onTrue(m_stateMachine.disableAutoHandoff())
-        .onFalse(m_stateMachine.enableAutoHandoff());
+        .onTrue(m_stateMachine.enableAutoHandoff())
+        .onFalse(m_stateMachine.disableAutoHandoff());
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
