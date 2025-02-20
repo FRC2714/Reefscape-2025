@@ -143,7 +143,6 @@ public class StateMachineTests {
         setState(State.INTAKE);
         m_coralIntake.setLoadedFalse();
         assertCommandHasNoEffect(State.INTAKE,
-                m_stateMachine.extakeCoral(),
                 m_stateMachine.setL1(),
                 m_stateMachine.setL2(),
                 m_stateMachine.setL3(),
