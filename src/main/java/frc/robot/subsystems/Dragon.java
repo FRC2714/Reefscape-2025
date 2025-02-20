@@ -55,7 +55,8 @@ public class Dragon extends SubsystemBase {
     SCORE_READY,
     SCORE,
     POOP_READY,
-    CLIMB
+    CLIMB,
+    SCORE_STANDBY
   }
 
   // Tunables
@@ -252,6 +253,22 @@ public class Dragon extends SubsystemBase {
       setRollerPower(RollerSetpoints.kStop);
       // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
     });
+  }
+
+  public Command stopScore() {
+    return this.run(() -> {
+      setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_READY);
+    });
+  }
+
+
+  public Command scoreStandby() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.STOW);
+      setRollerPower(RollerSetpoints.kStop);
+      setDragonState(DragonState.SCORE_STANDBY);
+    }).withName("score standby");
   }
 
   public double getSimulationCurrentDraw() {
