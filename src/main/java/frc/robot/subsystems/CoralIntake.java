@@ -351,7 +351,7 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.get());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
-    SmartDashboard.putString("Coral Intake/State", m_coralIntakeState.toString());
+    SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
     SmartDashboard.putString("Coral Intake/Current Command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
