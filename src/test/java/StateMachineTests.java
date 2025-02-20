@@ -143,6 +143,7 @@ public class StateMachineTests {
         setState(State.INTAKE);
         m_coralIntake.setLoadedFalse();
         assertCommandHasNoEffect(State.INTAKE,
+                m_stateMachine.extakeCoral(),
                 m_stateMachine.setL1(),
                 m_stateMachine.setL2(),
                 m_stateMachine.setL3(),
@@ -150,7 +151,34 @@ public class StateMachineTests {
                 m_stateMachine.scoreCoral());
     }
 
-    // TODO(jan): extake tests
+    @Test
+    void extakeToPoopStandby() {
+        setState(State.EXTAKE);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.stopExtakeCoral().schedule();
+        runScheduler();
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with coral loaded");
+
+        setState(State.EXTAKE);
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.stopExtakeCoral().schedule();
+        runScheduler();
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with no coral loaded");
+    }
+
+    @Test
+    void extakeInvalidTransitions() {
+        setState(State.EXTAKE);
+        assertCommandHasNoEffect(State.EXTAKE,
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4(),
+                m_stateMachine.scoreCoral());
+    }
 
     @Test
     void poopStandbyToPoopReady() {

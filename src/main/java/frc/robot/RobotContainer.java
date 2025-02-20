@@ -182,7 +182,8 @@ public class RobotContainer {
         .onFalse(m_stateMachine.enableAutoHandoff());
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
-    coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+    coralExtakeButton.onTrue(m_stateMachine.extakeCoral())
+        .onFalse(m_stateMachine.stopExtakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
