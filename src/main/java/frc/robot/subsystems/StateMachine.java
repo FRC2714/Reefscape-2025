@@ -94,7 +94,7 @@ public class StateMachine extends SubsystemBase {
 
   public void setAutoHandoff(boolean enable) {
     autoHandoff = enable;
-  
+  }
   public Command enableAutoHandoff() {
     return new InstantCommand(() -> autoHandoff = true);
   }
