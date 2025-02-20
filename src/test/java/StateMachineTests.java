@@ -143,6 +143,7 @@ public class StateMachineTests {
         setState(State.INTAKE);
         m_coralIntake.setLoadedFalse();
         assertCommandHasNoEffect(State.INTAKE,
+                m_stateMachine.extakeCoral(),
                 m_stateMachine.setL1(),
                 m_stateMachine.setL2(),
                 m_stateMachine.setL3(),
@@ -151,6 +152,17 @@ public class StateMachineTests {
     }
 
     // TODO(jan): extake tests
+    @Test
+    void extakeInvalidTransitions() {
+        setState(State.EXTAKE);
+        assertCommandHasNoEffect(State.EXTAKE,
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4(),
+                m_stateMachine.scoreCoral());
+    }
 
     @Test
     void poopStandbyToPoopReady() {
