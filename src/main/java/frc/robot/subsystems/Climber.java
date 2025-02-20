@@ -132,7 +132,7 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putNumber("Climber/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Climber/Setpoint", pivotCurrentTarget);
 
-    SmartDashboard.putString("Climber/State", m_climberState.toString());
+    SmartDashboard.putString("Climber/Climber State", m_climberState.toString());
     SmartDashboard.putBoolean("Climber/at Setpoint?", atSetpoint());
   }
 }

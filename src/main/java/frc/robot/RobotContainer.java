@@ -91,8 +91,8 @@ public class RobotContainer {
   private final JoystickButton handoffButton = new JoystickButton(m_mechanismController, 11);
   private final JoystickButton stowButton = new JoystickButton(m_mechanismController, 8); // Stow
   private final JoystickButton loadCoralButton = new JoystickButton(m_mechanismController, 10); // Stow
-  private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController, 12); // Stow
-  private final JoystickButton climbButton = new JoystickButton(m_mechanismController, 9);
+  private final JoystickButton coralonDragonButton = new JoystickButton(m_mechanismController, 9); // Stow
+  private final JoystickButton climbButton = new JoystickButton(m_mechanismController, 12);
 
   private SendableChooser<Command> autoChooser;
 
