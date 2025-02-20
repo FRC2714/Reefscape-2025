@@ -17,7 +17,7 @@ defaults:
 jobs:
   build:
     name: "Build"
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,6 +27,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
+
+      - name: Grant execute permission
+        run: chmod +x ./gradlew
 
       - name: Build
         run: |
