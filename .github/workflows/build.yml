@@ -33,4 +33,4 @@ jobs:
 
       - name: Build
         run: |
-          ./gradlew build --stacktrace --info
+          ./gradlew build
