@@ -151,7 +151,23 @@ public class StateMachineTests {
                 m_stateMachine.scoreCoral());
     }
 
-    // TODO(jan): extake tests
+    @Test
+    void extakeToPoopStandby() {
+        setState(State.EXTAKE);
+        m_coralIntake.setLoadedTrue();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via idle() with coral loaded");
+
+        setState(State.EXTAKE);
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.idle().schedule();
+        runScheduler();
+        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via idle() with no coral loaded");
+    }
+
     @Test
     void extakeInvalidTransitions() {
         setState(State.EXTAKE);
