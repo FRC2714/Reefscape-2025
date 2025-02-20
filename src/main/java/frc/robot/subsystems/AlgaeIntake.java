@@ -182,33 +182,27 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return this.runEnd(() -> {
+    return this.run(() -> {
       setPivot(AlgaeIntakeSetpoint.INTAKE);
       setRollerPower(RollerSetpoints.kIntake);
       setAlgaeIntakeState(AlgaeIntakeState.INTAKE);
-    }, () -> {
-      setPivot(AlgaeIntakeSetpoint.STOW);
-      setRollerPower(RollerSetpoints.kStop);
     });
   }
 
   public Command extake() {
-    return this.runEnd(() -> {
+    return this.run(() -> {
       setPivot(AlgaeIntakeSetpoint.EXTAKE);
       setRollerPower(RollerSetpoints.kExtake);
       setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
-    }, () -> {
-      setPivot(AlgaeIntakeSetpoint.STOW);
-      setRollerPower(RollerSetpoints.kStop);
     });
   }
 
   public Command climb() {
     return this.run(() -> {
-        setPivot(AlgaeIntakeSetpoint.CLIMB);
-        setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
+      setPivot(AlgaeIntakeSetpoint.CLIMB);
+      setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
     });
-    }
+  }
 
   public Command stow() {
     return this.run(() -> {
@@ -243,10 +237,9 @@ public class AlgaeIntake extends SubsystemBase {
     SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
-    
+
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
-    
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(

@@ -39,10 +39,6 @@ public class StateMachine extends SubsystemBase {
   private CoralIntake m_coralIntake;
   private AlgaeIntake m_algaeIntake;
   private Climber m_climber;
-  private Limelight m_leftLimelight;
-  private Limelight m_rightLimelight;
-  private Limelight m_backLimelight;
-  private LED m_blinkin;
 
   private boolean manualOverride;
   private boolean autoHandoff;
@@ -60,18 +56,12 @@ public class StateMachine extends SubsystemBase {
 
   /** Creates a new StateMachine. */
   public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
-      Climber m_climber,
-      Limelight m_leftLimelight,
-      Limelight m_rightLimelight, Limelight m_backLimelight, LED m_blinkin) {
+      Climber m_climber) {
     this.m_algaeIntake = m_algaeIntake;
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
     this.m_climber = m_climber;
-    this.m_blinkin = m_blinkin;
-    this.m_leftLimelight = m_leftLimelight;
-    this.m_rightLimelight = m_rightLimelight;
-    this.m_backLimelight = m_backLimelight;
 
     manualOverride = false;
     autoHandoff = true;
@@ -155,8 +145,7 @@ public class StateMachine extends SubsystemBase {
     return m_dragon.stow().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoff()
-            .until(() -> m_dragon.atSetpoint() && DragonState.HANDOFF == m_dragon.getState()
-                && ElevatorState.HANDOFF == m_elevator.getState()))
+            .until(m_dragon::atSetpoint))
         .andThen(m_coralIntake.handoff().until(() -> m_coralIntake.atSetpoint() && m_dragon.isCoralOnDragon()))
         .andThen(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
         .andThen(new SelectCommand<ElevatorSetpoint>(Map.ofEntries(
@@ -236,12 +225,8 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride || CoralIntakeState.INTAKE_READY == m_coralIntake.getState()) {
+      if (manualOverride || m_state == State.IDLE || m_state == State.EXTAKE) {
         intakeSequence().schedule();
-      } else if (CoralIntakeState.EXTAKE == m_coralIntake.getState()
-          || CoralIntakeState.STOW == m_coralIntake.getState()) {
-        m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
-            .andThen(intakeSequence()).schedule();
       }
     });
   }
@@ -250,9 +235,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> {
       if (manualOverride || CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
         m_coralIntake.extake().schedule();
-      } else if (CoralIntakeState.INTAKE == m_coralIntake.getState()
-          || CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-          || CoralIntakeState.POOP_STANDBY == m_coralIntake.getState()) {
+      } else if (m_state == State.INTAKE || m_state == State.POOP_STANDBY) {
         extakeSequence().schedule();
       }
     });
@@ -263,10 +246,8 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L1).schedule();
-          } else if (CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-              || CoralIntakeState.POOP_STANDBY == m_coralIntake.getState()) {
+          } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
             poopReadySequence().schedule();
-
           }
         });
   }
@@ -276,8 +257,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L2).schedule();
-          } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-              || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
+          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L2)).schedule();
           }
@@ -289,8 +269,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L3).schedule();
-          } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-              || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
+          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L3)).schedule();
           }
@@ -303,8 +282,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride || m_dragon.isCoralOnDragon()) {
             scoreReadySequence(ScoreLevel.L4).schedule();
-          } else if ((CoralIntakeState.HANDOFF_READY == m_coralIntake.getState()
-              || CoralIntakeState.POOP_READY == m_coralIntake.getState())) {
+          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
             handoffSequence()
                 .andThen(scoreReadySequence(ScoreLevel.L4)).schedule();
           }
@@ -317,11 +295,9 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (manualOverride) {
             m_dragon.score().schedule();
-          } else if (m_dragon.isCoralOnDragon() && DragonState.SCORE_READY == m_dragon.getState()
-              && ElevatorState.SCORE_READY == m_elevator.getState()) {
+          } else if (m_state == State.DRAGON_READY) {
             dragonScoreSequence().schedule();
-          } else if ((CoralIntakeState.POOP_READY == m_coralIntake.getState()
-              && DragonState.POOP_READY == m_dragon.getState() && ElevatorSetpoint.POOP == m_elevator.getSetpoint())) {
+          } else if (m_state == State.POOP_READY) {
             poopScoreSequence().schedule();
           }
         });

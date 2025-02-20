@@ -6,11 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.LED;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
@@ -48,7 +50,6 @@ public class AlignToCoral extends Command {
     xController.setTolerance(.2);
     yController.setTolerance(.2);
     thetaController.setTolerance(.1);
-
   }
 
   // Called when the command is initially scheduled.
@@ -130,6 +131,10 @@ public class AlignToCoral extends Command {
       case 10, 15 -> thetaController.setSetpoint(180);
       case 11, 14 -> thetaController.setSetpoint(240);
     }
+
+    PPHolonomicDriveController.clearXFeedbackOverride();
+    PPHolonomicDriveController.clearYFeedbackOverride();
+    PPHolonomicDriveController.clearRotationFeedbackOverride();
   }
 
   // Called once the command ends or is interrupted.
