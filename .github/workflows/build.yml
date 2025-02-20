@@ -28,6 +28,10 @@ jobs:
           distribution: 'zulu'
           java-version: 17
 
+      - name: Run tests
+        run: |
+          ./gradlew test
+
       - name: Build
         run: |
           ./gradlew build
