@@ -88,7 +88,7 @@ public class RobotContainer {
 
   private final JoystickButton coralIntakeButton = new JoystickButton(m_rightController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 6);
-  private final Trigger manualOverrideButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
+  private final Trigger OverrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
   private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 5);
   private final JoystickButton handoffButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton stowButton = new JoystickButton(m_rightController, 8); // Stow
@@ -215,7 +215,7 @@ public class RobotContainer {
             .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
       }
 
-      manualOverrideButton.onTrue(m_stateMachine.enableManualOverride())
+      OverrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
     }
   }
