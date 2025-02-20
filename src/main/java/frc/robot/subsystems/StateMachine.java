@@ -94,6 +94,13 @@ public class StateMachine extends SubsystemBase {
 
   public void setAutoHandoff(boolean enable) {
     autoHandoff = enable;
+  
+  public Command enableAutoHandoff() {
+    return new InstantCommand(() -> autoHandoff = true);
+  }
+
+  public Command disableAutoHandoff() {
+    return new InstantCommand(() -> autoHandoff = false);
   }
 
   public Command setDefaultStates() {
@@ -361,5 +368,6 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
+
   }
 }
