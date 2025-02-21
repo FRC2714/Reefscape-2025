@@ -68,10 +68,11 @@ public class RobotContainer {
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
   // Mech2d Stuff
-  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
+  // m_dragon, m_coralIntake, m_algaeIntake);
 
   // public Mech2dManager getMech2dManager() {
-  //   return m_mech2dManager;
+  // return m_mech2dManager;
   // }
 
   Joystick m_leftController = new Joystick(1); // operator controller 1
@@ -95,6 +96,7 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
+  private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
 
   private SendableChooser<Command> autoChooser;
 
@@ -112,24 +114,27 @@ public class RobotContainer {
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
     // m_robotDrive.setDefaultCommand(
-    //     // The left stick controls translation of the robot.
-    //     // Turning is controlled by the X axis of the right stick.
-    //     new RunCommand(
-    //         () -> m_robotDrive.drive(
-    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-    //             true),
-    //         m_robotDrive));
+    // // The left stick controls translation of the robot.
+    // // Turning is controlled by the X axis of the right stick.
+    // new RunCommand(
+    // () -> m_robotDrive.drive(
+    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getRightX(),
+    // OIConstants.kDriveDeadband),
+    // true),
+    // m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
     NamedCommands.registerCommand("Intake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("Extake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("L4", new InstantCommand());
-    NamedCommands.registerCommand("L3",new InstantCommand());
+    NamedCommands.registerCommand("L3", new InstantCommand());
     NamedCommands.registerCommand("L2", new InstantCommand());
     NamedCommands.registerCommand("L1", new InstantCommand());
     NamedCommands.registerCommand("Intake Coral", new InstantCommand());
@@ -189,6 +194,7 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    scoreButton.onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
@@ -204,12 +210,12 @@ public class RobotContainer {
             SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
 
-      //if (Robot.isSimulation()) {
-        coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-            .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-        loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-            .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      //}
+      // if (Robot.isSimulation()) {
+      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+      // }
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());

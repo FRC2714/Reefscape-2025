@@ -287,7 +287,7 @@ public final class Constants {
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 58;
+      public static final double kStow = 115;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
       public static final double kLevel2 = 98;
@@ -299,7 +299,7 @@ public final class Constants {
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // tune ts (pos when getting from station)
       public static final double kExtake = .6; // tune ts (neg when scoring)
-      public static final double kStop = 0;
+      public static final double kStop = -0.1;
     }
   }
 

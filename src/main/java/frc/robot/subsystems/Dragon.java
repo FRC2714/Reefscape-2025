@@ -137,7 +137,8 @@ public class Dragon extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+        pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -145,6 +146,13 @@ public class Dragon extends SubsystemBase {
       return true;
     }
     return Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
+  }
+
+  public boolean isClearFromElevator() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() < 180;
   }
 
   private void setDragonState(DragonState state) {
@@ -243,13 +251,13 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-       }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
   }
 
   public Command stopRoller() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
-       }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
   }
 
   public Command stopScore() {
@@ -258,7 +266,6 @@ public class Dragon extends SubsystemBase {
       setDragonState(DragonState.SCORE_READY);
     }).withName("stopScore()");
   }
-
 
   public Command scoreStandby() {
     return this.run(() -> {
@@ -313,7 +320,7 @@ public class Dragon extends SubsystemBase {
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
-    //setCoralOnDragon();
+    // setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180
