@@ -183,6 +183,20 @@
                   "data_type": "string",
                   "show_submit_button": false
                 }
+              },
+              {
+                "title": "Roller Power",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Dragon/Roller/Roller Power",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
               }
             ]
           },
@@ -238,14 +252,14 @@
             },
             "children": [
               {
-                "title": "State",
+                "title": " State",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
                 "type": "Large Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Coral Intake/State",
+                  "topic": "/SmartDashboard/Coral Intake/Coral Intake State",
                   "period": 0.06,
                   "data_type": "string"
                 }
@@ -278,6 +292,34 @@
                   "topic": "/SmartDashboard/Coral Intake/Current Command",
                   "period": 0.06,
                   "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Indexer Applied Output",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Intake/Intex/Indexer/Applied Output",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Roller Applied Output",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Intake/Intex/Roller/Applied Output",
+                  "period": 0.06,
+                  "data_type": "double",
                   "show_submit_button": false
                 }
               }

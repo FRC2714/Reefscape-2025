@@ -68,11 +68,10 @@ public class RobotContainer {
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
   // Mech2d Stuff
-  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
-  // m_dragon, m_coralIntake, m_algaeIntake);
+  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
 
   // public Mech2dManager getMech2dManager() {
-  // return m_mech2dManager;
+  //   return m_mech2dManager;
   // }
 
   Joystick m_leftController = new Joystick(1); // operator controller 1
@@ -113,27 +112,24 @@ public class RobotContainer {
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
     // m_robotDrive.setDefaultCommand(
-    // // The left stick controls translation of the robot.
-    // // Turning is controlled by the X axis of the right stick.
-    // new RunCommand(
-    // () -> m_robotDrive.drive(
-    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getRightX(),
-    // OIConstants.kDriveDeadband),
-    // true),
-    // m_robotDrive));
+    //     // The left stick controls translation of the robot.
+    //     // Turning is controlled by the X axis of the right stick.
+    //     new RunCommand(
+    //         () -> m_robotDrive.drive(
+    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
+    //             true),
+    //         m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
     NamedCommands.registerCommand("Intake Algae",
-        new InstantCommand());
+    new InstantCommand());
     NamedCommands.registerCommand("Extake Algae",
-        new InstantCommand());
+    new InstantCommand());
     NamedCommands.registerCommand("L4", new InstantCommand());
-    NamedCommands.registerCommand("L3", new InstantCommand());
+    NamedCommands.registerCommand("L3",new InstantCommand());
     NamedCommands.registerCommand("L2", new InstantCommand());
     NamedCommands.registerCommand("L1", new InstantCommand());
     NamedCommands.registerCommand("Intake Coral", new InstantCommand());
@@ -190,9 +186,12 @@ public class RobotContainer {
         .onTrue(m_stateMachine.disableAutoHandoff())
         .onFalse(m_stateMachine.enableAutoHandoff());
 
+    autoHandoffButton
+        .onTrue(m_stateMachine.disableAutoHandoff())
+        .onFalse(m_stateMachine.enableAutoHandoff());
+
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
-    coralExtakeButton.onTrue(m_stateMachine.extakeCoral())
-        .onFalse(m_stateMachine.stopExtakeCoral());
+    coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
