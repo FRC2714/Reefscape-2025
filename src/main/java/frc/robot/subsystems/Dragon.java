@@ -210,7 +210,6 @@ public class Dragon extends SubsystemBase {
   public Command handoff() {
     return handoffReady().until(this::atSetpoint).andThen(this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
-      setRollerPower(RollerSetpoints.kStop);
       setRollerPower(RollerSetpoints.kIntake);
       setDragonState(DragonState.HANDOFF);
     }));
