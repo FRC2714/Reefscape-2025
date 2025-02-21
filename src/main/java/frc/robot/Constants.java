@@ -265,7 +265,7 @@ public final class Constants {
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
       public static final double kLevel1 = 0;
-      public static final double kLevel2 = 3;
+      public static final double kLevel2 = 0;
       public static final double kLevel3 = 1.4;
       public static final double kLevel4 = 9.62;
     }
@@ -288,7 +288,7 @@ public final class Constants {
 
     public static final class PivotSetpoints {
       public static final double kStow = 58;
-      public static final double kHandoff = 224.6; //fix this later
+      public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
       public static final double kLevel2 = 98;
       public static final double kLevel3 = 56.08;
