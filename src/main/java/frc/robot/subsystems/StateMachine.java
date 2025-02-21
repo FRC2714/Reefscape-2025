@@ -241,7 +241,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride || m_state == State.IDLE || m_state == State.EXTAKE) {
+      if (manualOverride || m_state == State.IDLE) {
         intakeSequence().schedule();
       }
     }).withName("intakeCoral()");
@@ -249,12 +249,18 @@ public class StateMachine extends SubsystemBase {
 
   public Command extakeCoral() {
     return new InstantCommand(() -> {
-      if (manualOverride || CoralIntakeState.EXTAKE_READY == m_coralIntake.getState()) {
-        m_coralIntake.extake().schedule();
-      } else if (m_state == State.INTAKE || m_state == State.POOP_STANDBY) {
+      if (manualOverride || m_state == State.POOP_STANDBY) {
         extakeSequence().schedule();
       }
     }).withName("extakeCoral()");
+  }
+
+  public Command stopExtakeCoral() {
+    return new InstantCommand(() -> {
+      if (manualOverride || m_state == State.EXTAKE) {
+        poopStandbySequence().schedule();
+      }
+    }).withName("stopExtakeCoral()");
   }
 
   public Command setL1() {
