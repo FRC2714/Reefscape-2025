@@ -160,7 +160,8 @@ public class CoralIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+        pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -194,7 +195,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kEject;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
@@ -262,7 +263,7 @@ public class CoralIntake extends SubsystemBase {
   public Command handoff() {
     return handoffReady().until(this::atSetpoint).andThen(
         this.run(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
+          setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.HANDOFF);
         })).withName("handoff");
   }
@@ -307,9 +308,9 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public boolean isLoaded() {
-    if (Robot.isSimulation())
-      return loaded;
-    return !beamBreak.get();
+    // if (Robot.isSimulation())
+    return loaded;
+    // return !beamBreak.get();
   }
 
   public void setLoadedTrue() {

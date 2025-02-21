@@ -114,7 +114,7 @@ public final class Configs {
                         
                         // TODO
                         // pivotConfig.softLimit
-                        //                 .forwardSoftLimit(AlgaeIntakeConstants.kPivotMaxAngle)
+                        //                 .forwardSoftLimit(AlgalIntakeConstants.kPivotMaxAngle)
                         //                 .reverseSoftLimit(AlgaeIntakeConstants.kPivotMinAngle)
                         //                 .forwardSoftLimitEnabled(true)
                         //                 .reverseSoftLimitEnabled(true);
@@ -187,12 +187,7 @@ public final class Configs {
                         elevatorConfig.limitSwitch
                                         .forwardLimitSwitchEnabled(true)
                                         .forwardLimitSwitchType(Type.kNormallyOpen);
-                        
-                        elevatorConfig.softLimit
-                                        .forwardSoftLimit(ElevatorConstants.kMinLimit)
-                                        .reverseSoftLimit(ElevatorConstants.kMaxLimit)
-                                        .forwardSoftLimitEnabled(true)
-                                        .reverseSoftLimitEnabled(true);
+
 
                         elevatorConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)

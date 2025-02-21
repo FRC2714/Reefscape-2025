@@ -126,29 +126,22 @@ public class Elevator extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, elevatorFF.calculate(0));
+    elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
 
   private void zeroElevatorOnLimitSwitch() {
     if (!wasResetByLimit && elevatorMotor.getReverseLimitSwitch().isPressed()) {
-      // Zero the encoder only when the limit switch is switches from "unpressed" to
-      // "pressed" to
-      // prevent constant zeroing while pressed
+
       elevatorEncoder.setPosition(ElevatorConstants.kMinLimit);
       wasResetByLimit = true;
-      // elevatorMotor.set(0);
-      // elevatorCurrentTarget = ElevatorConstants.kMinLimit;
-      // moveToSetpoint();
+  
     } else if (!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed()) {
       elevatorEncoder.setPosition(ElevatorConstants.kMaxLimit);
       wasResetByLimit = true;
-      // elevatorMotor.set(0);
-      // elevatorCurrentTarget = ElevatorConstants.kMaxLimit;
-      // moveToSetpoint();
+ 
     } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()
         && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
-      elevatorMotor.set(0);
     }
   }
 
@@ -199,28 +192,28 @@ public class Elevator extends SubsystemBase {
     return this.run(() -> {
       setLevel(ElevatorSetpoint.STOW);
       setElevatorState(ElevatorState.STOW);
-    });
+    }).withName("moveToStow()");
   }
 
   public Command moveToHandoff() {
     return this.run(() -> {
       setLevel(ElevatorSetpoint.HANDOFF);
       setElevatorState(ElevatorState.HANDOFF);
-    });
+    }).withName("moveToHandoff()");
   }
 
   public Command moveToPoop() {
     return this.run(() -> {
       setLevel(ElevatorSetpoint.POOP);
       setElevatorState(ElevatorState.POOP);
-    });
+    }).withName("moveToPoop()");
   }
 
   public Command moveToLevel(ElevatorSetpoint level) {
     return this.run(() -> {
       setLevel(level);
       setElevatorState(ElevatorState.SCORE_READY);
-    });
+    }).withName("moveToLevel()");
   }
 
   public ElevatorSetpoint getSetpoint() {
@@ -246,10 +239,12 @@ public class Elevator extends SubsystemBase {
 
     zeroElevatorOnLimitSwitch();
 
-    SmartDashboard.putNumber("Elevator/Pos/Current Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Pos/Position", elevatorEncoder.getPosition());
+    SmartDashboard.putNumber("Elevator/Pos/Target Position", elevatorCurrentTarget);
     SmartDashboard.putString("Elevator/Pos/Elevator Setpoint", getSetpoint().toString());
     SmartDashboard.putString("Elevator/Elevator State", m_elevatorState.toString());
     SmartDashboard.putBoolean("Elevator/Pos/at Setpoint?", atSetpoint());
+
     SmartDashboard.putString("Elevator/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 

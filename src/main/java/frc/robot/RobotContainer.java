@@ -88,9 +88,9 @@ public class RobotContainer {
 
   private final JoystickButton coralIntakeButton = new JoystickButton(m_rightController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 6);
-  private final Trigger OverrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
-  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 5);
-  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 11);
+  private final Trigger overrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
+  private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 11);
+  private final JoystickButton handoffButton = new JoystickButton(m_rightController, 5);
   private final JoystickButton stowButton = new JoystickButton(m_rightController, 8); // Stow
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
@@ -183,12 +183,8 @@ public class RobotContainer {
     handoffButton.onTrue(m_stateMachine.handoffManual());
 
     autoHandoffButton
-        .onTrue(m_stateMachine.disableAutoHandoff())
-        .onFalse(m_stateMachine.enableAutoHandoff());
-
-    autoHandoffButton
-        .onTrue(m_stateMachine.disableAutoHandoff())
-        .onFalse(m_stateMachine.enableAutoHandoff());
+        .onTrue(m_stateMachine.enableAutoHandoff())
+        .onFalse(m_stateMachine.disableAutoHandoff());
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
@@ -208,20 +204,30 @@ public class RobotContainer {
             SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
 
-      if (Robot.isSimulation()) {
+      //if (Robot.isSimulation()) {
         coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
             .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
         loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
             .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      }
+      //}
 
-      OverrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
+      overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
     }
   }
 
   public void setTeleOpDefaultStates() {
     m_stateMachine.setDefaultStates().schedule();
+    if (overrideStateMachineButton.getAsBoolean()) {
+      m_stateMachine.enableManualOverride().schedule();
+    } else {
+      m_stateMachine.disableManualOverride().schedule();
+    }
+    if (autoHandoffButton.getAsBoolean()) {
+      m_stateMachine.enableAutoHandoff().schedule();
+    } else {
+      m_stateMachine.disableAutoHandoff().schedule();
+    }
     m_blinkin.setOrange(); // default lights are orange
   }
 

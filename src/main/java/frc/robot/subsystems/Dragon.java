@@ -196,7 +196,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.STOW);
-    });
+    }).withName("stow()");
   }
 
   public Command handoffReady() {
@@ -204,7 +204,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.HANDOFF_READY);
-    });
+    }).withName("handoffReady()");
   }
 
   public Command handoff() {
@@ -212,7 +212,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kIntake);
       setDragonState(DragonState.HANDOFF);
-    }));
+    })).withName("handoff()");
   }
 
   public Command poopReady() {
@@ -220,7 +220,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.POOP_READY);
-    });
+    }).withName("poopReady()");
   }
 
   public Command scoreReadyLevel(DragonSetpoint level) {
@@ -228,7 +228,7 @@ public class Dragon extends SubsystemBase {
       setPivot(level);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
-    });
+    }).withName("scoreReadyLevel()");
   }
 
   public Command climb() {
@@ -243,22 +243,20 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-      // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
-    });
+       }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
   }
 
   public Command stopRoller() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
-      // }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
-    });
+       }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
   }
 
   public Command stopScore() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
-    });
+    }).withName("stopScore()");
   }
 
 
@@ -315,7 +313,7 @@ public class Dragon extends SubsystemBase {
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
-    setCoralOnDragon();
+    //setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180

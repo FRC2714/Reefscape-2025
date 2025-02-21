@@ -124,16 +124,17 @@ public final class Constants {
 
     public static final class PivotSetpoints {
       public static final double kStow = 15; // TBD
-      public static final double kIntake = 120; // TBD
+      public static final double kIntake = 65; // TBD
+      public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 60; // TBD
       public static final double kHandoff = 69.8; // TBD
-      public static final double kEject = 360; // TBD
+      public static final double kPoop = 70; // TBD
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = 0.1; // tune ts
+      public static final double kIntake = 0.6; // tune ts
       public static final double kExtake = -0.4; // tune ts
       public static final double kStop = 0;
     }
@@ -251,7 +252,7 @@ public final class Constants {
     public static final int kElevatorMotorCanId = 14; // TBD
     public static final int kElevatorFollowerCanId = 15; // TBD
 
-    public static final double kSetpointThreshold = 5; // tune
+    public static final double kSetpointThreshold = 0.1; // tune
 
     public static final double kMinLimit = 0;
     public static final double kMaxLimit = 9.62;
@@ -263,10 +264,10 @@ public final class Constants {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 20;
-      public static final double kLevel2 = 0;
-      public static final double kLevel3 = 100;
-      public static final double kLevel4 = 150;
+      public static final double kLevel1 = 0;
+      public static final double kLevel2 = 3;
+      public static final double kLevel3 = 1.4;
+      public static final double kLevel4 = 9.62;
     }
   }
 
@@ -287,11 +288,11 @@ public final class Constants {
 
     public static final class PivotSetpoints {
       public static final double kStow = 58;
-      public static final double kHandoff = 224.6;
-      public static final double kLevel1 = 1;
-      public static final double kLevel2 = 95;
-      public static final double kLevel3 = 61;
-      public static final double kLevel4 = 19;
+      public static final double kHandoff = 224.6; //fix this later
+      public static final double kLevel1 = 37.13;
+      public static final double kLevel2 = 98;
+      public static final double kLevel3 = 56.08;
+      public static final double kLevel4 = 48;
       public static final double kClimb = 1;
     }
 
