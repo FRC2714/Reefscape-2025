@@ -18,6 +18,20 @@
             },
             "children": [
               {
+                "title": "State",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/State Machine/State",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
                 "title": "Manual Override",
                 "x": 0.0,
                 "y": 0.0,
@@ -35,23 +49,27 @@
                 }
               },
               {
-                "title": "State",
+                "title": "Auto Handoff",
                 "x": 0.0,
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Boolean Box",
                 "properties": {
-                  "topic": "/SmartDashboard/State Machine/State",
+                  "topic": "/SmartDashboard/State Machine/Auto Handoff",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "Checkmark",
+                  "false_icon": "X"
                 }
               }
             ]
           },
           {
             "title": "Algae",
-            "x": 512.0,
+            "x": 1024.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -66,11 +84,12 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Algae/State",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               },
               {
@@ -106,11 +125,12 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Climber/State",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               },
               {
@@ -134,7 +154,7 @@
             "x": 256.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -146,11 +166,12 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Dragon/State",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               },
               {
@@ -217,11 +238,12 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Text Display",
                 "properties": {
-                  "topic": "/SmartDashboard/Elevator/State",
+                  "topic": "/SmartDashboard/Elevator/Elevator State",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               },
               {
@@ -242,10 +264,10 @@
           },
           {
             "title": "Coral Intake",
-            "x": 1024.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 256.0,
             "type": "List Layout",
             "properties": {
               "label_position": "TOP"
@@ -257,11 +279,12 @@
                 "y": 0.0,
                 "width": 128.0,
                 "height": 128.0,
-                "type": "Large Text Display",
+                "type": "Text Display",
                 "properties": {
                   "topic": "/SmartDashboard/Coral Intake/Coral Intake State",
                   "period": 0.06,
-                  "data_type": "string"
+                  "data_type": "string",
+                  "show_submit_button": false
                 }
               },
               {
@@ -390,6 +413,296 @@
                   "period": 0.06,
                   "data_type": "double",
                   "show_submit_button": false
+                }
+              }
+            ]
+          },
+          {
+            "title": "Algae Pivot",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Algae/Pivot/Current Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Setpoint",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Algae/Pivot/Setpoint",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "at Setpoint?",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Algae/Pivot/at Setpoint?",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Coral Intake Pivot",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Intake/Pivot/Current Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Setpoint",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Intake/Pivot/Setpoint",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "at Setpoint?",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Coral Intake/Pivot/at Setpoint?",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Pivot",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Dragon/Pivot/Current Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Setpoint",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Dragon/Pivot/Setpoint",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "at Setpoint?",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Dragon/Pivot/at Setpoint?",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Climber Pivot",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Pivot/Current Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Setpoint",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Pivot/Setpoint",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "at Setpoint?",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Climber/Pivot/at Setpoint?",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
+                }
+              }
+            ]
+          },
+          {
+            "title": "Elevator Pos",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "List Layout",
+            "properties": {
+              "label_position": "TOP"
+            },
+            "children": [
+              {
+                "title": "Current Position",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator/Pos/Current Position",
+                  "period": 0.06,
+                  "data_type": "double",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "Elevator Setpoint",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Text Display",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator/Pos/Elevator Setpoint",
+                  "period": 0.06,
+                  "data_type": "string",
+                  "show_submit_button": false
+                }
+              },
+              {
+                "title": "at Setpoint?",
+                "x": 0.0,
+                "y": 0.0,
+                "width": 128.0,
+                "height": 128.0,
+                "type": "Boolean Box",
+                "properties": {
+                  "topic": "/SmartDashboard/Elevator/Pos/at Setpoint?",
+                  "period": 0.06,
+                  "data_type": "boolean",
+                  "true_color": 4283215696,
+                  "false_color": 4294198070,
+                  "true_icon": "None",
+                  "false_icon": "None"
                 }
               }
             ]
