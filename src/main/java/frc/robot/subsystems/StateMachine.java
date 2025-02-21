@@ -138,6 +138,7 @@ public class StateMachine extends SubsystemBase {
   private Command intakeSequence() {
     return m_coralIntake.intake()
         .until(m_coralIntake::isLoaded)
+        .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
             new ConditionalCommand(
