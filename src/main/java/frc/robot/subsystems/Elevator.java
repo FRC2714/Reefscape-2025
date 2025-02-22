@@ -124,6 +124,13 @@ public class Elevator extends SubsystemBase {
     return elevatorEncoder.getPosition();
   }
 
+  public boolean isClearToStowDragon() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return elevatorEncoder.getPosition() < ElevatorConstants.kClearToStowDragonLevel;
+  }
+
   private void moveToSetpoint() {
     elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }

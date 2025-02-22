@@ -278,6 +278,8 @@ public final class Constants {
     public static final double kP = .3;
     public static final double kG = .3;
 
+    public static final double kClearToStowDragonLevel = 1.8;
+
     public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;
