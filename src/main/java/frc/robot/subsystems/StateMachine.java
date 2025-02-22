@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Dragon.DragonState;
@@ -110,7 +111,7 @@ public class StateMachine extends SubsystemBase {
       m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
           .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
           .alongWith(
-            stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+              stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
                   .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
                   .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
           .schedule();
@@ -160,10 +161,10 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_dragon.handoffReady())).until(m_dragon::atSetpoint)
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon() && !m_coralIntake.isLoaded())
-        .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
+            .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
         .andThen(dragonStandbySequence()
-          .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
-         .beforeStarting(() -> m_state = State.HANDOFF);
+            .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
+        .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
   private Command dragonStandbySequence() {
@@ -220,9 +221,16 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
+  public Command algaeRemoveReady() {
+    return new InstantCommand(() -> {
+      m_elevator.moveToLevel(ElevatorSetpoint.ALGAE_LOW).schedule();
+      m_dragon.readyAlgaeRemove().schedule();
+    }).withName("algaeRemoveReady()");
+  }
+
   public Command algaeRemovalSequence(DragonSetpoint level) {
     return m_dragon.removeAlgae(level)
-        .until(m_algaeIntake::atSetpoint)
+        .until(m_dragon::atSetpoint)
         .beforeStarting(() -> m_state = State.ALGAE_REMOVE);
   }
 
@@ -245,7 +253,7 @@ public class StateMachine extends SubsystemBase {
         }
       } else if (m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
         if (m_state == State.DRAGON_STANDBY && !m_dragon.isCoralOnDragon()
-          || m_state == State.POOP_STANDBY && !m_coralIntake.isLoaded()) {
+            || m_state == State.POOP_STANDBY && !m_coralIntake.isLoaded()) {
           // Go to true idle if there is no coral loaded at all
           idleSequence().schedule();
         }
@@ -256,6 +264,7 @@ public class StateMachine extends SubsystemBase {
   public Command removeAlgae(DragonSetpoint level) {
     return new InstantCommand(() -> {
       if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        algaeRemoveReady().schedule();
         algaeRemovalSequence(level).schedule();
       }
     }).withName("removeAlgae()");
@@ -396,7 +405,6 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putString("State Machine/State", m_state.toString());
     SmartDashboard.putString("State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-
 
   }
 }

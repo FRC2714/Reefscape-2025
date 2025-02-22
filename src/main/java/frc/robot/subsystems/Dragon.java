@@ -48,7 +48,8 @@ public class Dragon extends SubsystemBase {
     L4,
     CLIMB,
     ALGAE_HIGH,
-    ALGAE_LOW
+    ALGAE_LOW,
+    ALGAE_READY
   }
 
   public enum DragonState {
@@ -143,7 +144,8 @@ public class Dragon extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+        pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -190,6 +192,8 @@ public class Dragon extends SubsystemBase {
         break;
       case ALGAE_LOW:
         pivotCurrentTarget = PivotSetpoints.kAlgaeLow;
+      case ALGAE_READY:
+        pivotCurrentTarget = PivotSetpoints.kAlgaeReady;
         break;
     }
     moveToSetpoint();
@@ -208,6 +212,12 @@ public class Dragon extends SubsystemBase {
       setPivot(level);
       setDragonState(DragonState.ALGAE_REMOVE);
     }).withName("removeAlgae()");
+  }
+
+  public Command readyAlgaeRemove() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.ALGAE_READY);
+    }).withName("readyAlgaeRemove()");
   }
 
   public Command stow() {
@@ -262,13 +272,13 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-       }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
   }
 
   public Command stopRoller() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
-       }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
   }
 
   public Command stopScore() {
@@ -277,7 +287,6 @@ public class Dragon extends SubsystemBase {
       setDragonState(DragonState.SCORE_READY);
     }).withName("stopScore()");
   }
-
 
   public Command scoreStandby() {
     return this.run(() -> {
@@ -334,7 +343,7 @@ public class Dragon extends SubsystemBase {
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
-    //setCoralOnDragon();
+    // setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180

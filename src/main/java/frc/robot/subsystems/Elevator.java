@@ -43,14 +43,18 @@ public class Elevator extends SubsystemBase {
     L1,
     L2,
     L3,
-    L4
+    L4,
+    ALGAE_LOW,
+    ALGAE_HIGH
   }
 
   public enum ElevatorState {
     STOW,
     HANDOFF,
     POOP,
-    SCORE_READY
+    SCORE_READY,
+    ALGAE_LOW,
+    ALGAE_HIGH
   }
 
   private ElevatorSetpoint m_elevatorSetpoint;
@@ -134,11 +138,11 @@ public class Elevator extends SubsystemBase {
 
       elevatorEncoder.setPosition(ElevatorConstants.kMinLimit);
       wasResetByLimit = true;
-  
+
     } else if (!wasResetByLimit && elevatorMotor.getForwardLimitSwitch().isPressed()) {
       elevatorEncoder.setPosition(ElevatorConstants.kMaxLimit);
       wasResetByLimit = true;
- 
+
     } else if (!elevatorMotor.getReverseLimitSwitch().isPressed()
         && !elevatorMotor.getForwardLimitSwitch().isPressed()) {
       wasResetByLimit = false;
@@ -183,6 +187,10 @@ public class Elevator extends SubsystemBase {
         break;
       case L4:
         elevatorCurrentTarget = ElevatorLevels.kLevel4;
+      case ALGAE_LOW:
+        elevatorCurrentTarget = ElevatorLevels.kAlgaeLow;
+      case ALGAE_HIGH:
+        elevatorCurrentTarget = ElevatorLevels.kAlgaeHigh;
         break;
     }
     moveToSetpoint();
