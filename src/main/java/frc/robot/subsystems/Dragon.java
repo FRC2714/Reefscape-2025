@@ -234,7 +234,7 @@ public class Dragon extends SubsystemBase {
   public Command scoreReadyLevel(DragonSetpoint level) {
     return this.run(() -> {
       setPivot(level);
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_READY);
     }).withName("scoreReadyLevel()");
   }
