@@ -292,7 +292,7 @@ public class Dragon extends SubsystemBase {
     coralOnDragon = true;
   }
 
-  public void coralonDragonFalse() {
+  public void coralOnDragonFalse() {
     coralOnDragon = false;
   }
 

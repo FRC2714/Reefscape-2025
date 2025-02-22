@@ -121,18 +121,18 @@ public class RobotContainer {
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
     m_robotDrive.setDefaultCommand(
-    // The left stick controls translation of the robot.
-    // Turning is controlled by the X axis of the right stick.
-    new RunCommand(
-    () -> m_robotDrive.drive(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(),
-        OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(),
-        OIConstants.kDriveDeadband),
-        -MathUtil.applyDeadband(m_driverController.getRightX(),
-        OIConstants.kDriveDeadband),
-        true),
-      m_robotDrive));
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        new RunCommand(
+            () -> m_robotDrive.drive(
+                -MathUtil.applyDeadband(m_driverController.getLeftY(),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX(),
+                    OIConstants.kDriveDeadband),
+                true),
+            m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
@@ -228,16 +228,15 @@ public class RobotContainer {
     // L3Button.onTrue(m_stateMachine.retractClimber());
     // //L2Button.onTrue(m_stateMachine.stowClimber());
 
+      // if (Robot.isSimulation()) {
+      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+          .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+      // }
 
-    // if (Robot.isSimulation()) {
-    coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-        .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-    loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-        .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-    // }
-
-    overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
-        .onFalse(m_stateMachine.disableManualOverride());
+      overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
+          .onFalse(m_stateMachine.disableManualOverride());
   }
 
   public Command setTeleOpDefaultStates() {

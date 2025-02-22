@@ -110,13 +110,10 @@ public class StateMachine extends SubsystemBase {
 
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
-      m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
-          // .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
-          .alongWith(
-              m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-                  .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-                  .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
-          .schedule();
+      if (m_dragon.isCoralOnDragon())
+        dragonStandbySequence().schedule();
+      else
+        idleSequence().schedule();
     });
   }
 
