@@ -371,6 +371,11 @@ public class StateMachine extends SubsystemBase {
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
 
+  public Command manualElevatorHomingSequence() {
+    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+        .andThen(m_elevator.homingSequence()));
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);

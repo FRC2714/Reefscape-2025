@@ -97,6 +97,7 @@ public class RobotContainer {
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
+  private final JoystickButton manualHomingButton = new JoystickButton(m_rightController, 9); // Change later
 
   private SendableChooser<Command> autoChooser;
 
@@ -198,7 +199,7 @@ public class RobotContainer {
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
-    // //L2Button.onTrue(m_stateMachine.stowClimber());
+    // L2Button.onTrue(m_stateMachine.stowClimber());
 
     // Reef Branches for HUD
     int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
@@ -219,6 +220,8 @@ public class RobotContainer {
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
+
+      manualHomingButton.onTrue(m_stateMachine.manualElevatorHomingSequence());
     }
   }
 
