@@ -42,6 +42,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
     URCL.start();
+    m_robotContainer.elevatorHomingSequence();
   }
 
   /**
