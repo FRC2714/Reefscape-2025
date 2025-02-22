@@ -152,7 +152,7 @@ public class Dragon extends SubsystemBase {
     if (Robot.isSimulation()) {
       return true;
     }
-    return pivotAbsoluteEncoder.getPosition() < 180;
+    return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromElevatorAngle;
   }
 
   private void setDragonState(DragonState state) {
@@ -270,19 +270,13 @@ public class Dragon extends SubsystemBase {
   public Command scoreStandby() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_STANDBY);
     }).withName("score standby");
   }
 
   public double getSimulationCurrentDraw() {
     return m_pivotSim.getCurrentDrawAmps();
-  }
-
-  private void setCoralOnDragon() {
-    if (!coralOnDragon) {
-      coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
-    }
   }
 
   public boolean isCoralOnDragon() {
@@ -319,8 +313,6 @@ public class Dragon extends SubsystemBase {
     SmartDashboard.putString("Dragon/Current Command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
-
-    // setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180

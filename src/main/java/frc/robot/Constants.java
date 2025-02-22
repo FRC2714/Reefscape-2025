@@ -282,6 +282,7 @@ public final class Constants {
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
     public static final double kPivotZeroOffset = 149.0;
+    public static final double kClearFromElevatorAngle = 180;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
@@ -299,7 +300,8 @@ public final class Constants {
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // tune ts (pos when getting from station)
       public static final double kExtake = .6; // tune ts (neg when scoring)
-      public static final double kStop = -0.1;
+      public static final double kStop = 0.0;
+      public static final double kHold = -0.1;
     }
   }
 
