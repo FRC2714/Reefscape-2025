@@ -33,7 +33,7 @@ public class AlignToCoral extends Command {
     this.side = side;
 
     xController = new PIDController(0.9, 0, 0);
-    yController = new PIDController(0.6, 0, 0);
+    yController = new PIDController(0.52, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);

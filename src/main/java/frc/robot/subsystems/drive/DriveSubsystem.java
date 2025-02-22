@@ -368,6 +368,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Drive/Pose/Front Right Position", m_frontRight.getPosition().distanceMeters);
     SmartDashboard.putNumber("Drive/Pose/Rear Left Position", m_rearLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("Drive/Pose/Rear Right Position", m_rearRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("Drive/Pose/Heading", getHeading());
     LimelightHelpers.SetRobotOrientation("limelight-back",
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.SetRobotOrientation("limelight-right",
