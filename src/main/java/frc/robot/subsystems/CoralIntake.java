@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
@@ -83,7 +84,7 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
-  private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
+  private SparkLimitSwitch beamBreak = indexerMotor.getForwardLimitSwitch();
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -308,9 +309,9 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public boolean isLoaded() {
-    // if (Robot.isSimulation())
-    return loaded;
-    // return !beamBreak.get();
+    if (Robot.isSimulation())
+      return loaded;
+    return beamBreak.isPressed();
   }
 
   public void setLoadedTrue() {
@@ -349,7 +350,7 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.get());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.isPressed());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
