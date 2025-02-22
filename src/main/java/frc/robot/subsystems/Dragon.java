@@ -271,12 +271,6 @@ public class Dragon extends SubsystemBase {
     return m_pivotSim.getCurrentDrawAmps();
   }
 
-  private void setCoralOnDragon() {
-    if (!coralOnDragon) {
-      coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
-    }
-  }
-
   public boolean isCoralOnDragon() {
     if (Robot.isSimulation())
       return coralOnDragon;

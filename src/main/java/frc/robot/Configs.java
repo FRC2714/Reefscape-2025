@@ -8,7 +8,6 @@ import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralIntakeConstants;
-import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
