@@ -38,7 +38,11 @@ import frc.robot.subsystems.LED;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
+
+
 public class RobotContainer {
+
+  
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
@@ -66,6 +70,8 @@ public class RobotContainer {
 
   private final StateMachine m_stateMachine = new StateMachine(
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
+
+
 
   // Mech2d Stuff
   // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
@@ -98,6 +104,8 @@ public class RobotContainer {
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
 
+
+
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -108,7 +116,6 @@ public class RobotContainer {
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
-
     configureButtonBindings();
 
     // Configure default commands
@@ -153,6 +160,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    final int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+    for (int i = 0; i < stalkNumbers.length; i++) {
+      int number = stalkNumbers[i]; // Capture the number for the lambda
+      new JoystickButton(m_leftController, i + 1) // i + initial button number
+          .onTrue(new InstantCommand(() -> {
+            SmartDashboard.putNumber("Reef Stalk Number", number);
+            if (number % 2 == 0) {
+              m_stateMachine.setSide(Align.RIGHT);
+            } else {
+              m_stateMachine.setSide(Align.LEFT);
+            }
+          }));
+    }
+
+
     // Driver Controller Actions
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
@@ -167,13 +190,18 @@ public class RobotContainer {
     m_driverController.leftBumper()
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
+    
+    m_driverController.rightBumper().whileTrue(
+      new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getSide())
+    );
 
     // Force Actions
-    m_driverController.povLeft()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
+    // m_driverController.povLeft()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
 
-    m_driverController.povRight()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT));
+    // m_driverController.povRight()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT));
+
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     m_driverController.a().onTrue(m_dragon.handoff());
@@ -200,26 +228,16 @@ public class RobotContainer {
     // L3Button.onTrue(m_stateMachine.retractClimber());
     // //L2Button.onTrue(m_stateMachine.stowClimber());
 
-    // Reef Branches for HUD
-    int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-    for (int i = 0; i < stalkNumbers.length; i++) {
-      final int number = stalkNumbers[i]; // Capture the number for the lambda
-      new JoystickButton(m_leftController, i + 1) // i + initial button number
-          .onTrue(new InstantCommand(() -> {
-            SmartDashboard.putNumber("Reef Stalk Number", number);
-          }));
+    // if (Robot.isSimulation()) {
+    coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+        .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+    loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+        .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+    // }
 
-      // if (Robot.isSimulation()) {
-      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      // }
-
-      overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
-          .onFalse(m_stateMachine.disableManualOverride());
-    }
+    overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
+        .onFalse(m_stateMachine.disableManualOverride());
   }
 
   public Command setTeleOpDefaultStates() {
