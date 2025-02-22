@@ -5,21 +5,17 @@
 package frc.robot.subsystems;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
-import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
 import frc.robot.subsystems.Limelight.Align;
+
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -118,7 +114,7 @@ public class StateMachine extends SubsystemBase {
           // .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
           .alongWith(
               m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-                  .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
+                  .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
                   .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
           .schedule();
     });
@@ -132,7 +128,7 @@ public class StateMachine extends SubsystemBase {
 
   private Command idleSequence() {
     return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-        .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
         .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
         .beforeStarting(() -> m_state = State.IDLE);
@@ -159,7 +155,7 @@ public class StateMachine extends SubsystemBase {
 
   private Command handoffSequence() {
     return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-        .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon())
@@ -202,7 +198,7 @@ public class StateMachine extends SubsystemBase {
 
   private Command poopStandbySequence() {
     return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-        .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
         .alongWith(m_coralIntake.poopStandby().until(m_coralIntake::atSetpoint))
         .beforeStarting(() -> m_state = State.POOP_STANDBY);
