@@ -230,16 +230,16 @@ public final class Constants {
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
 
-    public static final double kRightCameraHeight = 19.942862;
-    public static final double kLeftCameraHeight = 19.942862;
+    public static final double kRightCameraHeight = 19.942862; // 0.5065486948 meters
+    public static final double kLeftCameraHeight = 19.942862; // 0.5065486948 meters
 
     // Parallel to elevator
-    public static final double kRightCameraXOffset = 12.153079;
-    public static final double kLeftCameraXOffset = -12.153079;
+    public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
+    public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
 
     // Perpendicular to elevator
-    public static final double kRightCameraYOffset = 11.940763;
-    public static final double kLeftCameraYOffset = 11.940763;
+    public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
+    public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
 
     public static final double kBackCameraHeight = 2.75 + 15.5; // TODO
 
