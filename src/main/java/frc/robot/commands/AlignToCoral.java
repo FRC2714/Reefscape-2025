@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -21,9 +20,6 @@ public class AlignToCoral extends Command {
   private LED m_blinkin;
   private Align side;
 
-  // private Limelight m_rightLimelight;
-  // private Limelight m_leftLimelight;
-
   private PIDController xController;
   private PIDController yController;
   private PIDController thetaController;
@@ -37,7 +33,7 @@ public class AlignToCoral extends Command {
     this.side = side;
 
     xController = new PIDController(0.9, 0, 0);
-    yController = new PIDController(0.3, 0, 0);
+    yController = new PIDController(0.6, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
