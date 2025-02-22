@@ -52,15 +52,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kFrontRightDrivingCanId = 3;
-    public static final int kRearRightDrivingCanId = 5;
-    public static final int kRearLeftDrivingCanId = 7;
+    public static final int kFrontLeftDrivingCanId = 5;
+    public static final int kFrontRightDrivingCanId = 7;
+    public static final int kRearRightDrivingCanId = 1;
+    public static final int kRearLeftDrivingCanId = 3;
 
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 8;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kFrontRightTurningCanId = 8;
+    public static final int kRearRightTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 4;
 
     public static final boolean kGyroReversed = false;
 
@@ -127,7 +127,7 @@ public final class Constants {
       public static final double kIntake = 65; // TBD
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 60; // TBD
-      public static final double kHandoff = 69.8; // TBD
+      public static final double kHandoff = 72.8; // TBD
       public static final double kPoop = 70; // TBD
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
