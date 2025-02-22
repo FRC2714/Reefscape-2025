@@ -187,9 +187,9 @@ public class RobotContainer {
     
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
       if (number % 2 == 0) {
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT).schedule();
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT);
       } else {
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT).schedule();
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT);
       }
     }));
       
