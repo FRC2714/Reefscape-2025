@@ -192,7 +192,7 @@ public class RobotContainer {
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT);
       }
     }));
-      
+
     climbButton.onFalse(m_stateMachine.retractClimber());
 
     // Force Actions
@@ -226,7 +226,6 @@ public class RobotContainer {
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
     // //L2Button.onTrue(m_stateMachine.stowClimber());
-
 
 
     // if (Robot.isSimulation()) {
