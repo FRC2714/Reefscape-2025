@@ -125,7 +125,7 @@ public final class Constants {
     public static final class PivotSetpoints {
       public static final double kStow = 15; // TBD
       public static final double kIntake = 65; // TBD
-      public static final double kOneCoralInBetweenIntake = 77;
+      public static final double kOneCoralIntake = 77;
       public static final double kExtake = 60; // TBD
       public static final double kHandoff = 72.8; // TBD
       public static final double kPoop = 70; // TBD
