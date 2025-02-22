@@ -215,6 +215,12 @@ public class Elevator extends SubsystemBase {
     return m_elevatorState;
   }
 
+  public Command homingSequence() {
+    return this.run(() -> {
+      elevatorMotor.set(-0.1);
+    }).until(() -> elevatorMotor.getReverseLimitSwitch().isPressed());
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

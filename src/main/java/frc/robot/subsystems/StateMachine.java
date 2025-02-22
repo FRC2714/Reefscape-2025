@@ -367,6 +367,7 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_climber.retract().until(m_climber::atSetpoint)).schedule());
   }
 
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);

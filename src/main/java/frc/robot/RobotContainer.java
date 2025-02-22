@@ -216,6 +216,10 @@ public class RobotContainer {
     m_stateMachine.setDefaultStates().schedule();
     m_blinkin.setOrange(); // default lights are orange
   }
+  
+  public void elevatorHomingSequence() {
+    m_elevator.homingSequence().schedule();
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
