@@ -331,6 +331,8 @@ public final class Constants {
       public static final double kLevel3 = 56.08;
       public static final double kLevel4 = 48;
       public static final double kClimb = 180;
+      public static final double kAlgaeHigh = 98; // TODO: fix this later
+      public static final double kAlgaeLow = 37.13; // TODO: fix this later
     }
 
     public static final class RollerSetpoints {
