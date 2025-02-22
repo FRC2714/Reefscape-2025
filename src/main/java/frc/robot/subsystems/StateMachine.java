@@ -161,7 +161,7 @@ public class StateMachine extends SubsystemBase {
         .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
         .andThen(dragonStandbySequence()
           .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
-         .beforeStarting(() -> m_state = State.HANDOFF);
+          .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
   private Command dragonStandbySequence() {
