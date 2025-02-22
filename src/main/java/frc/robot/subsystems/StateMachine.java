@@ -376,7 +376,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command elevatorHomingSequence() {
-    return (m_dragon.stow().until(m_dragon::atSetpoint)
+    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence())
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
@@ -384,6 +384,7 @@ public class StateMachine extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
+    SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
     SmartDashboard.putString("State Machine/Current Comamand",

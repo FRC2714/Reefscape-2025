@@ -230,6 +230,10 @@ public class Elevator extends SubsystemBase {
     }).until(() -> elevatorMotor.getReverseLimitSwitch().isPressed());
   }
 
+  public boolean reverseLimitSwitchPressed() {
+    return elevatorMotor.getReverseLimitSwitch().isPressed();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
