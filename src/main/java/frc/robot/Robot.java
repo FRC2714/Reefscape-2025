@@ -43,7 +43,6 @@ public class Robot extends TimedRobot {
     // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
     URCL.start();
-    m_robotContainer.elevatorHomingSequence();
   }
 
   /**
@@ -101,6 +100,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.elevatorHomingSequence().schedule();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -129,9 +129,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.setTeleOpDefaultStates();
-
-    // m_robotContainer.setTeleOpDefaultStates();
+    m_robotContainer.elevatorHomingSequence()
+      .andThen(m_robotContainer.setTeleOpDefaultStates()).schedule();
   }
 
   /** This function is called periodically during operator control. */

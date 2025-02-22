@@ -221,23 +221,25 @@ public class RobotContainer {
     }
   }
 
-  public void setTeleOpDefaultStates() {
-    m_stateMachine.setDefaultStates().schedule();
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-    m_blinkin.setOrange(); // default lights are orange
+  public Command setTeleOpDefaultStates() {
+    return new InstantCommand(() -> {
+      m_stateMachine.setDefaultStates().schedule();
+      if (overrideStateMachineButton.getAsBoolean()) {
+        m_stateMachine.enableManualOverride().schedule();
+      } else {
+        m_stateMachine.disableManualOverride().schedule();
+      }
+      if (autoHandoffButton.getAsBoolean()) {
+        m_stateMachine.enableAutoHandoff().schedule();
+      } else {
+        m_stateMachine.disableAutoHandoff().schedule();
+      }
+      m_blinkin.setOrange(); // default lights are orange
+    });
   }
-  
-  public void elevatorHomingSequence() {
-    m_elevator.homingSequence().schedule();
+
+  public Command elevatorHomingSequence() {
+    return m_stateMachine.elevatorHomingSequence();
   }
 
   public void isAutoHandoffEnabled() {
