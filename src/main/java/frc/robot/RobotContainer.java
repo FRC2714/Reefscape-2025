@@ -52,17 +52,17 @@ public class RobotContainer {
   private final Limelight m_rightLimelight = new Limelight(
       LimelightConstants.kRightLimelightName,
       LimelightConstants.kRightCameraHeight,
-      LimelightConstants.kRightMountingAngle,
+      LimelightConstants.kRightMountingPitch,
       LimelightConstants.kReefTagHeight);
   private final Limelight m_leftLimelight = new Limelight(
       LimelightConstants.kLeftLimelightName,
       LimelightConstants.kLeftCameraHeight,
-      LimelightConstants.kLeftMountingAngle,
+      LimelightConstants.kLeftMountingPitch,
       LimelightConstants.kReefTagHeight);
 
   private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
       LimelightConstants.kBackCameraHeight,
-      LimelightConstants.kBackMountingAngle,
+      LimelightConstants.kBackMountingPitch,
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
