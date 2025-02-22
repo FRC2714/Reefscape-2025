@@ -185,6 +185,12 @@ public class Dragon extends SubsystemBase {
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
         break;
+      case ALGAE_HIGH:
+        pivotCurrentTarget = PivotSetpoints.kAlgaeHigh;
+        break;
+      case ALGAE_LOW:
+        pivotCurrentTarget = PivotSetpoints.kAlgaeLow;
+        break;
     }
     moveToSetpoint();
   }
