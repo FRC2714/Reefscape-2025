@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
@@ -76,6 +77,8 @@ public class Dragon extends SubsystemBase {
 
   // Pivot rollers
   private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless);
+
+  private SparkLimitSwitch beamBreak = pivotRollers.getForwardLimitSwitch();
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
@@ -280,7 +283,9 @@ public class Dragon extends SubsystemBase {
   }
 
   public boolean isCoralOnDragon() {
-    return coralOnDragon;
+    if (Robot.isSimulation())
+      return coralOnDragon;
+    return beamBreak.isPressed();
   }
 
   public void coralOnDragonTrue() {

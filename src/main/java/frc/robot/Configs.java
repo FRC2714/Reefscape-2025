@@ -168,6 +168,8 @@ public final class Configs {
                                         .inverted(false)
                                         .smartCurrentLimit(40)
                                         .idleMode(IdleMode.kBrake);
+                        indexerConfig.limitSwitch
+                                        .forwardLimitSwitchEnabled(false);
 
                 }
         }
@@ -232,6 +234,9 @@ public final class Configs {
                                         .reverseSoftLimit(DragonConstants.kPivotMinAngle)
                                         .forwardSoftLimitEnabled(true)
                                         .reverseSoftLimitEnabled(true);
+                        
+                        pivotRollerConfig.limitSwitch
+                                        .forwardLimitSwitchEnabled(false);
 
                         pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
 

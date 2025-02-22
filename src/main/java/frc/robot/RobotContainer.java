@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -235,6 +236,22 @@ public class RobotContainer {
       m_stateMachine.disableAutoHandoff().schedule();
     }
     m_blinkin.setOrange(); // default lights are orange
+  }
+
+  public void isAutoHandoffEnabled() {
+    if (autoHandoffButton.getAsBoolean()) {
+      m_stateMachine.enableAutoHandoff().schedule();
+    } else {
+      m_stateMachine.disableAutoHandoff().schedule();
+    }
+  }
+
+  public void isManualOverrideEnabled() {
+    if (overrideStateMachineButton.getAsBoolean()) {
+      m_stateMachine.enableManualOverride().schedule();
+    } else {
+      m_stateMachine.disableManualOverride().schedule();
+    }
   }
 
   /**

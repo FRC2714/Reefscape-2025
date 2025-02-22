@@ -232,6 +232,12 @@ public class StateMachine extends SubsystemBase {
           // Go to true idle if there is no coral loaded at all
           idleSequence().schedule();
         }
+      } else if (m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        if (m_state == State.DRAGON_STANDBY && !m_dragon.isCoralOnDragon()
+          || m_state == State.POOP_STANDBY && !m_coralIntake.isLoaded()) {
+          // Go to true idle if there is no coral loaded at all
+          idleSequence().schedule();
+        }
       }
     }).withName("idle()");
   }
