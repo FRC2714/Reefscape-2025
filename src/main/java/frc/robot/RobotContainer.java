@@ -245,7 +245,6 @@ public class RobotContainer {
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
-    }
   }
 
   public Command setTeleOpDefaultStates() {
