@@ -107,7 +107,7 @@ public class StateMachine extends SubsystemBase {
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
       m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
-          .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
+          // .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
           .alongWith(
               m_dragon.stow().until(m_dragon::isClearFromElevator)
                   .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
@@ -154,8 +154,8 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoffReady())).until(m_dragon::atSetpoint)
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
-        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon() && !m_coralIntake.isLoaded())
-            .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
+        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon())
+            .alongWith(m_dragon.handoff().until(() -> m_dragon.isCoralOnDragon())))
         .andThen(dragonStandbySequence()
             .alongWith(m_coralIntake.intakeReady()).until(m_dragon::isClearFromElevator))
         .beforeStarting(() -> m_state = State.HANDOFF);
@@ -234,7 +234,7 @@ public class StateMachine extends SubsystemBase {
         }
       } else if (m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
         if (m_state == State.DRAGON_STANDBY && !m_dragon.isCoralOnDragon()
-          || m_state == State.POOP_STANDBY && !m_coralIntake.isLoaded()) {
+            || m_state == State.POOP_STANDBY && !m_coralIntake.isLoaded()) {
           // Go to true idle if there is no coral loaded at all
           idleSequence().schedule();
         }
