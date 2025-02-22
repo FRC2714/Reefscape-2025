@@ -19,6 +19,7 @@ import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
+import frc.robot.subsystems.Limelight.Align;
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -55,6 +56,8 @@ public class StateMachine extends SubsystemBase {
   private HashMap<ScoreLevel, ElevatorSetpoint> elevatorMap = new HashMap<>();
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
+  private Align side = Align.RIGHT;
+
   /** Creates a new StateMachine. */
   public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
       Climber m_climber) {
@@ -87,6 +90,10 @@ public class StateMachine extends SubsystemBase {
 
   public Command enableManualOverride() {
     return new InstantCommand(() -> manualOverride = true);
+  }
+
+  public Align getSide() {
+    return side;
   }
 
   public Command disableManualOverride() {
@@ -377,8 +384,13 @@ public class StateMachine extends SubsystemBase {
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
 
+  public void setSide(Align side) {
+    this.side = side;
+  }
+
   @Override
   public void periodic() {
+    SmartDashboard.putString("State Machine/Align", side.toString());
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);

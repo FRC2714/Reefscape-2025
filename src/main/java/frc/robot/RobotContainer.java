@@ -105,6 +105,8 @@ public class RobotContainer {
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
 
+
+
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -115,7 +117,6 @@ public class RobotContainer {
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
-
     configureButtonBindings();
 
     // Configure default commands
@@ -167,8 +168,14 @@ public class RobotContainer {
       new JoystickButton(m_leftController, i + 1) // i + initial button number
           .onTrue(new InstantCommand(() -> {
             SmartDashboard.putNumber("Reef Stalk Number", number);
+            if (number % 2 == 0) {
+              m_stateMachine.setSide(Align.RIGHT);
+            } else {
+              m_stateMachine.setSide(Align.LEFT);
+            }
           }));
     }
+
 
     // Driver Controller Actions
     m_driverController
@@ -185,13 +192,9 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
     
-    m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-      if (SmartDashboard.getNumber("Reef Stalk Number", 0) % 2 == 0) {
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT);
-      } else {
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT);
-      }
-    }));
+    m_driverController.rightBumper().whileTrue(
+      new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getSide())
+    );
 
     climbButton.onFalse(m_stateMachine.retractClimber());
 

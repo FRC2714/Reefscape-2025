@@ -28,9 +28,7 @@ public class Limelight extends SubsystemBase {
     LEFT,
     RIGHT
   }
-
-  private Align side;
-
+  
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;
@@ -124,12 +122,10 @@ public class Limelight extends SubsystemBase {
   // Pipline Stuff
   public void setCoralTagPipelineRight() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kRightReefBranchPipeline);
-    Align side = Align.RIGHT;    
   }
 
   public void setCoralTagPipelineLeft() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kLeftReefBranchPipeline);
-    Align side = Align.LEFT;
   }
 
   public void setProcessorTagPipeline() {
@@ -156,11 +152,6 @@ public class Limelight extends SubsystemBase {
     return (int) LimelightHelpers.getFiducialID(m_limelightName);
   }
 
-  public Align getSide()
-  {
-    return side;
-  }
-
   @Override
   public void periodic() {
     // if (Robot.isSimulation()) {
@@ -175,6 +166,5 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
 
-    SmartDashboard.putString("Limelight/side", side != null ? getSide().toString() : "none");
   }
 }
