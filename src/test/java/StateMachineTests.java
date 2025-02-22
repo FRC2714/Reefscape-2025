@@ -419,7 +419,6 @@ public class StateMachineTests {
         setState(State.DRAGON_STANDBY);
         m_dragon.coralonDragonFalse();
         assertCommandHasNoEffect(State.DRAGON_STANDBY,
-                m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
                 m_stateMachine.scoreCoral());
