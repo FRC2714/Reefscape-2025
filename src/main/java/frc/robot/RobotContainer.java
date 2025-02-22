@@ -72,9 +72,6 @@ public class RobotContainer {
   private final StateMachine m_stateMachine = new StateMachine(
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
-  private final int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
-  private int number = stalkNumbers[0];
 
 
   // Mech2d Stuff
@@ -162,13 +159,16 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    
+
+    final int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
     for (int i = 0; i < stalkNumbers.length; i++) {
-      number = stalkNumbers[i]; // Capture the number for the lambda
+      int number = stalkNumbers[i]; // Capture the number for the lambda
       new JoystickButton(m_leftController, i + 1) // i + initial button number
           .onTrue(new InstantCommand(() -> {
             SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
+    }
 
     // Driver Controller Actions
     m_driverController
@@ -186,7 +186,7 @@ public class RobotContainer {
         .onFalse(m_stateMachine.stopScore());
     
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-      if (number % 2 == 0) {
+      if (SmartDashboard.getNumber("Reef Stalk Number", 0) % 2 == 0) {
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT);
       } else {
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT);
@@ -229,16 +229,15 @@ public class RobotContainer {
 
 
 
-      // if (Robot.isSimulation()) {
-      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      // }
+    // if (Robot.isSimulation()) {
+    coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+        .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+    loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+        .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+    // }
 
-      overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
-          .onFalse(m_stateMachine.disableManualOverride());
-    }
+    overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
+        .onFalse(m_stateMachine.disableManualOverride());
   }
 
   public Command setTeleOpDefaultStates() {
