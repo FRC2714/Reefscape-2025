@@ -28,7 +28,7 @@ public class Limelight extends SubsystemBase {
     LEFT,
     RIGHT
   }
-
+  
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;
@@ -154,16 +154,17 @@ public class Limelight extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (Robot.isSimulation()) {
+    // if (Robot.isSimulation()) {
 
-    } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
-      setPipeline(Constants.LimelightConstants.kRedPosePipeline);
-    } else {
-      setPipeline(Constants.LimelightConstants.kBluePosePipeline);
-      SmartDashboard.putNumber("X offset", getXAngleOffsetDegrees());
-      SmartDashboard.putNumber("Y offset", getYAngleOffsetDegrees());
-      SmartDashboard.putNumber("distance to goal", getDistanceToGoalMeters());
-    }
+    // } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
+    //   setPipeline(Constants.LimelightConstants.kRedPosePipeline);
+    // } else {
+    //   setPipeline(Constants.LimelightConstants.kBluePosePipeline);
+    // }
+
+    SmartDashboard.putNumber(m_limelightName + "/X offset", getXAngleOffsetDegrees());
+    SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
+    SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
 
   }
 }
