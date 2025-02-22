@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.LED;
 
@@ -97,6 +99,8 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
+  private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 9);
+  private final JoystickButton removeAlgaeHighLevelButton = new JoystickButton(m_rightController, 10);
 
   private SendableChooser<Command> autoChooser;
 
@@ -193,6 +197,10 @@ public class RobotContainer {
 
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
+
+    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
+    removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
+
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
