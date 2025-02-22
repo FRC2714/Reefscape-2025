@@ -175,8 +175,6 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
 
-
-
-
+    SmartDashboard.putString("Limelight/side", side != null ? getSide().toString() : "none");
   }
 }
