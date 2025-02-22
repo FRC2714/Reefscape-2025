@@ -228,14 +228,6 @@ public class RobotContainer {
     // L3Button.onTrue(m_stateMachine.retractClimber());
     // //L2Button.onTrue(m_stateMachine.stowClimber());
 
-
-    // if (Robot.isSimulation()) {
-    // coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-    //     .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
-    // loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-    //     .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-    // }
-
       // if (Robot.isSimulation()) {
       coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
           .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
