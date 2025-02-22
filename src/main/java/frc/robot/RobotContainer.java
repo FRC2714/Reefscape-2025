@@ -171,10 +171,10 @@ public class RobotContainer {
 
     // Force Actions
     m_driverController.povLeft()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
 
     m_driverController.povRight()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
+        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT));
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     m_driverController.a().onTrue(m_dragon.handoff());

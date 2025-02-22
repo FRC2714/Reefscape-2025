@@ -29,26 +29,27 @@ public class AlignToCoral extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, Align side) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, LED m_blinkin, Align side) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
+    this.m_blinkin = m_blinkin;
     this.side = side;
 
-    xController = new PIDController(0.55, 0, 0); // tune these later
-    yController = new PIDController(0.25, 0, 0);
+    xController = new PIDController(0.9, 0, 0); // tune these later
+    yController = new PIDController(0.5, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(Units.inchesToMeters(13));
+    xController.setSetpoint(0.1);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.2);
-    yController.setTolerance(.2);
+    xController.setTolerance(.01);
+    yController.setTolerance(.01);
     thetaController.setTolerance(.1);
   }
 
