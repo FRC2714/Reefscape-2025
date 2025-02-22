@@ -84,6 +84,9 @@ public class StateMachine extends SubsystemBase {
     dragonMap.put(ScoreLevel.L4, DragonSetpoint.L4);
   }
 
+
+
+
   public Command enableManualOverride() {
     return new InstantCommand(() -> manualOverride = true);
   }
@@ -112,7 +115,6 @@ public class StateMachine extends SubsystemBase {
             stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
                   .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
                   .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
-          .alongWith(disableManualOverride())
           .schedule();
     });
   }
@@ -138,6 +140,7 @@ public class StateMachine extends SubsystemBase {
   private Command intakeSequence() {
     return m_coralIntake.intake()
         .until(m_coralIntake::isLoaded)
+        .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
             new ConditionalCommand(
@@ -156,12 +159,13 @@ public class StateMachine extends SubsystemBase {
   private Command handoffSequence() {
     return (stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
-        .andThen(m_dragon.handoff().until(m_dragon::atSetpoint)))
+        .andThen(m_dragon.handoffReady())).until(m_dragon::atSetpoint)
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
-        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon() && !m_coralIntake.isLoaded()))
+        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon() && !m_coralIntake.isLoaded())
+        .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
         .andThen(dragonStandbySequence()
           .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
-        .beforeStarting(() -> m_state = State.HANDOFF);
+         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
   private Command dragonStandbySequence() {
@@ -378,6 +382,9 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
+    SmartDashboard.putString("State Machine/Current Comamand",
+        this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+
 
   }
 }

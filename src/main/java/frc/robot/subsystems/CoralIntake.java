@@ -9,10 +9,13 @@ import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,6 +33,7 @@ import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -59,6 +63,10 @@ public class CoralIntake extends SubsystemBase {
     POOP_STANDBY
   }
 
+  // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.CoralIntake.pivotConfig;
+
   private CoralIntakeSetpoint m_coralIntakeSetpoint;
   private CoralIntakeState m_coralIntakeState;
 
@@ -73,6 +81,7 @@ public class CoralIntake extends SubsystemBase {
   private SparkFlex indexerMotor = new SparkFlex(CoralIntakeConstants.kIndexerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+  private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
   private DigitalInput beamBreak = new DigitalInput(CoralIntakeConstants.kBeamBreakDioChannel);
 
@@ -105,6 +114,10 @@ public class CoralIntake extends SubsystemBase {
           CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
+    tunableAngle = new TunableNumber("Coral Intake/Tunable Pivot Angle");
+    tunableP = new TunableNumber("Coral Intake/Tunable Pivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -147,7 +160,8 @@ public class CoralIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+        pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -181,7 +195,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kEject;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
@@ -195,7 +209,7 @@ public class CoralIntake extends SubsystemBase {
     rollerMotor.set(power);
 
     // TODO: Control this separately
-    indexerMotor.set(power);
+    indexerMotor.set(-power);
   }
 
   public Command intake() {
@@ -249,7 +263,7 @@ public class CoralIntake extends SubsystemBase {
   public Command handoff() {
     return handoffReady().until(this::atSetpoint).andThen(
         this.run(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
+          setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.HANDOFF);
         })).withName("handoff");
   }
@@ -294,9 +308,9 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public boolean isLoaded() {
-    if (Robot.isSimulation())
-      return loaded;
-    return !beamBreak.get();
+    // if (Robot.isSimulation())
+    return loaded;
+    // return !beamBreak.get();
   }
 
   public void setLoadedTrue() {
@@ -339,11 +353,21 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
-    SmartDashboard.putString("Coral Intake/Current command",
-        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "null");
+    SmartDashboard.putString("Coral Intake/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees + pivotEncoder.getPosition());
+
+    // Tunable if's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   /** Get the current drawn by each simulation physics model */
