@@ -274,9 +274,10 @@ public final class Constants {
   public static final class DragonConstants {
 
     public static final int kPivotMotorCanId = 16;
-    public static final int kPivotRollerMotorCanID = 17;
+    public static final int kPivotRollerMotorCanId = 17;
     public static final double kPivotReduction = 1;
     public static final double kPivotThreshold = 5; // TODO: tune
+    public static final double kRollerCurrentThreshold = 5; // tune
 
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
