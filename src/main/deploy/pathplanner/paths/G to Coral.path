@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2122435897435895,
-        "y": 3.870192307692308
+        "x": 5.742077464788732,
+        "y": 3.854929577464788
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.634294871794871,
-        "y": 3.756666666666667
+        "x": 6.592429577464788,
+        "y": 1.9699823943661954
       },
       "isLocked": false,
-      "linkedName": "B-Coral"
+      "linkedName": "G-Coral"
     },
     {
       "anchor": {
-        "x": 1.7051420454545454,
-        "y": 0.56984375
+        "x": 2.0357051282051275,
+        "y": 0.34057692307692267
       },
       "prevControl": {
-        "x": 1.5709753787878786,
-        "y": 1.2303565705128194
+        "x": 2.8264682520842213,
+        "y": 1.3014488646555615
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.86989764584396
+    "rotation": -130.91438322002512
   },
   "reversed": false,
-  "folder": "PROCESSOR",
+  "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.6021190381654
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

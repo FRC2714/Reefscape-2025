@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2122435897435895,
-        "y": 3.870192307692308
+        "x": 7.371919014084507,
+        "y": 4.053345070422535
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.634294871794871,
-        "y": 3.756666666666667
+        "x": 6.663292253521126,
+        "y": 4.024999999999999
       },
       "isLocked": false,
-      "linkedName": "B-Coral"
+      "linkedName": "barge middle"
     },
     {
       "anchor": {
-        "x": 1.7051420454545454,
-        "y": 0.56984375
+        "x": 5.742077464788732,
+        "y": 4.180897887323942
       },
       "prevControl": {
-        "x": 1.5709753787878786,
-        "y": 1.2303565705128194
+        "x": 6.323151408450704,
+        "y": 4.067517605633801
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": "H-Coral"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.86989764584396
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "PROCESSOR",
+  "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.6021190381654
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

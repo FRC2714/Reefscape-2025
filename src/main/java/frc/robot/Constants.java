@@ -52,15 +52,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 1;
-    public static final int kFrontRightDrivingCanId = 3;
-    public static final int kRearRightDrivingCanId = 5;
-    public static final int kRearLeftDrivingCanId = 7;
+    public static final int kFrontLeftDrivingCanId = 5;
+    public static final int kFrontRightDrivingCanId = 7;
+    public static final int kRearRightDrivingCanId = 1;
+    public static final int kRearLeftDrivingCanId = 3;
 
-    public static final int kFrontLeftTurningCanId = 2;
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 8;
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kFrontRightTurningCanId = 8;
+    public static final int kRearRightTurningCanId = 2;
+    public static final int kRearLeftTurningCanId = 4;
 
     public static final boolean kGyroReversed = false;
 
@@ -127,7 +127,7 @@ public final class Constants {
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 60;
-      public static final double kHandoff = 69.8;
+      public static final double kHandoff = 72.8;
       public static final double kPoop = 70;
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
@@ -229,19 +229,37 @@ public final class Constants {
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
-    public static final double kRightCameraHeight = 17 + 2.75;
-    public static final double kLeftCameraHeight = 17.5 + 2.75;
-    public static final double kBackCameraHeight = 2.75 + 15.5; // TODO: tune later
-    public static final double kRightMountingAngle = -21;
-    public static final double kLeftMountingAngle = -23;
-    public static final double kBackMountingAngle = 0; // TODO: tune later
+
+    public static final double kRightCameraHeight = 19.942862; // 0.5065486948 meters
+    public static final double kLeftCameraHeight = 19.942862; // 0.5065486948 meters
+
+    // Parallel to elevator
+    public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
+    public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
+
+    // Perpendicular to elevator
+    public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
+    public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
+
+    public static final double kBackCameraHeight = 2.75 + 15.5; // TODO
+
+    public static final double kRightMountingPitch = -45;
+    public static final double kLeftMountingPitch = -45;
+
+    public static final double kRightMountingYaw = -24.499987;
+    public static final double kLeftMountingYaw = 180 - 24.499987;
+
+    public static final double kBackMountingPitch = 0; // TODO
+
+    public static final double kBackMountingYaw = 0; // TODO
+
     public static final double kReefTagHeight = 12;
-    public static final double kProcessorTagHeight = 0; // TODO: tune later
+    public static final double kProcessorTagHeight = 0; // tune later
+    public static final int kProcessorPipeline = 0; // TBD
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
-    public static final int kProcessorPipeline = 0; // TODO
-    public static final int kRedPosePipeline = 0; // TODO
-    public static final int kBluePosePipeline = 6; // TODO
+    public static final int kRedPosePipeline = 3; // TBD
+    public static final int kBluePosePipeline = 4; // TBD
 
     public static final double kCoralStationDistanceThreshold = 0; // TODO: tune
   }
@@ -282,13 +300,14 @@ public final class Constants {
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
     public static final double kPivotZeroOffset = 149.0;
+    public static final double kClearFromElevatorAngle = 180;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 58;
-      public static final double kHandoff = 224.6;
+      public static final double kStow = 115;
+      public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
       public static final double kLevel2 = 98;
       public static final double kLevel3 = 56.08;
@@ -300,6 +319,7 @@ public final class Constants {
       public static final double kIntake = -0.1; // TODO: tune (pos when getting from station)
       public static final double kExtake = .6; // TODO: tune ts (neg when scoring)
       public static final double kStop = 0;
+      public static final double kHold = -0.2;
     }
   }
 

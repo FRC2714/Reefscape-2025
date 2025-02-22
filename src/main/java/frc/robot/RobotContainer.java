@@ -49,17 +49,17 @@ public class RobotContainer {
   private final Limelight m_rightLimelight = new Limelight(
       LimelightConstants.kRightLimelightName,
       LimelightConstants.kRightCameraHeight,
-      LimelightConstants.kRightMountingAngle,
+      LimelightConstants.kRightMountingPitch,
       LimelightConstants.kReefTagHeight);
   private final Limelight m_leftLimelight = new Limelight(
       LimelightConstants.kLeftLimelightName,
       LimelightConstants.kLeftCameraHeight,
-      LimelightConstants.kLeftMountingAngle,
+      LimelightConstants.kLeftMountingPitch,
       LimelightConstants.kReefTagHeight);
 
   private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
       LimelightConstants.kBackCameraHeight,
-      LimelightConstants.kBackMountingAngle,
+      LimelightConstants.kBackMountingPitch,
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
@@ -94,6 +94,7 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
+  private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
 
   private SendableChooser<Command> autoChooser;
 
@@ -110,19 +111,19 @@ public class RobotContainer {
 
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
-    // m_robotDrive.setDefaultCommand(
-    // // The left stick controls translation of the robot.
-    // // Turning is controlled by the X axis of the right stick.
-    // new RunCommand(
-    // () -> m_robotDrive.drive(
-    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getRightX(),
-    // OIConstants.kDriveDeadband),
-    // true),
-    // m_robotDrive));
+    m_robotDrive.setDefaultCommand(
+    // The left stick controls translation of the robot.
+    // Turning is controlled by the X axis of the right stick.
+    new RunCommand(
+    () -> m_robotDrive.drive(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(),
+        OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(),
+        OIConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(m_driverController.getRightX(),
+        OIConstants.kDriveDeadband),
+        true),
+      m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
@@ -167,10 +168,10 @@ public class RobotContainer {
 
     // Force Actions
     m_driverController.povLeft()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
 
     m_driverController.povRight()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
+        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT));
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     m_driverController.a().onTrue(m_dragon.handoff());
@@ -191,6 +192,7 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    scoreButton.onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
@@ -218,19 +220,25 @@ public class RobotContainer {
     }
   }
 
-  public void setTeleOpDefaultStates() {
-    m_stateMachine.setDefaultStates().schedule();
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-    m_blinkin.setOrange(); // default lights are orange
+  public Command setTeleOpDefaultStates() {
+    return new InstantCommand(() -> {
+      m_stateMachine.setDefaultStates().schedule();
+      if (overrideStateMachineButton.getAsBoolean()) {
+        m_stateMachine.enableManualOverride().schedule();
+      } else {
+        m_stateMachine.disableManualOverride().schedule();
+      }
+      if (autoHandoffButton.getAsBoolean()) {
+        m_stateMachine.enableAutoHandoff().schedule();
+      } else {
+        m_stateMachine.disableAutoHandoff().schedule();
+      }
+      m_blinkin.setOrange(); // default lights are orange
+    });
+  }
+
+  public Command elevatorHomingSequence() {
+    return m_stateMachine.elevatorHomingSequence();
   }
 
   public void isAutoHandoffEnabled() {
