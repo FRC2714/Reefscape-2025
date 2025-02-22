@@ -97,6 +97,7 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5); // Stow
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
+  private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
 
   private SendableChooser<Command> autoChooser;
 
@@ -194,6 +195,7 @@ public class RobotContainer {
     coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    scoreButton.onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
