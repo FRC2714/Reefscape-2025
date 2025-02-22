@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
@@ -29,6 +30,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.StateMachine;
+import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.LED;
@@ -100,6 +102,8 @@ public class RobotContainer {
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
+  private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
+  private final JoystickButton removeAlgaeHighLevelButton = new JoystickButton(m_rightController, 6);
 
   private SendableChooser<Command> autoChooser;
 
@@ -207,6 +211,9 @@ public class RobotContainer {
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
     sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
+    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
+    removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
+
 
     if (Robot.isSimulation()) {
         coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))

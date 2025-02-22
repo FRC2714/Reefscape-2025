@@ -29,7 +29,8 @@ public class StateMachine extends SubsystemBase {
     DRAGON_READY,
     DRAGON_SCORE,
     CLIMB_READY,
-    CLIMB
+    CLIMB,
+    ALGAE_REMOVE
   }
 
   private Dragon m_dragon;
@@ -224,6 +225,12 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
+  public Command algaeRemovalSequence(DragonSetpoint level) {
+    return m_dragon.removeAlgae(level)
+        .until(m_algaeIntake::atSetpoint)
+        .beforeStarting(() -> m_state = State.ALGAE_REMOVE);
+  }
+
   public Command idle() {
     return new InstantCommand(() -> {
       if (manualOverride) {
@@ -249,6 +256,14 @@ public class StateMachine extends SubsystemBase {
         }
       }
     }).withName("idle()");
+  }
+
+  public Command removeAlgae(DragonSetpoint level) {
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        algaeRemovalSequence(level).schedule();
+      }
+    }).withName("removeAlgae()");
   }
 
   public Command intakeCoral() {

@@ -46,7 +46,9 @@ public class Dragon extends SubsystemBase {
     L2,
     L3,
     L4,
-    CLIMB
+    CLIMB,
+    ALGAE_HIGH,
+    ALGAE_LOW
   }
 
   public enum DragonState {
@@ -57,7 +59,8 @@ public class Dragon extends SubsystemBase {
     SCORE,
     POOP_READY,
     CLIMB,
-    SCORE_STANDBY
+    SCORE_STANDBY,
+    ALGAE_REMOVE
   }
 
   // Tunables
@@ -200,6 +203,13 @@ public class Dragon extends SubsystemBase {
 
   public BooleanSupplier rollerCurrentSpikeDetected() {
     return () -> pivotRollers.getOutputCurrent() >= DragonConstants.kRollerCurrentThreshold;
+  }
+
+  public Command removeAlgae(DragonSetpoint level) {
+    return this.run(() -> {
+      setPivot(level);
+      setDragonState(DragonState.ALGAE_REMOVE);
+    }).withName("removeAlgae()");
   }
 
   public Command stow() {
