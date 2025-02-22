@@ -98,6 +98,7 @@ public class RobotContainer {
   private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton scoreButton = new JoystickButton(m_rightController, 10);
+  private final JoystickButton manualHomingButton = new JoystickButton(m_rightController, 9); // Change later
 
   private SendableChooser<Command> autoChooser;
 
@@ -220,6 +221,8 @@ public class RobotContainer {
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
+
+      manualHomingButton.onTrue(m_stateMachine.manualElevatorHomingSequence());
     }
   }
 
