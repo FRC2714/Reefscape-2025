@@ -301,7 +301,7 @@ public final class Constants {
       public static final double kIntake = -0.1; // tune ts (pos when getting from station)
       public static final double kExtake = .6; // tune ts (neg when scoring)
       public static final double kStop = 0.0;
-      public static final double kHold = -0.1;
+      public static final double kHold = -0.2;
     }
   }
 

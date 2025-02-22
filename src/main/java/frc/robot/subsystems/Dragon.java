@@ -265,7 +265,7 @@ public class Dragon extends SubsystemBase {
 
   public Command stopScore() {
     return this.run(() -> {
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_READY);
     }).withName("stopScore()");
   }
