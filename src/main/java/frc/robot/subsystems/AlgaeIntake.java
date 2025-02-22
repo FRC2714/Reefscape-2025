@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
@@ -24,11 +25,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
+import frc.robot.Constants;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.AlgaeIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.AlgaeIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class AlgaeIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -48,6 +51,10 @@ public class AlgaeIntake extends SubsystemBase {
     EXTAKE,
     CLIMB
   }
+
+  // Tunable Number
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.AlgaeIntake.pivotConfig;
 
   private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
   private AlgaeIntakeState m_algaeIntakeState;
@@ -96,6 +103,10 @@ public class AlgaeIntake extends SubsystemBase {
           Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeIntake() {
+    tunableAngle = new TunableNumber("Algae/Tunable Pivot Angle");
+    tunableP = new TunableNumber("Algae/Tunable Pivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
     /*
      * Apply the configuration to the SPARKs.
      *
@@ -115,11 +126,11 @@ public class AlgaeIntake extends SubsystemBase {
     // pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
     rollerMotor.configure(
-        Configs.AlgaeSubsystem.rollerConfig,
+        Configs.AlgaeIntake.rollerConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     pivotMotor.configure(
-        Configs.AlgaeSubsystem.pivotConfig,
+        Configs.AlgaeIntake.pivotConfig,
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
@@ -139,7 +150,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition);
   }
 
   public boolean atSetpoint() {
@@ -239,13 +250,25 @@ public class AlgaeIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
 
     SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
+
     SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
+    SmartDashboard.putString("Algae/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
     // Update mechanism2d
     intakePivotMechanism.setAngle(
         Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
             + Units.rotationsToDegrees(
                 pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
+
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   /** Get the current drawn by each simulation physics model */

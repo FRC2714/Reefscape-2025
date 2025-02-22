@@ -11,10 +11,14 @@ import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -31,6 +35,7 @@ import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class Dragon extends SubsystemBase {
 
@@ -55,6 +60,10 @@ public class Dragon extends SubsystemBase {
     SCORE_STANDBY
   }
 
+  // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.Dragon.pivotConfig;
+
   private DragonSetpoint m_dragonSetpoint;
   private DragonState m_dragonState;
 
@@ -63,10 +72,13 @@ public class Dragon extends SubsystemBase {
   // Pivot Arm
   private SparkFlex pivotMotor = new SparkFlex(DragonConstants.kPivotMotorCanId, MotorType.kBrushless);
   private SparkClosedLoopController pivotSparkClosedLoopController = pivotMotor.getClosedLoopController();
+  private ArmFeedforward pivotFF = new ArmFeedforward(0, DragonConstants.kG, 0);
   private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   // Pivot rollers
   private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless);
+
+  private SparkLimitSwitch beamBreak = pivotRollers.getForwardLimitSwitch();
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
@@ -98,6 +110,10 @@ public class Dragon extends SubsystemBase {
   /** Creates a new Elevator and Pivot. */
 
   public Dragon() {
+    tunableAngle = new TunableNumber("Dragon/Pivot Angle");
+    tunableP = new TunableNumber("Dragon/Pivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
 
     pivotMotor.configure(
         Configs.Dragon.pivotConfig,
@@ -124,7 +140,7 @@ public class Dragon extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -183,7 +199,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.STOW);
-    });
+    }).withName("stow()");
   }
 
   public Command handoffReady() {
@@ -191,16 +207,15 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.HANDOFF);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.HANDOFF_READY);
-    });
+    }).withName("handoffReady()");
   }
 
   public Command handoff() {
     return handoffReady().until(this::atSetpoint).andThen(this.run(() -> {
       setPivot(DragonSetpoint.HANDOFF);
-      setRollerPower(RollerSetpoints.kStop);
       setRollerPower(RollerSetpoints.kIntake);
       setDragonState(DragonState.HANDOFF);
-    }));
+    })).withName("handoff()");
   }
 
   public Command poopReady() {
@@ -208,7 +223,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.STOW);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.POOP_READY);
-    });
+    }).withName("poopReady()");
   }
 
   public Command scoreReadyLevel(DragonSetpoint level) {
@@ -216,7 +231,7 @@ public class Dragon extends SubsystemBase {
       setPivot(level);
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
-    });
+    }).withName("scoreReadyLevel()");
   }
 
   public Command climb() {
@@ -231,14 +246,20 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-    }).onlyIf(this::atSetpoint);
+       }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
+  }
+
+  public Command stopRoller() {
+    return this.run(() -> {
+      setRollerPower(RollerSetpoints.kStop);
+       }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
   }
 
   public Command stopScore() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.SCORE_READY);
-    });
+    }).withName("stopScore()");
   }
 
 
@@ -261,7 +282,9 @@ public class Dragon extends SubsystemBase {
   }
 
   public boolean isCoralOnDragon() {
-    return coralOnDragon;
+    if (Robot.isSimulation())
+      return coralOnDragon;
+    return beamBreak.isPressed();
   }
 
   public void coralOnDragonTrue() {
@@ -284,16 +307,18 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboard.putNumber("Dragon/Pivot/Position", pivotAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
 
-    SmartDashboard.putString("Dragon/Dragon State", m_dragonState.toString());
+    SmartDashboard.putString("Dragon/State", m_dragonState.toString());
+    SmartDashboard.putString("Dragon/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
 
-    setCoralOnDragon();
+    //setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180
@@ -303,6 +328,16 @@ public class Dragon extends SubsystemBase {
                     pivotAbsoluteEncoder.getPosition() / SimulationRobotConstants.kPivotReduction))
             - 90 // subtract 90 degrees to account for the elevator
     );
+
+    // Tunable If's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 
   @Override

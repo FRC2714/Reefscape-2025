@@ -11,7 +11,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +21,7 @@ import frc.robot.Configs;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.PivotSetpoints;
 import frc.robot.Robot;
+import frc.robot.utils.TunableNumber;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
@@ -35,6 +38,10 @@ public class Climber extends SubsystemBase {
     RETRACT
   }
 
+  // Tunables
+  private final TunableNumber tunableAngle, tunableP;
+  private SparkFlexConfig tunableConfig = Configs.Climber.pivotConfig;
+
   private ClimberSetpoint m_climberSetpoint;
   private ClimberState m_climberState;
 
@@ -46,6 +53,10 @@ public class Climber extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
   public Climber() {
+    tunableAngle = new TunableNumber("Climber/Tunable Pivot Angle");
+    tunableP = new TunableNumber("Climber/Tunable Pivot P");
+    tunableAngle.setDefault(0);
+    tunableP.setDefault(0);
 
     pivotMotor.configure(
         Configs.Climber.pivotConfig,
@@ -63,7 +74,7 @@ public class Climber extends SubsystemBase {
 
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
-    pivotController.setReference(pivotCurrentTarget, ControlType.kMAXMotionPositionControl);
+    pivotController.setReference(pivotCurrentTarget, ControlType.kPosition);
   }
 
   public boolean atSetpoint() {
@@ -129,10 +140,24 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Climber/Current Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Climber/Setpoint", pivotCurrentTarget);
+    SmartDashboard.putNumber("Climber/Pivot/Current Position", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Climber/Pivot/Setpoint", pivotCurrentTarget);
 
     SmartDashboard.putString("Climber/Climber State", m_climberState.toString());
-    SmartDashboard.putBoolean("Climber/at Setpoint?", atSetpoint());
+    SmartDashboard.putBoolean("Climber/Pivot/at Setpoint?", atSetpoint());
+
+    SmartDashboard.putString("Climber/State", m_climberState.toString());
+    SmartDashboard.putString("Climber/Current Command",
+        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+
+    // Tunable If's
+    if (tunableAngle.hasChanged()) {
+      pivotCurrentTarget = tunableAngle.get();
+      moveToSetpoint();
+    }
+    if (tunableP.hasChanged()) {
+      tunableConfig.closedLoop.p(tunableP.get());
+      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
   }
 }

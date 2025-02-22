@@ -325,9 +325,7 @@ public class DriveSubsystem extends SubsystemBase {
         // mt2right.tagCount
         // == 0 &&
         doRejectUpdate = true;
-      }
-
-      if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
+      } else if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
           && mt2left.avgTagDist > 3) {
         doRejectUpdate = true;
       }
