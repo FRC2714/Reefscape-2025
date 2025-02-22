@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -68,10 +69,11 @@ public class RobotContainer {
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
 
   // Mech2d Stuff
-  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator, m_dragon, m_coralIntake, m_algaeIntake);
+  // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
+  // m_dragon, m_coralIntake, m_algaeIntake);
 
   // public Mech2dManager getMech2dManager() {
-  //   return m_mech2dManager;
+  // return m_mech2dManager;
   // }
 
   Joystick m_leftController = new Joystick(1); // operator controller 1
@@ -112,24 +114,27 @@ public class RobotContainer {
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
     // m_robotDrive.setDefaultCommand(
-    //     // The left stick controls translation of the robot.
-    //     // Turning is controlled by the X axis of the right stick.
-    //     new RunCommand(
-    //         () -> m_robotDrive.drive(
-    //             -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-    //             -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-    //             true),
-    //         m_robotDrive));
+    // // The left stick controls translation of the robot.
+    // // Turning is controlled by the X axis of the right stick.
+    // new RunCommand(
+    // () -> m_robotDrive.drive(
+    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
+    // OIConstants.kDriveDeadband),
+    // -MathUtil.applyDeadband(m_driverController.getRightX(),
+    // OIConstants.kDriveDeadband),
+    // true),
+    // m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
     NamedCommands.registerCommand("Intake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("Extake Algae",
-    new InstantCommand());
+        new InstantCommand());
     NamedCommands.registerCommand("L4", new InstantCommand());
-    NamedCommands.registerCommand("L3",new InstantCommand());
+    NamedCommands.registerCommand("L3", new InstantCommand());
     NamedCommands.registerCommand("L2", new InstantCommand());
     NamedCommands.registerCommand("L1", new InstantCommand());
     NamedCommands.registerCommand("Intake Coral", new InstantCommand());
@@ -204,12 +209,12 @@ public class RobotContainer {
             SmartDashboard.putNumber("Reef Stalk Number", number);
           }));
 
-      //if (Robot.isSimulation()) {
-        coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-            .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
-        loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-            .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-      //}
+      // if (Robot.isSimulation()) {
+      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+      // }
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
@@ -229,6 +234,22 @@ public class RobotContainer {
       m_stateMachine.disableAutoHandoff().schedule();
     }
     m_blinkin.setOrange(); // default lights are orange
+  }
+
+  public void isAutoHandoffEnabled() {
+    if (autoHandoffButton.getAsBoolean()) {
+      m_stateMachine.enableAutoHandoff().schedule();
+    } else {
+      m_stateMachine.disableAutoHandoff().schedule();
+    }
+  }
+
+  public void isManualOverrideEnabled() {
+    if (overrideStateMachineButton.getAsBoolean()) {
+      m_stateMachine.enableManualOverride().schedule();
+    } else {
+      m_stateMachine.disableManualOverride().schedule();
+    }
   }
 
   /**

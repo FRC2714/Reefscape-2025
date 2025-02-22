@@ -94,7 +94,7 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * This autonomous run  s the autonomous command selected by your
+   * This autonomous run s the autonomous command selected by your
    * {@link RobotContainer} class.
    */
   @Override
@@ -128,6 +128,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.isAutoHandoffEnabled();
 
     // m_robotContainer.setTeleOpDefaultStates();
   }
