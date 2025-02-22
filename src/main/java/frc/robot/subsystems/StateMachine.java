@@ -109,7 +109,7 @@ public class StateMachine extends SubsystemBase {
       m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)
           .alongWith(m_algaeIntake.stow().until(m_algaeIntake::atSetpoint))
           .alongWith(
-              stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+              m_dragon.stow().until(m_dragon::isClearFromElevator)
                   .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
                   .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
           .schedule();
@@ -122,12 +122,8 @@ public class StateMachine extends SubsystemBase {
 
   /* Coral intake, dragon, and elevator commands */
 
-  private Command stowDragonIfElevatorNotAtSetpoint() {
-    return m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint());
-  }
-
   private Command idleSequence() {
-    return (stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+    return (m_dragon.stow().until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
         .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint))
@@ -154,7 +150,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   private Command handoffSequence() {
-    return (stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+    return (m_dragon.stow().until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoffReady())).until(m_dragon::atSetpoint)
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
@@ -197,7 +193,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   private Command poopStandbySequence() {
-    return (stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+    return (m_dragon.stow().until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::atSetpoint))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
         .alongWith(m_coralIntake.poopStandby().until(m_coralIntake::atSetpoint))
@@ -205,7 +201,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   private Command poopReadySequence() {
-    return (stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+    return (m_dragon.stow().until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToPoop().until(m_elevator::atSetpoint))
         .andThen(m_dragon.poopReady().until(m_dragon::atSetpoint)))
         .alongWith(m_coralIntake.poopReady().until(m_coralIntake::atSetpoint))
@@ -353,7 +349,7 @@ public class StateMachine extends SubsystemBase {
   private Command climbSequence() {
     return m_algaeIntake.climb().until(m_algaeIntake::atSetpoint)
         .alongWith(m_coralIntake.climb().until(m_coralIntake::atSetpoint))
-        .alongWith(stowDragonIfElevatorNotAtSetpoint().until(m_dragon::atSetpoint)
+        .alongWith(m_dragon.stow().until(m_dragon::isClearFromElevator)
             .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
             .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
   }
