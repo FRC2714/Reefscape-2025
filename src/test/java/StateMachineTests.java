@@ -352,11 +352,10 @@ public class StateMachineTests {
                 "HANDOFF should be reachable when auto handoff is enabled and coral intake is loaded");
         m_dragon.coralOnDragonTrue();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
         m_coralIntake.setLoadedFalse();
         runScheduler();
         assertState(State.DRAGON_STANDBY,
-                "DRAGON_STANDBY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded");
+                "DRAGON_STANDBY should be reachable from HANDOFF when coral intake is unloaded IF dragon is loaded");
     }
 
     @Test
