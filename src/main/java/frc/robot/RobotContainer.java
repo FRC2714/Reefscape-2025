@@ -196,8 +196,6 @@ public class RobotContainer {
       new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getSide())
     );
 
-    climbButton.onFalse(m_stateMachine.retractClimber());
-
     // Force Actions
     // m_driverController.povLeft()
     //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
