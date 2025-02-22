@@ -1,24 +1,14 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
-import frc.robot.subsystems.Dragon.DragonState;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
-import frc.robot.subsystems.Elevator.ElevatorState;
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -165,7 +155,7 @@ public class StateMachine extends SubsystemBase {
         .alongWith(m_dragon.handoff().until(() -> !m_coralIntake.isLoaded() && m_dragon.isCoralOnDragon())))
         .andThen(dragonStandbySequence()
           .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
-         .beforeStarting(() -> m_state = State.HANDOFF);
+          .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
   private Command dragonStandbySequence() {

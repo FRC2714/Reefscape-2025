@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
@@ -76,7 +72,7 @@ public class Dragon extends SubsystemBase {
   private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   // Pivot rollers
-  private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless);
+  private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanId, MotorType.kBrushless);
 
   private SparkLimitSwitch beamBreak = pivotRollers.getForwardLimitSwitch();
 
@@ -273,12 +269,6 @@ public class Dragon extends SubsystemBase {
 
   public double getSimulationCurrentDraw() {
     return m_pivotSim.getCurrentDrawAmps();
-  }
-
-  private void setCoralOnDragon() {
-    if (!coralOnDragon) {
-      coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
-    }
   }
 
   public boolean isCoralOnDragon() {

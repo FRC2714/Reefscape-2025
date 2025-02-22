@@ -8,7 +8,6 @@ import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralIntakeConstants;
-import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.Constants.DragonConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -33,7 +32,6 @@ public final class Configs {
                                         .velocityConversionFactor(drivingFactor / 60.0); // meters per second
                         drivingConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                                        // These are example gains you may need to them for your own robot!
                                         .pid(0.04, 0, 0)
                                         .velocityFF(drivingVelocityFeedForward)
                                         .outputRange(-1, 1);
@@ -49,7 +47,6 @@ public final class Configs {
                                         .velocityConversionFactor(turningFactor / 60.0); // radians per second
                         turningConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                                        // These are example gains you may need to them for your own robot!
                                         .pid(1, 0, 0)
                                         .outputRange(-1, 1)
                                         // Enable PID wrap around for the turning motor. This will allow the PID
