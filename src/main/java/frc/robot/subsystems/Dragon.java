@@ -48,7 +48,8 @@ public class Dragon extends SubsystemBase {
     L4,
     CLIMB,
     ALGAE_HIGH,
-    ALGAE_LOW
+    ALGAE_LOW,
+    ALGAE_READY
   }
 
   public enum DragonState {
@@ -198,6 +199,8 @@ public class Dragon extends SubsystemBase {
         break;
       case ALGAE_LOW:
         pivotCurrentTarget = PivotSetpoints.kAlgaeLow;
+      case ALGAE_READY:
+        pivotCurrentTarget = PivotSetpoints.kAlgaeReady;
         break;
     }
     moveToSetpoint();
@@ -216,6 +219,12 @@ public class Dragon extends SubsystemBase {
       setPivot(level);
       setDragonState(DragonState.ALGAE_REMOVE);
     }).withName("removeAlgae()");
+  }
+
+  public Command readyAlgaeRemove() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.ALGAE_READY);
+    }).withName("readyAlgaeRemove()");
   }
 
   public Command stow() {

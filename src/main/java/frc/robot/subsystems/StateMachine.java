@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DragonConstants;
+import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
@@ -225,9 +227,16 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
+  public Command algaeRemoveReady() {
+    return new InstantCommand(() -> {
+      m_elevator.moveToLevel(ElevatorSetpoint.ALGAE_LOW).schedule();
+      m_dragon.readyAlgaeRemove().schedule();
+    }).withName("algaeRemoveReady()");
+  }
+
   public Command algaeRemovalSequence(DragonSetpoint level) {
     return m_dragon.removeAlgae(level)
-        .until(m_algaeIntake::atSetpoint)
+        .until(m_dragon::atSetpoint)
         .beforeStarting(() -> m_state = State.ALGAE_REMOVE);
   }
 
@@ -261,6 +270,7 @@ public class StateMachine extends SubsystemBase {
   public Command removeAlgae(DragonSetpoint level) {
     return new InstantCommand(() -> {
       if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        algaeRemoveReady().schedule();
         algaeRemovalSequence(level).schedule();
       }
     }).withName("removeAlgae()");
