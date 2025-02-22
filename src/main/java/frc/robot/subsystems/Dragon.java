@@ -140,7 +140,8 @@ public class Dragon extends SubsystemBase {
   }
 
   private void moveToSetpoint() {
-    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0, pivotFF.calculate(pivotCurrentTarget, 0));
+    pivotSparkClosedLoopController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+        pivotFF.calculate(pivotCurrentTarget, 0));
   }
 
   public boolean atSetpoint() {
@@ -148,6 +149,13 @@ public class Dragon extends SubsystemBase {
       return true;
     }
     return Math.abs(pivotCurrentTarget - pivotAbsoluteEncoder.getPosition()) <= DragonConstants.kPivotThreshold;
+  }
+
+  public boolean isClearFromElevator() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromElevatorAngle;
   }
 
   private void setDragonState(DragonState state) {
@@ -229,7 +237,7 @@ public class Dragon extends SubsystemBase {
   public Command scoreReadyLevel(DragonSetpoint level) {
     return this.run(() -> {
       setPivot(level);
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_READY);
     }).withName("scoreReadyLevel()");
   }
@@ -246,39 +254,32 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-       }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
   }
 
   public Command stopRoller() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kStop);
-       }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
+    }).onlyIf(this::atSetpoint); // ADD BACK AFTER TESTING
   }
 
   public Command stopScore() {
     return this.run(() -> {
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_READY);
     }).withName("stopScore()");
   }
 
-
   public Command scoreStandby() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
-      setRollerPower(RollerSetpoints.kStop);
+      setRollerPower(RollerSetpoints.kHold);
       setDragonState(DragonState.SCORE_STANDBY);
     }).withName("score standby");
   }
 
   public double getSimulationCurrentDraw() {
     return m_pivotSim.getCurrentDrawAmps();
-  }
-
-  private void setCoralOnDragon() {
-    if (!coralOnDragon) {
-      coralOnDragon = rollerCurrentSpikeDetected().getAsBoolean() ? true : false;
-    }
   }
 
   public boolean isCoralOnDragon() {
@@ -317,8 +318,6 @@ public class Dragon extends SubsystemBase {
     SmartDashboard.putString("Dragon/Current Command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
     SmartDashboard.putBoolean("Dragon/Coral on Dragon", isCoralOnDragon());
-
-    //setCoralOnDragon();
 
     m_DragonMech2D.setAngle(
         180

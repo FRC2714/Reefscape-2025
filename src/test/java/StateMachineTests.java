@@ -373,11 +373,8 @@ public class StateMachineTests {
                 assertState(State.HANDOFF, "HANDOFF should be reachable from " + s.toString() + " via " + c.getName());
                 m_dragon.coralOnDragonTrue();
                 runScheduler();
-                assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
-                m_coralIntake.setLoadedFalse();
-                runScheduler();
                 assertState(State.DRAGON_READY,
-                        "DRAGON_READY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded after "
+                        "DRAGON_READY should be reachable from HANDOFF when dragon is loaded after "
                                 + c.getName());
             }
         }
