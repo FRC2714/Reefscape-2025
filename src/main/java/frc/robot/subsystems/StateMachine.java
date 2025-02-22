@@ -43,6 +43,7 @@ public class StateMachine extends SubsystemBase {
   private boolean manualOverride;
   private boolean autoHandoff;
   private State m_state = State.IDLE;
+  private boolean elevatorHasReset = false;
 
   private enum ScoreLevel {
     L1,
@@ -370,9 +371,16 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_climber.retract().until(m_climber::atSetpoint)).schedule());
   }
 
+  public Command elevatorHomingSequence() {
+    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+        .andThen(m_elevator.homingSequence())
+        .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
+    SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
     SmartDashboard.putString("State Machine/Current Comamand",
