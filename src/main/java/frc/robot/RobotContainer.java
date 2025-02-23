@@ -8,7 +8,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -41,7 +40,11 @@ import frc.robot.subsystems.LED;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
+
+
 public class RobotContainer {
+
+  
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
@@ -54,21 +57,23 @@ public class RobotContainer {
   private final Limelight m_rightLimelight = new Limelight(
       LimelightConstants.kRightLimelightName,
       LimelightConstants.kRightCameraHeight,
-      LimelightConstants.kRightMountingAngle,
+      LimelightConstants.kRightMountingPitch,
       LimelightConstants.kReefTagHeight);
   private final Limelight m_leftLimelight = new Limelight(
       LimelightConstants.kLeftLimelightName,
       LimelightConstants.kLeftCameraHeight,
-      LimelightConstants.kLeftMountingAngle,
+      LimelightConstants.kLeftMountingPitch,
       LimelightConstants.kReefTagHeight);
 
   private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
       LimelightConstants.kBackCameraHeight,
-      LimelightConstants.kBackMountingAngle,
+      LimelightConstants.kBackMountingPitch,
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
+
+
 
   // Mech2d Stuff
   // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
@@ -112,24 +117,23 @@ public class RobotContainer {
 
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Auto Chooser", autoChooser);
-
     configureButtonBindings();
 
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
-    // m_robotDrive.setDefaultCommand(
-    // // The left stick controls translation of the robot.
-    // // Turning is controlled by the X axis of the right stick.
-    // new RunCommand(
-    // () -> m_robotDrive.drive(
-    // -MathUtil.applyDeadband(m_driverController.getLeftY(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getLeftX(),
-    // OIConstants.kDriveDeadband),
-    // -MathUtil.applyDeadband(m_driverController.getRightX(),
-    // OIConstants.kDriveDeadband),
-    // true),
-    // m_robotDrive));
+    m_robotDrive.setDefaultCommand(
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        new RunCommand(
+            () -> m_robotDrive.drive(
+                -MathUtil.applyDeadband(m_driverController.getLeftY(),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getLeftX(),
+                    OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(m_driverController.getRightX(),
+                    OIConstants.kDriveDeadband),
+                true),
+            m_robotDrive));
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", new InstantCommand());
@@ -157,6 +161,22 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    final int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+    for (int i = 0; i < stalkNumbers.length; i++) {
+      int number = stalkNumbers[i]; // Capture the number for the lambda
+      new JoystickButton(m_leftController, i + 1) // i + initial button number
+          .onTrue(new InstantCommand(() -> {
+            SmartDashboard.putNumber("Reef Stalk Number", number);
+            if (number % 2 == 0) {
+              m_stateMachine.setSide(Align.RIGHT);
+            } else {
+              m_stateMachine.setSide(Align.LEFT);
+            }
+          }));
+    }
+
+
     // Driver Controller Actions
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
@@ -171,13 +191,18 @@ public class RobotContainer {
     m_driverController.leftBumper()
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
+    
+    m_driverController.rightBumper().whileTrue(
+      new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getSide())
+    );
 
     // Force Actions
-    m_driverController.povLeft()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+    // m_driverController.povLeft()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT));
 
-    m_driverController.povRight()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
+    // m_driverController.povRight()
+    //     .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT));
+
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     m_driverController.a().onTrue(m_dragon.handoff());
@@ -202,46 +227,42 @@ public class RobotContainer {
     removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
 
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    scoreButton.onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
     // //L2Button.onTrue(m_stateMachine.stowClimber());
 
-    // Reef Branches for HUD
-    int[] stalkNumbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
-    for (int i = 0; i < stalkNumbers.length; i++) {
-      final int number = stalkNumbers[i]; // Capture the number for the lambda
-      new JoystickButton(m_leftController, i + 1) // i + initial button number
-          .onTrue(new InstantCommand(() -> {
-            SmartDashboard.putNumber("Reef Stalk Number", number);
-          }));
-
       // if (Robot.isSimulation()) {
       coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-          .onFalse(new InstantCommand(() -> m_dragon.coralonDragonFalse()));
+          .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
       loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
           .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
       // }
 
       overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
           .onFalse(m_stateMachine.disableManualOverride());
-    }
   }
 
-  public void setTeleOpDefaultStates() {
-    m_stateMachine.setDefaultStates().schedule();
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-    m_blinkin.setOrange(); // default lights are orange
+  public Command setTeleOpDefaultStates() {
+    return new InstantCommand(() -> {
+      m_stateMachine.setDefaultStates().schedule();
+      if (overrideStateMachineButton.getAsBoolean()) {
+        m_stateMachine.enableManualOverride().schedule();
+      } else {
+        m_stateMachine.disableManualOverride().schedule();
+      }
+      if (autoHandoffButton.getAsBoolean()) {
+        m_stateMachine.enableAutoHandoff().schedule();
+      } else {
+        m_stateMachine.disableAutoHandoff().schedule();
+      }
+      m_blinkin.setOrange(); // default lights are orange
+    });
+  }
+
+  public Command elevatorHomingSequence() {
+    return m_stateMachine.elevatorHomingSequence();
   }
 
   public void isAutoHandoffEnabled() {

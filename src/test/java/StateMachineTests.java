@@ -3,7 +3,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -13,6 +12,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
@@ -51,7 +51,7 @@ public class StateMachineTests {
         DriverStationSim.notifyNewData();
 
         m_scheduler.cancelAll();
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         m_coralIntake.setLoadedFalse();
     }
 
@@ -158,14 +158,16 @@ public class StateMachineTests {
 
         m_stateMachine.stopExtakeCoral().schedule();
         runScheduler();
-        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with coral loaded");
+        assertState(State.POOP_STANDBY,
+                "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with coral loaded");
 
         setState(State.EXTAKE);
         m_coralIntake.setLoadedFalse();
 
         m_stateMachine.stopExtakeCoral().schedule();
         runScheduler();
-        assertState(State.POOP_STANDBY, "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with no coral loaded");
+        assertState(State.POOP_STANDBY,
+                "POOP_STANDBY should be reachable from EXTAKE via stopExtakeCoral() with no coral loaded");
     }
 
     @Test
@@ -314,7 +316,7 @@ public class StateMachineTests {
     void poopScoreInvalidTransitions() {
         setState(State.POOP_SCORE);
         m_coralIntake.setLoadedTrue();
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         assertCommandHasNoEffect(State.POOP_SCORE,
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
@@ -326,7 +328,7 @@ public class StateMachineTests {
 
         setState(State.POOP_SCORE);
         m_coralIntake.setLoadedFalse();
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         assertCommandHasNoEffect(State.POOP_SCORE,
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
@@ -341,7 +343,7 @@ public class StateMachineTests {
     void handoffToDragonStandby() {
         setState(State.IDLE);
         m_coralIntake.setLoadedFalse();
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         m_stateMachine.setAutoHandoff(true);
 
         m_stateMachine.intakeCoral().schedule();
@@ -352,11 +354,10 @@ public class StateMachineTests {
                 "HANDOFF should be reachable when auto handoff is enabled and coral intake is loaded");
         m_dragon.coralOnDragonTrue();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
         m_coralIntake.setLoadedFalse();
         runScheduler();
         assertState(State.DRAGON_STANDBY,
-                "DRAGON_STANDBY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded");
+                "DRAGON_STANDBY should be reachable from HANDOFF when coral intake is unloaded IF dragon is loaded");
     }
 
     @Test
@@ -367,18 +368,15 @@ public class StateMachineTests {
             for (Command c : commands) {
                 setState(s);
                 m_coralIntake.setLoadedTrue();
-                m_dragon.coralonDragonFalse();
+                m_dragon.coralOnDragonFalse();
 
                 c.schedule();
                 runScheduler();
                 assertState(State.HANDOFF, "HANDOFF should be reachable from " + s.toString() + " via " + c.getName());
                 m_dragon.coralOnDragonTrue();
                 runScheduler();
-                assertState(State.HANDOFF, "HANDOFF should not be left while coral intake is still loaded");
-                m_coralIntake.setLoadedFalse();
-                runScheduler();
                 assertState(State.DRAGON_READY,
-                        "DRAGON_READY should be reachable from HANDOFF when coral intake is unloaded AND dragon is loaded after "
+                        "DRAGON_READY should be reachable from HANDOFF when dragon is loaded after "
                                 + c.getName());
             }
         }
@@ -417,7 +415,7 @@ public class StateMachineTests {
     @Test
     void dragonStandbyInvalidTransitions() {
         setState(State.DRAGON_STANDBY);
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         assertCommandHasNoEffect(State.DRAGON_STANDBY,
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
@@ -448,7 +446,7 @@ public class StateMachineTests {
     @Test
     void dragonReadyToIdle() {
         setState(State.DRAGON_READY);
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
 
         m_stateMachine.idle().schedule();
         runScheduler();
@@ -514,7 +512,7 @@ public class StateMachineTests {
 
         setState(State.DRAGON_SCORE);
         m_coralIntake.setLoadedFalse();
-        m_dragon.coralonDragonFalse();
+        m_dragon.coralOnDragonFalse();
         assertCommandHasNoEffect(State.DRAGON_SCORE,
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
@@ -523,5 +521,19 @@ public class StateMachineTests {
                 m_stateMachine.setL2(),
                 m_stateMachine.setL3(),
                 m_stateMachine.setL4());
+    }
+
+    @Test
+    void teleOpDefaultStateTransitions() {
+        m_dragon.coralOnDragonTrue();
+        m_stateMachine.setDefaultStates().schedule();
+        runScheduler();
+        assertState(State.DRAGON_STANDBY,
+                "DRAGON_STANDBY should be reached from TeleOp default states if there is a coral on the dragon on teleopInit");
+        m_dragon.coralOnDragonFalse();
+        m_stateMachine.setDefaultStates().schedule();
+        runScheduler();
+        assertState(State.IDLE,
+                "IDLE should be reached from TeleOp default states if there is no coral on the dragon on teleopInit");
     }
 }

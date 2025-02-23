@@ -10,7 +10,6 @@ import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -129,6 +128,13 @@ public class Elevator extends SubsystemBase {
     return elevatorEncoder.getPosition();
   }
 
+  public boolean isClearToStowDragon() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return elevatorEncoder.getPosition() < ElevatorConstants.kClearToStowDragonLevel;
+  }
+
   private void moveToSetpoint() {
     elevatorSparkClosedLoopController.setReference(elevatorCurrentTarget, ControlType.kPosition);
   }
@@ -230,6 +236,16 @@ public class Elevator extends SubsystemBase {
 
   public ElevatorState getState() {
     return m_elevatorState;
+  }
+
+  public Command homingSequence() {
+    return this.run(() -> {
+      elevatorMotor.set(-0.1);
+    }).until(() -> elevatorMotor.getReverseLimitSwitch().isPressed());
+  }
+
+  public boolean reverseLimitSwitchPressed() {
+    return elevatorMotor.getReverseLimitSwitch().isPressed();
   }
 
   @Override
