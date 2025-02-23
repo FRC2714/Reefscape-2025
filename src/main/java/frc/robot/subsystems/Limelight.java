@@ -129,8 +129,16 @@ public class Limelight extends SubsystemBase {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kLeftReefBranchPipeline);
   }
 
+  public void setCoralTagPipelineCenter() {
+    LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kReefCenterPipeline);
+  }
+
   public void setProcessorTagPipeline() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kProcessorPipeline);
+  }
+
+  public void setCoralStationPipeline() {
+    LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kCoralStationPipeline);
   }
 
   public static Pose2d getBotPose2d(Limelight limelight) {

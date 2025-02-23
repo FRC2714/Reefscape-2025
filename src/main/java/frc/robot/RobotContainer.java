@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AlignToCoral;
+import frc.robot.commands.AlignToBranch;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -179,7 +179,7 @@ public class RobotContainer {
         .onFalse(m_stateMachine.stopScore());
 
     m_driverController.rightBumper().whileTrue(
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+        new AlignToBranch(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
