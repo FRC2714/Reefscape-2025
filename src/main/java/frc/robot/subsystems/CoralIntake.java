@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.CoralIntakeConstants;
@@ -33,7 +34,10 @@ import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.Limelight;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.TunableNumber;
+import frc.robot.utils.InterpolatingTreeMap;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -47,7 +51,8 @@ public class CoralIntake extends SubsystemBase {
     CORALBETWEEN,
     EXTAKE,
     POOP,
-    CLIMB
+    CLIMB,
+    DYNAMIC
   }
 
   public enum CoralIntakeState {
@@ -61,7 +66,8 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
-    POOP_STANDBY
+    POOP_STANDBY,
+    DYNAMIC
   }
 
   // Tunables
@@ -114,6 +120,10 @@ public class CoralIntake extends SubsystemBase {
           SimulationRobotConstants.kCoralIntakeLength,
           CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
+  private Limelight m_backLimelight = new Limelight("limelight-back", LimelightConstants.kBackCameraHeight, LimelightConstants.kBackMountingPitch, LimelightConstants.kCoralStationTagHeight);
+  private InterpolatingTreeMap pivotAngleMap;
+  private boolean dynamicEnabled;
+
   public CoralIntake() {
     tunableAngle = new TunableNumber("Coral Intake/Tunable Pivot Angle");
     tunableP = new TunableNumber("Coral Intake/Tunable Pivot P");
@@ -153,6 +163,9 @@ public class CoralIntake extends SubsystemBase {
 
     // Initialize Simulation values
     armMotorSim = new SparkFlexSim(pivotMotor, armMotorModel);
+    pivotAngleMap = new InterpolatingTreeMap();
+    dynamicEnabled = false;
+    populatePivotAngleMap();
   }
 
   public double getPosition() {
@@ -202,6 +215,8 @@ public class CoralIntake extends SubsystemBase {
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
+      case DYNAMIC:
+        pivotCurrentTarget = getDynamicPivotAngle();
         break;
     }
     moveToSetpoint();
@@ -216,24 +231,30 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
+    if(dynamicEnabled){
+      return intakeReadyDynamic().until(this::atSetpoint).andThen(
+          this.run(() -> {
+            setRollerPower(RollerSetpoints.kIntake);
+            setCoralIntakeState(CoralIntakeState.INTAKE);
+          })).withName("intake dynamic()");
+        } else {
     return intakeReady().until(this::atSetpoint).andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.INTAKE);
-        })).withName("intake");
+        })).withName("intake()");
+      }
   }
 
-  public Command coralBetween()
-  {
-       return coralBetweenReady().until(this::atSetpoint).andThen(
+  public Command coralBetween() {
+    return coralBetweenReady().until(this::atSetpoint).andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.INTAKE);
         })).withName("coral beetween()");
   }
 
-  public Command coralBetweenReady()
-  {
+  public Command coralBetweenReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.CORALBETWEEN);
       setRollerPower(RollerSetpoints.kStop);
@@ -247,6 +268,14 @@ public class CoralIntake extends SubsystemBase {
       setRollerPower(RollerSetpoints.kStop);
       setCoralIntakeState(CoralIntakeState.INTAKE_READY);
     }).withName("intake ready");
+  }
+
+  public Command intakeReadyDynamic(){
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.DYNAMIC);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.DYNAMIC);
+    }).withName("intake ready dynamic");
   }
 
   public Command extakeReady() {
@@ -350,6 +379,63 @@ public class CoralIntake extends SubsystemBase {
     return m_coralIntakeState;
   }
 
+  public void populatePivotAngleMap() {
+
+    // pivotAngleMap.put(1.64, 37.0);
+    // pivotAngleMap.put(1.73, 35.0);
+    // pivotAngleMap.put(1.84, 33.0);
+    // pivotAngleMap.put(1.95, 33.0);
+    // pivotAngleMap.put(2.02, 31.0);
+    // pivotAngleMap.put(2.14, 31.0);
+    // pivotAngleMap.put(2.14, 31.0);
+    // pivotAngleMap.put(2.25, 30.0);
+    // pivotAngleMap.put(2.36, 28.0);
+    // pivotAngleMap.put(2.42, 27.0);
+    // pivotAngleMap.put(2.54, 27.0);
+    // pivotAngleMap.put(2.66, 25.0);
+    // pivotAngleMap.put(2.86, 23.0);
+    // pivotAngleMap.put(2.95, 21.0);
+    // pivotAngleMap.put(3.03, 21.0);
+    // pivotAngleMap.put(3.17, 19.0);
+    // pivotAngleMap.put(3.30, 19.0);
+    // pivotAngleMap.put(3.45, 18.0);
+    // pivotAngleMap.put(3.55, 18.0);
+    // pivotAngleMap.put(3.67, 18.0);
+    // pivotAngleMap.put(3.70, 16.0);
+    // pivotAngleMap.put(3.85, 15.5);
+    // pivotAngleMap.put(3.90, 15.0);
+    // pivotAngleMap.put(4.05, 14.0);
+    // pivotAngleMap.put(4.4, 13.0);
+    // pivotAngleMap.put(4.6, 12.0);
+    // pivotAngleMap.put(4.9, 10.5);
+    // pivotAngleMap.put(5.01, 10.25);
+    // pivotAngleMap.put(5.17, 10.0);
+    // pivotAngleMap.put(5.2, 10.0);
+    // pivotAngleMap.put(5.4, 9.25);
+    // pivotAngleMap.put(5.55, 9.0);
+  }
+
+  public void toggleDynamic() {
+    dynamicEnabled = !dynamicEnabled;
+  }
+
+  public Command enableDynamic() {
+    return new InstantCommand(() -> dynamicEnabled = true);
+  }
+
+  public Command disableDynamic() {
+    return new InstantCommand(() -> dynamicEnabled = false);
+  }
+
+  public double getDynamicPivotAngle(double adjustedDistance) {
+    return pivotAngleMap.getInterpolated(adjustedDistance);
+  }
+
+  public double getDynamicPivotAngle() {
+    return pivotAngleMap.getInterpolated(m_backLimelight.getDistanceToGoalMeters());
+  }
+
+
   /**
    * Command to run when the intake is not actively running. When in the "hold"
    * state, the intake
@@ -389,6 +475,9 @@ public class CoralIntake extends SubsystemBase {
       tunableConfig.closedLoop.p(tunableP.get());
       pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
+    if (dynamicEnabled && this.getCurrentCommand() == intake())
+      getDynamicPivotAngle();
+
   }
 
   /** Get the current drawn by each simulation physics model */
