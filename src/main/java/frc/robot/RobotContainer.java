@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -140,13 +139,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", m_stateMachine.setL3());
     NamedCommands.registerCommand("L2", m_stateMachine.setL2());  
     NamedCommands.registerCommand("L1", m_stateMachine.setL1());
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine .intakeCoral().withTimeout(2));
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine .intakeCoral());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
     NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
     NamedCommands.registerCommand("Auto Align Right", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
     NamedCommands.registerCommand("Auto Align Left", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
+    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> zero))
 
   }
 

@@ -13,19 +13,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "E to station 1P"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "E to station 1P"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
           }
         },
         {
@@ -37,19 +50,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "D to station 2P"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D to station 2P"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
           }
         },
         {
@@ -61,19 +87,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "C to station 3P"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C to station 3P"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
           }
         }
       ]
