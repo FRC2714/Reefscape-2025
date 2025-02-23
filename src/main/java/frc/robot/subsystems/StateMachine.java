@@ -391,6 +391,10 @@ public class StateMachine extends SubsystemBase {
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
 
+  public Command toggleDynamic() {
+    return new InstantCommand(() -> m_coralIntake.toggleDynamic());
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);

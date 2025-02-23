@@ -458,6 +458,7 @@ public class CoralIntake extends SubsystemBase {
 
     SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.isPressed());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
+    SmartDashboard.putBoolean("Coral Intake/Dynamic Enabled", dynamicEnabled);
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
     SmartDashboard.putString("Coral Intake/Current Command",
