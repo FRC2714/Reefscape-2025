@@ -18,7 +18,6 @@ import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
 import frc.robot.subsystems.Limelight.Align;
 
-
 public class StateMachine extends SubsystemBase {
   public enum State {
     IDLE,
