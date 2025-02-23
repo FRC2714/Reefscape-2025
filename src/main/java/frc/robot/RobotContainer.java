@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToBranch;
+import frc.robot.commands.AlignToCoralStation;
+import frc.robot.commands.AlignToReefCenter;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -67,7 +69,7 @@ public class RobotContainer {
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
+      m_robotDrive, m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight);
 
   // Mech2d Stuff
   // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
@@ -179,7 +181,10 @@ public class RobotContainer {
         .onFalse(m_stateMachine.stopScore());
 
     m_driverController.rightBumper().whileTrue(
-        new AlignToBranch(m_robotDrive, m_rightLimelight, m_leftLimelight));
+        m_stateMachine.alignToReef());
+    
+    m_driverController.b().whileTrue(
+        m_stateMachine.alignToCoralStation());
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
