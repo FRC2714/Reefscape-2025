@@ -298,11 +298,9 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
         () -> {
           if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-            scoreReadySequence(ScoreLevel.L1).schedule();
+            reverseHandoffSequence().schedule();
           } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
             poopReadySequence().schedule();
-          } else if (m_state == State.DRAGON_STANDBY || m_state == State.DRAGON_READY) {
-            reverseHandoffSequence().schedule();
           }
         }).withName("setL1()");
   }
