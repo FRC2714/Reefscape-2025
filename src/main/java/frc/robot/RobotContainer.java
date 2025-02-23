@@ -89,7 +89,6 @@ public class RobotContainer {
   private final JoystickButton L3Button = new JoystickButton(m_rightController, 3); // L3
   private final JoystickButton L4Button = new JoystickButton(m_rightController, 4); // L4
 
-  private final JoystickButton coralIntakeButton = new JoystickButton(m_rightController, 7); // Coral Station
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 6);
   private final Trigger overrideStateMachineButton = new Trigger(() -> m_leftController.getRawAxis(1) < -0.5); // L4
   private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 11);
@@ -170,15 +169,10 @@ public class RobotContainer {
     }
 
     // Driver Controller Actions
-    // m_driverController
-    //     .leftTrigger(OIConstants.kTriggerButtonThreshold)
-    //     .onTrue(m_stateMachine.extakeAlgae())
-    //     .onFalse(m_stateMachine.stowAlgae());
 
-    // m_driverController
-    //     .rightTrigger(OIConstants.kTriggerButtonThreshold)
-    //     .onTrue(m_stateMachine.intakeAlgae())
-    //     .onFalse(m_stateMachine.stowAlgae());
+    m_driverController
+        .rightTrigger(OIConstants.kTriggerButtonThreshold)
+        .onTrue(m_stateMachine.intakeCoral());
 
     m_driverController.a()
         .onTrue(m_stateMachine.scoreCoral())
@@ -186,15 +180,6 @@ public class RobotContainer {
 
     m_driverController.rightBumper().whileTrue(
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
-
-    // Force Actions
-    // m_driverController.povLeft()
-    // .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight,
-    // Align.LEFT));
-
-    // m_driverController.povRight()
-    // .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight,
-    // Align.RIGHT));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
@@ -211,7 +196,6 @@ public class RobotContainer {
         .onTrue(m_stateMachine.enableAutoHandoff())
         .onFalse(m_stateMachine.disableAutoHandoff());
 
-    coralIntakeButton.onTrue(m_stateMachine.intakeCoral());
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
