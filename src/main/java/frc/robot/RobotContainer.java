@@ -227,7 +227,6 @@ public class RobotContainer {
     removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
 
     climbButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
-    scoreButton.onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
 
     // L4Button.onTrue(m_stateMachine.deployClimber());
     // L3Button.onTrue(m_stateMachine.retractClimber());
