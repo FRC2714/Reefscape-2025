@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -131,18 +131,17 @@ public class RobotContainer {
             m_robotDrive));
 
     // TODO: Add named commands
-    NamedCommands.registerCommand("Score Coral", new InstantCommand());
-    NamedCommands.registerCommand("Intake Algae",
-        new InstantCommand());
-    NamedCommands.registerCommand("Extake Algae",
-        new InstantCommand());
-    NamedCommands.registerCommand("L4", new InstantCommand());
-    NamedCommands.registerCommand("L3", new InstantCommand());
-    NamedCommands.registerCommand("L2", new InstantCommand());
-    NamedCommands.registerCommand("L1", new InstantCommand());
-    NamedCommands.registerCommand("Intake Coral", new InstantCommand());
-    NamedCommands.registerCommand("Extake Coral", new InstantCommand());
-
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
+    NamedCommands.registerCommand("L4", m_stateMachine.setL4());
+    NamedCommands.registerCommand("L3", m_stateMachine.setL3());
+    NamedCommands.registerCommand("L2", m_stateMachine.setL2());  
+    NamedCommands.registerCommand("L1", m_stateMachine.setL1());
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine .intakeCoral());
+    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
+    NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
+    NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
+    NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
+    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
   }
 
   /**
