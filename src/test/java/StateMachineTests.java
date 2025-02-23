@@ -18,20 +18,27 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.State;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class StateMachineTests {
     private static CommandScheduler m_scheduler = CommandScheduler.getInstance();
+
+    private static DriveSubsystem m_robotDrive = new DriveSubsystem();
     private static AlgaeIntake m_algaeIntake = new AlgaeIntake();
     private static CoralIntake m_coralIntake = new CoralIntake();
     private static Elevator m_elevator = new Elevator();
     private static Dragon m_dragon = new Dragon();
     private static Climber m_climber = new Climber();
+    private static Limelight m_leftLimelight = new Limelight(null, 0, 0, 0);
+    private static Limelight m_rightLimelight = new Limelight(null, 0, 0, 0);
+    private static Limelight m_backLimelight = new Limelight(null, 0, 0, 0);
 
-    private static StateMachine m_stateMachine = new StateMachine(m_dragon, m_elevator, m_coralIntake, m_algaeIntake,
-            m_climber);
+    private static StateMachine m_stateMachine = new StateMachine(m_robotDrive, m_dragon, m_elevator, m_coralIntake, m_algaeIntake,
+            m_climber, m_leftLimelight, m_rightLimelight, m_backLimelight);
 
     void setState(State state) {
         try {

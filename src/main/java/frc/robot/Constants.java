@@ -256,11 +256,13 @@ public final class Constants {
 
     public static final double kReefTagHeight = 12;
     public static final double kProcessorTagHeight = 0; // tune later
-    public static final int kProcessorPipeline = 0; // TBD
+    public static final int kProcessorPipeline = 0; // TODO
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
-    public static final int kRedPosePipeline = 3; // TBD
-    public static final int kBluePosePipeline = 4; // TBD
+    public static final int kReefCenterPipeline = 5; // TODO: make the pipeline
+    public static final int kRedPosePipeline = 3; // TODO
+    public static final int kBluePosePipeline = 4; // TODO
+    public static final int kCoralStationPipeline = 6; // TODO
 
     public static final double kCoralStationDistanceThreshold = 0; // TODO: tune
   }

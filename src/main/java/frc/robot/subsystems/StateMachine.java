@@ -11,9 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.AlignToBranch;
+import frc.robot.commands.AlignToCoralStation;
+import frc.robot.commands.AlignToReefCenter;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 
 public class StateMachine extends SubsystemBase {
@@ -30,14 +34,24 @@ public class StateMachine extends SubsystemBase {
     DRAGON_SCORE
   }
 
+  public enum AlignType {
+    CENTER,
+    SIDE
+  }
+
+  private DriveSubsystem m_drive;
   private Dragon m_dragon;
   private Elevator m_elevator;
   private CoralIntake m_coralIntake;
   private AlgaeIntake m_algaeIntake;
   private Climber m_climber;
+  private Limelight m_leftLimelight;
+  private Limelight m_rightLimelight;
+  private Limelight m_backLimelight;
 
   private boolean manualOverride;
   private boolean autoHandoff;
+  private AlignType m_alignType;
   private State m_state = State.IDLE;
   private boolean elevatorHasReset = false;
 
@@ -52,8 +66,8 @@ public class StateMachine extends SubsystemBase {
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
   /** Creates a new StateMachine. */
-  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
-      Climber m_climber) {
+  public StateMachine(DriveSubsystem m_drive, Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
+      Climber m_climber, Limelight m_leftLimelight, Limelight m_rightLimelight, Limelight m_backLimelight) {
     this.m_algaeIntake = m_algaeIntake;
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
@@ -62,6 +76,7 @@ public class StateMachine extends SubsystemBase {
 
     manualOverride = false;
     autoHandoff = true;
+    m_alignType = AlignType.SIDE;
 
     populateElevatorMap();
     populateDragonMap();
@@ -196,7 +211,10 @@ public class StateMachine extends SubsystemBase {
   private Command dragonScoreSequence() {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())
-        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+        .beforeStarting(() -> {
+          m_state = State.DRAGON_SCORE;
+          m_alignType = AlignType.SIDE;
+        });
   }
 
   private Command poopStandbySequence() {
@@ -219,7 +237,10 @@ public class StateMachine extends SubsystemBase {
     return m_coralIntake.poopL1()
         .until(() -> !m_coralIntake.isLoaded())
         .andThen(idleSequence())
-        .beforeStarting(() -> m_state = State.POOP_SCORE);
+        .beforeStarting(() -> {
+          m_state = State.POOP_SCORE;
+          m_alignType = AlignType.CENTER;
+        });
   }
 
   public Command idle() {
@@ -389,6 +410,20 @@ public class StateMachine extends SubsystemBase {
     return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence())
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
+  }
+
+  public Command alignToReef() {
+    return new InstantCommand(() -> {
+      if (m_alignType == AlignType.SIDE) {
+        new AlignToBranch(m_drive, m_rightLimelight, m_leftLimelight).schedule();
+      } else {
+        new AlignToReefCenter(m_drive, m_rightLimelight, m_leftLimelight).schedule();
+      }
+    });
+  }
+
+  public Command alignToCoralStation() {
+    return new AlignToCoralStation(m_drive, m_backLimelight);
   }
 
   @Override
