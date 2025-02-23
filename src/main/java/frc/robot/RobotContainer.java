@@ -93,9 +93,9 @@ public class RobotContainer {
   private final JoystickButton overrideStateMachineButton = new JoystickButton(m_rightController, 7); // L4
   private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 10);
   private final JoystickButton handoffButton = new JoystickButton(m_rightController, 1);
-  private final JoystickButton stowButton = new JoystickButton(m_rightController, 6); // Stow
-  private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5);
-  private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
+  private final JoystickButton stowButton = new JoystickButton(m_rightController, 4); // Stow
+  private final Trigger loadCoralButton = new JoystickButton(m_rightController, 8);
+  private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
@@ -201,8 +201,6 @@ public class RobotContainer {
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
-
-    // if (Robot.isSimulation()) {
     if (Robot.isSimulation()) {
         coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
                 .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
