@@ -104,6 +104,8 @@ public class RobotContainer {
 
   private SendableChooser<Command> autoChooser;
 
+  private Command alignToCoralCommand =  new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight);
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -186,8 +188,7 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    m_driverController.rightBumper().whileTrue(
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    m_driverController.rightBumper().whileTrue(alignToCoralCommand);
 
     // Force Actions
     // m_driverController.povLeft()
@@ -271,7 +272,7 @@ public class RobotContainer {
 
 
   public void AutoSetPipelines() {
-    if(!new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).isScheduled()){
+    if(alignToCoralCommand.isScheduled()){
       return;
     }
     if (Robot.isSimulation()) {
