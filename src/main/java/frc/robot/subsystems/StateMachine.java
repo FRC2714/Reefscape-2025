@@ -228,11 +228,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command algaeRemovalSequence(DragonSetpoint level) {
-    return new InstantCommand(() -> {
-      if (m_state == State.DRAGON_STANDBY) {
-        m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint);
-      }
-    }).andThen(m_dragon.removeAlgae(level)
+    return m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint).onlyIf(() -> m_state == State.DRAGON_STANDBY).andThen(m_dragon.removeAlgae(level)
         .until(m_dragon::atSetpoint)
         .beforeStarting(() -> m_state = State.ALGAE_REMOVE)).withName("algaeRemovalSequence()");
   }
