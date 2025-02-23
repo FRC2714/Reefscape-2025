@@ -22,13 +22,14 @@ public class Limelight extends SubsystemBase {
   private double m_cameraHeight;
   private double m_mountingAngle;
   private double m_goalHeight;
-  LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("m_limelight");
 
   public enum Align {
     LEFT,
     RIGHT
   }
-  
+
+  public static Align SIDE = Align.LEFT;
+
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;
@@ -152,16 +153,21 @@ public class Limelight extends SubsystemBase {
     return (int) LimelightHelpers.getFiducialID(m_limelightName);
   }
 
+  public static void setSIDE(Align side) {
+    Limelight.SIDE = side;
+  }
+
   @Override
   public void periodic() {
     // if (Robot.isSimulation()) {
 
     // } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
-    //   setPipeline(Constants.LimelightConstants.kRedPosePipeline);
+    // setPipeline(Constants.LimelightConstants.kRedPosePipeline);
     // } else {
-    //   setPipeline(Constants.LimelightConstants.kBluePosePipeline);
+    // setPipeline(Constants.LimelightConstants.kBluePosePipeline);
     // }
 
+    SmartDashboard.putString("State Machine/Align", Limelight.SIDE.toString());
     SmartDashboard.putNumber(m_limelightName + "/X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
