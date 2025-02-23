@@ -193,7 +193,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kIntake;
         break;
       case CORALBETWEEN:
-        pivotCurrentTarget = PivotSetpoints.kOneCoralIntake;
+        pivotCurrentTarget = PivotSetpoints.kOneCoralInBetweenIntake;
       case EXTAKE:
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
