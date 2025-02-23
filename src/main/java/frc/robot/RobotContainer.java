@@ -94,8 +94,8 @@ public class RobotContainer {
   private final JoystickButton autoHandoffButton = new JoystickButton(m_rightController, 10);
   private final JoystickButton handoffButton = new JoystickButton(m_rightController, 1);
   private final JoystickButton stowButton = new JoystickButton(m_rightController, 6); // Stow
-  // private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5);
-  // private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
+  private final Trigger loadCoralButton = new Trigger(() -> m_rightController.getRawAxis(1) < -0.5);
+  private final Trigger coralOnDragonButton = new Trigger(() -> m_rightController.getRawAxis(0) > 0.5);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
@@ -201,16 +201,14 @@ public class RobotContainer {
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
-    // L4Button.onTrue(m_stateMachine.deployClimber());
-    // L3Button.onTrue(m_stateMachine.retractClimber());
-    // //L2Button.onTrue(m_stateMachine.stowClimber());
 
     // if (Robot.isSimulation()) {
-    // coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-    //     .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
-    // loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-    //     .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
-    // // }
+    if (Robot.isSimulation()) {
+        coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+                .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
+        loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+                .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+    }
 
     overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
