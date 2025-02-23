@@ -138,7 +138,7 @@ public final class Constants {
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
       public static final double kHandoff = 72.8;
-      public static final double kPoop = 70; 
+      public static final double kPoop = 70;
 
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
@@ -241,7 +241,8 @@ public final class Constants {
   // ! Update Values for AlphaBot
   public static final class LimelightConstants {
     public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
-    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs
+                                                                                                    // tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
@@ -335,7 +336,7 @@ public final class Constants {
       public static final double kClimb = 180;
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
-      public static final double kAlgaeReady = 98; //TODO
+      public static final double kAlgaeReady = 98; // TODO
     }
 
     public static final class RollerSetpoints {
