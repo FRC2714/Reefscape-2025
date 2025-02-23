@@ -13,19 +13,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "J to station 1NP"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J to station 1NP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
           }
         }
       ]

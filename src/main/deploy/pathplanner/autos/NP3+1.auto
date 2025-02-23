@@ -13,19 +13,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "J to station 1NP"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J to station 1NP"
+                }
+              }
+            ]
           }
         },
         {
@@ -37,19 +50,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Coral"
+            "name": "L4"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Score Coral"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "K to station 2NP"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "K to station 2NP"
+                }
+              }
+            ]
           }
         },
         {

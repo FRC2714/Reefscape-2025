@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6973076923076915,
-        "y": 5.015769230769231
+        "x": 3.6802254098360656,
+        "y": 5.031967213114754
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0258205128205122,
-        "y": 5.676371794871795
+        "x": 3.0087382303488863,
+        "y": 5.692569777217318
       },
       "isLocked": false,
       "linkedName": "L-Coral"
     },
     {
       "anchor": {
-        "x": 1.7467307692307688,
-        "y": 7.451410256410257
+        "x": 1.726229508196721,
+        "y": 7.441495901639343
       },
       "prevControl": {
-        "x": 2.5104487179487176,
-        "y": 6.378076923076923
+        "x": 2.4899474569146696,
+        "y": 6.36816256830601
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 126.15818543980836
+    "rotation": -54.36019080191327
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.96375653207352
+    "rotation": -59.63832480397212
   },
   "useDefaultConstraints": true
 }
