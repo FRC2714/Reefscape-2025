@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.PubSubOptions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -260,6 +261,22 @@ public class RobotContainer {
     }
   }
 
+
+  public void AutoSetPipelines() {
+    if(!new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT).isScheduled() || !new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT).isScheduled()){
+      return;
+    }
+    if (Robot.isSimulation()) {
+
+    } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
+      m_leftLimelight.setPipeline(Constants.LimelightConstants.kRedPosePipeline);
+      m_rightLimelight.setPipeline(Constants.LimelightConstants.kRedPosePipeline);
+    } else {
+      m_leftLimelight.setPipeline(Constants.LimelightConstants.kBluePosePipeline);
+      m_rightLimelight.setPipeline(Constants.LimelightConstants.kBluePosePipeline);
+    }
+    }
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

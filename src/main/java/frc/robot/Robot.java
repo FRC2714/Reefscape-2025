@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
     // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
     URCL.start();
+    m_robotContainer.AutoSetPipelines();
   }
 
   /**
@@ -82,6 +83,7 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    m_robotContainer.AutoSetPipelines();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -101,6 +103,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_robotContainer.elevatorHomingSequence().schedule();
+    m_robotContainer.AutoSetPipelines();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
