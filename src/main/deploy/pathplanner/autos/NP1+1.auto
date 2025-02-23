@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [

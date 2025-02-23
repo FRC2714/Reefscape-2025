@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -57,6 +63,12 @@
           "type": "named",
           "data": {
             "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         },
         {
@@ -97,6 +109,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -131,6 +149,12 @@
           "type": "named",
           "data": {
             "name": "Score Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         },
         {

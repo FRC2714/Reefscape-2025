@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
@@ -134,7 +135,7 @@ public class RobotContainer {
             m_robotDrive));
 
     // TODO: Add named commands
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral());
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
     NamedCommands.registerCommand("L4", m_stateMachine.setL4());
     NamedCommands.registerCommand("L3", m_stateMachine.setL3());
     NamedCommands.registerCommand("L2", m_stateMachine.setL2());  
@@ -147,7 +148,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auto Align Right", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
     NamedCommands.registerCommand("Auto Align Left", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
     NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
-
   }
 
   /**

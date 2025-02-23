@@ -23,6 +23,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -60,19 +66,25 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "K to station 2NP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -87,19 +99,38 @@
         {
           "type": "named",
           "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Score Coral"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake Coral"
+            "name": "Idle"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "L to station 3NP"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L to station 3NP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
           }
         }
       ]
