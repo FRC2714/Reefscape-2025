@@ -366,13 +366,13 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command elevatorHomingSequence() {
-    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+    return ((m_dragon.stow().until(m_dragon::isClearFromElevator)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence())
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
 
   public Command manualElevatorHomingSequence() {
-    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+    return ((m_dragon.stow().until(m_dragon::isClearFromElevator)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence()));
   }
 
