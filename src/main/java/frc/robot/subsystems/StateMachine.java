@@ -11,10 +11,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DragonConstants;
+import frc.robot.subsystems.CoralIntake.CoralIntakeState;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
-
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -27,7 +28,8 @@ public class StateMachine extends SubsystemBase {
     HANDOFF,
     DRAGON_STANDBY,
     DRAGON_READY,
-    DRAGON_SCORE
+    DRAGON_SCORE,
+    ALGAE_REMOVE
   }
 
   private Dragon m_dragon;
@@ -222,6 +224,12 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
+  public Command algaeRemovalSequence(DragonSetpoint level) {
+    return m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint).onlyIf(() -> m_state == State.DRAGON_STANDBY).andThen(m_dragon.removeAlgae(level)
+        .until(m_dragon::atSetpoint)
+        .beforeStarting(() -> m_state = State.ALGAE_REMOVE)).withName("algaeRemovalSequence()");
+  }
+
   public Command idle() {
     return new InstantCommand(() -> {
       if (manualOverride) {
@@ -247,6 +255,14 @@ public class StateMachine extends SubsystemBase {
         }
       }
     }).withName("idle()");
+  }
+
+  public Command removeAlgae(DragonSetpoint level) {
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        algaeRemovalSequence(level).schedule();
+      }
+    }).withName("removeAlgae()");
   }
 
   public Command intakeCoral() {
