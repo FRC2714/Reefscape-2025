@@ -294,14 +294,6 @@ public class StateMachine extends SubsystemBase {
     }).withName("stopExtakeCoral()");
   }
 
-  public Command reverseHandoff() {
-    return new InstantCommand(() -> {
-      if (m_state == State.DRAGON_STANDBY || m_state == State.DRAGON_READY || manualOverride) {
-        reverseHandoffSequence().schedule();
-      }
-    }).withName("reverseHandoff()");
-  }
-
   public Command setL1() {
     return new InstantCommand(
         () -> {
@@ -309,6 +301,8 @@ public class StateMachine extends SubsystemBase {
             scoreReadySequence(ScoreLevel.L1).schedule();
           } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
             poopReadySequence().schedule();
+          } else if (m_state == State.DRAGON_STANDBY || m_state == State.DRAGON_READY) {
+            reverseHandoffSequence().schedule();
           }
         }).withName("setL1()");
   }
