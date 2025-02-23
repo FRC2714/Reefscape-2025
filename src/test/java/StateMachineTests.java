@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
@@ -401,7 +400,7 @@ public class StateMachineTests {
         setState(State.DRAGON_STANDBY);
         m_dragon.coralOnDragonTrue(); // TODO: test without coral?
 
-        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
+        Command[] commands = { m_stateMachine.setL2(), m_stateMachine.setL3(),
                 m_stateMachine.setL4() };
         for (Command c : commands) {
             c.schedule();
@@ -458,7 +457,7 @@ public class StateMachineTests {
         setState(State.DRAGON_READY);
         m_dragon.coralOnDragonTrue();
 
-        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
+        Command[] commands = { m_stateMachine.setL2(), m_stateMachine.setL3(),
                 m_stateMachine.setL4() };
         for (Command c : commands) {
             c.schedule();

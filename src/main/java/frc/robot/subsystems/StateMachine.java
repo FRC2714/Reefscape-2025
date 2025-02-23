@@ -176,8 +176,7 @@ public class StateMachine extends SubsystemBase {
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.reverseHandoff().until(() -> m_coralIntake.isLoaded())
             .alongWith(m_dragon.reverseHandoff().until(() -> m_coralIntake.isLoaded())))
-        .andThen(poopStandbySequence()
-            .alongWith(m_coralIntake.extakeReady()).until(m_dragon::isClearFromElevator))
+        .andThen(poopStandbySequence())
         .beforeStarting(() -> m_state = State.REVERSE_HANDOFF);
   }
 
