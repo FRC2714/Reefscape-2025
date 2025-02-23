@@ -492,6 +492,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.reset();
   }
 
+  public void flipHeading() {
+    m_gyro.setGyroAngle(IMUAxis.kZ, 180);
+  }
+
   /**
    * Returns the heading of the robot.
    *

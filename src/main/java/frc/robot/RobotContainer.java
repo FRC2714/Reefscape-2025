@@ -146,7 +146,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
     NamedCommands.registerCommand("Auto Align Right", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.RIGHT));
     NamedCommands.registerCommand("Auto Align Left", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, Align.LEFT));
-    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> zero))
+    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
 
   }
 
