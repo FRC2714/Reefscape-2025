@@ -17,19 +17,18 @@ public class AlignToCoral extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
-  private LED m_blinkin;
   private Align side;
 
   private PIDController xController;
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight, Align side) {
+  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
-    this.side = side;
+    this.side = Limelight.SIDE;
 
     xController = new PIDController(0.9, 0, 0);
     yController = new PIDController(0.52, 0, 0);
@@ -50,6 +49,7 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    side = Limelight.SIDE;
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
       m_leftLimelight.setCoralTagPipelineRight();
@@ -74,20 +74,20 @@ public class AlignToCoral extends Command {
         {
           updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-          m_blinkin.setHeartBeatRed(); // process of aligning
-
           m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-          m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians()) : 0,
+              m_leftLimelight.getDistanceToGoalMeters() < 0.4
+                  ? yController.calculate(m_leftLimelight.getXOffsetRadians())
+                  : 0,
               thetaController.calculate(m_drivetrain.getHeading()),
               false);
         } else // driver aligns left so left camera
         {
           updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-          m_blinkin.setHeartBeatRed(); // process of aligning
-
           m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-          m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians()) : 0,
+              m_rightLimelight.getDistanceToGoalMeters() < 0.4
+                  ? yController.calculate(m_rightLimelight.getXOffsetRadians())
+                  : 0,
               thetaController.calculate(m_drivetrain.getHeading()),
               false);
         }
@@ -98,14 +98,16 @@ public class AlignToCoral extends Command {
       updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-      m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians()) : 0,
+          m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians())
+              : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
       updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-      m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians()) : 0,
+          m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians())
+              : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
     } else {
