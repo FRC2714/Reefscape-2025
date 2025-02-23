@@ -6,10 +6,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLimitSwitch;
@@ -19,7 +19,6 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -45,6 +44,7 @@ public class CoralIntake extends SubsystemBase {
     STOW,
     HANDOFF,
     INTAKE,
+    CORALBETWEEN,
     EXTAKE,
     POOP,
     CLIMB
@@ -192,6 +192,8 @@ public class CoralIntake extends SubsystemBase {
       case INTAKE:
         pivotCurrentTarget = PivotSetpoints.kIntake;
         break;
+      case CORALBETWEEN:
+        pivotCurrentTarget = PivotSetpoints.kOneCoralInBetweenIntake;
       case EXTAKE:
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
@@ -219,6 +221,24 @@ public class CoralIntake extends SubsystemBase {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.INTAKE);
         })).withName("intake");
+  }
+
+  public Command coralBetween()
+  {
+       return coralBetweenReady().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kIntake);
+          setCoralIntakeState(CoralIntakeState.INTAKE);
+        })).withName("coral beetween()");
+  }
+
+  public Command coralBetweenReady()
+  {
+    return this.run(() -> {
+      setPivotPosition(CoralIntakeSetpoint.CORALBETWEEN);
+      setRollerPower(RollerSetpoints.kStop);
+      setCoralIntakeState(CoralIntakeState.INTAKE_READY);
+    }).withName("coral between ready()");
   }
 
   public Command intakeReady() {
