@@ -171,7 +171,7 @@ public class DriveSubsystem extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
     driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(0.1).per(Second), Volts.of(1.75), Seconds.of(10)),
+        new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(2.5)),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
 
