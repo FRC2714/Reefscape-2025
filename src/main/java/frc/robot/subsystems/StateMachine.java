@@ -30,6 +30,13 @@ public class StateMachine extends SubsystemBase {
     DRAGON_SCORE
   }
 
+  public enum AlignType {
+    CENTER,
+    SIDE
+  }
+
+  AlignType m_alignType;
+
   private Dragon m_dragon;
   private Elevator m_elevator;
   private CoralIntake m_coralIntake;
@@ -196,7 +203,10 @@ public class StateMachine extends SubsystemBase {
   private Command dragonScoreSequence() {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())
-        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+        .beforeStarting(() -> {
+          m_state = State.DRAGON_SCORE;
+          m_alignType = AlignType.SIDE;
+        });
   }
 
   private Command poopStandbySequence() {
@@ -219,7 +229,10 @@ public class StateMachine extends SubsystemBase {
     return m_coralIntake.poopL1()
         .until(() -> !m_coralIntake.isLoaded())
         .andThen(idleSequence())
-        .beforeStarting(() -> m_state = State.POOP_SCORE);
+        .beforeStarting(() -> {
+          m_state = State.POOP_SCORE;
+          m_alignType = AlignType.CENTER;
+        });
   }
 
   public Command idle() {
