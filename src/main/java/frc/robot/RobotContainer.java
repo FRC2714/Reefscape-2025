@@ -271,7 +271,7 @@ public class RobotContainer {
 
 
   public void AutoSetPipelines() {
-    if(!new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.LEFT).isScheduled() || !new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight, m_blinkin, Align.RIGHT).isScheduled()){
+    if(!new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).isScheduled()){
       return;
     }
     if (Robot.isSimulation()) {
