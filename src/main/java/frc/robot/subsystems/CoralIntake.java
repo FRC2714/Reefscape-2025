@@ -58,6 +58,7 @@ public class CoralIntake extends SubsystemBase {
     EXTAKE,
     HANDOFF_READY,
     HANDOFF,
+    REVERSE_HANDOFF,
     POOP_READY,
     POOP_SCORE,
     CLIMB,
@@ -223,6 +224,14 @@ public class CoralIntake extends SubsystemBase {
         })).withName("intake");
   }
 
+  public Command extake() {
+    return extakeReady().until(this::atSetpoint).andThen(
+      this.run(() -> {
+        setRollerPower(RollerSetpoints.kExtake);
+        setCoralIntakeState(CoralIntakeState.EXTAKE);
+      })).withName("extake");
+  }
+
   public Command coralBetween()
   {
        return coralBetweenReady().until(this::atSetpoint).andThen(
@@ -257,14 +266,6 @@ public class CoralIntake extends SubsystemBase {
     }).withName("extake ready");
   }
 
-  public Command extake() {
-    return extakeReady().until(this::atSetpoint).andThen(
-        this.run(() -> {
-          setRollerPower(RollerSetpoints.kExtake);
-          setCoralIntakeState(CoralIntakeState.EXTAKE);
-        })).withName("extake");
-  }
-
   public Command stow() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.STOW);
@@ -287,6 +288,14 @@ public class CoralIntake extends SubsystemBase {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.HANDOFF);
         })).withName("handoff");
+  }
+
+  public Command reverseHandoff() {
+    return handoffReady().until(this::atSetpoint).andThen(
+        this.run(() -> {
+          setRollerPower(RollerSetpoints.kExtake);
+          setCoralIntakeState(CoralIntakeState.REVERSE_HANDOFF);
+        })).withName("reverseHandoff()");
   }
 
   public Command poopReady() {

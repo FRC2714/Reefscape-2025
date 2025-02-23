@@ -25,6 +25,7 @@ public class StateMachine extends SubsystemBase {
     POOP_SCORE,
     EXTAKE,
     HANDOFF,
+    REVERSE_HANDOFF,
     DRAGON_STANDBY,
     DRAGON_READY,
     DRAGON_SCORE
@@ -168,6 +169,18 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
+  private Command reverseHandoffSequence() {
+    return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
+        .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
+        .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
+        .andThen(m_coralIntake.reverseHandoff().until(() -> m_coralIntake.isLoaded())
+            .alongWith(m_dragon.reverseHandoff().until(() -> m_coralIntake.isLoaded())))
+        .andThen(poopStandbySequence()
+            .alongWith(m_coralIntake.extakeReady()).until(m_dragon::isClearFromElevator))
+        .beforeStarting(() -> m_state = State.REVERSE_HANDOFF);
+  }
+
   private Command dragonStandbySequence() {
     return m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToStow()
@@ -279,6 +292,14 @@ public class StateMachine extends SubsystemBase {
         poopStandbySequence().schedule();
       }
     }).withName("stopExtakeCoral()");
+  }
+
+  public Command reverseHandoff() {
+    return new InstantCommand(() -> {
+      if (m_state == State.DRAGON_STANDBY || m_state == State.DRAGON_READY || manualOverride) {
+        reverseHandoffSequence().schedule();
+      }
+    }).withName("reverseHandoff()");
   }
 
   public Command setL1() {
