@@ -30,7 +30,9 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.Limelight.Align;
+import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.StateMachine.ScoreLevel;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -185,10 +187,10 @@ public class RobotContainer {
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     // Stages
-    L1Button.onTrue(m_stateMachine.setL1());
-    L2Button.onTrue(m_stateMachine.setL2());
-    L3Button.onTrue(m_stateMachine.setL3());
-    L4Button.onTrue(m_stateMachine.setL4());
+    L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
+    L2Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L2));
+    L3Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L3));
+    L4Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L4));
     stowButton.onTrue(m_stateMachine.idle());
 
     handoffButton.onTrue(m_stateMachine.handoffManual());
