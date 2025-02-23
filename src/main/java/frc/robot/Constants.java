@@ -83,26 +83,26 @@ public final class Constants {
   }
 
   public static final class AlgaeIntakeConstants {
-    public static final int kRollerMotorCanId = 9; // tune ts
-    public static final int kPivotMotorCanId = 10; // tune ts
+    public static final int kRollerMotorCanId = 9;
+    public static final int kPivotMotorCanId = 10;
 
-    public static final double kPivotThreshold = 5; // tune
+    public static final double kPivotThreshold = 5; // TODO
 
     public static final double kPivotMinAngle = 0; // TODO
     public static final double kPivotMaxAngle = 0; // TODO
 
     public static final class PivotSetpoints {
-      public static final double kStow = 15; // TBD
-      public static final double kIntake = 0; // TBD
-      public static final double kExtake = 0;
-      public static final double kScore = 7; // TBD (extake position)
-      public static final double kClimb = 3;
+      public static final double kStow = 15; // TODO
+      public static final double kIntake = 0; // TODO
+      public static final double kExtake = 0; // TODO
+      public static final double kScore = 7; // TODO
+      public static final double kClimb = 3; // TODO
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = 0.5; // tune ts
-      public static final double kExtake = -0.5; // tune ts
-      public static final double kStop = 0;
+      public static final double kIntake = 0.5; // TODO
+      public static final double kExtake = -0.5; // TODO
+      public static final double kStop = 0; // TODO
     }
   }
 
@@ -111,7 +111,7 @@ public final class Constants {
     public static final int kPivotMotorCanId = 12;
     public static final int kIndexerMotorCanId = 13;
 
-    public static final double kPivotThreshold = 5; // tune
+    public static final double kPivotThreshold = 5; // TODO
 
     public static final int kBeamBreakDioChannel = 0;
     public static final double kP = 0.06;
@@ -123,19 +123,20 @@ public final class Constants {
     public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 15; // TBD
-      public static final double kIntake = 65; // TBD
+      public static final double kStow = 15; 
+      public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
-      public static final double kExtake = 60; // TBD
-      public static final double kHandoff = 72.8; // TBD
-      public static final double kPoop = 70; // TBD
+      public static final double kExtake = 85;
+      public static final double kHandoff = 72.8;
+      public static final double kPoop = 70; 
+
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = 0.6; // tune ts
-      public static final double kExtake = -0.4; // tune ts
+      public static final double kIntake = 0.6;
+      public static final double kExtake = -0.4;
       public static final double kStop = 0;
     }
   }
@@ -224,41 +225,61 @@ public final class Constants {
 
   // ! Update Values for AlphaBot
   public static final class LimelightConstants {
-    public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // needs tuning
-    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // needs tuning
+    public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
-    public static final double kRightCameraHeight = 17 + 2.75;
-    public static final double kLeftCameraHeight = 17.5 + 2.75;
-    public static final double kBackCameraHeight = 2.75 + 15.5; // tune later
-    public static final double kRightMountingAngle = -21;
-    public static final double kLeftMountingAngle = -23;
-    public static final double kBackMountingAngle = 0; // tune later
+
+    public static final double kRightCameraHeight = 19.942862; // 0.5065486948 meters
+    public static final double kLeftCameraHeight = 19.942862; // 0.5065486948 meters
+
+    // Parallel to elevator
+    public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
+    public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
+
+    // Perpendicular to elevator
+    public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
+    public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
+
+    public static final double kBackCameraHeight = 2.75 + 15.5; // TODO
+
+    public static final double kRightMountingPitch = -45;
+    public static final double kLeftMountingPitch = -45;
+
+    public static final double kRightMountingYaw = -24.499987;
+    public static final double kLeftMountingYaw = 180 - 24.499987;
+
+    public static final double kBackMountingPitch = 0; // TODO
+
+    public static final double kBackMountingYaw = 0; // TODO
+
     public static final double kReefTagHeight = 12;
     public static final double kProcessorTagHeight = 0; // tune later
+    public static final int kProcessorPipeline = 0; // TBD
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
-    public static final int kProcessorPipeline = 0; // TBD
-    public static final int kRedPosePipeline = 0; // TBD
-    public static final int kBluePosePipeline = 6; // TBD
+    public static final int kRedPosePipeline = 3; // TBD
+    public static final int kBluePosePipeline = 4; // TBD
 
-    public static final double kCoralStationDistanceThreshold = 0; // tune
+    public static final double kCoralStationDistanceThreshold = 0; // TODO: tune
   }
 
   // ! Update Values for AlphaBot
   public static final class ElevatorConstants {
 
-    public static final int kElevatorMotorCanId = 14; // TBD
-    public static final int kElevatorFollowerCanId = 15; // TBD
+    public static final int kElevatorMotorCanId = 14;
+    public static final int kElevatorFollowerCanId = 15;
 
-    public static final double kSetpointThreshold = 0.1; // tune
+    public static final double kSetpointThreshold = 0.1;
 
     public static final double kMinLimit = 0;
     public static final double kMaxLimit = 9.62;
 
     public static final double kP = .3;
     public static final double kG = .3;
+
+    public static final double kClearToStowDragonLevel = 1.8;
 
     public static final class ElevatorLevels {
       public static final double kStow = 0;
@@ -273,10 +294,10 @@ public final class Constants {
 
   public static final class DragonConstants {
 
-    public static final int kPivotMotorCanId = 16; // TBD
-    public static final int kPivotRollerMotorCanID = 17; // TBD
-    public static final double kPivotReduction = 1; // TODO
-    public static final double kPivotThreshold = 5; // tune
+    public static final int kPivotMotorCanId = 16;
+    public static final int kPivotRollerMotorCanId = 17;
+    public static final double kPivotReduction = 1;
+    public static final double kPivotThreshold = 5; // TODO: tune
     public static final double kRollerCurrentThreshold = 5; // tune
 
     public static final double kPivotMinAngle = 10.0;
@@ -298,9 +319,9 @@ public final class Constants {
     }
 
     public static final class RollerSetpoints {
-      public static final double kIntake = -0.1; // tune ts (pos when getting from station)
-      public static final double kExtake = .6; // tune ts (neg when scoring)
-      public static final double kStop = 0.0;
+      public static final double kIntake = -0.1; // TODO: tune (pos when getting from station)
+      public static final double kExtake = .6; // TODO: tune ts (neg when scoring)
+      public static final double kStop = 0;
       public static final double kHold = -0.2;
     }
   }

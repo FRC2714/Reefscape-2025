@@ -76,7 +76,7 @@ public class Dragon extends SubsystemBase {
   private AbsoluteEncoder pivotAbsoluteEncoder = pivotMotor.getAbsoluteEncoder();
 
   // Pivot rollers
-  private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanID, MotorType.kBrushless);
+  private SparkFlex pivotRollers = new SparkFlex(DragonConstants.kPivotRollerMotorCanId, MotorType.kBrushless);
 
   private SparkLimitSwitch beamBreak = pivotRollers.getForwardLimitSwitch();
 
@@ -292,7 +292,7 @@ public class Dragon extends SubsystemBase {
     coralOnDragon = true;
   }
 
-  public void coralonDragonFalse() {
+  public void coralOnDragonFalse() {
     coralOnDragon = false;
   }
 
