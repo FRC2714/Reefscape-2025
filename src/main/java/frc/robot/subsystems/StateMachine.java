@@ -162,8 +162,8 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
-        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon())
-            .alongWith(m_dragon.handoff().until(() -> m_dragon.isCoralOnDragon())))
+        .andThen(m_coralIntake.handoff().until(m_dragon::isCoralOnDragon)
+            .alongWith(m_dragon.handoff().until(m_dragon::isCoralOnDragon)))
         .andThen(dragonStandbySequence()
             .alongWith(m_coralIntake.intakeReady()).until(m_dragon::isClearFromElevator))
         .beforeStarting(() -> m_state = State.HANDOFF);
@@ -174,8 +174,8 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
-        .andThen(m_coralIntake.reverseHandoff().until(() -> m_coralIntake.isLoaded())
-            .alongWith(m_dragon.reverseHandoff().until(() -> m_coralIntake.isLoaded())))
+        .andThen(m_coralIntake.reverseHandoff().until(() -> m_coralIntake.isLoaded() && !m_dragon.isCoralOnDragon())
+            .alongWith(m_dragon.reverseHandoff().until(() -> m_coralIntake.isLoaded() && !m_dragon.isCoralOnDragon())))
         .andThen(poopStandbySequence())
         .beforeStarting(() -> m_state = State.REVERSE_HANDOFF);
   }
