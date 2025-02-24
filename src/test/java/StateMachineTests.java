@@ -401,7 +401,7 @@ public class StateMachineTests {
         setState(State.DRAGON_STANDBY);
         m_dragon.coralOnDragonTrue(); // TODO: test without coral?
 
-        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L1), m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
+        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
                 m_stateMachine.setLevel(ScoreLevel.L4) };
         for (Command c : commands) {
             c.schedule();
@@ -485,7 +485,7 @@ public class StateMachineTests {
         setState(State.DRAGON_READY);
         m_dragon.coralOnDragonTrue();
 
-        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L1), m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
+        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
                 m_stateMachine.setLevel(ScoreLevel.L4) };
         for (Command c : commands) {
             c.schedule();

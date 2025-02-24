@@ -298,7 +298,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (level == ScoreLevel.L1) {
             if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-              scoreReadySequence(level).schedule();
+              reverseHandoffSequence().schedule();
             } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
               poopReadySequence().schedule();
             }
