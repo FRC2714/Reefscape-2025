@@ -412,6 +412,33 @@ public class StateMachineTests {
     }
 
     @Test
+    void dragonStandbyToPoopStandby() {
+        setState(State.DRAGON_STANDBY);
+        m_dragon.coralOnDragonTrue();
+
+        m_stateMachine.setL1().schedule();
+        runScheduler();
+        m_dragon.coralOnDragonFalse();
+        runScheduler();
+        m_coralIntake.setLoadedTrue();
+        runScheduler();
+        assertState(State.POOP_STANDBY,
+                "POOP_STANDBY should be reachable from DRAGON_STANDBY via setL1() if dragon is not loaded and coral intake is loaded");
+    }
+
+    @Test
+    void dragonStandbyToReverseHandoff() {
+        setState(State.DRAGON_STANDBY);
+        m_dragon.coralOnDragonTrue();
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.setL1().schedule();
+        runScheduler();
+        assertState(State.REVERSE_HANDOFF,
+                "REVERSE_HANDOFF should be reachable from DRAGON_STANDBY via setL1() if dragon is loaded and coral intake is not loaded");
+    }
+
+    @Test
     void dragonStandbyInvalidTransitions() {
         setState(State.DRAGON_STANDBY);
         m_dragon.coralOnDragonFalse();
@@ -469,6 +496,33 @@ public class StateMachineTests {
     }
 
     @Test
+    void dragonReadyToPoopStandby() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralOnDragonTrue();
+
+        m_stateMachine.setL1().schedule();
+        runScheduler();
+        m_dragon.coralOnDragonFalse();
+        runScheduler();
+        m_coralIntake.setLoadedTrue();
+        runScheduler();
+        assertState(State.POOP_STANDBY,
+                "POOP_STANDBY should be reachable from DRAGON_READY via setL1() if dragon is not loaded and coral intake is loaded");
+    }
+
+    @Test
+    void dragonReadyToReverseHandoff() {
+        setState(State.DRAGON_READY);
+        m_dragon.coralOnDragonTrue();
+        m_coralIntake.setLoadedFalse();
+
+        m_stateMachine.setL1().schedule();
+        runScheduler();
+        assertState(State.REVERSE_HANDOFF,
+                "REVERSE_HANDOFF should be reachable from DRAGON_READY via setL1() if dragon is loaded and coral intake is not loaded");
+    }
+
+    @Test
     void dragonReadyInvalidTransitions() {
         setState(State.DRAGON_READY);
         assertCommandHasNoEffect(State.DRAGON_READY,
@@ -520,6 +574,20 @@ public class StateMachineTests {
                 m_stateMachine.setL2(),
                 m_stateMachine.setL3(),
                 m_stateMachine.setL4());
+    }
+
+    @Test
+    void reverseHandoffInvalidTransitions() {
+        setState(State.REVERSE_HANDOFF);
+        assertCommandHasNoEffect(State.REVERSE_HANDOFF,
+                m_stateMachine.idle(),
+                m_stateMachine.intakeCoral(),
+                m_stateMachine.extakeCoral(),
+                m_stateMachine.setL1(),
+                m_stateMachine.setL2(),
+                m_stateMachine.setL3(),
+                m_stateMachine.setL4(),
+                m_stateMachine.scoreCoral());
     }
 
     @Test
