@@ -42,7 +42,7 @@ public class StateMachine extends SubsystemBase {
   private State m_state = State.IDLE;
   private boolean elevatorHasReset = false;
 
-  private enum ScoreLevel {
+  public enum ScoreLevel {
     L1,
     L2,
     L3,
@@ -293,53 +293,25 @@ public class StateMachine extends SubsystemBase {
     }).withName("stopExtakeCoral()");
   }
 
-  public Command setL1() {
+  public Command setLevel(ScoreLevel level) {
     return new InstantCommand(
         () -> {
-          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-            reverseHandoffSequence().schedule();
-          } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
-            poopReadySequence().schedule();
+          if (level == ScoreLevel.L1) {
+            if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
+              scoreReadySequence(level).schedule();
+            } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
+              poopReadySequence().schedule();
+            }
           }
-        }).withName("setL1()");
-  }
-
-  public Command setL2() {
-    return new InstantCommand(
-        () -> {
-          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-            scoreReadySequence(ScoreLevel.L2).schedule();
-          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
-            handoffSequence()
-                .andThen(scoreReadySequence(ScoreLevel.L2)).schedule();
+          else {
+            if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
+              scoreReadySequence(level).schedule();
+            } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
+              handoffSequence()
+                  .andThen(scoreReadySequence(level)).schedule();
+            }
           }
-        }).withName("setL2()");
-  }
-
-  public Command setL3() {
-    return new InstantCommand(
-        () -> {
-          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-            scoreReadySequence(ScoreLevel.L3).schedule();
-          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
-            handoffSequence()
-                .andThen(scoreReadySequence(ScoreLevel.L3)).schedule();
-          }
-
-        }).withName("setL3()");
-  }
-
-  public Command setL4() {
-    return new InstantCommand(
-        () -> {
-          if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-            scoreReadySequence(ScoreLevel.L4).schedule();
-          } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
-            handoffSequence()
-                .andThen(scoreReadySequence(ScoreLevel.L4)).schedule();
-          }
-
-        }).withName("setL4()");
+        }).withName("setLevel" + "(" + level.toString() + ")");
   }
 
   public Command scoreCoral() {
@@ -414,3 +386,4 @@ public class StateMachine extends SubsystemBase {
 
   }
 }
+
