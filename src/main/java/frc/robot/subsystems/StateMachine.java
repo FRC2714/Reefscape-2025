@@ -8,13 +8,13 @@ import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
-
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -27,7 +27,9 @@ public class StateMachine extends SubsystemBase {
     HANDOFF,
     DRAGON_STANDBY,
     DRAGON_READY,
-    DRAGON_SCORE
+    DRAGON_SCORE,
+    CLIMB_READY,
+    CLIMB
   }
 
   private Dragon m_dragon;
@@ -290,8 +292,7 @@ public class StateMachine extends SubsystemBase {
             } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
               poopReadySequence().schedule();
             }
-          }
-          else {
+          } else {
             if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
               scoreReadySequence(level).schedule();
             } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
@@ -339,6 +340,9 @@ public class StateMachine extends SubsystemBase {
 
   /* Climber commands */
 
+  /**
+   * Run the winch.
+   */
   private Command climbSequence() {
     return m_algaeIntake.climb().until(m_algaeIntake::atSetpoint)
         .alongWith(m_coralIntake.climb().until(m_coralIntake::atSetpoint))
@@ -347,14 +351,45 @@ public class StateMachine extends SubsystemBase {
             .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
   }
 
+  /**
+   * Move subsystems out of the way then deploy the climber until limit switch is
+   * activated.
+   */
+  private Command deployClimberSequence() {
+    // TODO: Implement this method
+    return Commands.none().beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
+  }
+
+  /**
+   * Move climber back then return subsystems to their stow state.
+   */
+  private Command retractClimberSequence() {
+    // TODO: Implement this method
+    return Commands.none().withName("retractClimberSequence()");
+  }
+
   public Command deployClimber() {
-    return new InstantCommand(() -> climbSequence()
-        .andThen(m_climber.deploy().until(m_climber::atSetpoint)).schedule());
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE) {
+        deployClimberSequence().schedule();
+      }
+    }).withName("deployClimber()");
   }
 
   public Command retractClimber() {
-    return new InstantCommand(() -> climbSequence()
-        .andThen(m_climber.retract().until(m_climber::atSetpoint)).schedule());
+    return new InstantCommand(() -> {
+      if (m_state == State.CLIMB_READY) {
+        retractClimberSequence().schedule();
+      }
+    }).withName("retractClimber()");
+  }
+
+  public Command climb() {
+    return new InstantCommand(() -> {
+      if (m_state == State.CLIMB_READY) {
+        climbSequence().schedule();
+      }
+    }).withName("climb()");
   }
 
   public Command elevatorHomingSequence() {
@@ -374,4 +409,3 @@ public class StateMachine extends SubsystemBase {
 
   }
 }
-
