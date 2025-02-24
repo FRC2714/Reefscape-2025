@@ -53,6 +53,7 @@ public class Dragon extends SubsystemBase {
     STOW,
     HANDOFF_READY,
     HANDOFF,
+    REVERSE_HANDOFF,
     SCORE_READY,
     SCORE,
     POOP_READY,
@@ -216,6 +217,14 @@ public class Dragon extends SubsystemBase {
       setRollerPower(RollerSetpoints.kStop);
       setDragonState(DragonState.HANDOFF_READY);
     }).withName("handoffReady()");
+  }
+
+  public Command reverseHandoff() {
+    return handoffReady().until(this::atSetpoint).andThen(this.run(() -> {
+      setPivot(DragonSetpoint.HANDOFF);
+      setRollerPower(RollerSetpoints.kExtake);
+      setDragonState(DragonState.REVERSE_HANDOFF);
+    })).withName("reverseHandoff()");
   }
 
   public Command handoff() {
