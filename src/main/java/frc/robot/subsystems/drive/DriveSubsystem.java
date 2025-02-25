@@ -184,7 +184,7 @@ public class DriveSubsystem extends SubsystemBase {
         LimelightConstants.m_visionStdDevs);
 
     driveRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(Volts.of(.5).per(Second), Volts.of(7), Seconds.of(2.5)),
+        new SysIdRoutine.Config(Volts.of(2).per(Second), Volts.of(6), Seconds.of(3)),
         new SysIdRoutine.Mechanism(
             (voltage) -> this.driveVoltageForwardTest(voltage.in(Volts)), null, this));
 
@@ -236,17 +236,17 @@ public class DriveSubsystem extends SubsystemBase {
 
   private void driveVoltageForwardTest(double voltage) {
     var direction = new Rotation2d();
-    m_frontLeft.setVoltageAngle(-voltage, direction.plus(Rotation2d.fromDegrees(90)));
+    m_frontLeft.setVoltageAngle(voltage, direction);
     m_frontRight.setVoltageAngle(voltage, direction);
-    m_rearLeft.setVoltageAngle(-voltage, direction);
-    m_rearRight.setVoltageAngle(voltage, direction.plus(Rotation2d.fromDegrees(90)));
+    m_rearLeft.setVoltageAngle(voltage, direction);
+    m_rearRight.setVoltageAngle(voltage, direction);
   }
 
   private void driveVoltageRotateTest(double voltage) {
-    m_frontLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(45.0));
+    m_frontLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(-45.0));
     m_frontRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(45));
-    m_rearLeft.setVoltageAngle(voltage, Rotation2d.fromDegrees(45));
-    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(45));
+    m_rearLeft.setVoltageAngle(-voltage, Rotation2d.fromDegrees(45));
+    m_rearRight.setVoltageAngle(voltage, Rotation2d.fromDegrees(-45));
   }
 
   public void resetEstimatedHeading(Rotation2d rotation) {

@@ -69,8 +69,8 @@ public final class Constants {
     public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
         / ModuleConstants.kDrivingMotorReduction;
 
-    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0,0,0);
-    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0,0,0);
+    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.22022,2.4995,0.26113);
+    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0,0,0.1);
   }
 
   public static final class ClimberConstants {
