@@ -247,113 +247,121 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void update() {
-    if (Robot.isSimulation()) {
-      return;
-    } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
-      swerveDrivePoseEstimator.update(
+    // if (Robot.isSimulation()) {
+    //   return;
+    // } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
+    //   swerveDrivePoseEstimator.update(
+    //       Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+    //       new SwerveModulePosition[] {
+    //           m_frontLeft.getPositionPoseRed(),
+    //           m_frontRight.getPositionPoseRed(),
+    //           m_rearLeft.getPositionPoseRed(),
+    //           m_rearRight.getPositionPoseRed()
+    //       });
+    // } else {
+    //   swerveDrivePoseEstimator.update(
+    //       Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+    //       new SwerveModulePosition[] {
+    //           m_frontLeft.getPositionPoseBlue(),
+    //           m_frontRight.getPositionPoseBlue(),
+    //           m_rearLeft.getPositionPoseBlue(),
+    //           m_rearRight.getPositionPoseBlue()
+    //       });
+    // }
+    swerveDrivePoseEstimator.update(
           Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
           new SwerveModulePosition[] {
-              m_frontLeft.getPositionPoseRed(),
-              m_frontRight.getPositionPoseRed(),
-              m_rearLeft.getPositionPoseRed(),
-              m_rearRight.getPositionPoseRed()
+              m_frontLeft.getPosition(),
+              m_frontRight.getPosition(),
+              m_rearLeft.getPosition(),
+              m_rearRight.getPosition()
           });
-    } else {
-      swerveDrivePoseEstimator.update(
-          Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-          new SwerveModulePosition[] {
-              m_frontLeft.getPositionPoseBlue(),
-              m_frontRight.getPositionPoseBlue(),
-              m_rearLeft.getPositionPoseBlue(),
-              m_rearRight.getPositionPoseBlue()
-          });
-    }
 
-    boolean useMegaTag2 = true; // set to false to use MegaTag1
-    boolean doRejectUpdate = false;
-    if (useMegaTag2 == false) {
-      LimelightHelpers.PoseEstimate mt1back = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
-      LimelightHelpers.PoseEstimate mt1Right = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-      LimelightHelpers.PoseEstimate mt1left = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+    // boolean useMegaTag2 = true; // set to false to use MegaTag1
+    // boolean doRejectUpdate = false;
+    // if (useMegaTag2 == false) {
+    //   LimelightHelpers.PoseEstimate mt1back = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
+    //   LimelightHelpers.PoseEstimate mt1Right = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+    //   LimelightHelpers.PoseEstimate mt1left = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
 
-      if (mt1back.tagCount == 1 && mt1back.rawFiducials.length == 1
-          || mt1Right.tagCount == 1 && mt1Right.rawFiducials.length == 1
-          || mt1left.tagCount == 1 && mt1left.rawFiducials.length == 1) {
-        if (mt1back.rawFiducials[0].ambiguity > .7 && mt1Right.rawFiducials[0].ambiguity > .7
-            && mt1left.rawFiducials[0].ambiguity > .7) {
-          doRejectUpdate = true;
-        }
-        if (mt1back.rawFiducials[0].distToCamera > 3 && mt1Right.rawFiducials[0].distToCamera > 3
-            && mt1left.rawFiducials[0].distToCamera > 3) {
-          doRejectUpdate = true;
-        }
-      }
-      if (mt1back.tagCount == 0 && mt1Right.tagCount == 0 && mt1left.tagCount == 0) {
-        doRejectUpdate = true;
-      }
+    //   if (mt1back.tagCount == 1 && mt1back.rawFiducials.length == 1
+    //       || mt1Right.tagCount == 1 && mt1Right.rawFiducials.length == 1
+    //       || mt1left.tagCount == 1 && mt1left.rawFiducials.length == 1) {
+    //     if (mt1back.rawFiducials[0].ambiguity > .7 && mt1Right.rawFiducials[0].ambiguity > .7
+    //         && mt1left.rawFiducials[0].ambiguity > .7) {
+    //       doRejectUpdate = true;
+    //     }
+    //     if (mt1back.rawFiducials[0].distToCamera > 3 && mt1Right.rawFiducials[0].distToCamera > 3
+    //         && mt1left.rawFiducials[0].distToCamera > 3) {
+    //       doRejectUpdate = true;
+    //     }
+    //   }
+    //   if (mt1back.tagCount == 0 && mt1Right.tagCount == 0 && mt1left.tagCount == 0) {
+    //     doRejectUpdate = true;
+    //   }
 
-      if (!doRejectUpdate) {
-        System.out.println("using mt1");
-        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
-        if (mt1back.tagCount > mt1Right.tagCount && mt1back.tagCount > mt1left.tagCount) {
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt1back.pose,
-              mt1back.timestampSeconds);
-        } else if (mt1left.tagCount > mt1Right.tagCount && mt1left.tagCount > mt1Right.tagCount) {
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt1Right.pose,
-              mt1Right.timestampSeconds);
-        } else {
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt1left.pose,
-              mt1left.timestampSeconds);
-        }
-      }
-    } else if (useMegaTag2 == true) {
-      LimelightHelpers.PoseEstimate mt2back = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
-      LimelightHelpers.PoseEstimate mt2right = LimelightHelpers
-          .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-      LimelightHelpers.PoseEstimate mt2left = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+    //   if (!doRejectUpdate) {
+    //     System.out.println("using mt1");
+    //     swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+    //     if (mt1back.tagCount > mt1Right.tagCount && mt1back.tagCount > mt1left.tagCount) {
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt1back.pose,
+    //           mt1back.timestampSeconds);
+    //     } else if (mt1left.tagCount > mt1Right.tagCount && mt1left.tagCount > mt1Right.tagCount) {
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt1Right.pose,
+    //           mt1Right.timestampSeconds);
+    //     } else {
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt1left.pose,
+    //           mt1left.timestampSeconds);
+    //     }
+    //   }
+    // } else if (useMegaTag2 == true) {
+    //   LimelightHelpers.PoseEstimate mt2back = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
+    //   LimelightHelpers.PoseEstimate mt2right = LimelightHelpers
+    //       .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+    //   LimelightHelpers.PoseEstimate mt2left = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
 
-      if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                            // vision updates
-      {
-        doRejectUpdate = true;
-      }
-      if (mt2back == null || mt2left == null || mt2right == null
-          || mt2back.tagCount == 0 && mt2left.tagCount == 0 && mt2right.tagCount == 0) { // mt2right == null ||
-        // mt2right.tagCount
-        // == 0 &&
-        doRejectUpdate = true;
-      } else if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
-          && mt2left.avgTagDist > 3) {
-        doRejectUpdate = true;
-      }
+    //   if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+    //                                         // vision updates
+    //   {
+    //     doRejectUpdate = true;
+    //   }
+    //   if (mt2back == null || mt2left == null || mt2right == null
+    //       || mt2back.tagCount == 0 && mt2left.tagCount == 0 && mt2right.tagCount == 0) { // mt2right == null ||
+    //     // mt2right.tagCount
+    //     // == 0 &&
+    //     doRejectUpdate = true;
+    //   } else if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
+    //       && mt2left.avgTagDist > 3) {
+    //     doRejectUpdate = true;
+    //   }
 
-      if (!doRejectUpdate) {
-        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 9999999));
-        if (mt2left.rawFiducials.length > mt2back.rawFiducials.length
-            && mt2left.rawFiducials.length > mt2right.rawFiducials.length
-            && mt2left.tagCount > mt2back.tagCount) { // && mt2left.tagCount >= mt2right.tagCount
-          System.out.println("update left");
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt2left.pose,
-              mt2left.timestampSeconds);
-        } else if (mt2right.rawFiducials.length > mt2back.rawFiducials.length
-            && mt2right.rawFiducials.length > mt2left.rawFiducials.length &&
-            mt2right.tagCount > mt2left.tagCount) {
-          System.out.println("update right");
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt2right.pose,
-              mt2right.timestampSeconds);
-        } else if (mt2back.rawFiducials.length > 0.1) {
-          System.out.println("update back");
-          swerveDrivePoseEstimator.addVisionMeasurement(
-              mt2back.pose,
-              mt2back.timestampSeconds);
-        }
-      }
-    }
+    //   if (!doRejectUpdate) {
+    //     swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1, 9999999));
+    //     if (mt2left.rawFiducials.length > mt2back.rawFiducials.length
+    //         && mt2left.rawFiducials.length > mt2right.rawFiducials.length
+    //         && mt2left.tagCount > mt2back.tagCount) { // && mt2left.tagCount >= mt2right.tagCount
+    //       System.out.println("update left");
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt2left.pose,
+    //           mt2left.timestampSeconds);
+    //     } else if (mt2right.rawFiducials.length > mt2back.rawFiducials.length
+    //         && mt2right.rawFiducials.length > mt2left.rawFiducials.length &&
+    //         mt2right.tagCount > mt2left.tagCount) {
+    //       System.out.println("update right");
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt2right.pose,
+    //           mt2right.timestampSeconds);
+    //     } else if (mt2back.rawFiducials.length > 0.1) {
+    //       System.out.println("update back");
+    //       swerveDrivePoseEstimator.addVisionMeasurement(
+    //           mt2back.pose,
+    //           mt2back.timestampSeconds);
+    //     }
+    //   }
+    // }
   }
 
   @Override
