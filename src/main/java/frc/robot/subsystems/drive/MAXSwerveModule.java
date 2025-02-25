@@ -7,6 +7,7 @@ package frc.robot.subsystems.drive;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule extends SubsystemBase {
@@ -40,7 +42,6 @@ public class MAXSwerveModule extends SubsystemBase {
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
 
-  private final SimpleMotorFeedforward m_driveFeedforward, m_turningFeedforward;
 
   private final DCMotorSim m_driveSim, m_turningSim;
 
@@ -49,6 +50,9 @@ public class MAXSwerveModule extends SubsystemBase {
 
   private double m_chassisAngularOffset = 0;
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
+
+  private final SimpleMotorFeedforward m_driveFeedforward;
+  private final SimpleMotorFeedforward m_turningFeedforward;
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
@@ -60,8 +64,8 @@ public class MAXSwerveModule extends SubsystemBase {
     m_drivingFlex = new SparkFlex(drivingCANId, MotorType.kBrushless);
     m_turningSpark = new SparkFlex(turningCANId, MotorType.kBrushless);
 
-    m_driveFeedforward = new SimpleMotorFeedforward(0.17, 2.15, 0.30895);
-    m_turningFeedforward = new SimpleMotorFeedforward(0.35233, 0.39185, 0.0058658);
+    m_driveFeedforward = DriveConstants.kDriveFeedforward;
+    m_turningFeedforward = DriveConstants.kTurningFeedforward;
 
     m_drivingMotorModel = DCMotor.getNeoVortex(1);
     m_turningMotorModel = DCMotor.getNeo550(1);
@@ -96,8 +100,8 @@ public class MAXSwerveModule extends SubsystemBase {
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
     m_drivingEncoder.setPosition(0);
-  }
 
+  }
   /**
    * Returns the current state of the module.
    *
@@ -154,8 +158,9 @@ public class MAXSwerveModule extends SubsystemBase {
     correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
-    m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
+    m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity, ClosedLoopSlot.kSlot0, m_driveFeedforward.calculate(correctedDesiredState.speedMetersPerSecond));
     m_turningClosedLoopController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
+
 
     m_desiredState = desiredState;
   }
@@ -168,7 +173,7 @@ public class MAXSwerveModule extends SubsystemBase {
     correctedDesiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(m_chassisAngularOffset));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
-    correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
+    // correctedDesiredState.optimize(new Rotation2d(m_turningEncoder.getPosition()));
 
     // Command driving and turning SPARKS towards their respective setpoints.
     // m_drivingClosedLoopController.setReference(correctedDesiredState.speedMetersPerSecond,
