@@ -132,10 +132,10 @@ public class RobotContainer {
 
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
-    NamedCommands.registerCommand("L4", m_stateMachine.setL4());
-    NamedCommands.registerCommand("L3", m_stateMachine.setL3());
-    NamedCommands.registerCommand("L2", m_stateMachine.setL2());  
-    NamedCommands.registerCommand("L1", m_stateMachine.setL1());
+    NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
+    NamedCommands.registerCommand("L3", m_stateMachine.setLevel(ScoreLevel.L3));
+    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));  
+    NamedCommands.registerCommand("L1", m_stateMachine.setLevel(ScoreLevel.L1));
     NamedCommands.registerCommand("Intake Coral", m_stateMachine .intakeCoral());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
