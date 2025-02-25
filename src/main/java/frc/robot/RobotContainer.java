@@ -201,6 +201,7 @@ public class RobotContainer {
 
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
     if (Robot.isSimulation()) {
