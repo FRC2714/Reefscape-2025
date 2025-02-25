@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
@@ -31,13 +32,13 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 5.486;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(26.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(20.5);
+    public static final double kWheelBase = Units.inchesToMeters(26.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -67,6 +68,9 @@ public final class Constants {
     public static final double kTurningEncoderPositionFactor = 2 * Math.PI;
     public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
         / ModuleConstants.kDrivingMotorReduction;
+
+    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0,0,0);
+    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0,0,0);
   }
 
   public static final class ClimberConstants {
@@ -182,11 +186,11 @@ public final class Constants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
     // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
     // more teeth will result in a robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 14;
+    public static final int kDrivingMotorPinionTeeth = 12;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kDrivingMotorFreeSpeedRps = NeoVortexMotorConstants.kFreeSpeedRpm / 60;
+    public static final double kWheelDiameterMeters = 0.038 * 2;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
@@ -221,6 +225,10 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+
+  public static final class NeoVortexMotorConstants {
+    public static final double kFreeSpeedRpm = 6784;
   }
 
   // ! Update Values for AlphaBot
