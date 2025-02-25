@@ -101,7 +101,7 @@ public class RobotContainer {
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
-
+  
   private SendableChooser<Command> autoChooser;
 
   /**
@@ -172,7 +172,6 @@ public class RobotContainer {
     }
 
     // Driver Controller Actions
-
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
@@ -213,7 +212,7 @@ public class RobotContainer {
     overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
   }
-
+  
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(() -> {
       m_stateMachine.setDefaultStates().schedule();
@@ -230,24 +229,16 @@ public class RobotContainer {
     });
   }
 
-  public Command elevatorHomingSequence() {
-    return m_stateMachine.elevatorHomingSequence();
-  }
-
-  public void isAutoHandoffEnabled() {
-    if (autoHandoffButton.getAsBoolean()) {
+  public void setAutoHandoff(boolean enable) {
+    if (enable) {
       m_stateMachine.enableAutoHandoff().schedule();
     } else {
       m_stateMachine.disableAutoHandoff().schedule();
     }
   }
 
-  public void isManualOverrideEnabled() {
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
+  public Command elevatorHomingSequence() {
+    return m_stateMachine.elevatorHomingSequence();
   }
 
   /**

@@ -61,7 +61,7 @@ public class StateMachine extends SubsystemBase {
     this.m_climber = m_climber;
 
     manualOverride = false;
-    autoHandoff = true;
+    autoHandoff = false;
 
     populateElevatorMap();
     populateDragonMap();
