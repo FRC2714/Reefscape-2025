@@ -21,6 +21,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.State;
+import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 @Execution(ExecutionMode.SAME_THREAD)
@@ -100,10 +101,10 @@ public class StateMachineTests {
         setState(State.IDLE);
         assertCommandHasNoEffect(State.IDLE,
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4(),
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4),
                 m_stateMachine.scoreCoral());
     }
 
@@ -151,10 +152,10 @@ public class StateMachineTests {
         m_coralIntake.setLoadedFalse();
         assertCommandHasNoEffect(State.INTAKE,
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4(),
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4),
                 m_stateMachine.scoreCoral());
     }
 
@@ -182,10 +183,10 @@ public class StateMachineTests {
         setState(State.EXTAKE);
         assertCommandHasNoEffect(State.EXTAKE,
                 m_stateMachine.intakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4(),
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4),
                 m_stateMachine.scoreCoral());
     }
 
@@ -194,9 +195,9 @@ public class StateMachineTests {
         setState(State.POOP_STANDBY);
         m_coralIntake.setLoadedTrue();
 
-        m_stateMachine.setL1().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L1).schedule();
         runScheduler();
-        assertState(State.POOP_READY, "POOP_READY should be reachable from POOP_STANDBY via setL1()");
+        assertState(State.POOP_READY, "POOP_READY should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L1)");
     }
 
     @Test
@@ -204,19 +205,19 @@ public class StateMachineTests {
         setState(State.POOP_STANDBY);
         m_coralIntake.setLoadedTrue();
 
-        m_stateMachine.setL2().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L2).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL2()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L2)");
 
         setState(State.POOP_STANDBY);
-        m_stateMachine.setL3().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L3).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL3()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L3)");
 
         setState(State.POOP_STANDBY);
-        m_stateMachine.setL4().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L4).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL4()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L4)");
     }
 
     @Test
@@ -255,19 +256,19 @@ public class StateMachineTests {
         setState(State.POOP_STANDBY);
         m_coralIntake.setLoadedTrue();
 
-        m_stateMachine.setL2().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L2).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL2()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L2)");
 
         setState(State.POOP_STANDBY);
-        m_stateMachine.setL3().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L3).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL3()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L3)");
 
         setState(State.POOP_STANDBY);
-        m_stateMachine.setL4().schedule();
+        m_stateMachine.setLevel(ScoreLevel.L4).schedule();
         runScheduler();
-        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setL4()");
+        assertState(State.HANDOFF, "HANDOFF should be reachable from POOP_STANDBY via setLevel(ScoreLevel.L4)");
     }
 
     @Test
@@ -297,7 +298,7 @@ public class StateMachineTests {
         assertCommandHasNoEffect(State.POOP_READY,
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1());
+                m_stateMachine.setLevel(ScoreLevel.L1));
     }
 
     @Test
@@ -328,10 +329,10 @@ public class StateMachineTests {
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4());
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4));
 
         setState(State.POOP_SCORE);
         m_coralIntake.setLoadedFalse();
@@ -340,10 +341,10 @@ public class StateMachineTests {
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4());
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4));
     }
 
     @Test
@@ -369,7 +370,7 @@ public class StateMachineTests {
 
     @Test
     void handoffToDragonReady() {
-        Command[] commands = { m_stateMachine.setL2(), m_stateMachine.setL3(), m_stateMachine.setL4() };
+        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3), m_stateMachine.setLevel(ScoreLevel.L4) };
         State[] states = { State.POOP_READY, State.POOP_STANDBY };
         for (State s : states) {
             for (Command c : commands) {
@@ -396,10 +397,10 @@ public class StateMachineTests {
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4(),
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4),
                 m_stateMachine.scoreCoral());
     }
 
@@ -408,8 +409,8 @@ public class StateMachineTests {
         setState(State.DRAGON_STANDBY);
         m_dragon.coralOnDragonTrue(); // TODO: test without coral?
 
-        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
-                m_stateMachine.setL4() };
+        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L1), m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4) };
         for (Command c : commands) {
             c.schedule();
             runScheduler();
@@ -465,8 +466,8 @@ public class StateMachineTests {
         setState(State.DRAGON_READY);
         m_dragon.coralOnDragonTrue();
 
-        Command[] commands = { m_stateMachine.setL1(), m_stateMachine.setL2(), m_stateMachine.setL3(),
-                m_stateMachine.setL4() };
+        Command[] commands = { m_stateMachine.setLevel(ScoreLevel.L1), m_stateMachine.setLevel(ScoreLevel.L2), m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4) };
         for (Command c : commands) {
             c.schedule();
             runScheduler();
@@ -512,10 +513,10 @@ public class StateMachineTests {
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4());
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4));
 
         setState(State.DRAGON_SCORE);
         m_coralIntake.setLoadedFalse();
@@ -524,10 +525,10 @@ public class StateMachineTests {
                 m_stateMachine.idle(),
                 m_stateMachine.intakeCoral(),
                 m_stateMachine.extakeCoral(),
-                m_stateMachine.setL1(),
-                m_stateMachine.setL2(),
-                m_stateMachine.setL3(),
-                m_stateMachine.setL4());
+                m_stateMachine.setLevel(ScoreLevel.L1),
+                m_stateMachine.setLevel(ScoreLevel.L2),
+                m_stateMachine.setLevel(ScoreLevel.L3),
+                m_stateMachine.setLevel(ScoreLevel.L4));
     }
 
     @Test
