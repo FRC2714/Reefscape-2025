@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "barge to J NP"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto align"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "NONPROCESSOR",
+  "choreoAuto": false
+}

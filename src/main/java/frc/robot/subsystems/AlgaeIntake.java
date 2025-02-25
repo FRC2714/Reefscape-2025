@@ -243,31 +243,31 @@ public class AlgaeIntake extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // Display subsystem values
-    SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
-    SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotCurrentTarget);
-    SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
+    // // Display subsystem values
+    // SmartDashboard.putNumber("Algae/Pivot/Current Position", pivotEncoder.getPosition());
+    // SmartDashboard.putNumber("Algae/Pivot/Setpoint", pivotCurrentTarget);
+    // SmartDashboard.putBoolean("Algae/Pivot/at Setpoint?", atSetpoint());
 
-    SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
+    // SmartDashboard.putNumber("Algae/Intake/Applied Output", rollerMotor.getAppliedOutput());
 
-    SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
-    SmartDashboard.putString("Algae/Current Command",
-        this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+    // SmartDashboard.putString("Algae/State", m_algaeIntakeState.toString());
+    // SmartDashboard.putString("Algae/Current Command",
+    //     this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
 
-    // Update mechanism2d
-    intakePivotMechanism.setAngle(
-        Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
-            + Units.rotationsToDegrees(
-                pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
+    // // Update mechanism2d
+    // intakePivotMechanism.setAngle(
+    //     Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)
+    //         + Units.rotationsToDegrees(
+    //             pivotEncoder.getPosition() / SimulationRobotConstants.kIntakeReduction));
 
-    if (tunableAngle.hasChanged()) {
-      pivotCurrentTarget = tunableAngle.get();
-      moveToSetpoint();
-    }
-    if (tunableP.hasChanged()) {
-      tunableConfig.closedLoop.p(tunableP.get());
-      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
+    // if (tunableAngle.hasChanged()) {
+    //   pivotCurrentTarget = tunableAngle.get();
+    //   moveToSetpoint();
+    // }
+    // if (tunableP.hasChanged()) {
+    //   tunableConfig.closedLoop.p(tunableP.get());
+    //   pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // }
   }
 
   /** Get the current drawn by each simulation physics model */

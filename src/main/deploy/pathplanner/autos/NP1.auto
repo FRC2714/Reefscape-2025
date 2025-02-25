@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "barge to J NP"
+            "name": "Set align right"
           }
         },
         {
@@ -31,7 +31,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

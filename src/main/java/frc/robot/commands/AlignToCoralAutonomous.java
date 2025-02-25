@@ -5,15 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.LED;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlignToCoral extends Command {
+public class AlignToCoralAutonomous extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
@@ -23,7 +25,7 @@ public class AlignToCoral extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
+  public AlignToCoralAutonomous(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
@@ -44,11 +46,15 @@ public class AlignToCoral extends Command {
     xController.setTolerance(.01);
     yController.setTolerance(.01);
     thetaController.setTolerance(.1);
+
+    SmartDashboard.putBoolean("is aligning", false);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("is aligning", true);
     side = Limelight.SIDE;
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
@@ -74,44 +80,39 @@ public class AlignToCoral extends Command {
         {
           updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-          m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-              m_leftLimelight.getDistanceToGoalMeters() < 0.4
-                  ? yController.calculate(m_leftLimelight.getXOffsetRadians())
-                  : 0,
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
+          PPHolonomicDriveController.overrideXFeedback(() -> -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()) * DriveConstants.kMaxSpeedMetersPerSecond);
+          PPHolonomicDriveController.overrideYFeedback(() -> m_leftLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_leftLimelight.getXOffsetRadians()) * DriveConstants.kMaxSpeedMetersPerSecond
+              : 0);
+          PPHolonomicDriveController.overrideRotationFeedback(() -> thetaController.calculate(m_drivetrain.getHeading()) * DriveConstants.kMaxAngularSpeed);
+
         } else // driver aligns left so left camera
         {
           updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-          m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-              m_rightLimelight.getDistanceToGoalMeters() < 0.4
-                  ? yController.calculate(m_rightLimelight.getXOffsetRadians())
-                  : 0,
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
+          PPHolonomicDriveController.overrideXFeedback(() -> -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()) * DriveConstants.kMaxSpeedMetersPerSecond);
+          PPHolonomicDriveController.overrideYFeedback(() -> m_rightLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_rightLimelight.getXOffsetRadians()) * DriveConstants.kMaxSpeedMetersPerSecond
+              : 0);
+          PPHolonomicDriveController.overrideRotationFeedback(() -> thetaController.calculate(m_drivetrain.getHeading()) * DriveConstants.kMaxAngularSpeed);
         }
-      } else {
-        m_drivetrain.drive(0, 0, 0, true);
       }
     } else if ((m_leftLimelight.isTargetVisible())) { // if can only see left, then do whatever we did before
       updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-      m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-          m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians())
-              : 0,
-          thetaController.calculate(m_drivetrain.getHeading()),
-          false);
+      PPHolonomicDriveController.overrideXFeedback(() -> -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()) * DriveConstants.kMaxSpeedMetersPerSecond);
+          PPHolonomicDriveController.overrideYFeedback(() -> m_leftLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_leftLimelight.getXOffsetRadians()) * DriveConstants.kMaxSpeedMetersPerSecond
+              : 0);
+          PPHolonomicDriveController.overrideRotationFeedback(() -> thetaController.calculate(m_drivetrain.getHeading()) * DriveConstants.kMaxAngularSpeed);
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
       updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-      m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-          m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians())
-              : 0,
-          thetaController.calculate(m_drivetrain.getHeading()),
-          false);
-    } else {
-      m_drivetrain.drive(0, 0, 0, true);
+      PPHolonomicDriveController.overrideXFeedback(() -> -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()) * DriveConstants.kMaxSpeedMetersPerSecond);
+          PPHolonomicDriveController.overrideYFeedback(() -> m_rightLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_rightLimelight.getXOffsetRadians()) * DriveConstants.kMaxSpeedMetersPerSecond
+              : 0);
+          PPHolonomicDriveController.overrideRotationFeedback(() -> thetaController.calculate(m_drivetrain.getHeading()) * DriveConstants.kMaxAngularSpeed);
     }
   }
 
@@ -125,15 +126,13 @@ public class AlignToCoral extends Command {
       case 11, 14 -> thetaController.setSetpoint(240);
     }
 
-    PPHolonomicDriveController.clearXFeedbackOverride();
-    PPHolonomicDriveController.clearYFeedbackOverride();
-    PPHolonomicDriveController.clearRotationFeedbackOverride();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.drive(0, 0, 0, interrupted);
+    SmartDashboard.putBoolean("is aligning", false);
+    PPHolonomicDriveController.clearFeedbackOverrides();
   }
 
   // Returns true when the command should end.

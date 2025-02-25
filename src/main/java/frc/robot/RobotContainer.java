@@ -16,12 +16,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
+import frc.robot.commands.AlignToCoralAutonomous;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -101,9 +103,11 @@ public class RobotContainer {
   private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
-  private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
+  private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
 
   private SendableChooser<Command> autoChooser;
+
+  private Command alignToCoralAutonomousCommand = new AlignToCoralAutonomous(m_robotDrive, m_rightLimelight, m_leftLimelight);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,6 +117,20 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    // TODO: Add named commands
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
+    NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
+    NamedCommands.registerCommand("L3", m_stateMachine.setLevel(ScoreLevel.L3));
+    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));  
+    NamedCommands.registerCommand("L1", m_stateMachine.setLevel(ScoreLevel.L1));
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeCoral());
+    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
+    NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
+    NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
+    NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
+    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
+    NamedCommands.registerCommand("Set align right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
+    NamedCommands.registerCommand("Auto align", alignToCoralAutonomousCommand);
     configureButtonBindings();
 
     // Configure default commands
@@ -130,19 +148,6 @@ public class RobotContainer {
                     OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
-
-    // TODO: Add named commands
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
-    NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
-    NamedCommands.registerCommand("L3", m_stateMachine.setLevel(ScoreLevel.L3));
-    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));  
-    NamedCommands.registerCommand("L1", m_stateMachine.setLevel(ScoreLevel.L1));
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine .intakeCoral());
-    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
-    NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
-    NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
-    NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
-    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
   }
 
   /**
@@ -181,15 +186,10 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    // m_driverController.rightBumper().whileTrue(
-    //     new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    m_driverController.rightBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
-
-    m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-    m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-    m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
