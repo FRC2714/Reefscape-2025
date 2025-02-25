@@ -297,7 +297,7 @@ public class CoralIntake extends SubsystemBase {
    */
   private Command takeLaxative() {
     return this.run(() -> {
-      setRollerPower(-0.2);
+      setRollerPower(RollerSetpoints.kPrePoop);
     }).until(() -> !backBeamBreak.isPressed())
         .withName("take laxative");
   }
