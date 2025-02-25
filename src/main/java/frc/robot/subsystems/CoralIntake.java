@@ -290,12 +290,24 @@ public class CoralIntake extends SubsystemBase {
         })).withName("handoff");
   }
 
-  public Command poopReady() {
+  /**
+   * Slowly run the the coral backwards until it is fully inside the intake to
+   * allow the intake to accelerate the coral as much as possible for the poop
+   * action.
+   */
+  private Command takeLaxative() {
     return this.run(() -> {
+      setRollerPower(-0.2);
+    }).until(() -> !backBeamBreak.isPressed())
+        .withName("take laxative");
+  }
+
+  public Command poopReady() {
+    return takeLaxative().andThen(this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.POOP);
       setRollerPower(RollerSetpoints.kStop);
       setCoralIntakeState(CoralIntakeState.POOP_READY);
-    }).withName("poop ready l1");
+    })).withName("poop ready l1");
   }
 
   public Command poopStandby() {
