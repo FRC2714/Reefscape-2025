@@ -341,22 +341,22 @@ public class StateMachine extends SubsystemBase {
   /* Climber commands */
 
   /**
-   * Run the winch.
+   * Run the winch until the limit switch is pressed then set the state to climb.
    */
    private Command climbSequence() {
-     return m_climber.retract().until(m_climber::atSetpoint)
+     return m_climber.retract().until(m_climber::limitSwitchPressed)
          .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
    }
 
   /**
-   * Move subsystems out of the way then deploy the climber until limit switch is
+   * Move subsystems out of the way then deploy the climber at setpoint
    * activated.
    */
   private Command deployClimberSequence() {
     return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
         .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
         .alongWith(m_dragon.climb().until(m_dragon::atSetpoint))
-        .andThen(m_climber.deploy().until(m_climber::limitSwitchPressed))
+        .andThen(m_climber.deploy().until(m_climber::atSetpoint))
         .beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
   }
 
@@ -364,7 +364,7 @@ public class StateMachine extends SubsystemBase {
    * Move climber back then return subsystems to their stow state.
    */
   private Command retractClimberSequence() {
-    return m_climber.retract().until(m_climber::atSetpoint)
+    return m_climber.retract().until(m_climber::limitSwitchPressed)
         .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
         .alongWith(m_dragon.stow().until(m_dragon::atSetpoint))
         .alongWith(m_coralIntake.stow().until(m_coralIntake::atSetpoint))

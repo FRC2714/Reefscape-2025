@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -46,7 +47,7 @@ public class Climber extends SubsystemBase {
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
   private SparkFlex pivotMotor = new SparkFlex(ClimberConstants.kPivotMotorCanId, MotorType.kBrushless);
-  private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+  private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
@@ -100,7 +101,6 @@ public class Climber extends SubsystemBase {
   private void setPivot(ClimberSetpoint setpoint) {
     setClimberSetpoint(setpoint);
     switch (m_climberSetpoint) {
-
       case DEPLOY:
         pivotCurrentTarget = PivotSetpoints.kDeploy;
         break;
@@ -133,6 +133,19 @@ public class Climber extends SubsystemBase {
     return m_climberState;
   }
 
+  private void zeroClimbOnLimitSwitch() {
+    if (!wasResetByLimit && pivotMotor.getReverseLimitSwitch().isPressed()) 
+    {
+      pivotEncoder.setPosition(PivotSetpoints.kRetract);
+      wasResetByLimit = true;
+    }
+    else if(!pivotMotor.getForwardLimitSwitch().isPressed()) 
+    {
+      wasResetByLimit = false;
+    }
+
+  }
+
 
   @Override
   public void periodic() {
@@ -146,6 +159,8 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putString("Climber/State", m_climberState.toString());
     SmartDashboard.putString("Climber/Current Command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+
+    zeroClimbOnLimitSwitch();
 
     // Tunable If's
     if (tunableAngle.hasChanged()) {
