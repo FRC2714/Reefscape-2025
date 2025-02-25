@@ -25,6 +25,7 @@ public class StateMachine extends SubsystemBase {
     POOP_SCORE,
     EXTAKE,
     HANDOFF,
+    REVERSE_HANDOFF,
     DRAGON_STANDBY,
     DRAGON_READY,
     DRAGON_SCORE
@@ -161,11 +162,22 @@ public class StateMachine extends SubsystemBase {
         .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
         .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
-        .andThen(m_coralIntake.handoff().until(() -> m_dragon.isCoralOnDragon())
-            .alongWith(m_dragon.handoff().until(() -> m_dragon.isCoralOnDragon())))
+        .andThen(m_coralIntake.handoff().until(m_dragon::isCoralOnDragon)
+            .alongWith(m_dragon.handoff().until(m_dragon::isCoralOnDragon)))
         .andThen(dragonStandbySequence()
             .alongWith(m_coralIntake.intakeReady()).until(m_dragon::isClearFromElevator))
         .beforeStarting(() -> m_state = State.HANDOFF);
+  }
+
+  private Command reverseHandoffSequence() {
+    return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
+        .andThen(m_dragon.handoffReady()).until(m_dragon::atSetpoint))
+        .alongWith(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
+        .andThen(m_coralIntake.reverseHandoff().until(() -> m_coralIntake.isLoaded() && !m_dragon.isCoralOnDragon())
+            .alongWith(m_dragon.reverseHandoff().until(() -> m_coralIntake.isLoaded() && !m_dragon.isCoralOnDragon())))
+        .andThen(poopStandbySequence())
+        .beforeStarting(() -> m_state = State.REVERSE_HANDOFF);
   }
 
   private Command dragonStandbySequence() {
@@ -286,7 +298,7 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (level == ScoreLevel.L1) {
             if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
-              scoreReadySequence(level).schedule();
+              reverseHandoffSequence().schedule();
             } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
               poopReadySequence().schedule();
             }
