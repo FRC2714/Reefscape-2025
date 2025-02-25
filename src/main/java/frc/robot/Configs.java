@@ -71,6 +71,9 @@ public final class Configs {
                                         .positionConversionFactor(360 / ClimberConstants.kPivotReduction)
                                         .inverted(true)
                                         .zeroOffset(0); // tune later
+                        pivotConfig.limitSwitch //add limit switch
+                                        .forwardLimitSwitchEnabled(true)
+                                        .forwardLimitSwitchType(Type.kNormallyOpen);
                         pivotConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                                         // Set PID values for position control. We don't need to pass a closed

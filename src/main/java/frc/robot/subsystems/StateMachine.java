@@ -343,29 +343,32 @@ public class StateMachine extends SubsystemBase {
   /**
    * Run the winch.
    */
-  private Command climbSequence() {
-    return m_algaeIntake.climb().until(m_algaeIntake::atSetpoint)
-        .alongWith(m_coralIntake.climb().until(m_coralIntake::atSetpoint))
-        .alongWith(m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-            .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
-            .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
-  }
+   private Command climbSequence() {
+     return m_climber.retract().until(m_climber::atSetpoint)
+         .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
+   }
 
   /**
    * Move subsystems out of the way then deploy the climber until limit switch is
    * activated.
    */
   private Command deployClimberSequence() {
-    // TODO: Implement this method
-    return Commands.none().beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
+    return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
+        .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
+        .alongWith(m_dragon.climb().until(m_dragon::atSetpoint))
+        .andThen(m_climber.deploy().until(m_climber::limitSwitchPressed))
+        .beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
   }
 
   /**
    * Move climber back then return subsystems to their stow state.
    */
   private Command retractClimberSequence() {
-    // TODO: Implement this method
-    return Commands.none().withName("retractClimberSequence()");
+    return m_climber.retract().until(m_climber::atSetpoint)
+        .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
+        .alongWith(m_dragon.stow().until(m_dragon::atSetpoint))
+        .alongWith(m_coralIntake.stow().until(m_coralIntake::atSetpoint))
+        .beforeStarting(() -> m_state = State.CLIMB_READY).withName("retractClimberSequence()");
   }
 
   public Command deployClimber() {

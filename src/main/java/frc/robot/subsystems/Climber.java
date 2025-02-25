@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ClimberConstants.PivotSetpoints;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Robot;
 import frc.robot.utils.TunableNumber;
 
@@ -26,13 +27,11 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
 
   private enum ClimberSetpoint {
-    STOW,
     DEPLOY,
     RETRACT
   }
 
   public enum ClimberState {
-    STOW,
     DEPLOY,
     RETRACT
   }
@@ -51,6 +50,9 @@ public class Climber extends SubsystemBase {
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
+  private boolean wasResetByLimit = false;
+
+
   public Climber() {
     tunableAngle = new TunableNumber("Climber/Tunable Pivot Angle");
     tunableP = new TunableNumber("Climber/Tunable Pivot P");
@@ -62,8 +64,8 @@ public class Climber extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    m_climberSetpoint = ClimberSetpoint.STOW;
-    m_climberState = ClimberState.STOW;
+    m_climberSetpoint = ClimberSetpoint.RETRACT;
+    m_climberState = ClimberState.RETRACT;
 
   }
 
@@ -83,6 +85,10 @@ public class Climber extends SubsystemBase {
     return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= ClimberConstants.kPivotThreshold;
   }
 
+  public boolean limitSwitchPressed() {
+    return pivotMotor.getForwardLimitSwitch().isPressed();
+  } 
+
   private void setClimberSetpoint(ClimberSetpoint setpoint) {
     m_climberSetpoint = setpoint;
   }
@@ -94,9 +100,7 @@ public class Climber extends SubsystemBase {
   private void setPivot(ClimberSetpoint setpoint) {
     setClimberSetpoint(setpoint);
     switch (m_climberSetpoint) {
-      case STOW:
-        pivotCurrentTarget = PivotSetpoints.kStow;
-        break;
+
       case DEPLOY:
         pivotCurrentTarget = PivotSetpoints.kDeploy;
         break;
@@ -120,14 +124,7 @@ public class Climber extends SubsystemBase {
       setClimberState(ClimberState.RETRACT);
     });
   }
-
-  public Command stow() {
-    return this.run(() -> {
-      setPivot(ClimberSetpoint.STOW);
-      setClimberState(ClimberState.STOW);
-    });
-  }
-
+  
   public ClimberSetpoint getSetpoint() {
     return m_climberSetpoint;
   }
@@ -135,6 +132,7 @@ public class Climber extends SubsystemBase {
   public ClimberState getState() {
     return m_climberState;
   }
+
 
   @Override
   public void periodic() {

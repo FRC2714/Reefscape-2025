@@ -99,7 +99,7 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new JoystickButton(m_rightController, 8);
   private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
-  private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
+  private final JoystickButton sheeshButton = new JoystickButton(m_rightController,5);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
 
   private SendableChooser<Command> autoChooser;
