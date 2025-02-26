@@ -15,7 +15,6 @@ import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
 
-
 public class StateMachine extends SubsystemBase {
   public enum State {
     IDLE,
@@ -33,7 +32,6 @@ public class StateMachine extends SubsystemBase {
   private Dragon m_dragon;
   private Elevator m_elevator;
   private CoralIntake m_coralIntake;
-  private AlgaeIntake m_algaeIntake;
   private Climber m_climber;
 
   private boolean manualOverride;
@@ -52,9 +50,8 @@ public class StateMachine extends SubsystemBase {
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
   /** Creates a new StateMachine. */
-  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
+  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake,
       Climber m_climber) {
-    this.m_algaeIntake = m_algaeIntake;
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
@@ -323,25 +320,10 @@ public class StateMachine extends SubsystemBase {
     }).withName("handoffManual()");
   }
 
-  /* Algae commands */
-
-  public Command intakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.intake().schedule());
-  }
-
-  public Command extakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.extake().schedule());
-  }
-
-  public Command stowAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.stow().schedule());
-  }
-
   /* Climber commands */
 
   private Command climbSequence() {
-    return m_algaeIntake.climb().until(m_algaeIntake::atSetpoint)
-        .alongWith(m_coralIntake.climb().until(m_coralIntake::atSetpoint))
+    return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
         .alongWith(m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
             .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
             .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
@@ -374,4 +356,3 @@ public class StateMachine extends SubsystemBase {
 
   }
 }
-
