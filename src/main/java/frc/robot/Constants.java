@@ -76,7 +76,6 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
-      public static final double kStow = -15;
       public static final double kDeploy = 0;
       public static final double kRetract = -7;
     }
