@@ -141,34 +141,6 @@ public class DriveSubsystem extends SubsystemBase {
         this // Reference to this subsystem to set requirements
     );
 
-    // Override the X feedback
-    PPHolonomicDriveController.overrideXFeedback(() -> {
-      // Calculate feedback from your custom PID controller
-      // override w aligntocoral pid values
-      return 0.0;
-    });
-    // Clear x feedback once autoaling is done
-    PPHolonomicDriveController.clearXFeedbackOverride();
-
-    // Override the Y feedback
-    PPHolonomicDriveController.overrideYFeedback(() -> {
-      // Calculate feedback from your custom PID controller
-      return 0.0;
-    });
-    // Clear the Y feedback override
-    PPHolonomicDriveController.clearYFeedbackOverride();
-
-    // Override the rotation feedback
-    PPHolonomicDriveController.overrideRotationFeedback(() -> {
-      // Calculate feedback from your custom PID controller
-      return 0.0;
-    });
-    // Clear the rotation feedback override
-    PPHolonomicDriveController.clearRotationFeedbackOverride();
-
-    // Clear all feedback overrides
-    PPHolonomicDriveController.clearFeedbackOverrides();
-
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         Constants.DriveConstants.kDriveKinematics,
         // Rotation2d.fromDegrees(navx.getHeading()),

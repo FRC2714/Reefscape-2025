@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.276536885245902,
-        "y": 6.206762295081967
+        "x": 7.176,
+        "y": 6.16025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.2980769230769225,
-        "y": 6.058141025641025
+        "x": 7.421632658167292,
+        "y": 6.206775232311838
       },
       "isLocked": false,
       "linkedName": "barge nonprocessor"
     },
     {
       "anchor": {
-        "x": 5.555,
-        "y": 5.490512820512821
+        "x": 5.0992500000000005,
+        "y": 5.4095
       },
       "prevControl": {
-        "x": 6.28775641025641,
-        "y": 6.0684615384615395
+        "x": 5.293799986413495,
+        "y": 5.981451652931806
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.88246504298795
+    "rotation": -119.88200000000002
   },
   "reversed": false,
   "folder": "NONPROCESSOR",

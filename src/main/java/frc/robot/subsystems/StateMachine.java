@@ -115,7 +115,7 @@ public class StateMachine extends SubsystemBase {
 
   /* Coral intake, dragon, and elevator commands */
 
-  private Command idleSequence() {
+  public Command idleSequence() {
     return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
         .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
@@ -136,7 +136,7 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
-  private Command intakeSequence() {
+  public Command intakeSequence() {
     return m_coralIntake.intake()
         .until(m_coralIntake::isLoaded)
         .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))

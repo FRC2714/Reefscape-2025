@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
@@ -49,6 +50,7 @@ public class AlignToCoral extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("Align is finished", false);
     side = Limelight.SIDE;
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
@@ -133,6 +135,7 @@ public class AlignToCoral extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("Align is finished", true);
     m_drivetrain.drive(0, 0, 0, interrupted);
   }
 

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.201923076923076,
-        "y": 4.190128205128206
+        "x": 5.0992500000000005,
+        "y": 5.4095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4790512820512807,
-        "y": 4.485346153846154
+        "x": 5.240617073971158,
+        "y": 5.658527019485208
       },
       "isLocked": false,
-      "linkedName": "A-Coral"
+      "linkedName": "J-Coral"
     },
     {
       "anchor": {
-        "x": 1.7022540983606556,
-        "y": 6.36859631147541
+        "x": 5.214651639344262,
+        "y": 5.613370901639343
       },
       "prevControl": {
-        "x": 1.7435361496427069,
-        "y": 5.584237337116435
+        "x": 5.091540509965275,
+        "y": 5.395784942021011
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": "J-Back"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.36019080191327
+    "rotation": -119.74488129694222
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.10852156461148045
+    "rotation": -119.88246504298795
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

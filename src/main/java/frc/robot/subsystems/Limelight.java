@@ -28,7 +28,7 @@ public class Limelight extends SubsystemBase {
     RIGHT
   }
 
-  public static Align SIDE = Align.LEFT;
+  public static Align SIDE = Align.RIGHT;
 
   public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 

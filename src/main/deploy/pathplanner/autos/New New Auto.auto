@@ -9,15 +9,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "barge to J NP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -34,13 +34,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Auto align"
+                        "name": "L4"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "L4"
+                        "name": "Auto align"
                       }
                     }
                   ]

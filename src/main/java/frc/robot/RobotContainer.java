@@ -102,30 +102,30 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new JoystickButton(m_rightController, 8);
   private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
-  private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
+  private final JoystickButton sheeshButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
 
   private SendableChooser<Command> autoChooser;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-    // TODO: Add named commands
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral());
     NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.setLevel(ScoreLevel.L3));
-    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));  
+    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));
     NamedCommands.registerCommand("L1", m_stateMachine.setLevel(ScoreLevel.L1));
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeCoral());
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
-    NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
-    NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
+    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
+    NamedCommands.registerCommand("Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
     NamedCommands.registerCommand("Set align right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
     NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight));
-    NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
     configureButtonBindings();
 
     // Configure default commands
@@ -210,10 +210,10 @@ public class RobotContainer {
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
     if (Robot.isSimulation()) {
-        coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
-                .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
-        loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
-                .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+      coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
+          .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
+      loadCoralButton.onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
+          .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
     }
 
     overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
