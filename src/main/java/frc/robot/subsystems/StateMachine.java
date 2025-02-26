@@ -105,7 +105,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
-      if (m_state == State.CLIMB) 
+      if (m_state == State.CLIMB)
         climbSequence().schedule();
       else if (m_dragon.isCoralOnDragon())
         dragonStandbySequence().schedule();
@@ -346,7 +346,7 @@ public class StateMachine extends SubsystemBase {
    * Run the winch until the limit switch is pressed then set the state to climb.
    */
   private Command climbSequence() {
-    return m_climber.retract().until(m_climber::limitSwitchPressed)
+    return m_climber.retract().until(m_climber::pastClimbSetpoint)
         .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
   }
 
@@ -372,7 +372,8 @@ public class StateMachine extends SubsystemBase {
 
   public Command deployClimber() {
     return new InstantCommand(() -> {
-      if (m_state == State.IDLE || m_state == State.POOP_STANDBY || m_state == State.DRAGON_STANDBY || m_state == State.CLIMB) {
+      if (m_state == State.IDLE || m_state == State.POOP_STANDBY || m_state == State.DRAGON_STANDBY
+          || m_state == State.CLIMB) {
         deployClimberSequence().schedule();
       }
     }).withName("deployClimber()");

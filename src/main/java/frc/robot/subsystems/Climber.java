@@ -89,6 +89,10 @@ public class Climber extends SubsystemBase {
     return pivotMotor.getReverseLimitSwitch().isPressed();
   }
 
+  public boolean pastClimbSetpoint() {
+    return pivotEncoder.getPosition() < ClimberConstants.kClimbSetpoint;
+  }
+
   private void setClimberSetpoint(ClimberSetpoint setpoint) {
     m_climberSetpoint = setpoint;
   }
