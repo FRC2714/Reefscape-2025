@@ -186,10 +186,15 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(
         m_stateMachine.alignToReef());
     
-    m_driverController.b().whileTrue(
+    m_driverController.povUp().whileTrue(
         m_stateMachine.alignToCoralStation());
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
+    m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
+    m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
