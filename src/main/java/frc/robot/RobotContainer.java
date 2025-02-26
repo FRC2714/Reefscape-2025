@@ -181,10 +181,15 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    m_driverController.rightBumper().whileTrue(
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    // m_driverController.rightBumper().whileTrue(
+    //     new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
+    m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
+    m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
