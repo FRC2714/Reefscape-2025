@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.1061764612174168,
-        "y": 1.0891151794699634
+        "y": 1.0891151794699636
       },
       "isLocked": false,
       "linkedName": "Processor side station"
@@ -20,7 +20,7 @@
         "y": 2.8381410256410255
       },
       "prevControl": {
-        "x": 3.410270777093454,
+        "x": 3.4102707770934546,
         "y": 2.010580777524405
       },
       "nextControl": null,
