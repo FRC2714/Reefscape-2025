@@ -44,7 +44,7 @@ public class Climber extends SubsystemBase {
   private ClimberSetpoint m_climberSetpoint;
   private ClimberState m_climberState;
 
-  private double pivotCurrentTarget = PivotSetpoints.kStow;
+  private double pivotCurrentTarget = PivotSetpoints.kRetract;
 
   private SparkFlex pivotMotor = new SparkFlex(ClimberConstants.kPivotMotorCanId, MotorType.kBrushless);
   private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
