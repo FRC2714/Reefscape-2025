@@ -34,7 +34,7 @@ public class AlignToReefCenter extends Command {
     addRequirements(m_drivetrain);
 
     xController.setSetpoint(0.1);
-    yController.setSetpoint(0); // TODO: Need to find correct x offset angle, both will not be zero since it will be centered
+    yController.setSetpoint(28.6);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
@@ -63,11 +63,12 @@ public class AlignToReefCenter extends Command {
       if (m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) { // checks if both see same april tag
 
           updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+          yController.setSetpoint(28.6);
 
           m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
               m_leftLimelight.getDistanceToGoalMeters() < 0.4
                   ? yController.calculate(m_leftLimelight.getXOffsetRadians())
-                  : 0,
+                  : 0,  
               thetaController.calculate(m_drivetrain.getHeading()),
               false);
       } else {
@@ -75,6 +76,7 @@ public class AlignToReefCenter extends Command {
       }
     } else if ((m_leftLimelight.isTargetVisible())) { // if can only see left, then do whatever we did before
       updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+      yController.setSetpoint(28.6);
 
       m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
           m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians())
@@ -83,6 +85,7 @@ public class AlignToReefCenter extends Command {
           false);
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
       updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+      yController.setSetpoint(28.6);
 
       m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
           m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians())

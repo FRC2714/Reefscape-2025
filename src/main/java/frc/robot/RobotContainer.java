@@ -187,7 +187,7 @@ public class RobotContainer {
         m_stateMachine.alignToReef());
     
     m_driverController.povUp().whileTrue(
-        m_stateMachine.alignToCoralStation());
+        new AlignToReefCenter(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
