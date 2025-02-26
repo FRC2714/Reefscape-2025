@@ -53,7 +53,6 @@ public class Climber extends SubsystemBase {
 
   private boolean wasResetByLimit = false;
 
-
   public Climber() {
     tunableAngle = new TunableNumber("Climber/Tunable Pivot Angle");
     tunableP = new TunableNumber("Climber/Tunable Pivot P");
@@ -88,7 +87,7 @@ public class Climber extends SubsystemBase {
 
   public boolean limitSwitchPressed() {
     return pivotMotor.getReverseLimitSwitch().isPressed();
-  } 
+  }
 
   private void setClimberSetpoint(ClimberSetpoint setpoint) {
     m_climberSetpoint = setpoint;
@@ -113,7 +112,7 @@ public class Climber extends SubsystemBase {
 
   public Command deploy() {
     return this.runEnd(() -> {
-      pivotMotor.set(0.5);
+      pivotMotor.set(ClimberConstants.kDeploySpeed);
       setClimberState(ClimberState.DEPLOY);
     }, () -> {
       pivotMotor.stopMotor();
@@ -122,13 +121,13 @@ public class Climber extends SubsystemBase {
 
   public Command retract() {
     return this.runEnd(() -> {
-      pivotMotor.set(-0.5);
+      pivotMotor.set(ClimberConstants.kRetractSpeed);
       setClimberState(ClimberState.RETRACT);
     }, () -> {
       pivotMotor.stopMotor();
     });
   }
-  
+
   public ClimberSetpoint getSetpoint() {
     return m_climberSetpoint;
   }
@@ -138,18 +137,14 @@ public class Climber extends SubsystemBase {
   }
 
   private void zeroClimbOnLimitSwitch() {
-    if (!wasResetByLimit && pivotMotor.getReverseLimitSwitch().isPressed()) 
-    {
+    if (!wasResetByLimit && pivotMotor.getReverseLimitSwitch().isPressed()) {
       pivotEncoder.setPosition(PivotSetpoints.kRetract);
       wasResetByLimit = true;
-    }
-    else if(!pivotMotor.getReverseLimitSwitch().isPressed()) 
-    {
-      wasResetByLimit = false;  
+    } else if (!pivotMotor.getReverseLimitSwitch().isPressed()) {
+      wasResetByLimit = false;
     }
 
   }
-
 
   @Override
   public void periodic() {

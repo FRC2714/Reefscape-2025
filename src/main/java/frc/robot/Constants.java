@@ -79,6 +79,9 @@ public final class Constants {
     public static final double kPivotThreshold = 50; // 81:1 gear ratio
     public static final double kPivotReduction = 1;
 
+    public static final double kDeploySpeed = 1;
+    public static final double kRetractSpeed = -0.6;
+
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
