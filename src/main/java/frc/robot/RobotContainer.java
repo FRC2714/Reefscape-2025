@@ -236,8 +236,8 @@ public class RobotContainer {
     });
   }
 
-  public Command home() {
-    return m_stateMachine.home();
+  public Command homingSequence() {
+    return m_stateMachine.homingSequence();
   }
 
   public void isAutoHandoffEnabled() {

@@ -396,19 +396,9 @@ public class StateMachine extends SubsystemBase {
 
   public Command homingSequence() {
     return m_dragon.stow().until(m_dragon::isClearFromElevator).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
-        .andThen(m_elevator.homingSequence()
-            .alongWith(m_climber.retract())
-            .until(() -> m_climber.limitSwitchPressed() && m_elevator.reverseLimitSwitchPressed()));
-  }
-
-  public Command home() {
-    return new InstantCommand(() -> {
-      if (!elevatorHasReset) {
-        // Only run this once
-        elevatorHasReset = true;
-        homingSequence().schedule();
-      }
-    });
+        .andThen(m_elevator.homingSequence().until(m_elevator::reverseLimitSwitchPressed))
+        .andThen(m_climber.retract().until(m_climber::limitSwitchPressed))
+        .beforeStarting(() -> elevatorHasReset = true).onlyIf(() -> !elevatorHasReset);
   }
 
   @Override
