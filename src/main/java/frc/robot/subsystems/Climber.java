@@ -87,7 +87,7 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean limitSwitchPressed() {
-    return pivotMotor.getForwardLimitSwitch().isPressed();
+    return pivotMotor.getReverseLimitSwitch().isPressed();
   } 
 
   private void setClimberSetpoint(ClimberSetpoint setpoint) {
@@ -116,14 +116,16 @@ public class Climber extends SubsystemBase {
       pivotMotor.set(0.5);
       setClimberState(ClimberState.DEPLOY);
     }, () -> {
-      pivotMotor.set(0);
+      pivotMotor.stopMotor();
     });
   }
 
   public Command retract() {
-    return this.run(() -> {
+    return this.runEnd(() -> {
       pivotMotor.set(-0.5);
       setClimberState(ClimberState.RETRACT);
+    }, () -> {
+      pivotMotor.stopMotor();
     });
   }
   

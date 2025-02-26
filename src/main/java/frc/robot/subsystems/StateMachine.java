@@ -105,7 +105,9 @@ public class StateMachine extends SubsystemBase {
 
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
-      if (m_dragon.isCoralOnDragon())
+      if (m_state == State.CLIMB) 
+        climbSequence().schedule();
+      else if (m_dragon.isCoralOnDragon())
         dragonStandbySequence().schedule();
       else
         idleSequence().schedule();
@@ -365,7 +367,7 @@ public class StateMachine extends SubsystemBase {
    */
   private Command retractClimberSequence() {
     return m_climber.retract().until(m_climber::limitSwitchPressed)
-        .beforeStarting(() -> m_state = State.CLIMB_READY).withName("retractClimberSequence()");
+        .andThen(setDefaultStates()).withName("retractClimberSequence()");
   }
 
   public Command deployClimber() {
@@ -379,7 +381,7 @@ public class StateMachine extends SubsystemBase {
   public Command retractClimber() {
     return new InstantCommand(() -> {
       if (m_state == State.CLIMB_READY) {
-        retractClimberSequence().andThen(() -> idle().schedule()).schedule();
+        retractClimberSequence().schedule();
       }
     }).withName("retractClimber()");
   }
@@ -392,10 +394,21 @@ public class StateMachine extends SubsystemBase {
     }).withName("climb()");
   }
 
-  public Command elevatorHomingSequence() {
-    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
-        .andThen(m_elevator.homingSequence().alongWith(m_climber.retract()).until(m_climber::limitSwitchPressed))
-        .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
+  public Command homingSequence() {
+    return m_dragon.stow().until(m_dragon::isClearFromElevator).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+        .andThen(m_elevator.homingSequence()
+            .alongWith(m_climber.retract())
+            .until(() -> m_climber.limitSwitchPressed() && m_elevator.reverseLimitSwitchPressed()));
+  }
+
+  public Command home() {
+    return new InstantCommand(() -> {
+      if (!elevatorHasReset) {
+        // Only run this once
+        elevatorHasReset = true;
+        homingSequence().schedule();
+      }
+    });
   }
 
   @Override
