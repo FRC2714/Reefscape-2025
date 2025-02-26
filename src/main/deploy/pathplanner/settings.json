@@ -5,12 +5,14 @@
   "pathFolders": [
     "CENTER",
     "NONPROCESSOR",
+    "MISC",
     "PROCESSOR",
     "TEST"
   ],
   "autoFolders": [
     "CENTER",
     "NONPROCESSOR",
+    "MISC",
     "PROCESSOR",
     "TEST"
   ],

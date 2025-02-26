@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.742077464788732,
-        "y": 4.180897887323942
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.337323943661971,
-        "y": 1.4172535211267587
-      },
-      "isLocked": false,
-      "linkedName": "H-Coral"
-    },
-    {
-      "anchor": {
         "x": 1.7051420454545454,
         "y": 0.56984375
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.128080985917848,
+        "y": 0.8078345070476609
+      },
+      "isLocked": false,
+      "linkedName": "Processor side station"
+    },
+    {
+      "anchor": {
+        "x": 1.7467307692307688,
+        "y": 7.451410256410257
+      },
       "prevControl": {
-        "x": 0.7051420454545454,
-        "y": 0.56984375
+        "x": -0.026144366197665247,
+        "y": 4.1950704225377216
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": "NP station"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.86989764584396
+    "rotation": 126.15818543980836
   },
   "reversed": false,
-  "folder": "CENTER",
+  "folder": "MISC",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -126.86989764584396
   },
   "useDefaultConstraints": true
 }

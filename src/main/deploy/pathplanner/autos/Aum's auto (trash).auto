@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Proccessor side fly-by"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Proccessor side fly-by refill"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Knock-over"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "station to K 1NP"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "MISC",
+  "choreoAuto": false
+}
