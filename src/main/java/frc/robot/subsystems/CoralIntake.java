@@ -84,7 +84,8 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
-  private SparkLimitSwitch beamBreak = indexerMotor.getForwardLimitSwitch();
+  private SparkLimitSwitch backBeamBreak = indexerMotor.getForwardLimitSwitch();
+  private SparkLimitSwitch frontBeamBreak = indexerMotor.getReverseLimitSwitch();
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -331,7 +332,7 @@ public class CoralIntake extends SubsystemBase {
   public boolean isLoaded() {
     if (Robot.isSimulation())
       return loaded;
-    return beamBreak.isPressed();
+    return backBeamBreak.isPressed() || frontBeamBreak.isPressed();
   }
 
   public void setLoadedTrue() {
@@ -370,7 +371,8 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
     SmartDashboard.putNumber("Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putBoolean("Coral Intake/Intex/Beam Break", beamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Back Beam Break", backBeamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Front Beam Break", frontBeamBreak.isPressed());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
