@@ -237,7 +237,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(() -> {
       if (manualOverride) {
         idleSequence().schedule();
-      } else if (m_state == State.INTAKE || m_state == State.EXTAKE) {
+      } else if (m_state == State.INTAKE || m_state == State.EXTAKE || m_state == State.ALGAE_REMOVE) {
         idleSequence().schedule();
       } else if (m_state == State.DRAGON_READY || m_state == State.POOP_READY) {
         if (m_state == State.DRAGON_READY && m_dragon.isCoralOnDragon()) {
