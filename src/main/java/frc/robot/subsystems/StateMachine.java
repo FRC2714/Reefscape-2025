@@ -260,6 +260,14 @@ public class StateMachine extends SubsystemBase {
     }).withName("idle()");
   }
 
+  public Command removeAlgaeReady() {
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        m_dragon.readyAlgaeRemove().schedule();
+      }
+    }).withName("removeAlgaeReady()");
+  }
+
   public Command removeAlgae(DragonSetpoint level) {
     return new InstantCommand(() -> {
       if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
