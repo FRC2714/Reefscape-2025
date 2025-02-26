@@ -48,6 +48,11 @@ public class Limelight extends SubsystemBase {
         / Math.tan(Units.degreesToRadians(m_mountingAngle + getYAngleOffsetDegrees()));
   }
 
+  public double getDistanceToGoalInchesCoralStation() {
+    return (m_goalHeight - m_cameraHeight)
+        / Math.tan(Units.degreesToRadians(m_mountingAngle + Math.abs(getYAngleOffsetDegrees())));
+  }
+
   public void setGoalHeight(double goalHeight) {
     this.m_goalHeight = goalHeight;
   }
@@ -58,6 +63,10 @@ public class Limelight extends SubsystemBase {
 
   public double getDistanceToGoalMeters() {
     return Units.inchesToMeters(getDistanceToGoalInches());
+  }
+
+  public double getDistanceToGoalMetersCoralStation() {
+    return Units.inchesToMeters(getDistanceToGoalInchesCoralStation());
   }
 
   // Offset in Degrees
@@ -131,6 +140,10 @@ public class Limelight extends SubsystemBase {
 
   public void setProcessorTagPipeline() {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kProcessorPipeline);
+  }
+
+  public void setCoralStationPipeline() {
+    LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kCoralStationPipeline);
   }
 
   public static Pose2d getBotPose2d(Limelight limelight) {

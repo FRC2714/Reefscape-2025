@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
-import frc.robot.commands.AlignToCoralAutonomous;
+import frc.robot.commands.AlignToCoralStation;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -69,7 +69,7 @@ public class RobotContainer {
   private final Limelight m_backLimelight = new Limelight(LimelightConstants.kBackLimelightName,
       LimelightConstants.kBackCameraHeight,
       LimelightConstants.kBackMountingPitch,
-      LimelightConstants.kProcessorTagHeight);
+      LimelightConstants.kCoralStationTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
       m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
@@ -106,17 +106,11 @@ public class RobotContainer {
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
 
   private SendableChooser<Command> autoChooser;
-
-  private Command alignToCoralAutonomousCommand = new AlignToCoralAutonomous(m_robotDrive, m_rightLimelight, m_leftLimelight);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
-
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
     // TODO: Add named commands
     NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral().withTimeout(0.75));
     NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
@@ -130,7 +124,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Idle", m_stateMachine.idle()); 
     NamedCommands.registerCommand("Flip Heading", new InstantCommand (() -> m_robotDrive.flipHeading()));
     NamedCommands.registerCommand("Set align right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
-    NamedCommands.registerCommand("Auto align", alignToCoralAutonomousCommand);
+    NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight));
+    NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
     configureButtonBindings();
 
     // Configure default commands
@@ -148,6 +143,9 @@ public class RobotContainer {
                     OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+    
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -188,6 +186,9 @@ public class RobotContainer {
 
     m_driverController.rightBumper().whileTrue(
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    
+    m_driverController.povDown().whileTrue(
+        new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
