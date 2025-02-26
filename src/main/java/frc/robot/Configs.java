@@ -80,8 +80,8 @@ public final class Configs {
                                         .maxAcceleration(6000 * 360) //tune
                                         .allowedClosedLoopError(0.5); //tune
                         pivotConfig.softLimit
-                                        .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
-                                        .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
+                                        .forwardSoftLimit(ClimberConstants.PivotSetpoints.kMaxAngle)
+                                        .reverseSoftLimit(ClimberConstants.PivotSetpoints.kMinAngle)
                                         .forwardSoftLimitEnabled(true)
                                         .reverseSoftLimitEnabled(true);
                 }

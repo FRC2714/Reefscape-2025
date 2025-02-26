@@ -80,8 +80,11 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
-      public static final double kDeploy = 0;
-      public static final double kRetract = -7;
+      public static final double kDeploy = 307.6;
+      public static final double kRetract = 0;
+
+      public static final double kMaxAngle = 350;
+      public static final double kMinAngle = 0;
     }
   }
 
