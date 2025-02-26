@@ -168,7 +168,8 @@ public final class Configs {
                                         .smartCurrentLimit(40)
                                         .idleMode(IdleMode.kBrake);
                         indexerConfig.limitSwitch
-                                        .forwardLimitSwitchEnabled(false);
+                                        .forwardLimitSwitchEnabled(false)
+                                        .reverseLimitSwitchEnabled(false);
 
                 }
         }
