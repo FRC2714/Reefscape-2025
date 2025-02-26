@@ -372,7 +372,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command deployClimber() {
     return new InstantCommand(() -> {
-      if (m_state == State.IDLE) {
+      if (m_state == State.IDLE || m_state == State.POOP_STANDBY || m_state == State.DRAGON_STANDBY || m_state == State.CLIMB) {
         deployClimberSequence().schedule();
       }
     }).withName("deployClimber()");
