@@ -83,7 +83,7 @@ public class Climber extends SubsystemBase {
     if (Robot.isSimulation()) {
       return true;
     }
-    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= ClimberConstants.kPivotThreshold;
+    return pivotEncoder.getPosition() > ClimberConstants.PivotSetpoints.kMaxAngle;
   }
 
   public boolean limitSwitchPressed() {
@@ -112,15 +112,17 @@ public class Climber extends SubsystemBase {
   }
 
   public Command deploy() {
-    return this.run(() -> {
-      setPivot(ClimberSetpoint.DEPLOY);
+    return this.runEnd(() -> {
+      pivotMotor.set(0.5);
       setClimberState(ClimberState.DEPLOY);
+    }, () -> {
+      pivotMotor.set(0);
     });
   }
 
   public Command retract() {
     return this.run(() -> {
-      setPivot(ClimberSetpoint.RETRACT);
+      pivotMotor.set(-0.5);
       setClimberState(ClimberState.RETRACT);
     });
   }

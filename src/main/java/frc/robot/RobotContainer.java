@@ -99,7 +99,7 @@ public class RobotContainer {
   private final Trigger loadCoralButton = new JoystickButton(m_rightController, 8);
   private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
-  private final JoystickButton sheeshButton = new JoystickButton(m_rightController,5);
+  private final JoystickButton sheeshButton = new JoystickButton(m_rightController,12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 53);
 
   private SendableChooser<Command> autoChooser;
@@ -181,15 +181,15 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    // m_driverController.rightBumper().whileTrue(
-    //     new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    m_driverController.rightBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-    m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-    m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-    m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
+    // m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    // m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
+    // m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    // m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));

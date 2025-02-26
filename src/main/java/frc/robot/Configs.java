@@ -65,7 +65,7 @@ public final class Configs {
 
                 static {
                         // Configure basic setting of the arm motor
-                        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true)
+                        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false)
                                         .voltageCompensation(12);
                         pivotConfig.limitSwitch //add limit switch
                                         .reverseLimitSwitchEnabled(true)
@@ -81,9 +81,7 @@ public final class Configs {
                                         .allowedClosedLoopError(0.5); //tune
                         pivotConfig.softLimit
                                         .forwardSoftLimit(ClimberConstants.PivotSetpoints.kMaxAngle)
-                                        .reverseSoftLimit(ClimberConstants.PivotSetpoints.kMinAngle)
-                                        .forwardSoftLimitEnabled(true)
-                                        .reverseSoftLimitEnabled(true);
+                                        .forwardSoftLimitEnabled(true);
                 }
         }
 

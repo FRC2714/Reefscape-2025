@@ -343,19 +343,19 @@ public class StateMachine extends SubsystemBase {
   /**
    * Run the winch until the limit switch is pressed then set the state to climb.
    */
-   private Command climbSequence() {
-     return m_climber.retract().until(m_climber::limitSwitchPressed)
-         .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
-   }
+  private Command climbSequence() {
+    return m_climber.retract().until(m_climber::limitSwitchPressed)
+        .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
+  }
 
   /**
    * Move subsystems out of the way then deploy the climber at setpoint
    * activated.
    */
   private Command deployClimberSequence() {
-    return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
-        .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
-        .alongWith(m_dragon.climb().until(m_dragon::atSetpoint))
+    return m_coralIntake.stow()
+        .alongWith(m_elevator.moveToStow())
+        .alongWith(m_dragon.climb()).until(() -> m_coralIntake.atSetpoint() && m_dragon.atSetpoint())
         .andThen(m_climber.deploy().until(m_climber::atSetpoint))
         .beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
   }
@@ -365,9 +365,6 @@ public class StateMachine extends SubsystemBase {
    */
   private Command retractClimberSequence() {
     return m_climber.retract().until(m_climber::limitSwitchPressed)
-        .alongWith(m_elevator.moveToStow().until(m_elevator::atSetpoint))
-        .alongWith(m_dragon.stow().until(m_dragon::atSetpoint))
-        .alongWith(m_coralIntake.stow().until(m_coralIntake::atSetpoint))
         .beforeStarting(() -> m_state = State.CLIMB_READY).withName("retractClimberSequence()");
   }
 
@@ -382,7 +379,7 @@ public class StateMachine extends SubsystemBase {
   public Command retractClimber() {
     return new InstantCommand(() -> {
       if (m_state == State.CLIMB_READY) {
-        retractClimberSequence().schedule();
+        retractClimberSequence().andThen(() -> idle().schedule()).schedule();
       }
     }).withName("retractClimber()");
   }
@@ -397,7 +394,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command elevatorHomingSequence() {
     return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
-        .andThen(m_elevator.homingSequence())
+        .andThen(m_elevator.homingSequence().alongWith(m_climber.retract()).until(m_climber::limitSwitchPressed))
         .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
   }
 
