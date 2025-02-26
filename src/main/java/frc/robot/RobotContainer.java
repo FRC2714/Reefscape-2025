@@ -180,6 +180,8 @@ public class RobotContainer {
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
+      
+    m_driverController.b().onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
 
     m_driverController.a()
         .onTrue(m_stateMachine.scoreCoral())
