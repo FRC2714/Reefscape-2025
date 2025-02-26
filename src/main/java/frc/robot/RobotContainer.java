@@ -181,8 +181,8 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    // m_driverController.rightBumper().whileTrue(
-    //     new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    m_driverController.rightBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
@@ -207,6 +207,14 @@ public class RobotContainer {
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
+
+    m_driverController.povLeft().whileTrue(
+      new InstantCommand(() -> Limelight.setSIDE(Align.LEFT))
+      .andThen(new AlignToCoral(m_robotDrive, m_leftLimelight, m_leftLimelight)));
+
+      m_driverController.povRight().whileTrue(
+        new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT))
+        .andThen(new AlignToCoral(m_robotDrive, m_leftLimelight, m_leftLimelight)));
 
     if (Robot.isSimulation()) {
         coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
