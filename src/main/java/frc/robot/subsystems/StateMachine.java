@@ -228,9 +228,12 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command algaeRemovalSequence(DragonSetpoint level) {
-    return m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint).onlyIf(() -> m_state == State.DRAGON_STANDBY).andThen(m_dragon.removeAlgae(level)
-        .until(m_dragon::atSetpoint)
-        .beforeStarting(() -> m_state = State.ALGAE_REMOVE)).withName("algaeRemovalSequence()");
+    return m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint)
+        .onlyIf(() -> m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY)
+        .andThen(m_dragon.removeAlgae(level)
+            .until(m_dragon::atSetpoint)
+            .beforeStarting(() -> m_state = State.ALGAE_REMOVE))
+        .withName("algaeRemovalSequence()");
   }
 
   public Command idle() {
@@ -263,7 +266,15 @@ public class StateMachine extends SubsystemBase {
   public Command removeAlgae(DragonSetpoint level) {
     return new InstantCommand(() -> {
       if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
-        algaeRemovalSequence(level).schedule();
+        if (m_state == State.DRAGON_STANDBY) {
+          algaeRemovalSequence(level).andThen(dragonStandbySequence()).schedule();
+        }
+        if (m_state == State.POOP_STANDBY) {
+          algaeRemovalSequence(level).andThen(poopStandbySequence()).schedule();
+        }
+        if (m_state == State.IDLE) {
+          algaeRemovalSequence(level).andThen(idleSequence()).schedule();
+        }
       }
     }).withName("removeAlgae()");
   }
