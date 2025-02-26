@@ -139,9 +139,9 @@ public class Climber extends SubsystemBase {
       pivotEncoder.setPosition(PivotSetpoints.kRetract);
       wasResetByLimit = true;
     }
-    else if(!pivotMotor.getForwardLimitSwitch().isPressed()) 
+    else if(!pivotMotor.getReverseLimitSwitch().isPressed()) 
     {
-      wasResetByLimit = false;
+      wasResetByLimit = false;  
     }
 
   }

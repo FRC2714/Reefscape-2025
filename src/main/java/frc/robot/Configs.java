@@ -68,8 +68,8 @@ public final class Configs {
                         pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true)
                                         .voltageCompensation(12);
                         pivotConfig.limitSwitch //add limit switch
-                                        .forwardLimitSwitchEnabled(true)
-                                        .forwardLimitSwitchType(Type.kNormallyOpen);
+                                        .reverseLimitSwitchEnabled(true)
+                                        .reverseLimitSwitchType(Type.kNormallyOpen);
                         pivotConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                                         // Set PID values for position control. We don't need to pass a closed
