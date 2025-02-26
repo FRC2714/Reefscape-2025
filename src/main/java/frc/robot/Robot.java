@@ -6,6 +6,9 @@ package frc.robot;
 
 import org.littletonrobotics.urcl.URCL;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -42,7 +45,14 @@ public class Robot extends TimedRobot {
     // In Robot.java, add in robotInit():
     // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
+    var log = DataLogManager.getLog();
+    log.addSchema(Pose2d.proto);
+    log.addSchema(ChassisSpeeds.proto);
+    log.addSchema(Pose2d.struct);
+    log.addSchema(Pose3d.struct);
+
     URCL.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**
