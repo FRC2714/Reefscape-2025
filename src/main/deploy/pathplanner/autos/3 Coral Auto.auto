@@ -109,6 +109,31 @@
           "data": {
             "name": "Score Coral"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K move back"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J to station 1NP"
+                }
+              }
+            ]
+          }
         }
       ]
     }

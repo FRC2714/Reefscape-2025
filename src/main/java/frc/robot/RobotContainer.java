@@ -115,20 +115,24 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.5));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.3));
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
     NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
     NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
+    NamedCommands.registerCommand("Handoff", m_stateMachine.handoffSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
     NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
     NamedCommands.registerCommand("Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
-    NamedCommands.registerCommand("Set align right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
-    NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight));
-    NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
+    NamedCommands.registerCommand("Set Align Right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
+    NamedCommands.registerCommand("Set Align Left", new InstantCommand(() -> Limelight.setSIDE(Align.LEFT)));
+    NamedCommands.registerCommand("Align to Coral Station",
+        new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
+    NamedCommands.registerCommand("Auto align",
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
     configureButtonBindings();
 
     // Configure default commands
@@ -146,7 +150,7 @@ public class RobotContainer {
                     OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
-    
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -189,12 +193,11 @@ public class RobotContainer {
 
     m_driverController.rightBumper().whileTrue(
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
-    
 
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
-    
+
     m_driverController.povDown().whileTrue(
         new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
@@ -223,7 +226,6 @@ public class RobotContainer {
     removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
     removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
 
-
     if (Robot.isSimulation()) {
       coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
           .onFalse(new InstantCommand(() -> m_dragon.coralOnDragonFalse()));
@@ -238,6 +240,23 @@ public class RobotContainer {
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(() -> {
       m_stateMachine.setDefaultStates().schedule();
+      if (overrideStateMachineButton.getAsBoolean()) {
+        m_stateMachine.enableManualOverride().schedule();
+      } else {
+        m_stateMachine.disableManualOverride().schedule();
+      }
+      if (autoHandoffButton.getAsBoolean()) {
+        m_stateMachine.enableAutoHandoff().schedule();
+      } else {
+        m_stateMachine.disableAutoHandoff().schedule();
+      }
+    });
+  }
+
+  public Command setAutonomousDefaultStates() {
+    return new InstantCommand(() -> {
+      m_robotDrive.flipHeading();
+      m_stateMachine.setAutonomousDefaultStates().schedule();
       if (overrideStateMachineButton.getAsBoolean()) {
         m_stateMachine.enableManualOverride().schedule();
       } else {
