@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -130,6 +131,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight));
     NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
     configureButtonBindings();
+    configureRumble();
 
     // Configure default commands
     // COMMENT OUT BEFORE RUNNING SYSID
@@ -233,6 +235,12 @@ public class RobotContainer {
 
     overrideStateMachineButton.onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
+  }
+
+  public Trigger configureRumble() {
+    return new Trigger(m_coralIntake::isLoaded)
+            .whileTrue(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 1.0)))
+            .whileFalse(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 0.0)));
   }
 
   public Command setTeleOpDefaultStates() {
