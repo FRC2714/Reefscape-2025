@@ -115,7 +115,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.5));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.3));
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
@@ -240,6 +240,23 @@ public class RobotContainer {
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(() -> {
       m_stateMachine.setDefaultStates().schedule();
+      if (overrideStateMachineButton.getAsBoolean()) {
+        m_stateMachine.enableManualOverride().schedule();
+      } else {
+        m_stateMachine.disableManualOverride().schedule();
+      }
+      if (autoHandoffButton.getAsBoolean()) {
+        m_stateMachine.enableAutoHandoff().schedule();
+      } else {
+        m_stateMachine.disableAutoHandoff().schedule();
+      }
+    });
+  }
+
+  public Command setAutonomousDefaultStates() {
+    return new InstantCommand(() -> {
+      m_robotDrive.flipHeading();
+      m_stateMachine.setAutonomousDefaultStates().schedule();
       if (overrideStateMachineButton.getAsBoolean()) {
         m_stateMachine.enableManualOverride().schedule();
       } else {

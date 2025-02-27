@@ -112,6 +112,13 @@ public class StateMachine extends SubsystemBase {
     });
   }
 
+  public Command setAutonomousDefaultStates() {
+    return new InstantCommand(() -> {
+      m_coralIntake.stow()
+        .alongWith(dragonStandbySequence()).schedule();
+    });
+  }
+
   public State getState() {
     return m_state;
   }
@@ -203,7 +210,6 @@ public class StateMachine extends SubsystemBase {
 
   public Command dragonScoreSequence() {
     return m_dragon.score()
-        .until(() -> !m_dragon.isCoralOnDragon())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 

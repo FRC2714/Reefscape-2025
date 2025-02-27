@@ -9,12 +9,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "barge to J NP"
