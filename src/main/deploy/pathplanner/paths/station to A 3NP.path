@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7467307692307688,
-        "y": 7.451410256410257
+        "x": 1.7022540983606556,
+        "y": 6.36859631147541
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.427653846153845,
-        "y": 6.461051282051282
+        "x": 2.3831771752837314,
+        "y": 5.378237337116436
       },
       "isLocked": false,
       "linkedName": "NP station"
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.10852156461148045
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.15818543980836
+    "rotation": -54.36019080191327
   },
   "useDefaultConstraints": true
 }

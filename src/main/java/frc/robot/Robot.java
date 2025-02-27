@@ -110,7 +110,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.homingSequence().schedule();
+    m_robotContainer.homingSequence()
+      .andThen(m_robotContainer.setTeleOpDefaultStates()).schedule();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",

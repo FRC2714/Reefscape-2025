@@ -253,12 +253,14 @@ public final class Constants {
     // Parallel to elevator
     public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
     public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
+    public static final double kBackCameraXOffset = 0; // -0.3086882066 meters
 
     // Perpendicular to elevator
     public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
+    public static final double kBackCameraYOffset = -3.086657; // -0.3086882066 meters
 
-    public static final double kBackCameraHeight = 2.75 + 15.5; // TODO
+    public static final double kBackCameraHeight = 38.868062; // TODO
 
     public static final double kRightMountingPitch = -45;
     public static final double kLeftMountingPitch = -45;
@@ -266,17 +268,19 @@ public final class Constants {
     public static final double kRightMountingYaw = -24.499987;
     public static final double kLeftMountingYaw = 180 - 24.499987;
 
-    public static final double kBackMountingPitch = 0; // TODO
+    public static final double kBackMountingPitch = 20; // TODO
 
     public static final double kBackMountingYaw = 0; // TODO
 
     public static final double kReefTagHeight = 12;
     public static final double kProcessorTagHeight = 0; // tune later
+    public static final double kCoralStationTagHeight = 53.25; // tune later
     public static final int kProcessorPipeline = 0; // TBD
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kRedPosePipeline = 3; // TBD
     public static final int kBluePosePipeline = 4; // TBD
+    public static final int kCoralStationPipeline = 5;
 
     public static final double kCoralStationDistanceThreshold = 0; // TODO: tune
   }

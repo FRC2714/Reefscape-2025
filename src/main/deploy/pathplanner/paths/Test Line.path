@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.742077464788732,
-        "y": 3.854929577464788
+        "x": 1.8189743589743583,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.592429577464788,
-        "y": 1.9699823943661954
+        "x": 2.8189743589743577,
+        "y": 6.0
       },
       "isLocked": false,
-      "linkedName": "G-Coral"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0357051282051275,
-        "y": 0.34057692307692267
+        "x": 5.74076923076923,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 2.8264682520842213,
-        "y": 1.3014488646555615
+        "x": 4.74076923076923,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.91438322002512
+    "rotation": 179.48575573726788
   },
   "reversed": false,
-  "folder": "CENTER",
+  "folder": "TEST",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
