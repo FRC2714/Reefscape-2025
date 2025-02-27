@@ -17,6 +17,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -160,10 +161,15 @@ public class CoralIntake extends SubsystemBase {
     return pivotEncoder.getPosition();
   }
 
+  private double feedforward() {
+    double angle = getPosition();
+    return CoralIntakeConstants.kG * Math.sin(Units.degreesToRadians(angle));
+  }
+
   /** Set the arm motor position. This will use closed loop position control. */
   private void moveToSetpoint() {
     pivotController.setReference(pivotCurrentTarget, ControlType.kPosition, ClosedLoopSlot.kSlot0,
-        pivotFF.calculate(pivotCurrentTarget, 0));
+        feedforward());
   }
 
   public boolean atSetpoint() {
@@ -374,6 +380,9 @@ public class CoralIntake extends SubsystemBase {
   @Override
   public void periodic() {
     // Display subsystem values
+
+    moveToSetpoint();
+
     SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
