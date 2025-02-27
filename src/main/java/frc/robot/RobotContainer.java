@@ -126,8 +126,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
     NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
     NamedCommands.registerCommand("Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
-    NamedCommands.registerCommand("Set align right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
-    NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight));
+    NamedCommands.registerCommand("Set Align Right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
+    NamedCommands.registerCommand("Set Align Left", new InstantCommand(() -> Limelight.setSIDE(Align.LEFT)));
+    NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
     configureButtonBindings();
 
