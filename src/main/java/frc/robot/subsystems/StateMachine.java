@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +27,9 @@ public class StateMachine extends SubsystemBase {
     HANDOFF,
     DRAGON_STANDBY,
     DRAGON_READY,
-    DRAGON_SCORE
+    DRAGON_SCORE,
+    CLIMB_READY,
+    CLIMB
   }
 
   private Dragon m_dragon;
@@ -100,7 +103,9 @@ public class StateMachine extends SubsystemBase {
 
   public Command setDefaultStates() {
     return new InstantCommand(() -> {
-      if (m_dragon.isCoralOnDragon())
+      if (m_state == State.CLIMB)
+        climbSequence().schedule();
+      else if (m_dragon.isCoralOnDragon())
         dragonStandbySequence().schedule();
       else
         idleSequence().schedule();
@@ -287,8 +292,7 @@ public class StateMachine extends SubsystemBase {
             } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
               poopReadySequence().schedule();
             }
-          }
-          else {
+          } else {
             if (manualOverride || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
               scoreReadySequence(level).schedule();
             } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
@@ -322,27 +326,64 @@ public class StateMachine extends SubsystemBase {
 
   /* Climber commands */
 
+  /**
+   * Run the winch until the limit switch is pressed then set the state to climb.
+   */
   private Command climbSequence() {
-    return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
-        .alongWith(m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-            .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
-            .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
+    return m_climber.retract().until(m_climber::pastClimbSetpoint)
+        .beforeStarting(() -> m_state = State.CLIMB).withName("climbSequence()");
+  }
+
+  /**
+   * Move subsystems out of the way then deploy the climber at setpoint
+   * activated.
+   */
+  private Command deployClimberSequence() {
+    return m_coralIntake.stow()
+        .alongWith(m_elevator.moveToStow())
+        .alongWith(m_dragon.climb()).until(() -> m_coralIntake.atSetpoint() && m_dragon.atSetpoint())
+        .andThen(m_climber.deploy().until(m_climber::atSetpoint))
+        .beforeStarting(() -> m_state = State.CLIMB_READY).withName("deployClimberSequence()");
+  }
+
+  /**
+   * Move climber back then return subsystems to their stow state.
+   */
+  private Command retractClimberSequence() {
+    return m_climber.retract().until(m_climber::limitSwitchPressed)
+        .andThen(setDefaultStates()).withName("retractClimberSequence()");
   }
 
   public Command deployClimber() {
-    return new InstantCommand(() -> climbSequence()
-        .andThen(m_climber.deploy().until(m_climber::atSetpoint)).schedule());
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.POOP_STANDBY || m_state == State.DRAGON_STANDBY
+          || m_state == State.CLIMB) {
+        deployClimberSequence().schedule();
+      }
+    }).withName("deployClimber()");
   }
 
   public Command retractClimber() {
-    return new InstantCommand(() -> climbSequence()
-        .andThen(m_climber.retract().until(m_climber::atSetpoint)).schedule());
+    return new InstantCommand(() -> {
+      if (m_state == State.CLIMB_READY) {
+        retractClimberSequence().schedule();
+      }
+    }).withName("retractClimber()");
   }
 
-  public Command elevatorHomingSequence() {
-    return ((m_dragon.stow().until(m_dragon::atSetpoint)).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
-        .andThen(m_elevator.homingSequence())
-        .andThen(() -> elevatorHasReset = true)).onlyIf(() -> !elevatorHasReset);
+  public Command climb() {
+    return new InstantCommand(() -> {
+      if (m_state == State.CLIMB_READY) {
+        climbSequence().schedule();
+      }
+    }).withName("climb()");
+  }
+
+  public Command homingSequence() {
+    return m_dragon.stow().until(m_dragon::isClearFromElevator).onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
+        .andThen(m_elevator.homingSequence().until(m_elevator::reverseLimitSwitchPressed))
+        .andThen(m_climber.retract().until(m_climber::limitSwitchPressed))
+        .beforeStarting(() -> elevatorHasReset = true).onlyIf(() -> !elevatorHasReset);
   }
 
   @Override

@@ -76,13 +76,19 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int kPivotMotorCanId = 51;
 
-    public static final double kPivotThreshold = 5;
+    public static final double kPivotThreshold = 50; // 81:1 gear ratio
     public static final double kPivotReduction = 1;
 
+    public static final double kDeploySpeed = 1;
+    public static final double kRetractSpeed = -0.6;
+    public static final double kClimbSetpoint = 25;
+
     public static final class PivotSetpoints {
-      public static final double kStow = -15;
-      public static final double kDeploy = 0;
-      public static final double kRetract = -7;
+      public static final double kDeploy = 307.6;
+      public static final double kRetract = 0;
+
+      public static final double kMaxAngle = 315;
+      public static final double kMinAngle = 0;
     }
   }
 
@@ -127,7 +133,7 @@ public final class Constants {
     public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 15; 
+      public static final double kStow = 8; 
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
@@ -324,7 +330,7 @@ public final class Constants {
       public static final double kLevel2 = 98;
       public static final double kLevel3 = 56.08;
       public static final double kLevel4 = 48;
-      public static final double kClimb = 1;
+      public static final double kClimb = 180;
     }
 
     public static final class RollerSetpoints {

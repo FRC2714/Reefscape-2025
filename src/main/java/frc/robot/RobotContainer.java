@@ -180,15 +180,15 @@ public class RobotContainer {
         .onTrue(m_stateMachine.scoreCoral())
         .onFalse(m_stateMachine.stopScore());
 
-    // m_driverController.rightBumper().whileTrue(
-    //     new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+    m_driverController.rightBumper().whileTrue(
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
-    m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
-    m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
-    m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
-    m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
+    // m_driverController.x().onTrue(m_robotDrive.translationalQuasistatic());
+    // m_driverController.b().onTrue(m_robotDrive.translationalDynamic());
+    // m_driverController.rightBumper().onTrue(m_robotDrive.rotationalQuasistatic());
+    // m_driverController.leftBumper().onTrue(m_robotDrive.rotationalDynamic());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
@@ -205,6 +205,7 @@ public class RobotContainer {
 
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
     if (Robot.isSimulation()) {
@@ -234,8 +235,8 @@ public class RobotContainer {
     });
   }
 
-  public Command elevatorHomingSequence() {
-    return m_stateMachine.elevatorHomingSequence();
+  public Command homingSequence() {
+    return m_stateMachine.homingSequence();
   }
 
   public void isAutoHandoffEnabled() {
