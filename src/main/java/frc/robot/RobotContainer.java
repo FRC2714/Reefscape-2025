@@ -112,11 +112,11 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoral());
-    NamedCommands.registerCommand("L4", m_stateMachine.setLevel(ScoreLevel.L4));
-    NamedCommands.registerCommand("L3", m_stateMachine.setLevel(ScoreLevel.L3));
-    NamedCommands.registerCommand("L2", m_stateMachine.setLevel(ScoreLevel.L2));
-    NamedCommands.registerCommand("L1", m_stateMachine.setLevel(ScoreLevel.L1));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.5));
+    NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
+    NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
+    NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
+    NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
     NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());

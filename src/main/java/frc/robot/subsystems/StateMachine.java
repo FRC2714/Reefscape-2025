@@ -174,10 +174,11 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_STANDBY);
   }
 
-  private Command scoreReadySequence(ScoreLevel level) {
+  public Command scoreReadySequence(ScoreLevel level) {
     return m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToLevel(elevatorMap.get(level))
-            .alongWith(m_dragon.scoreReadyLevel(dragonMap.get(level))))
+            .alongWith(m_dragon.scoreReadyLevel(dragonMap.get(level)))
+            .until(() -> m_dragon.atSetpoint() && m_elevator.atSetpoint()))
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
@@ -192,7 +193,7 @@ public class StateMachine extends SubsystemBase {
     });
   }
 
-  private Command dragonScoreSequence() {
+  public Command dragonScoreSequence() {
     return m_dragon.score()
         .until(() -> !m_dragon.isCoralOnDragon())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
@@ -338,8 +339,7 @@ public class StateMachine extends SubsystemBase {
   /* Climber commands */
 
   private Command climbSequence() {
-    return
-        m_coralIntake.climb().until(m_coralIntake::atSetpoint)
+    return m_coralIntake.climb().until(m_coralIntake::atSetpoint)
         .alongWith(m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
             .andThen(m_elevator.moveToStow().until(m_elevator::atSetpoint))
             .andThen(m_dragon.climb().until(m_dragon::atSetpoint)));
