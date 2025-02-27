@@ -217,7 +217,7 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return intakeReady().until(this::atSetpoint).andThen(
+    return intakeReady().andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.INTAKE);
@@ -241,11 +241,13 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intakeReady() {
-    return this.run(() -> {
+    return this.runEnd(() -> {
       setPivotPosition(CoralIntakeSetpoint.INTAKE);
       setRollerPower(RollerSetpoints.kStop);
       setCoralIntakeState(CoralIntakeState.INTAKE_READY);
-    }).withName("intake ready");
+    }, () -> {
+      pivotMotor.stopMotor();
+    }).until(this::atSetpoint).withName("intake ready");
   }
 
   public Command extakeReady() {
