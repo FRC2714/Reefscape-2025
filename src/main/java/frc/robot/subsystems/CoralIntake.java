@@ -224,17 +224,15 @@ public class CoralIntake extends SubsystemBase {
         })).withName("intake");
   }
 
-  public Command coralBetween()
-  {
-       return coralBetweenReady().until(this::atSetpoint).andThen(
+  public Command coralBetween() {
+    return coralBetweenReady().until(this::atSetpoint).andThen(
         this.run(() -> {
           setRollerPower(RollerSetpoints.kIntake);
           setCoralIntakeState(CoralIntakeState.INTAKE);
         })).withName("coral beetween()");
   }
 
-  public Command coralBetweenReady()
-  {
+  public Command coralBetweenReady() {
     return this.run(() -> {
       setPivotPosition(CoralIntakeSetpoint.CORALBETWEEN);
       setRollerPower(RollerSetpoints.kStop);

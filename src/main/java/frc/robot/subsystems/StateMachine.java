@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
-import frc.robot.subsystems.Elevator.ElevatorState;
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -29,7 +28,8 @@ public class StateMachine extends SubsystemBase {
     DRAGON_READY,
     DRAGON_SCORE,
     CLIMB_READY,
-    CLIMB
+    CLIMB,
+    ALGAE_REMOVE
   }
 
   private Dragon m_dragon;
@@ -224,11 +224,20 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
+  public Command algaeRemovalSequence(DragonSetpoint level) {
+    return m_dragon.readyAlgaeRemove().until(m_dragon::atSetpoint)
+        .onlyIf(() -> m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY)
+        .andThen(m_dragon.removeAlgae(level)
+            .until(m_dragon::atSetpoint)
+            .beforeStarting(() -> m_state = State.ALGAE_REMOVE))
+        .withName("algaeRemovalSequence()");
+  }
+
   public Command idle() {
     return new InstantCommand(() -> {
       if (manualOverride) {
         idleSequence().schedule();
-      } else if (m_state == State.INTAKE || m_state == State.EXTAKE) {
+      } else if (m_state == State.INTAKE || m_state == State.EXTAKE || m_state == State.ALGAE_REMOVE) {
         idleSequence().schedule();
       } else if (m_state == State.DRAGON_READY || m_state == State.POOP_READY) {
         if (m_state == State.DRAGON_READY && m_dragon.isCoralOnDragon()) {
@@ -249,6 +258,30 @@ public class StateMachine extends SubsystemBase {
         }
       }
     }).withName("idle()");
+  }
+
+  public Command removeAlgaeReady() {
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        m_dragon.readyAlgaeRemove().schedule();
+      }
+    }).withName("removeAlgaeReady()");
+  }
+
+  public Command removeAlgae(DragonSetpoint level) {
+    return new InstantCommand(() -> {
+      if (m_state == State.IDLE || m_state == State.DRAGON_STANDBY || m_state == State.POOP_STANDBY) {
+        if (m_state == State.DRAGON_STANDBY) {
+          algaeRemovalSequence(level).andThen(dragonStandbySequence()).schedule();
+        }
+        if (m_state == State.POOP_STANDBY) {
+          algaeRemovalSequence(level).andThen(poopStandbySequence()).schedule();
+        }
+        if (m_state == State.IDLE) {
+          algaeRemovalSequence(level).andThen(idleSequence()).schedule();
+        }
+      }
+    }).withName("removeAlgae()");
   }
 
   public Command intakeCoral() {
