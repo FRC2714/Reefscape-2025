@@ -45,7 +45,6 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
@@ -69,7 +68,7 @@ public class RobotContainer {
       LimelightConstants.kProcessorTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
+      m_dragon, m_elevator, m_coralIntake, m_climber);
 
   // Mech2d Stuff
   // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,

@@ -35,7 +35,6 @@ public class StateMachine extends SubsystemBase {
   private Dragon m_dragon;
   private Elevator m_elevator;
   private CoralIntake m_coralIntake;
-  private AlgaeIntake m_algaeIntake;
   private Climber m_climber;
 
   private boolean manualOverride;
@@ -54,9 +53,8 @@ public class StateMachine extends SubsystemBase {
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
   /** Creates a new StateMachine. */
-  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake, AlgaeIntake m_algaeIntake,
+  public StateMachine(Dragon m_dragon, Elevator m_elevator, CoralIntake m_coralIntake,
       Climber m_climber) {
-    this.m_algaeIntake = m_algaeIntake;
     this.m_coralIntake = m_coralIntake;
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
@@ -324,20 +322,6 @@ public class StateMachine extends SubsystemBase {
         handoffSequence().schedule();
       }
     }).withName("handoffManual()");
-  }
-
-  /* Algae commands */
-
-  public Command intakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.intake().schedule());
-  }
-
-  public Command extakeAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.extake().schedule());
-  }
-
-  public Command stowAlgae() {
-    return new InstantCommand(() -> m_algaeIntake.stow().schedule());
   }
 
   /* Climber commands */
