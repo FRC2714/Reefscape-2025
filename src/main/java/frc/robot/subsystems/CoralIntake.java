@@ -345,6 +345,13 @@ public class CoralIntake extends SubsystemBase {
     return backBeamBreak.isPressed() || frontBeamBreak.isPressed();
   }
 
+  public boolean shouldRumble() {
+    if (frontBeamBreak.isPressed() && !backBeamBreak.isPressed()) {
+      return true;
+    }
+    return false;
+  }
+
   public void setLoadedTrue() {
     loaded = true;
   }
