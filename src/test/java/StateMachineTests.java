@@ -25,13 +25,12 @@ import frc.robot.subsystems.StateMachine.ScoreLevel;
 @Execution(ExecutionMode.SAME_THREAD)
 public class StateMachineTests {
     private static CommandScheduler m_scheduler = CommandScheduler.getInstance();
-    private static AlgaeIntake m_algaeIntake = new AlgaeIntake();
     private static CoralIntake m_coralIntake = new CoralIntake();
     private static Elevator m_elevator = new Elevator();
     private static Dragon m_dragon = new Dragon();
     private static Climber m_climber = new Climber();
 
-    private static StateMachine m_stateMachine = new StateMachine(m_dragon, m_elevator, m_coralIntake, m_algaeIntake,
+    private static StateMachine m_stateMachine = new StateMachine(m_dragon, m_elevator, m_coralIntake,
             m_climber);
 
     void setState(State state) {
