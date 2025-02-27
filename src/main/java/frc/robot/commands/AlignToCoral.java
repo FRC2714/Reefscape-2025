@@ -122,9 +122,9 @@ public class AlignToCoral extends Command {
       case 6, 19 -> thetaController.setSetpoint(300);
       case 7, 18 -> thetaController.setSetpoint(0);
       case 8, 17 -> thetaController.setSetpoint(60);
-      case 9, 16 -> thetaController.setSetpoint(120);
-      case 10, 15 -> thetaController.setSetpoint(180);
-      case 11, 14 -> thetaController.setSetpoint(240);
+      case 9, 22 -> thetaController.setSetpoint(120);
+      case 10, 21 -> thetaController.setSetpoint(180);
+      case 11, 20 -> thetaController.setSetpoint(240);
     }
 
     PPHolonomicDriveController.clearXFeedbackOverride();

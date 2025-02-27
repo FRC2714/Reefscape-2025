@@ -65,27 +65,23 @@ public final class Configs {
 
                 static {
                         // Configure basic setting of the arm motor
-                        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(true)
+                        pivotConfig.smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false)
                                         .voltageCompensation(12);
-                        pivotConfig.absoluteEncoder
-                                        .positionConversionFactor(360 / ClimberConstants.kPivotReduction)
-                                        .inverted(true)
-                                        .zeroOffset(0); // tune later
+                        pivotConfig.limitSwitch //add limit switch
+                                        .reverseLimitSwitchEnabled(true)
+                                        .reverseLimitSwitchType(Type.kNormallyOpen);
                         pivotConfig.closedLoop
                                         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                                         // Set PID values for position control. We don't need to pass a closed
                                         // loop slot, as it will default to slot 0.
-                                        .p(0.1)
-                                        .outputRange(-1, 1).maxMotion
-                                        .maxVelocity(4200 * 360)
-                                        .maxAcceleration(6000 * 360)
-                                        .allowedClosedLoopError(0.5);
-
+                                        .p(0.1) //tune
+                                        .outputRange(-1, 1).maxMotion //tune
+                                        .maxVelocity(4200 * 360) //tune
+                                        .maxAcceleration(6000 * 360) //tune
+                                        .allowedClosedLoopError(0.5); //tune
                         pivotConfig.softLimit
-                                        .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
-                                        .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
-                                        .forwardSoftLimitEnabled(true)
-                                        .reverseSoftLimitEnabled(true);
+                                        .forwardSoftLimit(ClimberConstants.PivotSetpoints.kMaxAngle)
+                                        .forwardSoftLimitEnabled(true);
                 }
         }
 

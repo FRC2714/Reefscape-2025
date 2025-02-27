@@ -48,7 +48,6 @@ public class RobotContainer {
 
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final AlgaeIntake m_algaeIntake = new AlgaeIntake();
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
@@ -72,7 +71,7 @@ public class RobotContainer {
       LimelightConstants.kCoralStationTagHeight);
 
   private final StateMachine m_stateMachine = new StateMachine(
-      m_dragon, m_elevator, m_coralIntake, m_algaeIntake, m_climber);
+      m_dragon, m_elevator, m_coralIntake, m_climber);
 
   // Mech2d Stuff
   // private final Mech2dManager m_mech2dManager = new Mech2dManager(m_elevator,
@@ -207,6 +206,7 @@ public class RobotContainer {
 
     coralExtakeButton.onTrue(m_stateMachine.extakeCoral());
     climbDeployToggleButton.onTrue(m_stateMachine.deployClimber()).onFalse(m_stateMachine.retractClimber());
+    sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
 
     if (Robot.isSimulation()) {
@@ -236,8 +236,8 @@ public class RobotContainer {
     });
   }
 
-  public Command elevatorHomingSequence() {
-    return m_stateMachine.elevatorHomingSequence();
+  public Command homingSequence() {
+    return m_stateMachine.homingSequence();
   }
 
   public void isAutoHandoffEnabled() {

@@ -140,8 +140,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.elevatorHomingSequence()
-      .andThen(m_robotContainer.setTeleOpDefaultStates()).schedule();
+    m_robotContainer.homingSequence()
+        .andThen(m_robotContainer.setTeleOpDefaultStates()).schedule();
   }
 
   /** This function is called periodically during operator control. */
