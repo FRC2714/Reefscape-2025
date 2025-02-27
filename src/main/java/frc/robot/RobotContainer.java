@@ -190,6 +190,11 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
     
+
+    m_driverController
+        .leftTrigger(OIConstants.kTriggerButtonThreshold)
+        .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
+    
     m_driverController.povDown().whileTrue(
         new AlignToCoralStation(m_robotDrive, m_backLimelight));
 

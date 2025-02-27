@@ -62,7 +62,7 @@ public class AlignToCoralStation extends Command {
       m_drivetrain.drive(m_limelight.getDistanceToGoalMetersCoralStation() < 1 ? xController.calculate(m_limelight.getDistanceToGoalMetersCoralStation())
         : 0,
           m_limelight.getDistanceToGoalMetersCoralStation
-          () < 0.4 ? yController.calculate(m_limelight.getXOffsetRadians())
+          () < 0.9 ? yController.calculate(m_limelight.getXOffsetRadians())
               : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);

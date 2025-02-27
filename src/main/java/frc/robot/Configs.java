@@ -140,6 +140,7 @@ public final class Configs {
                                         // Set PID values for position control. We don't need to pass a closed
                                         // loop slot, as it will default to slot 0.
                                         .p(Constants.CoralIntakeConstants.kP)
+                                        .d(0)
                                         .outputRange(-1, 1).maxMotion
                                         .maxVelocity(4200 * 360)
                                         .maxAcceleration(6000 * 360)
