@@ -93,9 +93,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "station to K 1NP"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "station to K 1NP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Handoff"
+                }
+              }
+            ]
           }
         },
         {

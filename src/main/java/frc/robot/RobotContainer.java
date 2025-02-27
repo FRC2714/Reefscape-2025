@@ -121,6 +121,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
     NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
     NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
+    NamedCommands.registerCommand("Handoff", m_stateMachine.handoffSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
@@ -128,8 +129,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
     NamedCommands.registerCommand("Set Align Right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
     NamedCommands.registerCommand("Set Align Left", new InstantCommand(() -> Limelight.setSIDE(Align.LEFT)));
-    NamedCommands.registerCommand("Align to Coral Station", new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
-    NamedCommands.registerCommand("Auto align", new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
+    NamedCommands.registerCommand("Align to Coral Station",
+        new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
+    NamedCommands.registerCommand("Auto align",
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
     configureButtonBindings();
 
     // Configure default commands
@@ -147,7 +150,7 @@ public class RobotContainer {
                     OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
-    
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -190,12 +193,11 @@ public class RobotContainer {
 
     m_driverController.rightBumper().whileTrue(
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
-    
 
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
-    
+
     m_driverController.povDown().whileTrue(
         new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
@@ -223,7 +225,6 @@ public class RobotContainer {
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
     removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
     removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
-
 
     if (Robot.isSimulation()) {
       coralOnDragonButton.onTrue(new InstantCommand(() -> m_dragon.coralOnDragonTrue()))
