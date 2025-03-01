@@ -115,7 +115,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the button bindings
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.3));
+    NamedCommands.registerCommand("Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.5));
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
@@ -132,7 +133,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align to Coral Station",
         new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand("Auto align",
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1));
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
     configureButtonBindings();
 
     // Configure default commands
@@ -197,9 +198,6 @@ public class RobotContainer {
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
-
-    m_driverController.povDown().whileTrue(
-        new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
     m_driverController.leftBumper().onTrue(m_stateMachine.removeAlgaeReady())
         .onFalse(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));

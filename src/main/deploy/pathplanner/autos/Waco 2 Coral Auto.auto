@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Dragon standby"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Set Align Right"
           }
         },

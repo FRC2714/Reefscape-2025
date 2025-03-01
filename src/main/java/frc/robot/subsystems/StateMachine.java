@@ -182,7 +182,7 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
-  private Command dragonStandbySequence() {
+  public Command dragonStandbySequence() {
     return m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToStow()
             .alongWith(m_dragon.scoreStandby()))

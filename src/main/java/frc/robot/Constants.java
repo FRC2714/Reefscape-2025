@@ -81,7 +81,7 @@ public final class Constants {
 
     public static final double kDeploySpeed = 1;
     public static final double kRetractSpeed = -0.6;
-    public static final double kClimbSetpoint = 25;
+    public static final double kClimbSetpoint = 10;
 
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
@@ -345,7 +345,7 @@ public final class Constants {
 
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // TODO: tune (pos when getting from station)
-      public static final double kExtake = .6; // TODO: tune ts (neg when scoring)
+      public static final double kExtake = .7; // TODO: tune ts (neg when scoring)
       public static final double kStop = 0;
       public static final double kHold = -0.2;
     }
