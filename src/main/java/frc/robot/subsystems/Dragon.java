@@ -49,7 +49,8 @@ public class Dragon extends SubsystemBase {
     CLIMB,
     ALGAE_HIGH,
     ALGAE_LOW,
-    ALGAE_READY
+    ALGAE_READY,
+    RETRACT
   }
 
   public enum DragonState {
@@ -202,6 +203,8 @@ public class Dragon extends SubsystemBase {
         break;
       case ALGAE_READY:
         pivotCurrentTarget = PivotSetpoints.kAlgaeReady;
+      case RETRACT:
+        pivotCurrentTarget = PivotSetpoints.kRetract;
         break;
     }
     moveToSetpoint();
@@ -226,6 +229,12 @@ public class Dragon extends SubsystemBase {
     return this.run(() -> {
       setPivot(DragonSetpoint.ALGAE_READY);
     }).withName("readyAlgaeRemove()");
+  }
+
+  public Command retract() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.RETRACT);
+    }).withName("retract()");
   }
 
   public Command stow() {
@@ -281,6 +290,14 @@ public class Dragon extends SubsystemBase {
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
     }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
+  }
+
+  public Command scoreRetract() {
+    return this.run(() -> {
+      setPivot(DragonSetpoint.RETRACT);
+      setRollerPower(RollerSetpoints.kExtake);
+      setDragonState(DragonState.SCORE);
+    }).onlyIf(this::atSetpoint).withName("scoreRetract()");
   }
 
   public Command stopRoller() {

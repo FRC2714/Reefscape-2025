@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
+import frc.robot.subsystems.Elevator.ElevatorState;
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -209,8 +210,13 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command dragonScoreSequence() {
-    return m_dragon.score()
-        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    if (m_elevator.getSetpoint() == ElevatorSetpoint.L4) {
+      return m_dragon.scoreRetract()
+          .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    } else {
+      return m_dragon.score()
+          .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    }
   }
 
   private Command poopStandbySequence() {

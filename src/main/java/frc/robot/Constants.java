@@ -69,8 +69,8 @@ public final class Constants {
     public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
         / ModuleConstants.kDrivingMotorReduction;
 
-    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.22022,2.4995,0.26113);
-    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0,0,0.1);
+    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.22022, 2.4995, 0.26113);
+    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0, 0, 0.1);
   }
 
   public static final class ClimberConstants {
@@ -133,7 +133,7 @@ public final class Constants {
     public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 8; 
+      public static final double kStow = 8;
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
@@ -341,6 +341,7 @@ public final class Constants {
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
       public static final double kAlgaeReady = 210;
+      public static final double kRetract = 41;
     }
 
     public static final class RollerSetpoints {
