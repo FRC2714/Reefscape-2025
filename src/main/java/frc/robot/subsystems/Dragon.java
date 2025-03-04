@@ -231,12 +231,6 @@ public class Dragon extends SubsystemBase {
     }).withName("readyAlgaeRemove()");
   }
 
-  public Command retract() {
-    return this.run(() -> {
-      setPivot(DragonSetpoint.RETRACT);
-    }).withName("retract()");
-  }
-
   public Command stow() {
     return this.run(() -> {
       setPivot(DragonSetpoint.STOW);
@@ -297,7 +291,7 @@ public class Dragon extends SubsystemBase {
       setPivot(DragonSetpoint.RETRACT);
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
-    }).onlyIf(this::atSetpoint).withName("scoreRetract()");
+    }).onlyIf(this::atSetpoint);
   }
 
   public Command stopRoller() {
