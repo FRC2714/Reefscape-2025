@@ -286,12 +286,10 @@ public class Dragon extends SubsystemBase {
     }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
   }
 
-  public Command scoreRetract() {
+  public Command retract() {
     return this.run(() -> {
       setPivot(DragonSetpoint.RETRACT);
-      setRollerPower(RollerSetpoints.kExtake);
-      setDragonState(DragonState.SCORE);
-    }).onlyIf(this::atSetpoint);
+    }).withName("retract()");
   }
 
   public Command stopRoller() {

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorState;
@@ -211,7 +212,9 @@ public class StateMachine extends SubsystemBase {
 
   public Command dragonScoreSequence() {
     if (m_elevator.getSetpoint() == ElevatorSetpoint.L4) {
-      return m_dragon.scoreRetract()
+      return m_dragon.score()
+          .alongWith(new WaitUntilCommand(() -> !m_dragon.isCoralOnDragon()))
+          .andThen(m_dragon.retract())
           .beforeStarting(() -> m_state = State.DRAGON_SCORE);
     } else {
       return m_dragon.score()
