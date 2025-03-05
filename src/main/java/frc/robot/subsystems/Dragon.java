@@ -71,6 +71,7 @@ public class Dragon extends SubsystemBase {
 
   private DragonSetpoint m_dragonSetpoint;
   private DragonState m_dragonState;
+  private DragonSetpoint m_previousSetpoint;
 
   private boolean coralOnDragon;
 
@@ -281,6 +282,7 @@ public class Dragon extends SubsystemBase {
 
   public Command score() {
     return this.run(() -> {
+      m_previousSetpoint = m_dragonSetpoint;
       setRollerPower(RollerSetpoints.kExtake);
       setDragonState(DragonState.SCORE);
     }).onlyIf(this::atSetpoint).withName("score()"); // ADD BACK AFTER TESTING
@@ -301,6 +303,9 @@ public class Dragon extends SubsystemBase {
   public Command stopScore() {
     return this.run(() -> {
       setRollerPower(RollerSetpoints.kHold);
+      if (m_previousSetpoint == DragonSetpoint.L4) {
+        setPivot(DragonSetpoint.L4);
+      }
       setDragonState(DragonState.SCORE_READY);
     }).withName("stopScore()");
   }
