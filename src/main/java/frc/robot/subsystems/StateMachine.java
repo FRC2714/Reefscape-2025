@@ -159,14 +159,6 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
-  public Command intakeSequenceAuto() {
-    return m_dragon
-        .handoffReady()
-        .andThen(m_coralIntake.intake())
-        .until(m_coralIntake::isLoaded)
-        .beforeStarting(() -> m_state = State.INTAKE);
-  }
-
   private Command extakeSequence() {
     return m_coralIntake
         .extakeReady()
