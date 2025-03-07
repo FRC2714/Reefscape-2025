@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
-
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -60,46 +59,51 @@ public class AlgaeIntake extends SubsystemBase {
 
   private double pivotCurrentTarget = PivotSetpoints.kStow;
 
-  private SparkFlex pivotMotor = new SparkFlex(AlgaeIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
+  private SparkFlex pivotMotor =
+      new SparkFlex(AlgaeIntakeConstants.kPivotMotorCanId, MotorType.kBrushless);
   private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
 
-  private SparkFlex rollerMotor = new SparkFlex(AlgaeIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
+  private SparkFlex rollerMotor =
+      new SparkFlex(AlgaeIntakeConstants.kRollerMotorCanId, MotorType.kBrushless);
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
   private SparkFlexSim armMotorSim;
-  private final SingleJointedArmSim m_intakeSim = new SingleJointedArmSim(
-      armMotorModel,
-      SimulationRobotConstants.kIntakeReduction,
-      SingleJointedArmSim.estimateMOI(
-          SimulationRobotConstants.kIntakeLength, SimulationRobotConstants.kIntakeMass),
-      SimulationRobotConstants.kIntakeLength,
-      SimulationRobotConstants.kIntakeMinAngleRads,
-      SimulationRobotConstants.kIntakeMaxAngleRads,
-      true,
-      SimulationRobotConstants.kIntakeMinAngleRads,
-      0.0,
-      0.0);
+  private final SingleJointedArmSim m_intakeSim =
+      new SingleJointedArmSim(
+          armMotorModel,
+          SimulationRobotConstants.kIntakeReduction,
+          SingleJointedArmSim.estimateMOI(
+              SimulationRobotConstants.kIntakeLength, SimulationRobotConstants.kIntakeMass),
+          SimulationRobotConstants.kIntakeLength,
+          SimulationRobotConstants.kIntakeMinAngleRads,
+          SimulationRobotConstants.kIntakeMaxAngleRads,
+          true,
+          SimulationRobotConstants.kIntakeMinAngleRads,
+          0.0,
+          0.0);
 
   // Mechanism2d setup for subsytem
   private final Mechanism2d m_mech2d = new Mechanism2d(50, 50);
   private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("Ball Intake Root", 25.2, 0);
-  private final MechanismLigament2d intakePivotMechanism = m_mech2dRoot.append(
-      new MechanismLigament2d(
-          "Intake Pivot",
-          SimulationRobotConstants.kIntakeShortBarLength
-              * SimulationRobotConstants.kPixelsPerMeter,
-          Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
+  private final MechanismLigament2d intakePivotMechanism =
+      m_mech2dRoot.append(
+          new MechanismLigament2d(
+              "Intake Pivot",
+              SimulationRobotConstants.kIntakeShortBarLength
+                  * SimulationRobotConstants.kPixelsPerMeter,
+              Units.radiansToDegrees(SimulationRobotConstants.kIntakeMinAngleRads)));
 
   @SuppressWarnings("unused")
-  private final MechanismLigament2d intakePivotSecondMechanism = intakePivotMechanism.append(
-      new MechanismLigament2d(
-          "Intake Pivot Second Bar",
-          SimulationRobotConstants.kIntakeLongBarLength
-              * SimulationRobotConstants.kPixelsPerMeter,
-          Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
+  private final MechanismLigament2d intakePivotSecondMechanism =
+      intakePivotMechanism.append(
+          new MechanismLigament2d(
+              "Intake Pivot Second Bar",
+              SimulationRobotConstants.kIntakeLongBarLength
+                  * SimulationRobotConstants.kPixelsPerMeter,
+              Units.radiansToDegrees(SimulationRobotConstants.kIntakeBarAngleRads)));
 
   public AlgaeIntake() {
     tunableAngle = new TunableNumber("Algae/Tunable Pivot Angle");
@@ -156,7 +160,8 @@ public class AlgaeIntake extends SubsystemBase {
     if (Robot.isSimulation()) {
       return true;
     }
-    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= AlgaeIntakeConstants.kPivotThreshold;
+    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition())
+        <= AlgaeIntakeConstants.kPivotThreshold;
   }
 
   private void setAlgaeIntakeSetpoint(AlgaeIntakeSetpoint setpoint) {
@@ -192,34 +197,38 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    return this.run(() -> {
-      setPivot(AlgaeIntakeSetpoint.INTAKE);
-      setRollerPower(RollerSetpoints.kIntake);
-      setAlgaeIntakeState(AlgaeIntakeState.INTAKE);
-    });
+    return this.run(
+        () -> {
+          setPivot(AlgaeIntakeSetpoint.INTAKE);
+          setRollerPower(RollerSetpoints.kIntake);
+          setAlgaeIntakeState(AlgaeIntakeState.INTAKE);
+        });
   }
 
   public Command extake() {
-    return this.run(() -> {
-      setPivot(AlgaeIntakeSetpoint.EXTAKE);
-      setRollerPower(RollerSetpoints.kExtake);
-      setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
-    });
+    return this.run(
+        () -> {
+          setPivot(AlgaeIntakeSetpoint.EXTAKE);
+          setRollerPower(RollerSetpoints.kExtake);
+          setAlgaeIntakeState(AlgaeIntakeState.EXTAKE);
+        });
   }
 
   public Command climb() {
-    return this.run(() -> {
-      setPivot(AlgaeIntakeSetpoint.CLIMB);
-      setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
-    });
+    return this.run(
+        () -> {
+          setPivot(AlgaeIntakeSetpoint.CLIMB);
+          setAlgaeIntakeState(AlgaeIntakeState.CLIMB);
+        });
   }
 
   public Command stow() {
-    return this.run(() -> {
-      setPivot(AlgaeIntakeSetpoint.STOW);
-      setRollerPower(RollerSetpoints.kStop);
-      setAlgaeIntakeState(AlgaeIntakeState.STOW);
-    });
+    return this.run(
+        () -> {
+          setPivot(AlgaeIntakeSetpoint.STOW);
+          setRollerPower(RollerSetpoints.kStop);
+          setAlgaeIntakeState(AlgaeIntakeState.STOW);
+        });
   }
 
   public AlgaeIntakeSetpoint getSetpoint() {
@@ -231,15 +240,11 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   /**
-   * Command to run when the intake is not actively running. When in the "hold"
-   * state, the intake
-   * will stay in the "hold" position and run the motor at its "hold" power to
-   * hold onto the ball.
-   * When in the "stow" state, the intake will stow the arm in the "stow" position
-   * and stop the
+   * Command to run when the intake is not actively running. When in the "hold" state, the intake
+   * will stay in the "hold" position and run the motor at its "hold" power to hold onto the ball.
+   * When in the "stow" state, the intake will stow the arm in the "stow" position and stop the
    * motor.
    */
-
   @Override
   public void periodic() {
 
@@ -266,7 +271,8 @@ public class AlgaeIntake extends SubsystemBase {
     // }
     // if (tunableP.hasChanged()) {
     //   tunableConfig.closedLoop.p(tunableP.get());
-    //   pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //   pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters,
+    // PersistMode.kPersistParameters);
     // }
   }
 

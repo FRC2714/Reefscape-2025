@@ -27,13 +27,13 @@ public class Limelight extends SubsystemBase {
 
   public static Align SIDE = Align.RIGHT;
 
-  public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
+  public Limelight(
+      String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;
     this.m_cameraHeight = m_cameraHeight;
     this.m_mountingAngle = m_mountingAngle;
     this.m_goalHeight = m_goalHeight;
-
   }
 
   public String getName() {
@@ -181,6 +181,5 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber(m_limelightName + "/X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
-
   }
 }

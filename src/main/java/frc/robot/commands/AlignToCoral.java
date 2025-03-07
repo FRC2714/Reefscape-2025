@@ -4,14 +4,13 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.LED;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoral extends Command {
@@ -24,7 +23,8 @@ public class AlignToCoral extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToCoral(DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
+  public AlignToCoral(
+      DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
@@ -70,13 +70,16 @@ public class AlignToCoral extends Command {
   // which uses pipeline 1)
   @Override
   public void execute() {
-    if (m_leftLimelight.isTargetVisible() && m_rightLimelight.isTargetVisible()) {// if both are visible
-      if (m_leftLimelight.getTargetID() == m_rightLimelight.getTargetID()) { // checks if both see same april tag
+    if (m_leftLimelight.isTargetVisible()
+        && m_rightLimelight.isTargetVisible()) { // if both are visible
+      if (m_leftLimelight.getTargetID()
+          == m_rightLimelight.getTargetID()) { // checks if both see same april tag
         if (side == Align.RIGHT) // driver align right so left camera
         {
           updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-          m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+          m_drivetrain.drive(
+              -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
               m_leftLimelight.getDistanceToGoalMeters() < 0.4
                   ? yController.calculate(m_leftLimelight.getXOffsetRadians())
                   : 0,
@@ -86,7 +89,8 @@ public class AlignToCoral extends Command {
         {
           updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-          m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+          m_drivetrain.drive(
+              -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
               m_rightLimelight.getDistanceToGoalMeters() < 0.4
                   ? yController.calculate(m_rightLimelight.getXOffsetRadians())
                   : 0,
@@ -96,19 +100,24 @@ public class AlignToCoral extends Command {
       } else {
         m_drivetrain.drive(0, 0, 0, true);
       }
-    } else if ((m_leftLimelight.isTargetVisible())) { // if can only see left, then do whatever we did before
+    } else if ((m_leftLimelight
+        .isTargetVisible())) { // if can only see left, then do whatever we did before
       updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
 
-      m_drivetrain.drive(-xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-          m_leftLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_leftLimelight.getXOffsetRadians())
+      m_drivetrain.drive(
+          -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
+          m_leftLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_leftLimelight.getXOffsetRadians())
               : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
       updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
 
-      m_drivetrain.drive(-xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-          m_rightLimelight.getDistanceToGoalMeters() < 0.4 ? yController.calculate(m_rightLimelight.getXOffsetRadians())
+      m_drivetrain.drive(
+          -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
+          m_rightLimelight.getDistanceToGoalMeters() < 0.4
+              ? yController.calculate(m_rightLimelight.getXOffsetRadians())
               : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
