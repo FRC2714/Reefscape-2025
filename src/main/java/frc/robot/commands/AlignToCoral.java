@@ -32,8 +32,8 @@ public class AlignToCoral extends Command {
     this.side = Limelight.SIDE;
 
     xController = new PIDController(0.5, 0, 0);
-    yController = new PIDController(0.17, 0, 0);
-    thetaController = new PIDController(0.01, 0, 0);
+    yController = new PIDController(0.23, 0, 0);
+    thetaController = new PIDController(0.02, 0, 0);
 
     addRequirements(m_drivetrain);
 

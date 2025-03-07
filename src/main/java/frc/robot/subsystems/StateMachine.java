@@ -164,6 +164,13 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
+  public Command intakeSequenceAuto() {
+    return m_dragon.handoffReady()
+        .andThen(m_coralIntake.intake())
+        .until(m_coralIntake::isLoaded)
+        .beforeStarting(() -> m_state = State.INTAKE);
+  }
+
   private Command extakeSequence() {
     return m_coralIntake.extakeReady().until(m_coralIntake::atSetpoint)
         .andThen(m_coralIntake.extake())
@@ -182,7 +189,7 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.HANDOFF);
   }
 
-  private Command dragonStandbySequence() {
+  public Command dragonStandbySequence() {
     return m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToStow()
             .alongWith(m_dragon.scoreStandby()))
