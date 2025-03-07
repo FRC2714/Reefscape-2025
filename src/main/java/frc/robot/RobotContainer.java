@@ -116,7 +116,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     NamedCommands.registerCommand("Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(0.6));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(1));
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));

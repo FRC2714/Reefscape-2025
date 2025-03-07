@@ -334,9 +334,9 @@ public final class Constants {
       public static final double kStow = 115;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 98;
+      public static final double kLevel2 = 97;
       public static final double kLevel3 = 56.08;
-      public static final double kLevel4 = 48;
+      public static final double kLevel4 = 50;
       public static final double kClimb = 180;
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
