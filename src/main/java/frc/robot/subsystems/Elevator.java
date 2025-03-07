@@ -14,7 +14,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -61,7 +61,6 @@ public class Elevator extends SubsystemBase {
       new SparkFlex(ElevatorConstants.kElevatorMotorCanId, MotorType.kBrushless);
   private SparkFlex elevatorFollower =
       new SparkFlex(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
-  private ElevatorFeedforward elevatorFF = new ElevatorFeedforward(0, ElevatorConstants.kG, 0);
   private SparkClosedLoopController elevatorSparkClosedLoopController =
       elevatorMotor.getClosedLoopController();
   private RelativeEncoder elevatorEncoder = elevatorMotor.getExternalEncoder();

@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -89,25 +90,8 @@ public class Climber extends SubsystemBase {
     return pivotEncoder.getPosition() < ClimberConstants.kClimbSetpoint;
   }
 
-  private void setClimberSetpoint(ClimberSetpoint setpoint) {
-    m_climberSetpoint = setpoint;
-  }
-
   private void setClimberState(ClimberState state) {
     m_climberState = state;
-  }
-
-  private void setPivot(ClimberSetpoint setpoint) {
-    setClimberSetpoint(setpoint);
-    switch (m_climberSetpoint) {
-      case DEPLOY:
-        pivotCurrentTarget = PivotSetpoints.kDeploy;
-        break;
-      case RETRACT:
-        pivotCurrentTarget = PivotSetpoints.kRetract;
-        break;
-    }
-    moveToSetpoint();
   }
 
   public Command deploy() {

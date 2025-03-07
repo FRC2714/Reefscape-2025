@@ -12,7 +12,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkFlexConfig;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
@@ -52,7 +52,6 @@ public class AlgaeIntake extends SubsystemBase {
 
   // Tunable Number
   private final TunableNumber tunableAngle, tunableP;
-  private SparkFlexConfig tunableConfig = Configs.AlgaeIntake.pivotConfig;
 
   private AlgaeIntakeSetpoint m_algaeIntakeSetpoint;
   private AlgaeIntakeState m_algaeIntakeState;

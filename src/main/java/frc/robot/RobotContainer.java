@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,7 +27,6 @@ import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.StateMachine;
@@ -49,7 +49,6 @@ public class RobotContainer {
   private final Dragon m_dragon = new Dragon();
   private final Climber m_climber = new Climber();
 
-  private final LED m_blinkin = new LED();
   private final Limelight m_rightLimelight =
       new Limelight(
           LimelightConstants.kRightLimelightName,
