@@ -233,9 +233,10 @@ public final class Configs {
 
                         pivotRollerConfig.limitSwitch
                                         .forwardLimitSwitchEnabled(false);
+                        pivotRollerConfig.inverted(true);
 
                         pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
-
+ 
                 }
         }
 }
