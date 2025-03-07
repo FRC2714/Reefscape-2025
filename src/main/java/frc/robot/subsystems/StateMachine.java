@@ -127,8 +127,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command idleSequence() {
     return (m_dragon.stow().onlyIf(() -> !m_elevator.atSetpoint()).until(m_dragon::isClearFromElevator)
-        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
+        .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon)))
         .alongWith(m_coralIntake.intakeReady())
         .beforeStarting(() -> m_state = State.IDLE);
   }
