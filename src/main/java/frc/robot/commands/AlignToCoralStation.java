@@ -6,10 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Limelight.Align;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import frc.robot.subsystems.drive.DriveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoralStation extends Command {
@@ -59,10 +57,12 @@ public class AlignToCoralStation extends Command {
     if ((m_limelight.isTargetVisible())) { // if can only see left, then do whatever we did before
       updateThetaControllerSetpoint(m_limelight.getTargetID());
 
-      m_drivetrain.drive(m_limelight.getDistanceToGoalMetersCoralStation() < 1 ? xController.calculate(m_limelight.getDistanceToGoalMetersCoralStation())
-        : 0,
-          m_limelight.getDistanceToGoalMetersCoralStation
-          () < 0.9 ? yController.calculate(m_limelight.getXOffsetRadians())
+      m_drivetrain.drive(
+          m_limelight.getDistanceToGoalMetersCoralStation() < 1
+              ? xController.calculate(m_limelight.getDistanceToGoalMetersCoralStation())
+              : 0,
+          m_limelight.getDistanceToGoalMetersCoralStation() < 0.9
+              ? yController.calculate(m_limelight.getXOffsetRadians())
               : 0,
           thetaController.calculate(m_drivetrain.getHeading()),
           false);
