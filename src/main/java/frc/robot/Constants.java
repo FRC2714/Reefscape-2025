@@ -15,15 +15,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 
@@ -40,11 +36,12 @@ public final class Constants {
     // Distance between centers of right and left wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(25.491162);
     // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+    public static final SwerveDriveKinematics kDriveKinematics =
+        new SwerveDriveKinematics(
+            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     // Angular offsets of the modules relative to the chassis in radians
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
@@ -66,11 +63,13 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
 
     public static final double kTurningEncoderPositionFactor = 2 * Math.PI;
-    public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
-        / ModuleConstants.kDrivingMotorReduction;
+    public static final double kDriveEncoderVelocityFactor =
+        ModuleConstants.kWheelDiameterMeters * Math.PI / ModuleConstants.kDrivingMotorReduction;
 
-    public static final SimpleMotorFeedforward kDriveFeedforward = new SimpleMotorFeedforward(0.22022, 2.4995, 0.26113);
-    public static final SimpleMotorFeedforward kTurningFeedforward = new SimpleMotorFeedforward(0, 0, 0.1);
+    public static final SimpleMotorFeedforward kDriveFeedforward =
+        new SimpleMotorFeedforward(0.22022, 2.4995, 0.26113);
+    public static final SimpleMotorFeedforward kTurningFeedforward =
+        new SimpleMotorFeedforward(0, 0, 0.1);
   }
 
   public static final class ClimberConstants {
@@ -80,7 +79,7 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final double kDeploySpeed = 1;
-    public static final double kRetractSpeed = -0.6;
+    public static final double kRetractSpeed = -1;
     public static final double kClimbSetpoint = 10;
 
     public static final class PivotSetpoints {
@@ -157,7 +156,8 @@ public final class Constants {
     public static final double kPixelsPerMeter = 1 * 20;
 
     public static final double kElevatorGearing = 25; // 25:1
-    public static final double kCarriageMass = 4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
+    public static final double kCarriageMass =
+        4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
     public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
     public static final double kMinElevatorHeightMeters = Units.inchesToMeters(35.2 * 20); // m
     public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(66.7 * 20); // m
@@ -170,8 +170,10 @@ public final class Constants {
     public static final double kPivotLength = Units.inchesToMeters(10); // m
     public static final double kPivotMass = 4.3; // Kg
 
-    public static final double kMinAngleRads = Units.degreesToRadians(-50.1); // -50.1 deg from horiz
-    public static final double kMaxAngleRads = Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
+    public static final double kMinAngleRads =
+        Units.degreesToRadians(-50.1); // -50.1 deg from horiz
+    public static final double kMaxAngleRads =
+        Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
 
     public static final double kIntakeReduction = 135; // 135:1
     public static final double kIntakeLength = Units.inchesToMeters(15); // m
@@ -180,7 +182,8 @@ public final class Constants {
     public static final double kIntakeMaxAngleRads = Units.degreesToRadians(180);
 
     public static final double kCoralIntakeMinAngleRads = Units.degreesToRadians(0);
-    public static final double kCoralIntakeMaxAngleRads = Units.degreesToRadians(360 * kIntakeReduction);
+    public static final double kCoralIntakeMaxAngleRads =
+        Units.degreesToRadians(360 * kIntakeReduction);
 
     public static final double kIntakeShortBarLength = Units.inchesToMeters(11);
     public static final double kIntakeLongBarLength = Units.inchesToMeters(13);
@@ -196,15 +199,17 @@ public final class Constants {
     public static final int kDrivingMotorPinionTeeth = 12;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoVortexMotorConstants.kFreeSpeedRpm / 60;
+    public static final double kDrivingMotorFreeSpeedRps =
+        NeoVortexMotorConstants.kFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = 0.038 * 2;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+    public static final double kDrivingMotorReduction =
+        (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
     public static final double kTurningMotorReduction = 64 / 14;
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
+    public static final double kDriveWheelFreeSpeedRps =
+        (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters) / kDrivingMotorReduction;
   }
 
   public static final class OIConstants {
@@ -226,8 +231,9 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
   public static final class NeoMotorConstants {
@@ -240,9 +246,11 @@ public final class Constants {
 
   // ! Update Values for AlphaBot
   public static final class LimelightConstants {
-    public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
-    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs
-                                                                                                    // tuning
+    public static final Matrix<N3, N1> m_stateStdDevs =
+        VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs =
+        VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs
+    // tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
@@ -362,6 +370,6 @@ public final class Constants {
     public static final double kHeartbeatRed = -0.25;
     public static final double kViolet = 0.91;
     public static final double kOrange = 0.65;
-
   }
-};
+}
+;
