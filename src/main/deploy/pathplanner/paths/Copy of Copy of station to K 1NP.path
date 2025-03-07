@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.933557692307692,
-        "y": 5.915705128205128
+        "x": 1.9247459016393456,
+        "y": 6.61490368852459
       },
       "isLocked": false,
       "linkedName": "NP station"
     },
     {
       "anchor": {
-        "x": 3.6802254098360656,
-        "y": 5.031967213114754
+        "x": 3.3247500000000003,
+        "y": 5.350999999999999
       },
       "prevControl": {
-        "x": 3.164199768810424,
-        "y": 5.7131210592686
+        "x": 2.418,
+        "y": 5.799499999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-Coral"
+      "linkedName": "K-Coral"
     }
   ],
   "rotationTargets": [],
@@ -41,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -59.63832480397212
+    "velocity": 0.0,
+    "rotation": -57.500640649575736
   },
   "reversed": false,
   "folder": "NONPROCESSOR",

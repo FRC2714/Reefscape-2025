@@ -8,9 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
-import frc.robot.utils.LimelightHelpers.RawFiducial;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.Limelight;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToProcessor extends Command {
@@ -43,7 +41,6 @@ public class AlignToProcessor extends Command {
     xController.setTolerance(.2);
     yController.setTolerance(.2);
     thetaController.setTolerance(.1);
-
   }
 
   // Called when the command is initially scheduled.
@@ -56,13 +53,16 @@ public class AlignToProcessor extends Command {
   public void execute() {
     if (m_backLimelight.isTargetVisible()) // if the back LL can see something
     {
-      if (m_backLimelight.getTargetID() == 3 || m_backLimelight.getTargetID() == 16) // if the tags are teh processor
-                                                                                     // tags
+      if (m_backLimelight.getTargetID() == 3
+          || m_backLimelight.getTargetID() == 16) // if the tags are teh processor
+      // tags
       {
         thetaController.setSetpoint(90);
-        m_drivetrain.drive(xController.calculate(m_backLimelight.getDistanceToGoalMeters()), // positive since the robot
-                                                                                             // should drive backwards i
-                                                                                             // think
+        m_drivetrain.drive(
+            xController.calculate(
+                m_backLimelight.getDistanceToGoalMeters()), // positive since the robot
+            // should drive backwards i
+            // think
             yController.calculate(m_backLimelight.getXOffsetRadians()),
             thetaController.calculate(m_drivetrain.getHeading()),
             false);
@@ -70,7 +70,6 @@ public class AlignToProcessor extends Command {
     } else {
       m_drivetrain.drive(0, 0, 0, true);
     }
-
   }
 
   // Called once the command ends or is interrupted.
