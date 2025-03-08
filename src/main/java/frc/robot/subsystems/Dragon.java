@@ -340,9 +340,6 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               setRollerPower(RollerSetpoints.kHold);
-              if (m_previousSetpoint == DragonSetpoint.L4) {
-                setPivot(DragonSetpoint.L4);
-              }
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("stopScore()");
@@ -387,6 +384,7 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
