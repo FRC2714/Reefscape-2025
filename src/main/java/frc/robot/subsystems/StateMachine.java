@@ -460,7 +460,11 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreCoralAuto() {
-    return dragonScoreSequence().withTimeout(.5).andThen(stopScore()).withName("scoreCoralAuto()");
+    return new InstantCommand(
+            () -> {
+              dragonScoreSequence().withTimeout(.5).andThen(stopScore()).schedule();
+            })
+        .withName("scoreCoralAuto()");
   }
 
   public Command handoffManual() {
