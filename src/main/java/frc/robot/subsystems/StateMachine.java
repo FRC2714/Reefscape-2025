@@ -177,7 +177,10 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command intakeSequenceAuto() {
-    return (m_coralIntake.intake().until(m_coralIntake::isLoaded).andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
+    return (m_coralIntake
+            .intake()
+            .until(m_coralIntake::isLoaded)
+            .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
@@ -192,16 +195,16 @@ public class StateMachine extends SubsystemBase {
 
   public Command handoffSequence() {
     return ((m_dragon
-            .stow()
-            .onlyIf(() -> !m_elevator.atSetpoint())
-            .until(m_dragon::isClearFromElevator)
-            .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-            .andThen(m_dragon.handoffReady())
-            .until(m_dragon::atSetpoint))
-        .alongWith(
-            m_coralIntake
-                .takeLaxative()
-                .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
+                .stow()
+                .onlyIf(() -> !m_elevator.atSetpoint())
+                .until(m_dragon::isClearFromElevator)
+                .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
+                .andThen(m_dragon.handoffReady())
+                .until(m_dragon::atSetpoint))
+            .alongWith(
+                m_coralIntake
+                    .takeLaxative()
+                    .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
         .andThen(
             m_coralIntake
                 .handoff()
@@ -237,7 +240,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreReadyL4Sequence(ScoreLevel level) {
-    return new InstantCommand(() -> m_level = level)
+    return new InstantCommand(() -> m_level = ScoreLevel.L4)
         .andThen(
             m_dragon
                 .stow()
@@ -600,7 +603,7 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
-    SmartDashboard.putString("State Machine/Level", m_level.toString());
+    SmartDashboard.putString("State Machine/Level", m_level == null ? "None" : m_level.toString());
     SmartDashboard.putString(
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
