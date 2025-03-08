@@ -360,7 +360,8 @@ public class Dragon extends SubsystemBase {
 
   /**
    * Run the roller in open loop to bring coral back, and once it stops, record the position and
-   * perform closed loop control with it.
+   * perform closed loop control with it. If roller doesn't stop within specified timeout, stop
+   * trying.
    *
    * @return
    */
@@ -370,10 +371,15 @@ public class Dragon extends SubsystemBase {
               setRollerPower(RollerSetpoints.kHold);
             })
         .until(() -> rollerEncoder.getVelocity() < DragonConstants.kRollerStoppedThreshold)
+        .withTimeout(DragonConstants.kRollerStoppedTimeout)
         .andThen(
             () -> {
-              double position = rollerEncoder.getPosition();
-              rollerController.setReference(position, ControlType.kPosition);
+              if (isCoralOnDragon()) {
+                double position = rollerEncoder.getPosition();
+                rollerController.setReference(position, ControlType.kPosition);
+              } else {
+                setRollerPower(RollerSetpoints.kStop);
+              }
             });
   }
 
