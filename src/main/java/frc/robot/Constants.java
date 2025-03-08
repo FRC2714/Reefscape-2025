@@ -334,6 +334,7 @@ public final class Constants {
     public static final double kPivotMaxAngle = 250.0;
     public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
+    public static final double kClearFromReefAngle = 45;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
@@ -344,7 +345,7 @@ public final class Constants {
       public static final double kLevel1 = 37.13;
       public static final double kLevel2 = 97;
       public static final double kLevel3 = 56.08;
-      public static final double kLevel4 = 50;
+      public static final double kLevel4 = 65;
       public static final double kClimb = 180;
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
