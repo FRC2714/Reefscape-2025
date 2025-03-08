@@ -228,10 +228,7 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !m_elevator.atSetpoint() || level == ScoreLevel.L4)
         .until(m_dragon::isClearFromReef)
         .andThen(
-            m_dragon
-                .retract()
-                .until(m_dragon::atSetpoint)
-                .onlyIf(() -> level == ScoreLevel.L4))
+            m_dragon.retract().until(m_dragon::atSetpoint).onlyIf(() -> level == ScoreLevel.L4))
         .alongWith(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
@@ -241,12 +238,14 @@ public class StateMachine extends SubsystemBase {
         () -> {
           if (m_state == State.DRAGON_SCORE)
             if (m_level == ScoreLevel.L4) {
-              m_dragon.retract().until(m_dragon::atSetpoint).beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
-            }
-            else {
+              m_dragon
+                  .retract()
+                  .until(m_dragon::atSetpoint)
+                  .beforeStarting(() -> m_state = State.DRAGON_READY)
+                  .schedule();
+            } else {
               m_dragon.stopScore().beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
             }
-            
           else if (m_state == State.POOP_SCORE)
             m_coralIntake.stopPoopL1().beforeStarting(() -> m_state = State.POOP_READY).schedule();
         });
