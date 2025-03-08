@@ -40,9 +40,11 @@ import frc.robot.subsystems.drive.DriveSubsystem;
  */
 
 public class RobotContainer {
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  private SendableChooser<Command> autoChooser;
 
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final CoralIntake m_coralIntake = new CoralIntake();
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
@@ -107,11 +109,34 @@ public class RobotContainer {
   private final JoystickButton removeAlgaeHighLevelButton =
       new JoystickButton(m_rightController, 6);
 
-  private SendableChooser<Command> autoChooser;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+    configureButtonBindings();
+
+    // Configure default commands
+    // COMMENT OUT BEFORE RUNNING SYSID
+    m_robotDrive.setDefaultCommand(
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        new RunCommand(
+            () ->
+                m_robotDrive.drive(
+                    -MathUtil.applyDeadband(
+                        m_driverController.getLeftY(), OIConstants.kDriveDeadband),
+                    -MathUtil.applyDeadband(
+                        m_driverController.getLeftX(), OIConstants.kDriveDeadband),
+                    -MathUtil.applyDeadband(
+                        m_driverController.getRightX(), OIConstants.kDriveDeadband),
+                    true),
+            m_robotDrive));
+
+    initializeAutoCommands();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
+
+  public void initializeAutoCommands() {
     NamedCommands.registerCommand(
         "Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
     NamedCommands.registerCommand(
@@ -138,27 +163,6 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Auto align",
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
-    configureButtonBindings();
-
-    // Configure default commands
-    // COMMENT OUT BEFORE RUNNING SYSID
-    m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () ->
-                m_robotDrive.drive(
-                    -MathUtil.applyDeadband(
-                        m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                    -MathUtil.applyDeadband(
-                        m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                    -MathUtil.applyDeadband(
-                        m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                    true),
-            m_robotDrive));
-
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
