@@ -336,6 +336,8 @@ public final class Constants {
     public static final double kClearFromElevatorAngle = 180;
     public static final double kClearFromReefAngle = 45;
 
+    public static final double kRollerStoppedThreshold = 0.1;
+
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
