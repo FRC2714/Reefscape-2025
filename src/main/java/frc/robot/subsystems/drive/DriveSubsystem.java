@@ -74,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          Rotation2d.fromDegrees(m_gyro.getAngle()),
+          Rotation2d.fromDegrees(-m_gyro.getAngle()),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -148,7 +148,6 @@ public class DriveSubsystem extends SubsystemBase {
     swerveDrivePoseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.DriveConstants.kDriveKinematics,
-            // Rotation2d.fromDegrees(navx.getHeading()),
             Rotation2d.fromDegrees(getHeading()),
             new SwerveModulePosition[] {
               m_frontLeft.getPosition(),
@@ -233,7 +232,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetEstimatedHeading(Rotation2d rotation) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -245,7 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -260,7 +259,7 @@ public class DriveSubsystem extends SubsystemBase {
     // return;
     // } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
     // swerveDrivePoseEstimator.update(
-    // Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+    // Rotation2d.fromDegrees(-m_gyro.getAngle(IMUAxis.kZ)),
     // new SwerveModulePosition[] {
     // m_frontLeft.getPositionPoseRed(),
     // m_frontRight.getPositionPoseRed(),
@@ -269,7 +268,7 @@ public class DriveSubsystem extends SubsystemBase {
     // });
     // } else {
     // swerveDrivePoseEstimator.update(
-    // Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+    // Rotation2d.fromDegrees(-m_gyro.getAngle(IMUAxis.kZ)),
     // new SwerveModulePosition[] {
     // m_frontLeft.getPositionPoseBlue(),
     // m_frontRight.getPositionPoseBlue(),
@@ -278,7 +277,7 @@ public class DriveSubsystem extends SubsystemBase {
     // });
     // }
     swerveDrivePoseEstimator.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getAngle()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -473,7 +472,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(m_gyro.getAngle()))
+                    Rotation2d.fromDegrees(-m_gyro.getAngle()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -496,7 +495,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(m_gyro.getAngle()))
+                    Rotation2d.fromDegrees(-m_gyro.getAngle()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -562,7 +561,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
   }
 
   /**
