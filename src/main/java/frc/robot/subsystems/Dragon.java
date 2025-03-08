@@ -168,6 +168,13 @@ public class Dragon extends SubsystemBase {
     return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromElevatorAngle;
   }
 
+  public boolean isClearFromReef() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefAngle;
+  }
+
   private void setDragonState(DragonState state) {
     m_dragonState = state;
   }

@@ -124,10 +124,9 @@ public class StateMachine extends SubsystemBase {
   public Command idleSequence() {
     return (m_dragon
             .stow()
-            .onlyIf(() -> !m_elevator.atSetpoint())
-            .until(m_dragon::isClearFromElevator)
-            .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-            .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint)))
+            .until(m_dragon::isClearFromReef)
+            .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon)))
+        .andThen(m_dragon.stow())
         .alongWith(m_coralIntake.intakeReady())
         .beforeStarting(() -> m_state = State.IDLE);
   }
@@ -211,8 +210,8 @@ public class StateMachine extends SubsystemBase {
   public Command scoreReadySequence(ScoreLevel level) {
     return m_dragon
         .stow()
-        .onlyIf(() -> !m_elevator.atSetpoint())
-        .until(m_dragon::isClearFromElevator)
+        .onlyIf(() -> !m_elevator.atSetpoint() || m_dragon.getSetpoint() == DragonSetpoint.L4)
+        .until(m_dragon::isClearFromReef)
         .andThen(
             m_elevator
                 .moveToLevel(elevatorMap.get(level))
@@ -355,8 +354,8 @@ public class StateMachine extends SubsystemBase {
   public Command intakeCoral() {
     return new InstantCommand(
             () -> {
-              if (manualOverride || m_state == State.IDLE) {
-                intakeAndContinueSequence().schedule();
+              if (manualOverride || m_state == State.IDLE || m_state == State.DRAGON_STANDBY) {
+                intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()).schedule();
               }
             })
         .withName("intakeCoral()");
