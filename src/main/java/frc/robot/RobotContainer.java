@@ -105,7 +105,7 @@ public class RobotContainer {
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
-  private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
+  private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController, 5);
   private final JoystickButton removeAlgaeHighLevelButton =
       new JoystickButton(m_rightController, 6);
 
@@ -151,13 +151,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
-    NamedCommands.registerCommand(
-        "Score Coral", m_stateMachine.dragonScoreSequence().withTimeout(1));
-    NamedCommands.registerCommand("L4", m_stateMachine.scoreReadySequence(ScoreLevel.L4));
+    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoralAuto());
+    NamedCommands.registerCommand("L4", m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
     NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequenceAuto());
     NamedCommands.registerCommand("Handoff", m_stateMachine.handoffSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
@@ -245,7 +244,7 @@ public class RobotContainer {
     sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
     removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
-    removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_LOW));
+    setStartingConfigButton.onTrue(m_stateMachine.setAutonomousSetup());
 
     if (Robot.isSimulation()) {
       coralOnDragonButton

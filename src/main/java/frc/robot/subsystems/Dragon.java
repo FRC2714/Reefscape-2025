@@ -38,6 +38,7 @@ import java.util.function.BooleanSupplier;
 public class Dragon extends SubsystemBase {
 
   public enum DragonSetpoint {
+    STARTING_CONFIG,
     STOW,
     HANDOFF,
     L1,
@@ -52,6 +53,7 @@ public class Dragon extends SubsystemBase {
   }
 
   public enum DragonState {
+    STARTING_CONFIG,
     STOW,
     HANDOFF_READY,
     HANDOFF,
@@ -186,6 +188,9 @@ public class Dragon extends SubsystemBase {
   private void setPivot(DragonSetpoint setpoint) {
     setDragonSetpoint(setpoint);
     switch (m_dragonSetpoint) {
+      case STARTING_CONFIG:
+        pivotCurrentTarget = PivotSetpoints.kStartingConfig;
+        break;
       case STOW:
         pivotCurrentTarget = PivotSetpoints.kStow;
         break;
@@ -257,6 +262,16 @@ public class Dragon extends SubsystemBase {
         .withName("stow()");
   }
 
+  public Command moveToStartingConfig() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.STARTING_CONFIG);
+              setRollerPower(RollerSetpoints.kHold);
+              setDragonState(DragonState.STARTING_CONFIG);
+            })
+        .withName("moveToStartingConfig()");
+  }
+
   public Command handoffReady() {
     return this.run(
             () -> {
@@ -324,6 +339,7 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               setPivot(DragonSetpoint.RETRACT);
+              setDragonState(DragonState.SCORE_READY);
             })
         .withName("retract()");
   }
