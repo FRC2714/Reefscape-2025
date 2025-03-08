@@ -294,12 +294,12 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command scoreReadyLevel(DragonSetpoint level) {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
               setPivot(level);
               setDragonState(DragonState.SCORE_READY);
             })
-        .alongWith(holdCoral())
         .withName("scoreReadyLevel()");
   }
 
@@ -340,21 +340,21 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command stopScore() {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
               setDragonState(DragonState.SCORE_READY);
             })
-        .alongWith(holdCoral())
         .withName("stopScore()");
   }
 
   public Command scoreStandby() {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
               setPivot(DragonSetpoint.STOW);
               setDragonState(DragonState.SCORE_STANDBY);
             })
-        .alongWith(holdCoral())
         .withName("score standby");
   }
 
