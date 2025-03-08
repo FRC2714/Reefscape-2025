@@ -104,8 +104,9 @@ public class RobotContainer {
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
   private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
-  private final JoystickButton removeAlgaeHighLevelButton = new JoystickButton(m_rightController, 6);
-  
+  private final JoystickButton removeAlgaeHighLevelButton =
+      new JoystickButton(m_rightController, 6);
+
   private SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -242,7 +243,7 @@ public class RobotContainer {
         .onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
   }
-  
+
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {
@@ -299,7 +300,7 @@ public class RobotContainer {
   }
 
   public Command elevatorHomingSequence() {
-    return m_stateMachine.elevatorHomingSequence();
+    return m_stateMachine.homingSequence();
   }
 
   /**
