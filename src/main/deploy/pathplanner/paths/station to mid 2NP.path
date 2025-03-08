@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2107581967213117,
-        "y": 6.8481045081967205
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.560254098360657,
-        "y": 6.844508196721311
+        "x": 2.241700819672131,
+        "y": 6.524436475409835
       },
       "isLocked": false,
       "linkedName": "NP station"
     },
     {
       "anchor": {
-        "x": 3.3247500000000003,
-        "y": 5.350999999999999
+        "x": 2.8770491803278686,
+        "y": 5.9130635245901635
       },
       "prevControl": {
-        "x": 2.9119294871794876,
-        "y": 5.93926923076923
+        "x": 2.464228667507356,
+        "y": 6.501332755359394
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "K-Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
