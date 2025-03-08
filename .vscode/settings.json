@@ -65,7 +65,7 @@
   "[java]": {
     "spotlessGradle.format.enable": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.spotlessGradle": true
+      "source.fixAll.spotlessGradle": "explicit"
     }
   }
 }
