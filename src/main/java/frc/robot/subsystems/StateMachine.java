@@ -230,7 +230,9 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !m_elevator.atSetpoint() || m_dragon.getSetpoint() == DragonSetpoint.L4)
         .until(m_dragon::isClearFromReef)
         .andThen(
-            (m_dragon.retract().until(m_dragon::atSetpoint))
+            (m_dragon
+                .retract()
+                .until(m_dragon::atSetpoint))
                 .onlyIf(() -> m_dragon.getSetpoint() == DragonSetpoint.L4))
         .andThen(
             (m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
