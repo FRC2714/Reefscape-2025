@@ -119,7 +119,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
     NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequence());
+    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequenceAuto());
     NamedCommands.registerCommand("Handoff", m_stateMachine.handoffSequence());
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
