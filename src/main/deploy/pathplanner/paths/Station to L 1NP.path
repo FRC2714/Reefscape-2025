@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1797500000000003,
-        "y": 6.8135
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.529245901639346,
-        "y": 6.8099036885245905
+        "x": 2.1835204918032796,
+        "y": 6.34981557377049
       },
       "isLocked": false,
       "linkedName": "NP station"
@@ -20,8 +20,8 @@
         "y": 5.350999999999999
       },
       "prevControl": {
-        "x": 2.9119294871794876,
-        "y": 5.93926923076923
+        "x": 2.418,
+        "y": 5.799499999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
