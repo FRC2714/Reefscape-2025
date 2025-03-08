@@ -236,7 +236,7 @@ public class StateMachine extends SubsystemBase {
     if (m_elevator.getSetpoint() == ElevatorSetpoint.L4) {
       return m_dragon
           .score()
-          .alongWith(new WaitUntilCommand(() -> !m_dragon.isCoralOnDragon()))
+          .until(() -> !m_dragon.isCoralOnDragon())
           .andThen(m_dragon.retract())
           .beforeStarting(() -> m_state = State.DRAGON_SCORE);
     } else {
