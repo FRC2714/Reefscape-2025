@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.auto.Auto;
 import org.littletonrobotics.urcl.URCL;
 
 /**
@@ -26,6 +27,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private Auto m_auto;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -37,6 +39,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_auto = new Auto();
     // In Robot.java, add in robotInit():
     // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
@@ -95,7 +98,7 @@ public class Robot extends TimedRobot {
   /** This autonomous run s the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_auto.getAutonomousCommand();
     m_robotContainer.setAutonomousDefaultStates().schedule();
 
     /*
