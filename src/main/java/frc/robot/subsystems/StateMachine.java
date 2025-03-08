@@ -47,6 +47,8 @@ public class StateMachine extends SubsystemBase {
     L4
   }
 
+  ScoreLevel m_level = null;
+
   private HashMap<ScoreLevel, ElevatorSetpoint> elevatorMap = new HashMap<>();
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
@@ -220,18 +222,45 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
+  public Command scoreReadyL4Sequence(ScoreLevel level) {
+    return m_dragon
+        .stow()
+        .onlyIf(() -> !m_elevator.atSetpoint() || level == ScoreLevel.L4)
+        .until(m_dragon::isClearFromReef)
+        .andThen(
+            m_dragon.retract().until(m_dragon::atSetpoint).onlyIf(() -> level == ScoreLevel.L4))
+        .alongWith(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
+        .beforeStarting(() -> m_state = State.DRAGON_READY);
+  }
+
   public Command stopScore() {
     return new InstantCommand(
         () -> {
           if (m_state == State.DRAGON_SCORE)
-            m_dragon.stopScore().beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
+            if (m_level == ScoreLevel.L4) {
+              m_dragon
+                  .retract()
+                  .until(m_dragon::atSetpoint)
+                  .beforeStarting(() -> m_state = State.DRAGON_READY)
+                  .schedule();
+            } else {
+              m_dragon.stopScore().beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
+            }
           else if (m_state == State.POOP_SCORE)
             m_coralIntake.stopPoopL1().beforeStarting(() -> m_state = State.POOP_READY).schedule();
         });
   }
 
   public Command dragonScoreSequence() {
-    return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    if (m_elevator.getSetpoint() == ElevatorSetpoint.L4) {
+      return m_dragon
+          .scoreReadyLevel(DragonSetpoint.L4)
+          .until(m_dragon::atSetpoint)
+          .andThen(m_dragon.score())
+          .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    } else {
+      return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    }
   }
 
   private Command poopStandbySequence() {
@@ -384,6 +413,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command setLevel(ScoreLevel level) {
+    m_level = level;
     return new InstantCommand(
             () -> {
               if (level == ScoreLevel.L1) {
@@ -393,6 +423,14 @@ public class StateMachine extends SubsystemBase {
                   scoreReadySequence(level).schedule();
                 } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
                   poopReadySequence().schedule();
+                }
+              } else if (level == ScoreLevel.L4) {
+                if (manualOverride
+                    || m_state == State.DRAGON_READY
+                    || m_state == State.DRAGON_STANDBY) {
+                  scoreReadyL4Sequence(level).schedule();
+                } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
+                  handoffSequence().andThen(scoreReadyL4Sequence(level)).schedule();
                 }
               } else {
                 if (manualOverride
