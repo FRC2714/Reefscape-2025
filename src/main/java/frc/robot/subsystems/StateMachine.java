@@ -47,6 +47,8 @@ public class StateMachine extends SubsystemBase {
     L4
   }
 
+  ScoreLevel m_level = null;
+
   private HashMap<ScoreLevel, ElevatorSetpoint> elevatorMap = new HashMap<>();
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
 
@@ -230,15 +232,23 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !m_elevator.atSetpoint() || m_dragon.getSetpoint() == DragonSetpoint.L4)
         .until(m_dragon::isClearFromReef)
         .andThen(
-            (m_dragon
-                .retract()
-                .until(m_dragon::atSetpoint))
-                .onlyIf(() -> m_dragon.getSetpoint() == DragonSetpoint.L4))
+            m_elevator
+                .moveToLevel(elevatorMap.get(level))
+                .alongWith(m_dragon.scoreReadyLevel(dragonMap.get(level)))
+                .until(() -> m_dragon.atSetpoint() && m_elevator.atSetpoint()))
+        .beforeStarting(() -> m_state = State.DRAGON_READY);
+  }
+
+  public Command scoreReadyL4Sequence(ScoreLevel level) {
+    return new InstantCommand(() -> m_level = ScoreLevel.L4)
         .andThen(
-            (m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
-                .alongWith(
-                    (m_dragon.scoreReadyLevel(dragonMap.get(level)).until(m_dragon::atSetpoint))
-                        .onlyIf(() -> m_dragon.getSetpoint() == DragonSetpoint.L4)))
+            m_dragon
+                .stow()
+                .onlyIf(() -> !m_elevator.atSetpoint() || level == ScoreLevel.L4)
+                .until(m_dragon::isClearFromReef))
+        .andThen(
+            m_dragon.retract().until(m_dragon::atSetpoint).onlyIf(() -> level == ScoreLevel.L4))
+        .alongWith(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
         .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
@@ -246,7 +256,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
         () -> {
           if (m_state == State.DRAGON_SCORE)
-            if (m_dragon.getSetpoint() == DragonSetpoint.L4) {
+            if (m_level == ScoreLevel.L4) {
               m_dragon
                   .retract()
                   .until(m_dragon::atSetpoint)
@@ -278,7 +288,7 @@ public class StateMachine extends SubsystemBase {
             .stopScore()
             .until(m_dragon::atSetpoint)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
-        () -> m_dragon.getSetpoint() == DragonSetpoint.L4);
+        () -> m_level == ScoreLevel.L4);
   }
 
   public Command dragonScoreSequence() {
@@ -444,6 +454,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command setLevel(ScoreLevel level) {
+    m_level = level;
     return new InstantCommand(
             () -> {
               if (level == ScoreLevel.L1) {
@@ -458,9 +469,9 @@ public class StateMachine extends SubsystemBase {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
                     || m_state == State.DRAGON_STANDBY) {
-                  scoreReadySequence(level).schedule();
+                  scoreReadyL4Sequence(level).schedule();
                 } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
-                  handoffSequence().andThen(scoreReadySequence(level)).schedule();
+                  handoffSequence().andThen(scoreReadyL4Sequence(level)).schedule();
                 }
               } else {
                 if (manualOverride
@@ -479,7 +490,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
             () -> {
               if (manualOverride || m_state == State.DRAGON_READY) {
-                if (m_dragon.getSetpoint() == DragonSetpoint.L4) {
+                if (m_level == ScoreLevel.L4) {
                   dragonScoreL4Sequence().schedule();
                 } else {
                   dragonScoreSequence().schedule();
@@ -494,9 +505,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command scoreCoralAuto() {
     return new ConditionalCommand(
-            dragonScoreL4Sequence(),
-            dragonScoreSequence(),
-            () -> m_dragon.getSetpoint() == DragonSetpoint.L4)
+            dragonScoreL4Sequence(), dragonScoreSequence(), () -> m_level == ScoreLevel.L4)
         .withTimeout(1)
         .andThen(stopScoreAuto())
         .withName("scoreCoralAuto()");
@@ -594,6 +603,7 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
+    SmartDashboard.putString("State Machine/Level", m_level == null ? "None" : m_level.toString());
     SmartDashboard.putString(
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
