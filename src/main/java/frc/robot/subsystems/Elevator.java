@@ -239,10 +239,9 @@ public class Elevator extends SubsystemBase {
 
   public Command homingSequence() {
     return this.run(
-            () -> {
-              elevatorMotor.set(-0.1);
-            })
-        .until(() -> elevatorMotor.getReverseLimitSwitch().isPressed());
+        () -> {
+          elevatorMotor.set(-0.1);
+        });
   }
 
   public boolean reverseLimitSwitchPressed() {
