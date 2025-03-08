@@ -113,7 +113,22 @@ public class StateMachine extends SubsystemBase {
   public Command setAutonomousDefaultStates() {
     return new InstantCommand(
         () -> {
-          m_coralIntake.stow().alongWith(dragonStandbySequence()).schedule();
+          m_coralIntake
+              .stow()
+              .until(m_coralIntake::atSetpoint)
+              .alongWith(dragonStandbySequence())
+              .schedule();
+        });
+  }
+
+  public Command setAutonomousSetup() {
+    return new InstantCommand(
+        () -> {
+          m_coralIntake
+              .stow()
+              .until(m_coralIntake::atSetpoint)
+              .andThen(m_dragon.moveToStartingConfig())
+              .schedule();
         });
   }
 
@@ -128,8 +143,11 @@ public class StateMachine extends SubsystemBase {
             .stow()
             .until(m_dragon::isClearFromReef)
             .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon)))
-        .andThen(m_dragon.stow())
-        .alongWith(m_coralIntake.intakeReady())
+        .andThen(
+            m_dragon
+                .stow()
+                .until(m_dragon::atSetpoint)
+                .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
         .beforeStarting(() -> m_state = State.IDLE);
   }
 
@@ -153,10 +171,8 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command intakeSequence() {
-    return m_coralIntake
-        .intake()
-        .alongWith(m_dragon.handoffReady())
-        .until(m_coralIntake::isLoaded)
+    return (m_coralIntake.intake().until(m_coralIntake::isLoaded))
+        .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -223,10 +239,12 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreReadyL4Sequence(ScoreLevel level) {
-    return m_dragon
-        .stow()
-        .onlyIf(() -> !m_elevator.atSetpoint() || level == ScoreLevel.L4)
-        .until(m_dragon::isClearFromReef)
+    return new InstantCommand(() -> m_level = level)
+        .andThen(
+            m_dragon
+                .stow()
+                .onlyIf(() -> !m_elevator.atSetpoint() || level == ScoreLevel.L4)
+                .until(m_dragon::isClearFromReef))
         .andThen(
             m_dragon.retract().until(m_dragon::atSetpoint).onlyIf(() -> level == ScoreLevel.L4))
         .alongWith(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
@@ -244,23 +262,44 @@ public class StateMachine extends SubsystemBase {
                   .beforeStarting(() -> m_state = State.DRAGON_READY)
                   .schedule();
             } else {
-              m_dragon.stopScore().beforeStarting(() -> m_state = State.DRAGON_READY).schedule();
+              m_dragon
+                  .stopScore()
+                  .until(m_dragon::atSetpoint)
+                  .beforeStarting(() -> m_state = State.DRAGON_READY)
+                  .schedule();
             }
           else if (m_state == State.POOP_SCORE)
-            m_coralIntake.stopPoopL1().beforeStarting(() -> m_state = State.POOP_READY).schedule();
+            m_coralIntake
+                .stopPoopL1()
+                .until(m_coralIntake::atSetpoint)
+                .beforeStarting(() -> m_state = State.POOP_READY)
+                .schedule();
         });
   }
 
+  public Command stopScoreAuto() {
+    return new ConditionalCommand(
+        m_dragon
+            .retract()
+            .until(m_dragon::atSetpoint)
+            .beforeStarting(() -> m_state = State.DRAGON_READY),
+        m_dragon
+            .stopScore()
+            .until(m_dragon::atSetpoint)
+            .beforeStarting(() -> m_state = State.DRAGON_READY),
+        () -> m_level == ScoreLevel.L4);
+  }
+
   public Command dragonScoreSequence() {
-    if (m_elevator.getSetpoint() == ElevatorSetpoint.L4) {
-      return m_dragon
-          .scoreReadyLevel(DragonSetpoint.L4)
-          .until(m_dragon::atSetpoint)
-          .andThen(m_dragon.score())
-          .beforeStarting(() -> m_state = State.DRAGON_SCORE);
-    } else {
-      return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
-    }
+    return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
+  public Command dragonScoreL4Sequence() {
+    return m_dragon
+        .scoreReadyLevel(DragonSetpoint.L4)
+        .until(m_dragon::atSetpoint)
+        .andThen(m_dragon.score())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
   private Command poopStandbySequence() {
@@ -316,7 +355,8 @@ public class StateMachine extends SubsystemBase {
                 idleSequence().schedule();
               } else if (m_state == State.INTAKE
                   || m_state == State.EXTAKE
-                  || m_state == State.ALGAE_REMOVE) {
+                  || m_state == State.ALGAE_REMOVE
+                  || m_state == State.IDLE) {
                 idleSequence().schedule();
               } else if (m_state == State.DRAGON_READY || m_state == State.POOP_READY) {
                 if (m_state == State.DRAGON_READY && m_dragon.isCoralOnDragon()) {
@@ -449,7 +489,12 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
             () -> {
               if (manualOverride || m_state == State.DRAGON_READY) {
-                dragonScoreSequence().schedule();
+                if (m_level == ScoreLevel.L4) {
+                  dragonScoreL4Sequence().schedule();
+                } else {
+                  dragonScoreSequence().schedule();
+                }
+
               } else if (m_state == State.POOP_READY) {
                 poopScoreSequence().schedule();
               }
@@ -458,7 +503,11 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreCoralAuto() {
-    return dragonScoreSequence().withTimeout(.5).andThen(stopScore()).withName("scoreCoralAuto()");
+    return new ConditionalCommand(
+            dragonScoreL4Sequence(), dragonScoreSequence(), () -> m_level == ScoreLevel.L4)
+        .withTimeout(1)
+        .andThen(stopScoreAuto())
+        .withName("scoreCoralAuto()");
   }
 
   public Command handoffManual() {
@@ -553,6 +602,7 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
+    SmartDashboard.putString("State Machine/Level", m_level.toString());
     SmartDashboard.putString(
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
