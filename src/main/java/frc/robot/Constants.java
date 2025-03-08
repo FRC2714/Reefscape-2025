@@ -313,9 +313,9 @@ public final class Constants {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 0;
+      public static final double kLevel1 = 4.5;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 1.4;
+      public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 0;
@@ -343,9 +343,9 @@ public final class Constants {
       public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 97;
-      public static final double kLevel3 = 56.08;
-      public static final double kLevel4 = 65;
+      public static final double kLevel2 = 108;
+      public static final double kLevel3 = 61.08;
+      public static final double kLevel4 = 70;
       public static final double kClimb = 180;
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
