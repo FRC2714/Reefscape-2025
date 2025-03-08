@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.742077464788732,
-        "y": 3.854929577464788
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.592429577464788,
-        "y": 1.9699823943661954
+        "x": 2.0413717052811338,
+        "y": 7.246553000391662
       },
       "isLocked": false,
-      "linkedName": "G-Coral"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0357051282051275,
-        "y": 0.34057692307692267
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.8264682520842213,
-        "y": 1.3014488646555615
+        "x": 1.8177012688615093,
+        "y": 6.8289234889726345
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 0.1,
+    "maxAcceleration": 0.1,
+    "maxAngularVelocity": 0.1,
+    "maxAngularAcceleration": 0.1,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.91438322002512
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "CENTER",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

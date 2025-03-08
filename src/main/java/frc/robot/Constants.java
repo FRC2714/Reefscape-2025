@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
@@ -14,15 +15,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide
- * numerical or boolean
- * constants. This class should not be used for any other purpose. All constants
- * should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>
- * It is advised to statically import this class (or one of its inner classes)
- * wherever the
+ * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 
@@ -31,19 +28,20 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
+    public static final double kMaxSpeedMetersPerSecond = 4.92;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(25.491162);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(20.5);
+    public static final double kWheelBase = Units.inchesToMeters(25.491162);
     // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+    public static final SwerveDriveKinematics kDriveKinematics =
+        new SwerveDriveKinematics(
+            new Translation2d(kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+            new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     // Angular offsets of the modules relative to the chassis in radians
     public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2;
@@ -65,20 +63,31 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
 
     public static final double kTurningEncoderPositionFactor = 2 * Math.PI;
-    public static final double kDriveEncoderVelocityFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
-        / ModuleConstants.kDrivingMotorReduction;
+    public static final double kDriveEncoderVelocityFactor =
+        ModuleConstants.kWheelDiameterMeters * Math.PI / ModuleConstants.kDrivingMotorReduction;
+
+    public static final SimpleMotorFeedforward kDriveFeedforward =
+        new SimpleMotorFeedforward(0.22022, 2.4995, 0.26113);
+    public static final SimpleMotorFeedforward kTurningFeedforward =
+        new SimpleMotorFeedforward(0, 0, 0.1);
   }
 
   public static final class ClimberConstants {
     public static final int kPivotMotorCanId = 51;
 
-    public static final double kPivotThreshold = 5;
+    public static final double kPivotThreshold = 50; // 81:1 gear ratio
     public static final double kPivotReduction = 1;
 
+    public static final double kDeploySpeed = 1;
+    public static final double kRetractSpeed = -1;
+    public static final double kClimbSetpoint = 10;
+
     public static final class PivotSetpoints {
-      public static final double kStow = -15;
-      public static final double kDeploy = 0;
-      public static final double kRetract = -7;
+      public static final double kDeploy = 307.6;
+      public static final double kRetract = 0;
+
+      public static final double kMaxAngle = 315;
+      public static final double kMinAngle = 0;
     }
   }
 
@@ -123,12 +132,12 @@ public final class Constants {
     public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 15; 
+      public static final double kStow = 8;
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
       public static final double kHandoff = 72.8;
-      public static final double kPoop = 70; 
+      public static final double kPoop = 70;
 
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 90;
@@ -138,6 +147,7 @@ public final class Constants {
       public static final double kIntake = 0.6;
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
+      public static final double kPrePoop = -0.2;
     }
   }
 
@@ -146,7 +156,8 @@ public final class Constants {
     public static final double kPixelsPerMeter = 1 * 20;
 
     public static final double kElevatorGearing = 25; // 25:1
-    public static final double kCarriageMass = 4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
+    public static final double kCarriageMass =
+        4.3 + 3.15 + 0.151; // Kg, arm + elevator stage + chain
     public static final double kElevatorDrumRadius = 0.0328 / 2.0; // m
     public static final double kMinElevatorHeightMeters = Units.inchesToMeters(35.2 * 20); // m
     public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(66.7 * 20); // m
@@ -159,8 +170,10 @@ public final class Constants {
     public static final double kPivotLength = Units.inchesToMeters(10); // m
     public static final double kPivotMass = 4.3; // Kg
 
-    public static final double kMinAngleRads = Units.degreesToRadians(-50.1); // -50.1 deg from horiz
-    public static final double kMaxAngleRads = Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
+    public static final double kMinAngleRads =
+        Units.degreesToRadians(-50.1); // -50.1 deg from horiz
+    public static final double kMaxAngleRads =
+        Units.degreesToRadians(40.9 + 180); // 40.9 deg from horiz
 
     public static final double kIntakeReduction = 135; // 135:1
     public static final double kIntakeLength = Units.inchesToMeters(15); // m
@@ -169,7 +182,8 @@ public final class Constants {
     public static final double kIntakeMaxAngleRads = Units.degreesToRadians(180);
 
     public static final double kCoralIntakeMinAngleRads = Units.degreesToRadians(0);
-    public static final double kCoralIntakeMaxAngleRads = Units.degreesToRadians(360 * kIntakeReduction);
+    public static final double kCoralIntakeMaxAngleRads =
+        Units.degreesToRadians(360 * kIntakeReduction);
 
     public static final double kIntakeShortBarLength = Units.inchesToMeters(11);
     public static final double kIntakeLongBarLength = Units.inchesToMeters(13);
@@ -182,18 +196,20 @@ public final class Constants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,
     // 13T, or 14T. This changes the drive speed of the module (a pinion gear with
     // more teeth will result in a robot that drives faster).
-    public static final int kDrivingMotorPinionTeeth = 14;
+    public static final int kDrivingMotorPinionTeeth = 12;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kDrivingMotorFreeSpeedRps =
+        NeoVortexMotorConstants.kFreeSpeedRpm / 60;
+    public static final double kWheelDiameterMeters = 0.038 * 2;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
-    public static final double kTurningMotorReduction = 1;
-    public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
-        / kDrivingMotorReduction;
+    public static final double kDrivingMotorReduction =
+        (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+    public static final double kTurningMotorReduction = 64 / 14;
+    public static final double kDriveWheelFreeSpeedRps =
+        (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters) / kDrivingMotorReduction;
   }
 
   public static final class OIConstants {
@@ -215,18 +231,26 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
+        new TrapezoidProfile.Constraints(
+            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
+  public static final class NeoVortexMotorConstants {
+    public static final double kFreeSpeedRpm = 6784;
+  }
+
   // ! Update Values for AlphaBot
   public static final class LimelightConstants {
-    public static final Matrix<N3, N1> m_stateStdDevs = VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
-    public static final Matrix<N3, N1> m_visionStdDevs = VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs tuning
+    public static final Matrix<N3, N1> m_stateStdDevs =
+        VecBuilder.fill(0.15, 0.15, 0.00001); // TODO: needs tuning
+    public static final Matrix<N3, N1> m_visionStdDevs =
+        VecBuilder.fill(0.00001, 0.00001, 999999); // TODO: needs
+    // tuning
     public static final String kRightLimelightName = "limelight-right";
     public static final String kLeftLimelightName = "limelight-left";
     public static final String kBackLimelightName = "limelight-back";
@@ -237,12 +261,14 @@ public final class Constants {
     // Parallel to elevator
     public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
     public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
+    public static final double kBackCameraXOffset = 0; // -0.3086882066 meters
 
     // Perpendicular to elevator
     public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
+    public static final double kBackCameraYOffset = -3.086657; // -0.3086882066 meters
 
-    public static final double kBackCameraHeight = 2.75 + 15.5; // TODO
+    public static final double kBackCameraHeight = 38.868062; // TODO
 
     public static final double kRightMountingPitch = -45;
     public static final double kLeftMountingPitch = -45;
@@ -250,17 +276,19 @@ public final class Constants {
     public static final double kRightMountingYaw = -24.499987;
     public static final double kLeftMountingYaw = 180 - 24.499987;
 
-    public static final double kBackMountingPitch = 0; // TODO
+    public static final double kBackMountingPitch = 20; // TODO
 
     public static final double kBackMountingYaw = 0; // TODO
 
     public static final double kReefTagHeight = 12;
     public static final double kProcessorTagHeight = 0; // tune later
+    public static final double kCoralStationTagHeight = 53.25; // tune later
     public static final int kProcessorPipeline = 0; // TBD
     public static final int kRightReefBranchPipeline = 1;
     public static final int kLeftReefBranchPipeline = 2;
     public static final int kRedPosePipeline = 3; // TBD
     public static final int kBluePosePipeline = 4; // TBD
+    public static final int kCoralStationPipeline = 5;
 
     public static final double kCoralStationDistanceThreshold = 0; // TODO: tune
   }
@@ -279,16 +307,18 @@ public final class Constants {
     public static final double kP = .3;
     public static final double kG = .3;
 
-    public static final double kClearToStowDragonLevel = 1.8;
+    public static final double kClearToStowDragonLevel = 9.62;
 
     public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 0;
+      public static final double kLevel1 = 4.5;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 1.4;
+      public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
+      public static final double kAlgaeLow = 0;
+      public static final double kAlgaeHigh = 0;
     }
   }
 
@@ -304,23 +334,27 @@ public final class Constants {
     public static final double kPivotMaxAngle = 250.0;
     public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
+    public static final double kClearFromReefAngle = 45;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 115;
+      public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 98;
-      public static final double kLevel3 = 56.08;
-      public static final double kLevel4 = 48;
-      public static final double kClimb = 1;
+      public static final double kLevel2 = 108;
+      public static final double kLevel3 = 61.08;
+      public static final double kLevel4 = 70;
+      public static final double kClimb = 180;
+      public static final double kAlgaeHigh = 98; // TODO: fix this later
+      public static final double kAlgaeLow = 37.13; // TODO: fix this later
+      public static final double kAlgaeReady = 210;
     }
 
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // TODO: tune (pos when getting from station)
-      public static final double kExtake = .6; // TODO: tune ts (neg when scoring)
+      public static final double kExtake = .7; // TODO: tune ts (neg when scoring)
       public static final double kStop = 0;
       public static final double kHold = -0.2;
     }
@@ -336,6 +370,6 @@ public final class Constants {
     public static final double kHeartbeatRed = -0.25;
     public static final double kViolet = 0.91;
     public static final double kOrange = 0.65;
-
   }
-};
+}
+;

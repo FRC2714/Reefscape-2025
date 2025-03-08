@@ -5,70 +5,76 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlignToProcessor extends Command {
+public class AlignToCoralStation extends Command {
   private DriveSubsystem m_drivetrain;
-  private Limelight m_backLimelight;
-
-  // private Limelight m_rightLimelight;
-  // private Limelight m_leftLimelight;
+  private Limelight m_limelight;
 
   private PIDController xController;
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToProcessor(DriveSubsystem m_drivetrain, Limelight m_backLimelight) {
+  public AlignToCoralStation(DriveSubsystem m_drivetrain, Limelight m_limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
-    this.m_backLimelight = m_backLimelight;
+    this.m_limelight = m_limelight;
 
-    xController = new PIDController(0.55, 0, 0); // tune these later
+    xController = new PIDController(0.5, 0, 0);
     yController = new PIDController(0.25, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(Units.inchesToMeters(13)); // tune later
+    xController.setSetpoint(0.392); // TODO
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.2);
-    yController.setTolerance(.2);
+    xController.setTolerance(.01);
+    yController.setTolerance(.01);
     thetaController.setTolerance(.1);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_backLimelight.setProcessorTagPipeline();
+    m_limelight.setCoralStationPipeline();
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
+  // when both cameras see:
+  // right align = right default (pipelin 1)
+  // left align = left default (pipelin 2)
+  // if both cameras see, the default camera will be set to whatever side the
+  // driver wants to align to (ie. left bumper = left align = default left camera
+  // which uses pipeline 1)
   @Override
   public void execute() {
-    if (m_backLimelight.isTargetVisible()) // if the back LL can see something
-    {
-      if (m_backLimelight.getTargetID() == 3
-          || m_backLimelight.getTargetID() == 16) // if the tags are teh processor
-      // tags
-      {
-        thetaController.setSetpoint(90);
-        m_drivetrain.drive(
-            xController.calculate(
-                m_backLimelight.getDistanceToGoalMeters()), // positive since the robot
-            // should drive backwards i
-            // think
-            yController.calculate(m_backLimelight.getXOffsetRadians()),
-            thetaController.calculate(m_drivetrain.getHeading()),
-            false);
-      }
+    if ((m_limelight.isTargetVisible())) { // if can only see left, then do whatever we did before
+      updateThetaControllerSetpoint(m_limelight.getTargetID());
+
+      m_drivetrain.drive(
+          m_limelight.getDistanceToGoalMetersCoralStation() < 1
+              ? xController.calculate(m_limelight.getDistanceToGoalMetersCoralStation())
+              : 0,
+          m_limelight.getDistanceToGoalMetersCoralStation() < 0.9
+              ? yController.calculate(m_limelight.getXOffsetRadians())
+              : 0,
+          thetaController.calculate(m_drivetrain.getHeading()),
+          false);
     } else {
       m_drivetrain.drive(0, 0, 0, true);
+    }
+  }
+
+  private void updateThetaControllerSetpoint(int targetID) {
+    switch (targetID) {
+      case 2, 12 -> thetaController.setSetpoint(54.011);
+      case 1, 13 -> thetaController.setSetpoint(-54.011);
     }
   }
 
