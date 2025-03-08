@@ -448,9 +448,7 @@ public class StateMachine extends SubsystemBase {
   public Command scoreCoral() {
     return new InstantCommand(
             () -> {
-              if (manualOverride) {
-                m_dragon.score().schedule();
-              } else if (m_state == State.DRAGON_READY) {
+              if (manualOverride || m_state == State.DRAGON_READY) {
                 dragonScoreSequence().schedule();
               } else if (m_state == State.POOP_READY) {
                 poopScoreSequence().schedule();
