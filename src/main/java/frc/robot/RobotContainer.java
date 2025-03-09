@@ -186,7 +186,6 @@ public class RobotContainer {
     }
 
     // Driver Controller Actions
-
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
@@ -261,6 +260,14 @@ public class RobotContainer {
         });
   }
 
+  public void setAutoHandoff(boolean enable) {
+    if (enable) {
+      m_stateMachine.enableAutoHandoff().schedule();
+    } else {
+      m_stateMachine.disableAutoHandoff().schedule();
+    }
+  }
+
   public Command setAutonomousDefaultStates() {
     return new InstantCommand(
         () -> {
@@ -291,12 +298,8 @@ public class RobotContainer {
     }
   }
 
-  public void isManualOverrideEnabled() {
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
+  public Command elevatorHomingSequence() {
+    return m_stateMachine.homingSequence();
   }
 
   /**
