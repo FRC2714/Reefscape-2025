@@ -254,6 +254,12 @@ public final class Configs {
 
       pivotRollerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
       pivotRollerConfig.inverted(true);
+      pivotRollerConfig.encoder.positionConversionFactor(1).velocityConversionFactor(1);
+      pivotRollerConfig
+          .closedLoop
+          .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+          .p(0.5)
+          .outputRange(-1, 1);
 
       pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
     }

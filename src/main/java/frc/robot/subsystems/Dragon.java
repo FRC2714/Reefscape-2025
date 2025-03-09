@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -86,6 +87,8 @@ public class Dragon extends SubsystemBase {
   // Pivot rollers
   private SparkFlex pivotRollers =
       new SparkFlex(DragonConstants.kPivotRollerMotorCanId, MotorType.kBrushless);
+  private RelativeEncoder rollerEncoder = pivotRollers.getEncoder();
+  private SparkClosedLoopController rollerController = pivotRollers.getClosedLoopController();
 
   private SparkLimitSwitch beamBreak = pivotRollers.getForwardLimitSwitch();
 
@@ -306,10 +309,10 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command scoreReadyLevel(DragonSetpoint level) {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
               setPivot(level);
-              setRollerPower(RollerSetpoints.kHold);
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("scoreReadyLevel()");
@@ -353,22 +356,47 @@ public class Dragon extends SubsystemBase {
   }
 
   public Command stopScore() {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
-              setRollerPower(RollerSetpoints.kHold);
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("stopScore()");
   }
 
   public Command scoreStandby() {
-    return this.run(
+    return holdCoral()
+        .beforeStarting(
             () -> {
               setPivot(DragonSetpoint.STOW);
-              setRollerPower(RollerSetpoints.kHold);
               setDragonState(DragonState.SCORE_STANDBY);
             })
         .withName("score standby");
+  }
+
+  /**
+   * Run the roller in open loop to bring coral back, and once it stops, record the position and
+   * perform closed loop control with it. If roller doesn't stop within specified timeout, stop
+   * trying.
+   *
+   * @return
+   */
+  public Command holdCoral() {
+    return this.run(
+            () -> {
+              setRollerPower(RollerSetpoints.kHold);
+            })
+        .until(() -> rollerEncoder.getVelocity() < DragonConstants.kRollerStoppedThreshold)
+        .withTimeout(DragonConstants.kRollerStoppedTimeout)
+        .andThen(
+            () -> {
+              if (isCoralOnDragon()) {
+                double position = rollerEncoder.getPosition();
+                rollerController.setReference(position, ControlType.kPosition);
+              } else {
+                setRollerPower(RollerSetpoints.kStop);
+              }
+            });
   }
 
   public double getSimulationCurrentDraw() {
