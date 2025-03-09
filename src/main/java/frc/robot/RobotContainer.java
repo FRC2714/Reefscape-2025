@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -242,6 +243,10 @@ public class RobotContainer {
     overrideStateMachineButton
         .onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
+
+    new Trigger(m_coralIntake::shouldRumble)
+      .whileTrue(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 1.0)))
+      .whileFalse(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 0.0)));
   }
 
   public Command setTeleOpDefaultStates() {
