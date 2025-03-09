@@ -454,9 +454,9 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command setLevel(ScoreLevel level) {
-    m_level = level;
     return new InstantCommand(
             () -> {
+              m_level = level;
               if (level == ScoreLevel.L1) {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
