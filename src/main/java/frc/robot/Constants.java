@@ -307,15 +307,15 @@ public final class Constants {
     public static final double kP = .3;
     public static final double kG = .3;
 
-    public static final double kClearToStowDragonLevel = 1.8;
+    public static final double kClearToStowDragonLevel = 9.62;
 
     public static final class ElevatorLevels {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 0;
+      public static final double kLevel1 = 4.5;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 1.4;
+      public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 0;
@@ -334,21 +334,24 @@ public final class Constants {
     public static final double kPivotMaxAngle = 250.0;
     public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
+    public static final double kClearFromReefAngle = 45;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 115;
+      public static final double kStartingConfig = 252;
+      public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 97;
-      public static final double kLevel3 = 56.08;
-      public static final double kLevel4 = 50;
+      public static final double kLevel2 = 108;
+      public static final double kLevel3 = 61.08;
+      public static final double kLevel4 = 95;
       public static final double kClimb = 180;
       public static final double kAlgaeHigh = 98; // TODO: fix this later
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
       public static final double kAlgaeReady = 210;
+      public static final double kRetract = 41;
     }
 
     public static final class RollerSetpoints {

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3247500000000003,
-        "y": 5.350999999999999
+        "x": 5.0992500000000005,
+        "y": 5.4095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8427500000000003,
-        "y": 6.0335
+        "x": 4.655160256410256,
+        "y": 6.070230769230769
       },
       "isLocked": false,
-      "linkedName": "K-Coral"
+      "linkedName": "J-Coral"
     },
     {
       "anchor": {
-        "x": 1.1797500000000003,
-        "y": 6.8135
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": {
-        "x": 2.4764999999999997,
-        "y": 6.150499999999999
+        "x": 2.5015374106767565,
+        "y": 5.433796500630516
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -57.500640649575736
+    "rotation": -119.88246504298795
   },
   "useDefaultConstraints": true
 }

@@ -38,6 +38,7 @@ import java.util.function.BooleanSupplier;
 public class Dragon extends SubsystemBase {
 
   public enum DragonSetpoint {
+    STARTING_CONFIG,
     STOW,
     HANDOFF,
     L1,
@@ -47,10 +48,12 @@ public class Dragon extends SubsystemBase {
     CLIMB,
     ALGAE_HIGH,
     ALGAE_LOW,
-    ALGAE_READY
+    ALGAE_READY,
+    RETRACT
   }
 
   public enum DragonState {
+    STARTING_CONFIG,
     STOW,
     HANDOFF_READY,
     HANDOFF,
@@ -68,6 +71,7 @@ public class Dragon extends SubsystemBase {
 
   private DragonSetpoint m_dragonSetpoint;
   private DragonState m_dragonState;
+  private DragonSetpoint m_previousSetpoint;
 
   private boolean coralOnDragon;
 
@@ -166,6 +170,13 @@ public class Dragon extends SubsystemBase {
     return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromElevatorAngle;
   }
 
+  public boolean isClearFromReef() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefAngle;
+  }
+
   private void setDragonState(DragonState state) {
     m_dragonState = state;
   }
@@ -177,6 +188,9 @@ public class Dragon extends SubsystemBase {
   private void setPivot(DragonSetpoint setpoint) {
     setDragonSetpoint(setpoint);
     switch (m_dragonSetpoint) {
+      case STARTING_CONFIG:
+        pivotCurrentTarget = PivotSetpoints.kStartingConfig;
+        break;
       case STOW:
         pivotCurrentTarget = PivotSetpoints.kStow;
         break;
@@ -206,6 +220,8 @@ public class Dragon extends SubsystemBase {
         break;
       case ALGAE_READY:
         pivotCurrentTarget = PivotSetpoints.kAlgaeReady;
+      case RETRACT:
+        pivotCurrentTarget = PivotSetpoints.kRetract;
         break;
     }
     moveToSetpoint();
@@ -244,6 +260,16 @@ public class Dragon extends SubsystemBase {
               setDragonState(DragonState.STOW);
             })
         .withName("stow()");
+  }
+
+  public Command moveToStartingConfig() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.STARTING_CONFIG);
+              setRollerPower(RollerSetpoints.kHold);
+              setDragonState(DragonState.STARTING_CONFIG);
+            })
+        .withName("moveToStartingConfig()");
   }
 
   public Command handoffReady() {
@@ -301,11 +327,21 @@ public class Dragon extends SubsystemBase {
   public Command score() {
     return this.run(
             () -> {
+              m_previousSetpoint = m_dragonSetpoint;
               setRollerPower(RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE);
             })
         .onlyIf(this::atSetpoint)
         .withName("score()"); // ADD BACK AFTER TESTING
+  }
+
+  public Command retract() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.RETRACT);
+              setDragonState(DragonState.SCORE_READY);
+            })
+        .withName("retract()");
   }
 
   public Command stopRoller() {
@@ -364,6 +400,7 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+    SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());

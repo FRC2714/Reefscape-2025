@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of J to station 1NP"
+                  "pathName": "J-back to station 1NP"
                 }
               },
               {
@@ -93,7 +93,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of Copy of station to K 1NP"
+                  "pathName": "Station to L 1NP"
                 }
               },
               {
@@ -137,7 +137,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of K to station 2NP"
+                  "pathName": "K to station 2NP"
                 }
               },
               {
@@ -175,7 +175,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Copy of station to K 1NP"
+                  "pathName": null
                 }
               },
               {
