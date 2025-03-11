@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -246,8 +247,11 @@ public class RobotContainer {
         .onFalse(m_stateMachine.disableManualOverride());
 
     new Trigger(m_coralIntake::shouldRumble)
-      .whileTrue(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 1.0)))
-      .whileFalse(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kLeftRumble, 0.0)));
+        .onTrue(
+            new StartEndCommand(
+                    () -> m_driverController.setRumble(RumbleType.kLeftRumble, 1.0),
+                    () -> m_driverController.setRumble(RumbleType.kLeftRumble, 0.0))
+                .withTimeout(1));
   }
 
   public Command setTeleOpDefaultStates() {
