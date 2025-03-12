@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,7 +12,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,15 +23,12 @@ import frc.robot.utils.TunableNumber;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
-
   private enum ClimberSetpoint {
-    STOW,
     DEPLOY,
     RETRACT
   }
 
   public enum ClimberState {
-    STOW,
     DEPLOY,
     RETRACT
   }
@@ -44,12 +40,15 @@ public class Climber extends SubsystemBase {
   private ClimberSetpoint m_climberSetpoint;
   private ClimberState m_climberState;
 
-  private double pivotCurrentTarget = PivotSetpoints.kStow;
+  private double pivotCurrentTarget = PivotSetpoints.kRetract;
 
-  private SparkFlex pivotMotor = new SparkFlex(ClimberConstants.kPivotMotorCanId, MotorType.kBrushless);
-  private AbsoluteEncoder pivotEncoder = pivotMotor.getAbsoluteEncoder();
+  private SparkFlex pivotMotor =
+      new SparkFlex(ClimberConstants.kPivotMotorCanId, MotorType.kBrushless);
+  private RelativeEncoder pivotEncoder = pivotMotor.getEncoder();
 
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
+
+  private boolean wasResetByLimit = false;
 
   public Climber() {
     tunableAngle = new TunableNumber("Climber/Tunable Pivot Angle");
@@ -62,9 +61,8 @@ public class Climber extends SubsystemBase {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    m_climberSetpoint = ClimberSetpoint.STOW;
-    m_climberState = ClimberState.STOW;
-
+    m_climberSetpoint = ClimberSetpoint.RETRACT;
+    m_climberState = ClimberState.RETRACT;
   }
 
   public double getPivotPosition() {
@@ -80,52 +78,41 @@ public class Climber extends SubsystemBase {
     if (Robot.isSimulation()) {
       return true;
     }
-    return Math.abs(pivotCurrentTarget - pivotEncoder.getPosition()) <= ClimberConstants.kPivotThreshold;
+    return pivotEncoder.getPosition() > ClimberConstants.PivotSetpoints.kMaxAngle;
   }
 
-  private void setClimberSetpoint(ClimberSetpoint setpoint) {
-    m_climberSetpoint = setpoint;
+  public boolean limitSwitchPressed() {
+    return pivotMotor.getReverseLimitSwitch().isPressed();
+  }
+
+  public boolean pastClimbSetpoint() {
+    return pivotEncoder.getPosition() < ClimberConstants.kClimbSetpoint;
   }
 
   private void setClimberState(ClimberState state) {
     m_climberState = state;
   }
 
-  private void setPivot(ClimberSetpoint setpoint) {
-    setClimberSetpoint(setpoint);
-    switch (m_climberSetpoint) {
-      case STOW:
-        pivotCurrentTarget = PivotSetpoints.kStow;
-        break;
-      case DEPLOY:
-        pivotCurrentTarget = PivotSetpoints.kDeploy;
-        break;
-      case RETRACT:
-        pivotCurrentTarget = PivotSetpoints.kRetract;
-        break;
-    }
-    moveToSetpoint();
-  }
-
   public Command deploy() {
-    return this.run(() -> {
-      setPivot(ClimberSetpoint.DEPLOY);
-      setClimberState(ClimberState.DEPLOY);
-    });
+    return this.runEnd(
+        () -> {
+          pivotMotor.set(ClimberConstants.kDeploySpeed);
+          setClimberState(ClimberState.DEPLOY);
+        },
+        () -> {
+          pivotMotor.stopMotor();
+        });
   }
 
   public Command retract() {
-    return this.run(() -> {
-      setPivot(ClimberSetpoint.RETRACT);
-      setClimberState(ClimberState.RETRACT);
-    });
-  }
-
-  public Command stow() {
-    return this.run(() -> {
-      setPivot(ClimberSetpoint.STOW);
-      setClimberState(ClimberState.STOW);
-    });
+    return this.runEnd(
+        () -> {
+          pivotMotor.set(ClimberConstants.kRetractSpeed);
+          setClimberState(ClimberState.RETRACT);
+        },
+        () -> {
+          pivotMotor.stopMotor();
+        });
   }
 
   public ClimberSetpoint getSetpoint() {
@@ -134,6 +121,15 @@ public class Climber extends SubsystemBase {
 
   public ClimberState getState() {
     return m_climberState;
+  }
+
+  private void zeroClimbOnLimitSwitch() {
+    if (!wasResetByLimit && pivotMotor.getReverseLimitSwitch().isPressed()) {
+      pivotEncoder.setPosition(PivotSetpoints.kRetract);
+      wasResetByLimit = true;
+    } else if (!pivotMotor.getReverseLimitSwitch().isPressed()) {
+      wasResetByLimit = false;
+    }
   }
 
   @Override
@@ -146,8 +142,11 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putBoolean("Climber/Pivot/at Setpoint?", atSetpoint());
 
     SmartDashboard.putString("Climber/State", m_climberState.toString());
-    SmartDashboard.putString("Climber/Current Command",
+    SmartDashboard.putString(
+        "Climber/Current Command",
         this.getCurrentCommand() != null ? this.getCurrentCommand().getName() : "None");
+
+    zeroClimbOnLimitSwitch();
 
     // Tunable If's
     if (tunableAngle.hasChanged()) {
@@ -156,7 +155,8 @@ public class Climber extends SubsystemBase {
     }
     if (tunableP.hasChanged()) {
       tunableConfig.closedLoop.p(tunableP.get());
-      pivotMotor.configure(tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      pivotMotor.configure(
+          tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
   }
 }

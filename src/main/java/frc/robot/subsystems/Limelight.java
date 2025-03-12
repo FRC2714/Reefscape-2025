@@ -7,11 +7,8 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
@@ -28,15 +25,15 @@ public class Limelight extends SubsystemBase {
     RIGHT
   }
 
-  public static Align SIDE = Align.LEFT;
+  public static Align SIDE = Align.RIGHT;
 
-  public Limelight(String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
+  public Limelight(
+      String m_limelightName, double m_cameraHeight, double m_mountingAngle, double m_goalHeight) {
 
     this.m_limelightName = m_limelightName;
     this.m_cameraHeight = m_cameraHeight;
     this.m_mountingAngle = m_mountingAngle;
     this.m_goalHeight = m_goalHeight;
-
   }
 
   public String getName() {
@@ -46,6 +43,11 @@ public class Limelight extends SubsystemBase {
   public double getDistanceToGoalInches() {
     return (m_goalHeight - m_cameraHeight)
         / Math.tan(Units.degreesToRadians(m_mountingAngle + getYAngleOffsetDegrees()));
+  }
+
+  public double getDistanceToGoalInchesCoralStation() {
+    return (m_goalHeight - m_cameraHeight)
+        / Math.tan(Units.degreesToRadians(m_mountingAngle + Math.abs(getYAngleOffsetDegrees())));
   }
 
   public void setGoalHeight(double goalHeight) {
@@ -58,6 +60,10 @@ public class Limelight extends SubsystemBase {
 
   public double getDistanceToGoalMeters() {
     return Units.inchesToMeters(getDistanceToGoalInches());
+  }
+
+  public double getDistanceToGoalMetersCoralStation() {
+    return Units.inchesToMeters(getDistanceToGoalInchesCoralStation());
   }
 
   // Offset in Degrees
@@ -133,6 +139,10 @@ public class Limelight extends SubsystemBase {
     LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kProcessorPipeline);
   }
 
+  public void setCoralStationPipeline() {
+    LimelightHelpers.setPipelineIndex(m_limelightName, LimelightConstants.kCoralStationPipeline);
+  }
+
   public static Pose2d getBotPose2d(Limelight limelight) {
     return LimelightHelpers.getBotPose2d_wpiBlue("limelight_back");
   }
@@ -171,6 +181,5 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber(m_limelightName + "/X offset", getXAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/Y offset", getYAngleOffsetDegrees());
     SmartDashboard.putNumber(m_limelightName + "/distance to goal", getDistanceToGoalMeters());
-
   }
 }
