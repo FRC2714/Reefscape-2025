@@ -8,6 +8,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -93,6 +95,8 @@ public class RobotContainer {
   private final Trigger L2Button = new Trigger(() -> m_rightController.getRawAxis(0) < -0.25); // L2
   private final Trigger L3Button = new Trigger(() -> m_rightController.getRawAxis(0) > 0.25); // L3
   private final Trigger L4Button = new Trigger(() -> m_rightController.getRawAxis(1) < -0.25); // L4
+
+  private final Trigger rumble = new Trigger(m_coralIntake::shouldRumble);
 
   private final JoystickButton coralExtakeButton = new JoystickButton(m_rightController, 2);
   private final JoystickButton overrideStateMachineButton =
@@ -258,6 +262,18 @@ public class RobotContainer {
     overrideStateMachineButton
         .onTrue(m_stateMachine.enableManualOverride())
         .onFalse(m_stateMachine.disableManualOverride());
+
+    rumble.onTrue(
+        new StartEndCommand(
+                () -> {
+                  m_driverController.setRumble(RumbleType.kLeftRumble, 1.0);
+                  m_driverController.setRumble(RumbleType.kRightRumble, 1.0);
+                },
+                () -> {
+                  m_driverController.setRumble(RumbleType.kLeftRumble, 0.0);
+                  m_driverController.setRumble(RumbleType.kRightRumble, 0.0);
+                })
+            .withTimeout(0.5));
   }
 
   public Command setTeleOpDefaultStates() {
