@@ -259,6 +259,24 @@ public class RobotContainer {
             .withTimeout(0.5));
   }
 
+  public Command setButtonStates() {
+    return new InstantCommand(
+            () -> {
+              if (overrideStateMachineButton.getAsBoolean()) {
+                m_stateMachine.enableManualOverride().schedule();
+              } else {
+                m_stateMachine.disableManualOverride().schedule();
+              }
+              if (autoHandoffButton.getAsBoolean()) {
+                m_stateMachine.enableAutoHandoff().schedule();
+              } else {
+                m_stateMachine.disableAutoHandoff().schedule();
+              }
+              m_stateMachine.setTeleOpDefaultStates().schedule();
+            })
+        .ignoringDisable(true);
+  }
+
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {

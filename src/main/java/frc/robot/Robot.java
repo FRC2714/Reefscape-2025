@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.setButtonStates().schedule();
     // In Robot.java, add in robotInit():
     // CommandScheduler.getInstance().registerSubsystem(m_robotContainer.getMech2dManager());
     DataLogManager.start();
