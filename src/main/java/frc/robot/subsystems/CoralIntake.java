@@ -31,12 +31,11 @@ import frc.robot.Configs;
 import frc.robot.Constants.CoralIntakeConstants;
 import frc.robot.Constants.CoralIntakeConstants.PivotSetpoints;
 import frc.robot.Constants.CoralIntakeConstants.RollerSetpoints;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
-import frc.robot.subsystems.Limelight;
-import frc.robot.Constants.LimelightConstants;
-import frc.robot.utils.TunableNumber;
 import frc.robot.utils.InterpolatingTreeMap;
+import frc.robot.utils.TunableNumber;
 
 public class CoralIntake extends SubsystemBase {
   // Initialize arm SPARK. We will use MAXMotion position control for the arm, so
@@ -125,7 +124,12 @@ public class CoralIntake extends SubsystemBase {
               SimulationRobotConstants.kCoralIntakeLength,
               CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
-  private Limelight m_backLimelight = new Limelight("limelight-back", LimelightConstants.kBackCameraHeight, LimelightConstants.kBackMountingPitch, LimelightConstants.kCoralStationTagHeight);
+  private Limelight m_backLimelight =
+      new Limelight(
+          "limelight-back",
+          LimelightConstants.kBackCameraHeight,
+          LimelightConstants.kBackMountingPitch,
+          LimelightConstants.kCoralStationTagHeight);
   private InterpolatingTreeMap pivotAngleMap;
   private boolean dynamicEnabled;
 
@@ -240,21 +244,28 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public Command intake() {
-    if(dynamicEnabled){
-      return intakeReadyDynamic().until(this::atSetpoint).andThen(
-          this.run(() -> {
-            setRollerPower(RollerSetpoints.kIntake);
-            setCoralIntakeState(CoralIntakeState.INTAKE);
-          })).withName("intake dynamic()");
-        } else {
-    return intakeReady().until(this::atSetpoint).andThen(
-        this.run(() -> {
-          setRollerPower(RollerSetpoints.kIntake);
-          setCoralIntakeState(CoralIntakeState.INTAKE);
-        })).withName("intake()");
-      }
+    if (dynamicEnabled) {
+      return intakeReadyDynamic()
+          .until(this::atSetpoint)
+          .andThen(
+              this.run(
+                  () -> {
+                    setRollerPower(RollerSetpoints.kIntake);
+                    setCoralIntakeState(CoralIntakeState.INTAKE);
+                  }))
+          .withName("intake dynamic()");
+    } else {
+      return intakeReady()
+          .until(this::atSetpoint)
+          .andThen(
+              this.run(
+                  () -> {
+                    setRollerPower(RollerSetpoints.kIntake);
+                    setCoralIntakeState(CoralIntakeState.INTAKE);
+                  }))
+          .withName("intake()");
+    }
   }
-
 
   public Command coralBetween() {
     return coralBetweenReady()
@@ -292,12 +303,14 @@ public class CoralIntake extends SubsystemBase {
         .withName("intake ready");
   }
 
-  public Command intakeReadyDynamic(){
-    return this.run(() -> {
-      setPivotPosition(CoralIntakeSetpoint.DYNAMIC);
-      setRollerPower(RollerSetpoints.kStop);
-      setCoralIntakeState(CoralIntakeState.DYNAMIC);
-    }).withName("intake ready dynamic");
+  public Command intakeReadyDynamic() {
+    return this.run(
+            () -> {
+              setPivotPosition(CoralIntakeSetpoint.DYNAMIC);
+              setRollerPower(RollerSetpoints.kStop);
+              setCoralIntakeState(CoralIntakeState.DYNAMIC);
+            })
+        .withName("intake ready dynamic");
   }
 
   public Command extakeReady() {
@@ -499,7 +512,6 @@ public class CoralIntake extends SubsystemBase {
     return pivotAngleMap.getInterpolated(m_backLimelight.getDistanceToGoalMeters());
   }
 
-
   /**
    * Command to run when the intake is not actively running. When in the "hold" state, the intake
    * will stay in the "hold" position and run the motor at its "hold" power to hold onto the ball.
@@ -542,9 +554,7 @@ public class CoralIntake extends SubsystemBase {
       pivotMotor.configure(
           tunableConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-    if (dynamicEnabled && this.getCurrentCommand() == intake())
-      getDynamicPivotAngle();
-
+    if (dynamicEnabled && this.getCurrentCommand() == intake()) getDynamicPivotAngle();
   }
 
   /** Get the current drawn by each simulation physics model */
