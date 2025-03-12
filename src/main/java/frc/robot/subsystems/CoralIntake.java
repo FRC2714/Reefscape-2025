@@ -395,10 +395,7 @@ public class CoralIntake extends SubsystemBase {
 
   public boolean shouldRumble() {
     if (Robot.isSimulation()) return loaded;
-    else if (isLoaded()) {
-      return true;
-    }
-    return false;
+    return isLoaded();
   }
 
   public void setLoadedTrue() {
