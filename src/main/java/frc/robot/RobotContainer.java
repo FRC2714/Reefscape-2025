@@ -43,15 +43,16 @@ import frc.robot.subsystems.drive.DriveSubsystem;
  */
 
 public class RobotContainer {
-  private final DriveSubsystem m_robotDrive;
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  ;
 
   private SendableChooser<Command> autoChooser;
 
   // The robot's subsystems
-  private final CoralIntake m_coralIntake;
-  private final Elevator m_elevator;
-  private final Dragon m_dragon;
-  private final Climber m_climber;
+  private final CoralIntake m_coralIntake = new CoralIntake();
+  private final Elevator m_elevator = new Elevator();
+  private final Dragon m_dragon = new Dragon();
+  private final Climber m_climber = new Climber();
 
   private final Limelight m_rightLimelight =
       new Limelight(
@@ -115,12 +116,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    m_robotDrive = new DriveSubsystem();
-    // The robot's subsystems
-    m_coralIntake = new CoralIntake();
-    m_elevator = new Elevator();
-    m_dragon = new Dragon();
-    m_climber = new Climber();
 
     m_stateMachine = new StateMachine(m_dragon, m_elevator, m_coralIntake, m_climber);
     // Configure the button bindings
