@@ -267,7 +267,7 @@ public class Elevator extends SubsystemBase {
 
     SmartDashboard.putNumber("Elevator/Pos/Position", elevatorEncoder.getPosition());
     SmartDashboard.putNumber("Elevator/Pos/Target Position", elevatorCurrentTarget);
-    SmartDashboard.putString("Elevator/Pos/Elevator Setpoint", getSetpoint().toString());
+    SmartDashboard.putString("Elevator/Pos/Elevator Setpoint", m_elevatorSetpoint.toString());
     SmartDashboard.putString("Elevator/Elevator State", m_elevatorState.toString());
     SmartDashboard.putBoolean("Elevator/Pos/at Setpoint?", atSetpoint());
 

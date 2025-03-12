@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1797500000000003,
-        "y": 6.8135
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.933557692307692,
-        "y": 5.915705128205128
+        "x": 2.241700819672131,
+        "y": 6.524436475409835
       },
       "isLocked": false,
       "linkedName": "NP station"
     },
     {
       "anchor": {
-        "x": 3.6802254098360656,
-        "y": 5.031967213114754
+        "x": 2.8770491803278686,
+        "y": 5.9130635245901635
       },
       "prevControl": {
-        "x": 3.164199768810424,
-        "y": 5.7131210592686
+        "x": 2.464228667507356,
+        "y": 6.501332755359394
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,16 +33,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -59.63832480397212
+    "velocity": 0.0,
+    "rotation": -57.500640649575736
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": -54.36019080191327
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
