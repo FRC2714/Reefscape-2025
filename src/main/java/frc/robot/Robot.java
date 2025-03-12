@@ -27,6 +27,8 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private boolean defaultStatesSet;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -48,6 +50,8 @@ public class Robot extends TimedRobot {
 
     URCL.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    defaultStatesSet = false;
   }
 
   /**
@@ -97,10 +101,14 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    m_robotContainer
-        .homingSequence()
-        .andThen(m_robotContainer.setAutonomousDefaultStates())
-        .schedule();
+    if (!defaultStatesSet) {
+
+      m_robotContainer
+          .homingSequence()
+          .andThen(m_robotContainer.setAutonomousDefaultStates())
+          .schedule();
+      defaultStatesSet = true;
+    }
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -127,7 +135,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.homingSequence().andThen(m_robotContainer.setTeleOpDefaultStates()).schedule();
+    if (!defaultStatesSet) {
+      m_robotContainer
+          .homingSequence()
+          .andThen(m_robotContainer.setTeleOpDefaultStates())
+          .schedule();
+      defaultStatesSet = true;
+    }
   }
 
   /** This function is called periodically during operator control. */
