@@ -578,13 +578,13 @@ public class StateMachineTests {
   @Test
   void teleOpDefaultStateTransitions() {
     m_dragon.coralOnDragonTrue();
-    m_stateMachine.setDefaultStates().schedule();
+    m_stateMachine.setTeleOpDefaultStates().schedule();
     runScheduler();
     assertState(
         State.DRAGON_STANDBY,
         "DRAGON_STANDBY should be reached from TeleOp default states if there is a coral on the dragon on teleopInit");
     m_dragon.coralOnDragonFalse();
-    m_stateMachine.setDefaultStates().schedule();
+    m_stateMachine.setTeleOpDefaultStates().schedule();
     runScheduler();
     assertState(
         State.IDLE,
