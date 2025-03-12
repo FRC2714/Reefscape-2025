@@ -394,7 +394,8 @@ public class CoralIntake extends SubsystemBase {
   }
 
   public boolean shouldRumble() {
-    if (frontBeamBreak.isPressed() && !backBeamBreak.isPressed()) {
+    if (Robot.isSimulation()) return loaded;
+    else if (isLoaded()) {
       return true;
     }
     return false;
