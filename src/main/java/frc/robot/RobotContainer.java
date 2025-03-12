@@ -246,26 +246,8 @@ public class RobotContainer {
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {
-          m_stateMachine.setDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
+          m_stateMachine.setTeleOpDefaultStates().schedule();
         });
-  }
-
-  public void setAutoHandoff(boolean enable) {
-    if (enable) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
   }
 
   public Command setAutonomousDefaultStates() {
@@ -273,32 +255,10 @@ public class RobotContainer {
         () -> {
           m_robotDrive.flipHeading();
           m_stateMachine.setAutonomousDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
         });
   }
 
   public Command homingSequence() {
-    return m_stateMachine.homingSequence();
-  }
-
-  public void isAutoHandoffEnabled() {
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-  }
-
-  public Command elevatorHomingSequence() {
     return m_stateMachine.homingSequence();
   }
 

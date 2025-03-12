@@ -96,9 +96,9 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.elevatorHomingSequence().schedule();
-    m_robotContainer.setAutoHandoff(true);
-    m_robotContainer.setAutonomousDefaultStates().schedule();
+    
+    m_robotContainer.homingSequence().andThen(
+    m_robotContainer.setAutonomousDefaultStates()).schedule();
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -118,7 +118,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.setAutoHandoff(false);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
