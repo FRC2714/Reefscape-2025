@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -61,7 +62,7 @@ public class StateMachine extends SubsystemBase {
     this.m_climber = m_climber;
 
     manualOverride = false;
-    autoHandoff = true;
+    autoHandoff = false;
 
     populateElevatorMap();
     populateDragonMap();
@@ -82,11 +83,11 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command enableManualOverride() {
-    return new InstantCommand(() -> manualOverride = true);
+    return new InstantCommand(() -> manualOverride = true).ignoringDisable(true);
   }
 
   public Command disableManualOverride() {
-    return new InstantCommand(() -> manualOverride = false);
+    return new InstantCommand(() -> manualOverride = false).ignoringDisable(true);
   }
 
   public void setAutoHandoff(boolean enable) {
@@ -94,14 +95,14 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command enableAutoHandoff() {
-    return new InstantCommand(() -> autoHandoff = true);
+    return new InstantCommand(() -> autoHandoff = true).ignoringDisable(true);
   }
 
   public Command disableAutoHandoff() {
-    return new InstantCommand(() -> autoHandoff = false);
+    return new InstantCommand(() -> autoHandoff = false).ignoringDisable(true);
   }
 
-  public Command setDefaultStates() {
+  public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {
           if (m_state == State.CLIMB) climbSequence().schedule();
@@ -158,7 +159,10 @@ public class StateMachine extends SubsystemBase {
         .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
-            new ConditionalCommand(handoffSequence(), poopStandbySequence(), () -> autoHandoff))
+            new ConditionalCommand(
+                handoffSequence(),
+                poopStandbySequence(),
+                () -> autoHandoff || DriverStation.isAutonomous()))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -166,7 +170,10 @@ public class StateMachine extends SubsystemBase {
     return intakeSequence()
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
-            new ConditionalCommand(handoffSequence(), poopStandbySequence(), () -> autoHandoff))
+            new ConditionalCommand(
+                handoffSequence(),
+                poopStandbySequence(),
+                () -> autoHandoff || DriverStation.isAutonomous()))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -549,7 +556,7 @@ public class StateMachine extends SubsystemBase {
     return m_climber
         .retract()
         .until(m_climber::limitSwitchPressed)
-        .andThen(setDefaultStates())
+        .andThen(setTeleOpDefaultStates())
         .withName("retractClimberSequence()");
   }
 

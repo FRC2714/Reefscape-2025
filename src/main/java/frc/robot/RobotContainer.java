@@ -201,7 +201,6 @@ public class RobotContainer {
     }
 
     // Driver Controller Actions
-
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
@@ -271,20 +270,28 @@ public class RobotContainer {
             .withTimeout(0.5));
   }
 
+  public Command setButtonStates() {
+    return new InstantCommand(
+            () -> {
+              if (overrideStateMachineButton.getAsBoolean()) {
+                m_stateMachine.enableManualOverride().schedule();
+              } else {
+                m_stateMachine.disableManualOverride().schedule();
+              }
+              if (autoHandoffButton.getAsBoolean()) {
+                m_stateMachine.enableAutoHandoff().schedule();
+              } else {
+                m_stateMachine.disableAutoHandoff().schedule();
+              }
+              m_stateMachine.setTeleOpDefaultStates().schedule();
+            })
+        .ignoringDisable(true);
+  }
+
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {
-          m_stateMachine.setDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
+          m_stateMachine.setTeleOpDefaultStates().schedule();
         });
   }
 
@@ -293,37 +300,11 @@ public class RobotContainer {
         () -> {
           m_robotDrive.flipHeading();
           m_stateMachine.setAutonomousDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
         });
   }
 
   public Command homingSequence() {
     return m_stateMachine.homingSequence();
-  }
-
-  public void isAutoHandoffEnabled() {
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-  }
-
-  public void isManualOverrideEnabled() {
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
   }
 
   /**
