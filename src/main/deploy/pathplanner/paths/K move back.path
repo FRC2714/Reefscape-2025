@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3247500000000003,
-        "y": 5.350999999999999
+        "x": 3.452459016393442,
+        "y": 5.229764344262294
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.001081967213116,
-        "y": 5.770569672131147
+        "x": 3.1287909836065575,
+        "y": 5.649334016393442
       },
       "isLocked": false,
       "linkedName": "K-Coral"
@@ -48,7 +48,7 @@
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -57.500640649575736
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": false
 }
