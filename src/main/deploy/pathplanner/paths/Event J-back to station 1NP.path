@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 5.0992500000000005,
+        "y": 5.4095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0,
-        "y": 7.0
+        "x": 4.655160256410256,
+        "y": 6.070230769230769
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "J-Coral"
     },
     {
       "anchor": {
-        "x": 4.890983606557377,
-        "y": 7.0
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": {
-        "x": 3.890983606557377,
-        "y": 7.0
+        "x": 2.5015374106767565,
+        "y": 5.433796500630516
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NP station"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "Idle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
+    },
+    {
       "name": "Intake Coral",
-      "waypointRelativePos": 0.37841439040639113,
+      "waypointRelativePos": 0.5196535642904566,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -53,14 +64,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.5,
+    "rotation": -54.36019080191327
   },
   "reversed": false,
-  "folder": "TEST",
+  "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.88246504298795
   },
   "useDefaultConstraints": true
 }

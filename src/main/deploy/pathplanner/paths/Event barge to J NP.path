@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4385245901639343,
-        "y": 6.5484118852459
+        "x": 7.176,
+        "y": 6.16025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1835204918032796,
-        "y": 6.34981557377049
+        "x": 7.421632658167292,
+        "y": 6.206775232311838
       },
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": "barge nonprocessor"
     },
     {
       "anchor": {
-        "x": 3.452459016393442,
-        "y": 5.229764344262294
+        "x": 5.0992500000000005,
+        "y": 5.4095
       },
       "prevControl": {
-        "x": 2.5457090163934417,
-        "y": 5.678264344262294
+        "x": 5.293799986413495,
+        "y": 5.981451652931806
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "K-Coral"
+      "linkedName": "J-Coral"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": -59.99999999999999
+    "velocity": 0.1,
+    "rotation": -119.88200000000002
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.36019080191327
+    "rotation": 179.61206816273108
   },
   "useDefaultConstraints": false
 }
