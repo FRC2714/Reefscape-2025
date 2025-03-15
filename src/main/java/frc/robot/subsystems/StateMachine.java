@@ -305,14 +305,36 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command dragonScoreSequence() {
-    return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
+    return m_dragon
+        .score()
+        .until(() -> !m_dragon.isCoralOnDragon())
+        .andThen(stopScore())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
+  public Command dragonScoreSequenceAuto() {
+    return m_dragon
+        .score()
+        .until(() -> !m_dragon.isCoralOnDragon())
+        .andThen(stopScoreAuto())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
   public Command dragonScoreL4Sequence() {
     return m_dragon
         .scoreReadyLevel(DragonSetpoint.L4)
         .until(m_dragon::atSetpoint)
-        .andThen(m_dragon.score())
+        .andThen(m_dragon.score().until(() -> !m_dragon.isCoralOnDragon()))
+        .andThen(stopScore())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
+  public Command dragonScoreL4SequenceAuto() {
+    return m_dragon
+        .scoreReadyLevel(DragonSetpoint.L4)
+        .until(m_dragon::atSetpoint)
+        .andThen(m_dragon.score().until(() -> !m_dragon.isCoralOnDragon()))
+        .andThen(stopScoreAuto())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
@@ -502,9 +524,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command scoreCoralAuto() {
     return new ConditionalCommand(
-            dragonScoreL4Sequence(), dragonScoreSequence(), () -> m_level == ScoreLevel.L4)
-        .withTimeout(1)
-        .andThen(stopScoreAuto())
+            dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> m_level == ScoreLevel.L4)
         .withName("scoreCoralAuto()");
   }
 
