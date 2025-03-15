@@ -318,7 +318,7 @@ public final class Constants {
       public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
-      public static final double kAlgaeHigh = 0;
+      public static final double kAlgaeHigh = 4.79;
     }
   }
 
@@ -348,8 +348,8 @@ public final class Constants {
       public static final double kLevel3 = 61.08;
       public static final double kLevel4 = 95;
       public static final double kClimb = 180;
-      public static final double kAlgaeHigh = 100; // TODO: fix this later
-      public static final double kAlgaeLow = 120; // TODO: fix this later
+      public static final double kAlgaeHigh = 96; // TODO: fix this later
+      public static final double kAlgaeLow = 96; // TODO: fix this later
       public static final double kAlgaeReady = 210;
       public static final double kRetract = 41;
     }

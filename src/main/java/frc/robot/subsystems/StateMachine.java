@@ -155,7 +155,7 @@ public class StateMachine extends SubsystemBase {
                 .stow()
                 .until(m_dragon::atSetpoint)
                 .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
-        .beforeStarting(() -> m_state = State.IDLE);
+        .andThen(() -> m_state = State.IDLE);
   }
 
   private Command oneCoralBetweenIntakeSequence() {
@@ -353,9 +353,8 @@ public class StateMachine extends SubsystemBase {
     return m_dragon
         .stow()
         .until(m_dragon::isClearFromReef)
-        .andThen(m_elevator.moveToLevel(ElevatorSetpoint.L4).until(m_elevator::atSetpoint))
-        .andThen(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint))
-        .andThen(m_dragon.removeAlgae(dragonMap.get(level)).until(m_dragon::atSetpoint))
+        .andThen(m_elevator.moveToLevel(elevatorMap.get(level)).until(m_elevator::atSetpoint)
+        .alongWith(m_dragon.removeAlgae(dragonMap.get(level)).until(m_dragon::atSetpoint)))
         .beforeStarting(() -> m_state = State.ALGAE_REMOVE)
         .withName("algaeRemovalSequence()");
   }
@@ -407,7 +406,7 @@ public class StateMachine extends SubsystemBase {
   public Command removeAlgae(ScoreLevel level) {
     return new InstantCommand(
             () -> {
-              if (m_state == State.IDLE || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY) {
+              if (m_state == State.IDLE || m_state == State.DRAGON_READY || m_state == State.DRAGON_STANDBY || m_state == State.ALGAE_REMOVE) {
                 algaeRemovalSequence(level).schedule();
               }
             })
@@ -461,7 +460,8 @@ public class StateMachine extends SubsystemBase {
               if (level == ScoreLevel.L1) {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
-                    || m_state == State.DRAGON_STANDBY) {
+                    || m_state == State.DRAGON_STANDBY
+                    || m_state == State.ALGAE_REMOVE) {
                   scoreReadySequence(level).schedule();
                 } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
                   poopReadySequence().schedule();
@@ -469,7 +469,8 @@ public class StateMachine extends SubsystemBase {
               } else if (level == ScoreLevel.L4) {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
-                    || m_state == State.DRAGON_STANDBY) {
+                    || m_state == State.DRAGON_STANDBY
+                    || m_state == State.ALGAE_REMOVE) {
                   scoreReadyL4Sequence(level).schedule();
                 } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
                   handoffSequence().andThen(scoreReadyL4Sequence(level)).schedule();
@@ -477,7 +478,8 @@ public class StateMachine extends SubsystemBase {
               } else {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
-                    || m_state == State.DRAGON_STANDBY) {
+                    || m_state == State.DRAGON_STANDBY
+                    || m_state == State.ALGAE_REMOVE) {
                   scoreReadySequence(level).schedule();
                 } else if ((m_state == State.POOP_STANDBY || m_state == State.POOP_READY)) {
                   handoffSequence().andThen(scoreReadySequence(level)).schedule();
