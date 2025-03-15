@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator.ElevatorSetpoint;
 import java.util.HashMap;
+import java.util.List;
 
 public class StateMachine extends SubsystemBase {
   public enum State {
@@ -41,6 +42,10 @@ public class StateMachine extends SubsystemBase {
   private State m_state = State.IDLE;
   private boolean elevatorHasReset = false;
 
+  private List<Integer> lowStalks = List.of(1, 2, 5, 6, 9, 10);
+
+  private int m_stalk;
+
   public enum ScoreLevel {
     L1,
     L2,
@@ -62,6 +67,8 @@ public class StateMachine extends SubsystemBase {
     this.m_dragon = m_dragon;
     this.m_elevator = m_elevator;
     this.m_climber = m_climber;
+
+    this.m_stalk = 1;
 
     manualOverride = false;
     autoHandoff = false;
@@ -86,6 +93,10 @@ public class StateMachine extends SubsystemBase {
     dragonMap.put(ScoreLevel.L4, DragonSetpoint.L4);
     dragonMap.put(ScoreLevel.ALGAE_HIGH, DragonSetpoint.ALGAE_HIGH);
     dragonMap.put(ScoreLevel.ALGAE_LOW, DragonSetpoint.ALGAE_LOW);
+  }
+
+  public void setReefStalkNumber(int stalk) {
+    m_stalk = stalk;
   }
 
   public Command enableManualOverride() {
@@ -419,11 +430,19 @@ public class StateMachine extends SubsystemBase {
   public Command removeAlgae(ScoreLevel level) {
     return new InstantCommand(
             () -> {
-              if (m_state == State.IDLE
-                  || m_state == State.DRAGON_READY
-                  || m_state == State.DRAGON_STANDBY
-                  || m_state == State.ALGAE_REMOVE) {
+              if (manualOverride) {
                 algaeRemovalSequence(level).schedule();
+              } else {
+                if (m_state == State.IDLE
+                    || m_state == State.DRAGON_READY
+                    || m_state == State.DRAGON_STANDBY
+                    || m_state == State.ALGAE_REMOVE) {
+                  algaeRemovalSequence(
+                          lowStalks.contains(m_stalk)
+                              ? ScoreLevel.ALGAE_LOW
+                              : ScoreLevel.ALGAE_HIGH)
+                      .schedule();
+                }
               }
             })
         .withName("removeAlgae()");
