@@ -235,8 +235,7 @@ public class Elevator extends SubsystemBase {
               setLevel(level);
               if (level == ElevatorSetpoint.ALGAE_HIGH || level == ElevatorSetpoint.ALGAE_LOW)
                 setElevatorState(ElevatorState.ALGAE_REMOVE);
-              else
-                setElevatorState(ElevatorState.SCORE_READY);
+              else setElevatorState(ElevatorState.SCORE_READY);
             })
         .withName("moveToLevel()");
   }

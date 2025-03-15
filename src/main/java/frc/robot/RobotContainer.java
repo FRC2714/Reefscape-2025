@@ -106,7 +106,8 @@ public class RobotContainer {
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController, 12);
   private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
-  // private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController, 5);
+  // private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController,
+  // 5);
   private final JoystickButton removeAlgaeHighLevelButton =
       new JoystickButton(m_rightController, 6);
   private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
