@@ -40,6 +40,8 @@ public class Elevator extends SubsystemBase {
     L2,
     L3,
     L4,
+    ALGAE_HIGH,
+    ALGAE_LOW
   }
 
   public enum ElevatorState {
@@ -47,6 +49,7 @@ public class Elevator extends SubsystemBase {
     HANDOFF,
     POOP,
     SCORE_READY,
+    ALGAE_REMOVE
   }
 
   private ElevatorSetpoint m_elevatorSetpoint;
@@ -189,6 +192,12 @@ public class Elevator extends SubsystemBase {
       case L4:
         elevatorCurrentTarget = ElevatorLevels.kLevel4;
         break;
+      case ALGAE_HIGH:
+        elevatorCurrentTarget = ElevatorLevels.kAlgaeHigh;
+        break;
+      case ALGAE_LOW:
+        elevatorCurrentTarget = ElevatorLevels.kAlgaeLow;
+        break;
     }
     moveToSetpoint();
   }
@@ -224,7 +233,10 @@ public class Elevator extends SubsystemBase {
     return this.run(
             () -> {
               setLevel(level);
-              setElevatorState(ElevatorState.SCORE_READY);
+              if (level == ElevatorSetpoint.ALGAE_HIGH || level == ElevatorSetpoint.ALGAE_LOW)
+                setElevatorState(ElevatorState.ALGAE_REMOVE);
+              else
+                setElevatorState(ElevatorState.SCORE_READY);
             })
         .withName("moveToLevel()");
   }

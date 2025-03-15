@@ -26,7 +26,6 @@ import frc.robot.commands.AlignToCoralStation;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
-import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
@@ -110,6 +109,7 @@ public class RobotContainer {
   private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController, 5);
   private final JoystickButton removeAlgaeHighLevelButton =
       new JoystickButton(m_rightController, 6);
+  private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
 
   private SendableChooser<Command> autoChooser;
 
@@ -204,11 +204,6 @@ public class RobotContainer {
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
-    m_driverController
-        .leftBumper()
-        .onTrue(m_stateMachine.removeAlgaeReady())
-        .onFalse(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
-
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
     // Stages
@@ -230,7 +225,8 @@ public class RobotContainer {
         .onFalse(m_stateMachine.retractClimber());
     sheeshButton.onTrue(m_stateMachine.climb());
     intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
-    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
+    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(ScoreLevel.ALGAE_HIGH));
+    removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(ScoreLevel.ALGAE_LOW));
     setStartingConfigButton.onTrue(m_stateMachine.setAutonomousSetup());
 
     if (Robot.isSimulation()) {
