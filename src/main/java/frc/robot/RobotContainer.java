@@ -206,8 +206,7 @@ public class RobotContainer {
 
     m_driverController
         .leftBumper()
-        .onTrue(m_stateMachine.removeAlgaeReady())
-        .onFalse(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
+        .onTrue(m_stateMachine.grabAlgae());
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 

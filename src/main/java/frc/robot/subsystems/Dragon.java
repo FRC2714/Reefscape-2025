@@ -248,8 +248,17 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               setPivot(DragonSetpoint.ALGAE_READY);
+              setRollerPower(1);
             })
         .withName("readyAlgaeRemove()");
+  }
+
+  public Command holdAlgae() {
+    return this.run(
+            () -> {
+              setRollerPower(RollerSetpoints.kHold);
+            })
+        .withName("holdAlgae");
   }
 
   public Command stow() {
