@@ -304,6 +304,10 @@ public class StateMachine extends SubsystemBase {
     return m_dragon.score().beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
+  public Command dragonScoreBargeSequence() {
+    return m_dragon.score().beforeStarting(() -> m_state = State.BARGE);
+  }
+
   public Command dragonScoreL4Sequence() {
     return m_dragon
         .scoreReadyLevel(DragonSetpoint.L4)
@@ -410,7 +414,7 @@ public class StateMachine extends SubsystemBase {
     return m_dragon
         .barge()
         .alongWith(m_elevator.moveToLevel(ElevatorSetpoint.L4).until(m_elevator::atSetpoint))
-        .beforeStarting(() -> m_state = State.DRAGON_READY);
+        .beforeStarting(() -> m_state = State.BARGE);
   }
 
   public Command removeAlgae(DragonSetpoint level) {
@@ -521,6 +525,14 @@ public class StateMachine extends SubsystemBase {
               }
             })
         .withName("scoreCoral()");
+  }
+
+  public Command scoreBarge() {
+    return new InstantCommand(
+      () -> {
+            dragonScoreBargeSequence().schedule();
+      })
+  .withName("scoreBarge()");
   }
 
   public Command scoreCoralAuto() {
