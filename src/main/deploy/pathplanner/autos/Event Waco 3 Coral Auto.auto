@@ -74,6 +74,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "Wait Until Loaded"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "Align to Coral Station"
                 }
               }
@@ -146,6 +152,12 @@
                 "data": {
                   "name": "Align to Coral Station"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait Until Loaded"
+                }
               }
             ]
           }
@@ -157,7 +169,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "station to mid 2NP"
+                  "pathName": "Event Station to L 1NP"
                 }
               },
               {
@@ -173,6 +185,31 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Auto align"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         }
       ]

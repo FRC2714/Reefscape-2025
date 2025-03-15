@@ -48,7 +48,7 @@
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.88246504298795
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

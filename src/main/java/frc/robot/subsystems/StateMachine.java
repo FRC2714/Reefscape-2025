@@ -295,11 +295,11 @@ public class StateMachine extends SubsystemBase {
     return new ConditionalCommand(
         m_dragon
             .retract()
-            .until(m_dragon::atSetpoint)
+            .until(m_dragon::isClearFromReef)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         m_dragon
             .stopScore()
-            .until(m_dragon::atSetpoint)
+            .until(m_dragon::isClearFromReef)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         () -> m_level == ScoreLevel.L4);
   }
