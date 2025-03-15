@@ -406,8 +406,11 @@ public class StateMachine extends SubsystemBase {
         .withName("removeAlgaeReady()");
   }
 
-  public Command readyBarge(){
-    
+  public Command bargeReady() {
+    return m_dragon
+        .barge()
+        .alongWith(m_elevator.moveToLevel(ElevatorSetpoint.L4).until(m_elevator::atSetpoint))
+        .beforeStarting(() -> m_state = State.DRAGON_READY);
   }
 
   public Command removeAlgae(DragonSetpoint level) {

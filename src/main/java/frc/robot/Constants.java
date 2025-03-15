@@ -352,6 +352,7 @@ public final class Constants {
       public static final double kAlgaeLow = 37.13; // TODO: fix this later
       public static final double kAlgaeReady = 210;
       public static final double kRetract = 41;
+      public static final double kBarge = 200;
     }
 
     public static final class RollerSetpoints {

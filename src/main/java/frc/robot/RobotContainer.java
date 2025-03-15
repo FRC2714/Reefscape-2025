@@ -204,9 +204,7 @@ public class RobotContainer {
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
-    m_driverController
-        .leftBumper()
-        .onTrue(m_stateMachine.grabAlgae());
+    m_driverController.leftBumper().onTrue(m_stateMachine.grabAlgae());
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 

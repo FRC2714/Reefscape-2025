@@ -49,7 +49,8 @@ public class Dragon extends SubsystemBase {
     ALGAE_HIGH,
     ALGAE_LOW,
     ALGAE_READY,
-    RETRACT
+    RETRACT,
+    BARGE
   }
 
   public enum DragonState {
@@ -62,7 +63,8 @@ public class Dragon extends SubsystemBase {
     POOP_READY,
     CLIMB,
     SCORE_STANDBY,
-    ALGAE_REMOVE
+    ALGAE_REMOVE,
+    BARGE
   }
 
   // Tunables
@@ -222,6 +224,8 @@ public class Dragon extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kAlgaeReady;
       case RETRACT:
         pivotCurrentTarget = PivotSetpoints.kRetract;
+      case BARGE:
+        pivotCurrentTarget = PivotSetpoints.kBarge;
         break;
     }
     moveToSetpoint();
@@ -351,6 +355,15 @@ public class Dragon extends SubsystemBase {
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("retract()");
+  }
+
+  public Command barge() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.BARGE);
+              setDragonState(DragonState.BARGE);
+            })
+        .withName("barge");
   }
 
   public Command stopRoller() {
