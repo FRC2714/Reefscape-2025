@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -119,7 +118,8 @@ public class RobotContainer {
     // Configure the button bindings
     NamedCommands.registerCommand(
         "Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
-    NamedCommands.registerCommand("Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
+    NamedCommands.registerCommand(
+        "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
     NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoralAuto());
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
