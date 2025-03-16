@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.35076923076923,
-        "y": 1.6203205128205127
+        "x": 7.372438524590163,
+        "y": 1.939139344262295
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.339358974358975,
-        "y": 1.6306410256410264
+        "x": 6.361028268179908,
+        "y": 1.9494598570828088
       },
       "isLocked": false,
       "linkedName": "Processor side start"
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.9314171781375
+    "rotation": 117.93480784864826
   },
   "reversed": false,
   "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

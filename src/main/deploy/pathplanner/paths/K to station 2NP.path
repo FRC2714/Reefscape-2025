@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.965641025641025,
-        "y": 5.180897435897436
+        "x": 3.452459016393442,
+        "y": 5.229764344262294
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2018461538461533,
-        "y": 6.089282051282051
+        "x": 1.970459016393442,
+        "y": 5.912264344262295
       },
       "isLocked": false,
       "linkedName": "K-Coral"
     },
     {
       "anchor": {
-        "x": 1.7467307692307688,
-        "y": 7.451410256410257
+        "x": 1.4385245901639343,
+        "y": 6.5484118852459
       },
       "prevControl": {
-        "x": 2.44852564102564,
-        "y": 6.388397435897437
+        "x": 2.7352745901639333,
+        "y": 5.885411885245899
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 126.15818543980836
+    "velocity": 0.5,
+    "rotation": -54.36019080191327
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.14138555207535
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

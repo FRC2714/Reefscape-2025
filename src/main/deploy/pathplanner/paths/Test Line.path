@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.742077464788732,
-        "y": 4.180897887323942
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.337323943661971,
-        "y": 1.4172535211267587
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
-      "linkedName": "H-Coral"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0357051282051275,
-        "y": 0.34057692307692267
+        "x": 4.890983606557377,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.0357051282051275,
-        "y": 0.3405769230769228
+        "x": 3.890983606557377,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Coral",
+      "waypointRelativePos": 0.37841439040639113,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Coral"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -42,10 +54,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -130.91438322002512
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "CENTER",
+  "folder": "TEST",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
