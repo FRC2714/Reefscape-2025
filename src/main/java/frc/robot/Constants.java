@@ -258,27 +258,58 @@ public final class Constants {
     public static final double kRightCameraHeight = 19.942862; // 0.5065486948 meters
     public static final double kLeftCameraHeight = 19.942862; // 0.5065486948 meters
 
-    // Parallel to elevator
+    // Left-right
     public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
     public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
     public static final double kBackCameraXOffset = 0; // -0.3086882066 meters
 
-    // Perpendicular to elevator
+    // Front-back
     public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kBackCameraYOffset = -3.086657; // -0.3086882066 meters
 
-    public static final double kBackCameraHeight = 38.868062; // TODO
+    public static final double kBackCameraHeight = 38.868062;
 
     public static final double kRightMountingPitch = -45;
     public static final double kLeftMountingPitch = -45;
 
+    public static final double kRightMountingRoll = 0;
+    public static final double kLeftMountingRoll = 0;
+    public static final double kBackMountingRoll = 0;
+
     public static final double kRightMountingYaw = -24.499987;
     public static final double kLeftMountingYaw = 180 - 24.499987;
 
-    public static final double kBackMountingPitch = 20; // TODO
+    public static final double kBackMountingPitch = 20;
 
-    public static final double kBackMountingYaw = 0; // TODO
+    public static final double kBackMountingYaw = 0;
+
+    public static final double[] kLeftLimelightPose = {
+      Units.inchesToMeters(kLeftCameraYOffset),
+      Units.inchesToMeters(kLeftCameraXOffset),
+      Units.inchesToMeters(kLeftCameraHeight),
+      kLeftMountingRoll,
+      kLeftMountingPitch,
+      kLeftMountingYaw
+    };
+
+    public static final double[] kRightLimelightPose = {
+      Units.inchesToMeters(kRightCameraYOffset),
+      Units.inchesToMeters(kRightCameraXOffset),
+      Units.inchesToMeters(kRightCameraHeight),
+      kRightMountingRoll,
+      kRightMountingPitch,
+      kRightMountingYaw
+    };
+
+    public static final double[] kBackLimelightPose = {
+      Units.inchesToMeters(kBackCameraYOffset),
+      Units.inchesToMeters(kBackCameraXOffset),
+      Units.inchesToMeters(kBackCameraHeight),
+      kBackMountingRoll,
+      kBackMountingPitch,
+      kBackMountingYaw
+    };
 
     public static final double kReefTagHeight = 12;
     public static final double kProcessorTagHeight = 0; // tune later
