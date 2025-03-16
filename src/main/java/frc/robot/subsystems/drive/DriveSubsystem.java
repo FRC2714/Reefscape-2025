@@ -263,10 +263,10 @@ public class DriveSubsystem extends SubsystemBase {
     swerveDrivePoseEstimator.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
-          m_frontLeft.getPositionPoseBlue(),
-          m_frontRight.getPositionPoseBlue(),
-          m_rearLeft.getPositionPoseBlue(),
-          m_rearRight.getPositionPoseBlue()
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
         });
 
     addVisionMeasurements(LimelightConstants.kLeftLimelightName);
