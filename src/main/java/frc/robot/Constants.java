@@ -371,7 +371,7 @@ public final class Constants {
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStartingConfig = 252;
+      public static final double kStartingConfig = 235;
       public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
