@@ -273,8 +273,8 @@ public final class Constants {
     public static final double kRightMountingPitch = -45;
     public static final double kLeftMountingPitch = -45;
 
-    public static final double kRightMountingRoll = 0;
-    public static final double kLeftMountingRoll = 0;
+    public static final double kRightMountingRoll = 13.760;
+    public static final double kLeftMountingRoll = -13.760;
     public static final double kBackMountingRoll = 0;
 
     public static final double kRightMountingYaw = -24.499987;
