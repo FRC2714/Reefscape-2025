@@ -198,6 +198,7 @@ public class RobotContainer {
         .onTrue(m_stateMachine.intakeCoral());
 
     m_driverController.a().onTrue(m_stateMachine.scoreCoral());
+    m_driverController.b().onTrue(m_stateMachine.stopScore());
 
     m_driverController
         .rightBumper()

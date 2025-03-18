@@ -177,6 +177,13 @@ public class Dragon extends SubsystemBase {
     return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefAngle;
   }
 
+  public boolean isClearToScoreL4() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() > DragonConstants.kClearToScoreL4Angle;
+  }
+
   private void setDragonState(DragonState state) {
     m_dragonState = state;
   }
@@ -331,7 +338,6 @@ public class Dragon extends SubsystemBase {
               setRollerPower(RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE);
             })
-        .onlyIf(this::atSetpoint)
         .withName("score()"); // ADD BACK AFTER TESTING
   }
 
