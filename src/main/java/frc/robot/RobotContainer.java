@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
@@ -50,7 +52,7 @@ public class RobotContainer {
   private final Dragon m_dragon = new Dragon();
   private final Climber m_climber = new Climber();
 
-  private Command lastAutonCommand = null;
+  private Supplier<Command> lastAutonCommand = null;
 
   private final Limelight m_rightLimelight =
       new Limelight(
@@ -83,8 +85,8 @@ public class RobotContainer {
   // return m_mech2dManager;
   // }
 
-  private Command prevAutonCmdWrapper(Command cmd) {
-    return cmd.beforeStarting(() -> lastAutonCommand = cmd);
+  private Command prevAutonCmdWrapper(Supplier<Command> cmdSupplier) {
+    return cmdSupplier.get().beforeStarting(() -> lastAutonCommand = cmdSupplier);
   };
 
   Joystick m_leftController = new Joystick(1); // operator controller 1
@@ -123,33 +125,32 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     NamedCommands.registerCommand(
-        "Dragon standby", prevAutonCmdWrapper(m_stateMachine.dragonStandbySequence().withTimeout(0.3)));
+        "Dragon standby", prevAutonCmdWrapper(() -> m_stateMachine.dragonStandbySequence().withTimeout(0.3)));
     NamedCommands.registerCommand(
-        "Wait Until Loaded", prevAutonCmdWrapper(new WaitUntilCommand(m_coralIntake::isLoaded)));
+        "Wait Until Loaded", prevAutonCmdWrapper(() -> new WaitUntilCommand(m_coralIntake::isLoaded)));
     NamedCommands.registerCommand(
-        "Score Coral", prevAutonCmdWrapper(m_stateMachine.scoreCoralAuto()));
-    NamedCommands.registerCommand("L4", prevAutonCmdWrapper(m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4)));
-    NamedCommands.registerCommand("L3", prevAutonCmdWrapper(m_stateMachine.scoreReadySequence(ScoreLevel.L3)));
-    NamedCommands.registerCommand("L2", prevAutonCmdWrapper(m_stateMachine.scoreReadySequence(ScoreLevel.L2)));
-    NamedCommands.registerCommand("L1", prevAutonCmdWrapper(m_stateMachine.scoreReadySequence(ScoreLevel.L1)));
-    NamedCommands.registerCommand("Intake Coral", prevAutonCmdWrapper(m_stateMachine.intakeSequenceAuto()));
-    NamedCommands.registerCommand("Handoff", prevAutonCmdWrapper(m_stateMachine.handoffSequence()));
-    NamedCommands.registerCommand("Extake Coral", prevAutonCmdWrapper(m_stateMachine.extakeCoral().withTimeout(2)));
-    NamedCommands.registerCommand("Enable Auto Handoff", prevAutonCmdWrapper(m_stateMachine.enableAutoHandoff()));
-    NamedCommands.registerCommand("Disable Auto Handoff", prevAutonCmdWrapper(m_stateMachine.disableAutoHandoff()));
-    NamedCommands.registerCommand("Idle", prevAutonCmdWrapper(m_stateMachine.idleSequence()));
+        "Score Coral", prevAutonCmdWrapper(() -> m_stateMachine.scoreCoralAuto()));
+    NamedCommands.registerCommand("L4", prevAutonCmdWrapper(() -> m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4)));
+    NamedCommands.registerCommand("L3", prevAutonCmdWrapper(() -> m_stateMachine.scoreReadySequence(ScoreLevel.L3)));
+    NamedCommands.registerCommand("L2", prevAutonCmdWrapper(() -> m_stateMachine.scoreReadySequence(ScoreLevel.L2)));
+    NamedCommands.registerCommand("L1", prevAutonCmdWrapper(() -> m_stateMachine.scoreReadySequence(ScoreLevel.L1)));
+    NamedCommands.registerCommand("Intake Coral", prevAutonCmdWrapper(() -> m_stateMachine.handoffSequence()));
+    NamedCommands.registerCommand("Extake Coral", prevAutonCmdWrapper(() -> m_stateMachine.extakeCoral().withTimeout(2)));
+    NamedCommands.registerCommand("Enable Auto Handoff", prevAutonCmdWrapper(() -> m_stateMachine.enableAutoHandoff()));
+    NamedCommands.registerCommand("Disable Auto Handoff", prevAutonCmdWrapper(() -> m_stateMachine.disableAutoHandoff()));
+    NamedCommands.registerCommand("Idle", prevAutonCmdWrapper(() -> m_stateMachine.idleSequence()));
     NamedCommands.registerCommand(
-        "Flip Heading", prevAutonCmdWrapper(new InstantCommand(() -> m_robotDrive.flipHeading())));
+        "Flip Heading", prevAutonCmdWrapper(() -> new InstantCommand(() -> m_robotDrive.flipHeading())));
     NamedCommands.registerCommand(
-        "Set Align Right", prevAutonCmdWrapper(new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT))));
+        "Set Align Right", prevAutonCmdWrapper(() -> new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT))));
     NamedCommands.registerCommand(
-        "Set Align Left", prevAutonCmdWrapper(new InstantCommand(() -> Limelight.setSIDE(Align.LEFT))));
+        "Set Align Left", prevAutonCmdWrapper(() -> new InstantCommand(() -> Limelight.setSIDE(Align.LEFT))));
     NamedCommands.registerCommand(
         "Align to Coral Station",
-        prevAutonCmdWrapper(new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1)));
+        prevAutonCmdWrapper(() -> new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1)));
     NamedCommands.registerCommand(
         "Auto align",
-        prevAutonCmdWrapper(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5)));
+        prevAutonCmdWrapper(() -> new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5)));
     configureButtonBindings();
 
     // Configure default commands
@@ -290,7 +291,7 @@ public class RobotContainer {
   }
 
   public Command getPrevAutonCommand() {
-    return lastAutonCommand;
+    return lastAutonCommand != null ? lastAutonCommand.get() : null;
   }
 
   public Command setAutonomousDefaultStates() {
