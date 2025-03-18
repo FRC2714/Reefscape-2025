@@ -41,6 +41,7 @@ public class StateMachine extends SubsystemBase {
   private boolean autoHandoff;
   private State m_state = State.IDLE;
   private boolean elevatorHasReset = false;
+  private Command lastCommand;
 
   private List<Integer> lowStalks = List.of(1, 2, 5, 6, 9, 10);
 
@@ -633,8 +634,13 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !elevatorHasReset);
   }
 
+  // Call latest auto command in teleop
+  //Array:  {zCommand, } <--- xCommand <--- yCommand <-- zCommand
+  // 0th index: prev command
+
   @Override
   public void periodic() {
+    lastCommand = getCurrentCommand();
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);

@@ -135,8 +135,13 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+        m_autonomousCommand.cancel();;
     }
+
+    if (m_robotContainer.getPrevAutonCommand() != null) {
+        m_robotContainer.getPrevAutonCommand().schedule();
+    }
+    
     if (!defaultStatesSet) {
       m_robotContainer
           .homingSequence()
