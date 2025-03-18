@@ -454,7 +454,10 @@ public class StateMachine extends SubsystemBase {
   public Command intakeCoral() {
     return new InstantCommand(
             () -> {
-              if (manualOverride || m_state == State.DRAGON_STANDBY) {
+              if (manualOverride
+                  || m_state == State.IDLE
+                  || m_state == State.DRAGON_READY
+                  || m_state == State.DRAGON_STANDBY) {
                 idleSequence()
                     .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
                     .schedule();
