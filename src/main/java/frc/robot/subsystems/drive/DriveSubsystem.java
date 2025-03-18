@@ -549,7 +549,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void zeroHeading() {
     m_gyro.reset();
     m_gyro.setAngleAdjustment(0);
-
   }
 
   public void flipHeading() {
