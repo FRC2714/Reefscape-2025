@@ -40,6 +40,17 @@ public class StateMachineTests {
     }
   }
 
+  void setScoreLevel(ScoreLevel scoreLevel) {
+    try {
+
+      Field field = StateMachine.class.getDeclaredField("m_level");
+      field.setAccessible(true);
+      field.set(m_stateMachine, scoreLevel);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @BeforeEach
   void setup() {
     assert HAL.initialize(500, 0);
@@ -527,22 +538,87 @@ public class StateMachineTests {
   @Test
   void dragonScoreToDragonReady() {
     setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L1);
     m_dragon.coralOnDragonTrue();
 
     m_stateMachine.stopScore().schedule();
     runScheduler();
     assertState(
         State.DRAGON_READY,
-        "DRAGON_READY should be reachable from DRAGON_SCORE via stopScore() with coral loaded");
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L1 via stopScore() with coral loaded");
 
     setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L1);
     m_stateMachine.stopScore().schedule();
     runScheduler();
     m_coralIntake.setLoadedFalse();
     runScheduler();
     assertState(
         State.DRAGON_READY,
-        "DRAGON_READY should be reachable from DRAGON_SCORE via stopScore() with no coral loaded");
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L1 via stopScore() with no coral loaded");
+
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L2);
+    m_dragon.coralOnDragonTrue();
+
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    assertState(
+        State.DRAGON_READY,
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L2 via stopScore() with coral loaded");
+
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L2);
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    m_coralIntake.setLoadedFalse();
+    runScheduler();
+    assertState(
+        State.DRAGON_READY,
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L2 via stopScore() with no coral loaded");
+
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L3);
+    m_dragon.coralOnDragonTrue();
+
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    assertState(
+        State.DRAGON_READY,
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L3 via stopScore() with coral loaded");
+
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L3);
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    m_coralIntake.setLoadedFalse();
+    runScheduler();
+    assertState(
+        State.DRAGON_READY,
+        "DRAGON_READY should be reachable from DRAGON_SCORE at L3 via stopScore() with no coral loaded");
+  }
+
+  @Test
+  void dragonScoreToAlgaeRemove() {
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L4);
+    m_dragon.coralOnDragonTrue();
+
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    assertState(
+        State.ALGAE_REMOVE,
+        "ALGAE_REMOVE should be reachable from DRAGON_SCORE at L4 via stopScore() with coral loaded");
+
+    setState(State.DRAGON_SCORE);
+    setScoreLevel(ScoreLevel.L4);
+    m_stateMachine.stopScore().schedule();
+    runScheduler();
+    m_coralIntake.setLoadedFalse();
+    runScheduler();
+    assertState(
+        State.ALGAE_REMOVE,
+        "ALGAE_REMOVE should be reachable from DRAGON_SCORE at L4 via stopScore() with no coral loaded");
   }
 
   @Test
