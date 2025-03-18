@@ -335,6 +335,7 @@ public final class Constants {
     public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
     public static final double kClearFromReefAngle = 45;
+    public static final double kClearToScoreL4Angle = 65;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
