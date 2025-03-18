@@ -334,7 +334,7 @@ public class StateMachine extends SubsystemBase {
   public Command dragonScoreL4Sequence() {
     return m_dragon
         .scoreReadyLevel(DragonSetpoint.L4)
-        .until(() -> !m_dragon.isClearFromReef())
+        .until(m_dragon::isClearToScoreL4)
         .andThen(m_dragon.score().until(() -> !m_dragon.isCoralOnDragon()))
         .andThen(stopScore())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
