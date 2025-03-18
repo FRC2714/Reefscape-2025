@@ -195,7 +195,10 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command intakeSequence() {
-    return (m_coralIntake.intake().until(m_coralIntake::isLoaded))
+    return (m_coralIntake
+            .intake()
+            .until(m_coralIntake::isLoaded)
+            .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
@@ -451,8 +454,13 @@ public class StateMachine extends SubsystemBase {
   public Command intakeCoral() {
     return new InstantCommand(
             () -> {
-              if (manualOverride || m_state == State.IDLE || m_state == State.DRAGON_STANDBY) {
-                intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()).schedule();
+              if (manualOverride
+                  || m_state == State.IDLE
+                  || m_state == State.DRAGON_READY
+                  || m_state == State.DRAGON_STANDBY) {
+                idleSequence()
+                    .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
+                    .schedule();
               }
             })
         .withName("intakeCoral()");

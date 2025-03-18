@@ -459,7 +459,7 @@ public class StateMachineTests {
 
     setState(State.DRAGON_STANDBY);
     m_dragon.coralOnDragonTrue();
-    assertCommandHasNoEffect(State.DRAGON_STANDBY, m_stateMachine.intakeCoral());
+    assertCommandHasNoEffect(State.IDLE, m_stateMachine.intakeCoral());
   }
 
   @Test
@@ -521,8 +521,7 @@ public class StateMachineTests {
   @Test
   void dragonReadyInvalidTransitions() {
     setState(State.DRAGON_READY);
-    assertCommandHasNoEffect(
-        State.DRAGON_READY, m_stateMachine.intakeCoral(), m_stateMachine.extakeCoral());
+    assertCommandHasNoEffect(State.DRAGON_READY, m_stateMachine.extakeCoral());
   }
 
   @Test
