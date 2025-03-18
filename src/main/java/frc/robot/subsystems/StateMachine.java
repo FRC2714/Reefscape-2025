@@ -286,13 +286,18 @@ public class StateMachine extends SubsystemBase {
             if (m_level == ScoreLevel.L4) {
               m_dragon
                   .retract()
-                  .until(m_dragon::atSetpoint)
+                  .until(m_dragon::isClearFromReef)
+                  .andThen(
+                      removeAlgae(
+                          ScoreLevel
+                              .ALGAE_HIGH)) // Default to higher removal to not break anything in
+                  // case of manual override
                   .beforeStarting(() -> m_state = State.DRAGON_READY)
                   .schedule();
             } else {
               m_dragon
                   .stopScore()
-                  .until(m_dragon::atSetpoint)
+                  .until(m_dragon::isClearFromReef)
                   .beforeStarting(() -> m_state = State.DRAGON_READY)
                   .schedule();
             }
