@@ -164,7 +164,7 @@ public class StateMachine extends SubsystemBase {
         .andThen(
             m_dragon
                 .stow()
-                .until(m_dragon::atSetpoint)
+                .until(m_dragon::isClearFromReef)
                 .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
         .andThen(() -> m_state = State.IDLE);
   }

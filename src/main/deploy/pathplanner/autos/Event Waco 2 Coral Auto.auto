@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Flip Heading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Dragon standby"
           }
         },
