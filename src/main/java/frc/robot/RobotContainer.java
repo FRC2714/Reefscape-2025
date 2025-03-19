@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -117,6 +118,8 @@ public class RobotContainer {
     // Configure the button bindings
     NamedCommands.registerCommand(
         "Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
+    NamedCommands.registerCommand(
+        "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
     NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoralAuto());
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
@@ -127,7 +130,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
-    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
+    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequenceAuto());
     NamedCommands.registerCommand(
         "Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
     NamedCommands.registerCommand(
@@ -139,7 +142,8 @@ public class RobotContainer {
         new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand(
         "Auto align",
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight)
+            .withTimeout(1)); // lets put the decrease to 1 test if it works
     configureButtonBindings();
 
     // Configure default commands
