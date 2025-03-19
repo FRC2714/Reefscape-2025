@@ -130,7 +130,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
     NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
     NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
-    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
+    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequenceAuto());
     NamedCommands.registerCommand(
         "Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
     NamedCommands.registerCommand(

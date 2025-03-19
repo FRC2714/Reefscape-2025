@@ -80,13 +80,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Wait Until Loaded"
+                  "name": "Align to Coral Station"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Align to Coral Station"
+                  "name": "Wait Until Loaded"
                 }
               }
             ]
