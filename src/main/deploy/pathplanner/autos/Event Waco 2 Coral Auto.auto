@@ -42,13 +42,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "Auto align"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto align"
+                  "name": "L4"
                 }
               }
             ]

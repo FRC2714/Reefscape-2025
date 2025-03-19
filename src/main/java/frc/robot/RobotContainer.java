@@ -142,7 +142,8 @@ public class RobotContainer {
         new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand(
         "Auto align",
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
+        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight)
+            .withTimeout(1)); // lets put the decrease to 1 test if it works
     configureButtonBindings();
 
     // Configure default commands

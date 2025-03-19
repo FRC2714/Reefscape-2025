@@ -169,6 +169,20 @@ public class StateMachine extends SubsystemBase {
         .andThen(() -> m_state = State.IDLE);
   }
 
+  // only for testing
+  public Command idleSequenceAuto() {
+    return (m_dragon
+            .stow()
+            .until(m_dragon::isClearFromReef)
+            .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon)))
+        .andThen(
+            m_dragon
+                .handoffReady()
+                .until(m_dragon::atSetpoint)
+                .alongWith(m_coralIntake.intakeReady().until(m_coralIntake::atSetpoint)))
+        .andThen(() -> m_state = State.IDLE);
+  }
+
   private Command oneCoralBetweenIntakeSequence() {
     return m_coralIntake
         .coralBetween()
@@ -311,16 +325,22 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command stopScoreAuto() {
-    return new ConditionalCommand(
-        m_dragon
-            .retract()
-            .until(m_dragon::isClearFromReef)
-            .beforeStarting(() -> m_state = State.DRAGON_READY),
-        m_dragon
-            .stopScore()
-            .until(m_dragon::isClearFromReef)
-            .beforeStarting(() -> m_state = State.DRAGON_READY),
-        () -> m_level == ScoreLevel.L4);
+    return new InstantCommand(
+        () ->
+            m_dragon
+                .retract()
+                .until(m_dragon::isClearFromReef)
+                .andThen(m_elevator.moveToHandoff()));
+    // return new ConditionalCommand(
+    //     m_dragon
+    //         .retract()
+    //         .until(m_dragon::isClearFromReef)
+    //         .beforeStarting(() -> m_state = State.DRAGON_READY),
+    //     m_dragon
+    //         .stopScore()
+    //         .until(m_dragon::isClearFromReef)
+    //         .beforeStarting(() -> m_state = State.DRAGON_READY),
+    //     () -> m_level == ScoreLevel.L4);
   }
 
   public Command dragonScoreSequence() {
@@ -555,9 +575,12 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreCoralAuto() {
-    return new ConditionalCommand(
-            dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> m_level == ScoreLevel.L4)
-        .withName("scoreCoralAuto()");
+    return new InstantCommand(() -> dragonScoreL4SequenceAuto()).withName("scoreCoralAuto()");
+
+    // return new ConditionalCommand(
+    //         dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> m_level ==
+    // ScoreLevel.L4)
+    //     .withName("scoreCoralAuto()");
   }
 
   public Command handoffManual() {

@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Idle",
-      "waypointRelativePos": 0,
+      "name": "Intake Coral",
+      "waypointRelativePos": 0.2724252491694249,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Idle"
+          "name": "Intake Coral"
         }
       }
     }
