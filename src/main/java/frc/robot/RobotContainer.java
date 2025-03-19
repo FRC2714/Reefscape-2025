@@ -121,6 +121,9 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
     NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoralAuto());
+    // ! Experimental for scoring while dunking
+    NamedCommands.registerCommand("Score Coral Experimental", m_stateMachine.scoreCoralAutoExperimental());
+    
     NamedCommands.registerCommand("L4", m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4));
     NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
     NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));

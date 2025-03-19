@@ -377,6 +377,15 @@ public class StateMachine extends SubsystemBase {
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);
   }
 
+  public Command dragonScoreL4SequenceAutoExperimental() {
+    return m_dragon
+        .scoreReadyLevel(DragonSetpoint.L4)
+        .until(m_dragon::atSetpoint)
+        .alongWith(m_dragon.score().until(() -> !m_dragon.isCoralOnDragon())) // ! Experimental for scoring while dunking
+        .andThen(stopScoreAuto())
+        .beforeStarting(() -> m_state = State.DRAGON_SCORE);
+  }
+
   private Command poopStandbySequence() {
     return (m_dragon
             .stow()
@@ -581,6 +590,11 @@ public class StateMachine extends SubsystemBase {
     //         dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> m_level ==
     // ScoreLevel.L4)
     //     .withName("scoreCoralAuto()");
+  }
+
+  // ! Experimental for scoring while dunking
+  public Command scoreCoralAutoExperimental() {
+    return new InstantCommand(() -> dragonScoreL4SequenceAutoExperimental()).withName("scoreCoralAutoExperimental()");
   }
 
   public Command handoffManual() {
