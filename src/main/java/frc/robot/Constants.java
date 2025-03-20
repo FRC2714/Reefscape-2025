@@ -80,7 +80,7 @@ public final class Constants {
 
     public static final double kDeploySpeed = 1;
     public static final double kRetractSpeed = -1;
-    public static final double kClimbSetpoint = 10;
+    public static final double kClimbSetpoint = 2;
 
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
