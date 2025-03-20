@@ -292,6 +292,10 @@ public class RobotContainer {
     return m_stateMachine.homingSequence();
   }
 
+  public void flipHeading() {
+    m_robotDrive.flipHeading();
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
