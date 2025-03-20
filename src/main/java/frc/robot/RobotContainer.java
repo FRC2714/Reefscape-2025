@@ -26,7 +26,6 @@ import frc.robot.commands.AlignToCoralStation;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
-import frc.robot.subsystems.Dragon.DragonSetpoint;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
@@ -106,10 +105,10 @@ public class RobotContainer {
   private final Trigger coralOnDragonButton = new JoystickButton(m_rightController, 9);
   private final JoystickButton climbDeployToggleButton = new JoystickButton(m_rightController, 11);
   private final JoystickButton sheeshButton = new JoystickButton(m_rightController, 12);
-  private final JoystickButton intakeOneCoralButton = new JoystickButton(m_rightController, 3);
-  private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController, 5);
+  private final JoystickButton setStartingConfigButton = new JoystickButton(m_rightController, 3);
   private final JoystickButton removeAlgaeHighLevelButton =
       new JoystickButton(m_rightController, 6);
+  private final JoystickButton removeAlgaeLowLevelButton = new JoystickButton(m_rightController, 5);
 
   private SendableChooser<Command> autoChooser;
 
@@ -181,6 +180,7 @@ public class RobotContainer {
               new InstantCommand(
                   () -> {
                     SmartDashboard.putNumber("Reef Stalk Number", number);
+                    m_stateMachine.setReefStalkNumber(number);
                     if (number % 2 == 0) {
                       Limelight.setSIDE(Align.LEFT);
                     } else {
@@ -190,12 +190,12 @@ public class RobotContainer {
     }
 
     // Driver Controller Actions
-
     m_driverController
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
 
-    m_driverController.a().onTrue(m_stateMachine.scoreCoral()).onFalse(m_stateMachine.stopScore());
+    m_driverController.a().onTrue(m_stateMachine.scoreCoral());
+    m_driverController.b().onTrue(m_stateMachine.stopScore());
 
     m_driverController.b().onTrue(m_stateMachine.toggleDynamic());
 
@@ -206,11 +206,6 @@ public class RobotContainer {
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
-
-    m_driverController
-        .leftBumper()
-        .onTrue(m_stateMachine.removeAlgaeReady())
-        .onFalse(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
@@ -232,8 +227,8 @@ public class RobotContainer {
         .onTrue(m_stateMachine.deployClimber())
         .onFalse(m_stateMachine.retractClimber());
     sheeshButton.onTrue(m_stateMachine.climb());
-    intakeOneCoralButton.onTrue(m_stateMachine.oneCoralBetweenIntake());
-    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(DragonSetpoint.ALGAE_HIGH));
+    removeAlgaeHighLevelButton.onTrue(m_stateMachine.removeAlgae(ScoreLevel.ALGAE_HIGH));
+    removeAlgaeLowLevelButton.onTrue(m_stateMachine.removeAlgae(ScoreLevel.ALGAE_LOW));
     setStartingConfigButton.onTrue(m_stateMachine.setAutonomousSetup());
 
     if (Robot.isSimulation()) {
@@ -262,20 +257,28 @@ public class RobotContainer {
             .withTimeout(0.5));
   }
 
+  public Command setButtonStates() {
+    return new InstantCommand(
+            () -> {
+              if (overrideStateMachineButton.getAsBoolean()) {
+                m_stateMachine.enableManualOverride().schedule();
+              } else {
+                m_stateMachine.disableManualOverride().schedule();
+              }
+              if (autoHandoffButton.getAsBoolean()) {
+                m_stateMachine.enableAutoHandoff().schedule();
+              } else {
+                m_stateMachine.disableAutoHandoff().schedule();
+              }
+              m_stateMachine.setTeleOpDefaultStates().schedule();
+            })
+        .ignoringDisable(true);
+  }
+
   public Command setTeleOpDefaultStates() {
     return new InstantCommand(
         () -> {
-          m_stateMachine.setDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
+          m_stateMachine.setTeleOpDefaultStates().schedule();
         });
   }
 
@@ -284,37 +287,11 @@ public class RobotContainer {
         () -> {
           m_robotDrive.flipHeading();
           m_stateMachine.setAutonomousDefaultStates().schedule();
-          if (overrideStateMachineButton.getAsBoolean()) {
-            m_stateMachine.enableManualOverride().schedule();
-          } else {
-            m_stateMachine.disableManualOverride().schedule();
-          }
-          if (autoHandoffButton.getAsBoolean()) {
-            m_stateMachine.enableAutoHandoff().schedule();
-          } else {
-            m_stateMachine.disableAutoHandoff().schedule();
-          }
         });
   }
 
   public Command homingSequence() {
     return m_stateMachine.homingSequence();
-  }
-
-  public void isAutoHandoffEnabled() {
-    if (autoHandoffButton.getAsBoolean()) {
-      m_stateMachine.enableAutoHandoff().schedule();
-    } else {
-      m_stateMachine.disableAutoHandoff().schedule();
-    }
-  }
-
-  public void isManualOverrideEnabled() {
-    if (overrideStateMachineButton.getAsBoolean()) {
-      m_stateMachine.enableManualOverride().schedule();
-    } else {
-      m_stateMachine.disableManualOverride().schedule();
-    }
   }
 
   /**

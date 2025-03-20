@@ -318,7 +318,7 @@ public final class Constants {
       public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
-      public static final double kAlgaeHigh = 0;
+      public static final double kAlgaeHigh = 4.89;
     }
   }
 
@@ -335,12 +335,13 @@ public final class Constants {
     public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
     public static final double kClearFromReefAngle = 45;
+    public static final double kClearToScoreL4Angle = 65;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStartingConfig = 252;
+      public static final double kStartingConfig = 235;
       public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
@@ -348,8 +349,8 @@ public final class Constants {
       public static final double kLevel3 = 61.08;
       public static final double kLevel4 = 95;
       public static final double kClimb = 180;
-      public static final double kAlgaeHigh = 98; // TODO: fix this later
-      public static final double kAlgaeLow = 37.13; // TODO: fix this later
+      public static final double kAlgaeHigh = 90; // TODO: fix this later
+      public static final double kAlgaeLow = 92; // TODO: fix this later
       public static final double kAlgaeReady = 210;
       public static final double kRetract = 41;
     }
