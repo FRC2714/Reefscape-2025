@@ -143,6 +143,8 @@ public class RobotContainer {
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
     NamedCommands.registerCommand(
         "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
+    NamedCommands.registerCommand(
+        "Remove Algae Low", m_stateMachine.algaeRemovalSequence(ScoreLevel.ALGAE_LOW));
     configureButtonBindings();
 
     // Configure default commands

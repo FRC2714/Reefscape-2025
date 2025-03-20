@@ -1,0 +1,66 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.452459016393442,
+        "y": 5.229764344262294
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.970459016393442,
+        "y": 5.912264344262295
+      },
+      "isLocked": false,
+      "linkedName": "K-Coral"
+    },
+    {
+      "anchor": {
+        "x": 2.3975409836065573,
+        "y": 5.853125
+      },
+      "prevControl": {
+        "x": 3.6942909836065567,
+        "y": 5.190124999999999
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Idle",
+      "waypointRelativePos": 0.586275816122588,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.5,
+    "rotation": -54.36019080191327
+  },
+  "reversed": false,
+  "folder": "NONPROCESSOR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "useDefaultConstraints": true
+}
