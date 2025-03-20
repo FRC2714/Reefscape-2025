@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.4385245901639343,
-        "y": 6.5484118852459
+        "x": 2.3975409836065573,
+        "y": 5.853125
       },
       "prevControl": {
-        "x": 2.7352745901639333,
-        "y": 5.885411885245899
+        "x": 3.6942909836065567,
+        "y": 5.190124999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -40,17 +40,6 @@
         "type": "named",
         "data": {
           "name": "Idle"
-        }
-      }
-    },
-    {
-      "name": "Intake Coral",
-      "waypointRelativePos": 0.5009993337774713,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Coral"
         }
       }
     }

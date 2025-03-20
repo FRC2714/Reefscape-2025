@@ -36,12 +36,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "Auto align"
                 }
               }
@@ -76,6 +70,12 @@
                 "data": {
                   "name": "Align to Coral Station"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait Until Loaded"
+                }
               }
             ]
           }
@@ -89,12 +89,6 @@
                 "data": {
                   "pathName": "Event Station to L 1NP"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
-                }
               }
             ]
           }
@@ -107,12 +101,6 @@
                 "type": "named",
                 "data": {
                   "name": "Auto align"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
                 }
               }
             ]
@@ -132,44 +120,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Event K to station 2NP"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align to Coral Station"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "station to mid 2NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Align Left"
                 }
               }
             ]

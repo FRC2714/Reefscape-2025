@@ -103,6 +103,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    m_robotContainer.flipHeading();
+
     if (!defaultStatesSet) {
 
       m_robotContainer

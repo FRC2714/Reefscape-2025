@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -140,6 +141,10 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "Auto align",
         new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
+    NamedCommands.registerCommand(
+        "Remove Algae Low", m_stateMachine.algaeRemovalSequence(ScoreLevel.ALGAE_LOW));
     configureButtonBindings();
 
     // Configure default commands
@@ -290,6 +295,10 @@ public class RobotContainer {
 
   public Command homingSequence() {
     return m_stateMachine.homingSequence();
+  }
+
+  public void flipHeading() {
+    m_robotDrive.flipHeading();
   }
 
   /**
