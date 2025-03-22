@@ -136,7 +136,7 @@ public final class Constants {
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
-      public static final double kHandoff = 72.8;
+      public static final double kHandoff = 69;
       public static final double kPoop = 70;
 
       public static final double kZeroOffsetDegrees = 270;
