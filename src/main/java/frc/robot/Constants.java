@@ -132,11 +132,11 @@ public final class Constants {
     public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 8;
+      public static final double kStow = 6;
       public static final double kIntake = 65;
       public static final double kOneCoralInBetweenIntake = 77;
       public static final double kExtake = 85;
-      public static final double kHandoff = 72.8;
+      public static final double kHandoff = 69;
       public static final double kPoop = 70;
 
       public static final double kZeroOffsetDegrees = 270;
@@ -313,7 +313,8 @@ public final class Constants {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 4.5;
+
+      public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
       public static final double kLevel3 = 1.07;
       public static final double kLevel4 = 9.62;
@@ -345,7 +346,7 @@ public final class Constants {
       public static final double kStow = 20;
       public static final double kHandoff = 224.6; // fix this later
       public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 108;
+      public static final double kLevel2 = 107;
       public static final double kLevel3 = 61.08;
       public static final double kLevel4 = 95;
       public static final double kClimb = 180;
