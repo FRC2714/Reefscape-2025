@@ -212,6 +212,8 @@ public class RobotContainer {
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
 
+    m_driverController.leftBumper().onTrue(m_stateMachine.oneCoralBetweenIntake());
+
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
     L2Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L2));
