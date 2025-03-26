@@ -78,12 +78,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Remove Algae Low"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Algae C to station 2P"
