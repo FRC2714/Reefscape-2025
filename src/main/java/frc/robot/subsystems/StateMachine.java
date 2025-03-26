@@ -465,9 +465,7 @@ public class StateMachine extends SubsystemBase {
                 idleSequence()
                     .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
                     .schedule();
-              }
-              else if(m_state == State.INTAKE)
-              {
+              } else if (m_state == State.INTAKE) {
                 intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()).schedule();
               }
             })
