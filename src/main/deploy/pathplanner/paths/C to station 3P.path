@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.686987179487179,
-        "y": 3.003269230769231
+        "x": 3.687,
+        "y": 3.003
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1916025641025634,
-        "y": 2.08474358974359
+        "x": 3.191617501323322,
+        "y": 2.0844732173822154
       },
       "isLocked": false,
       "linkedName": "C-Coral"
     },
     {
       "anchor": {
-        "x": 1.7051420454545454,
-        "y": 0.56984375
+        "x": 1.4505122950819784,
+        "y": 1.2258709016373734
       },
       "prevControl": {
-        "x": 2.0870010198135196,
-        "y": 1.1993950320512816
+        "x": 1.8323712694409524,
+        "y": 1.855422183688655
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.66826662430165
+    "rotation": 57.668000000000006
   },
   "useDefaultConstraints": true
 }

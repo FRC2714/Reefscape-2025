@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.006923076923076,
-        "y": 2.8381410256410255
+        "x": 4.966730769230768,
+        "y": 2.8175
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4771794871794857,
-        "y": 1.9815384615384621
+        "x": 5.121230769233472,
+        "y": 2.0845641025685016
       },
       "isLocked": false,
-      "linkedName": "D-Coral"
+      "linkedName": "E-Coral"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 1.2258709016373734
       },
       "prevControl": {
-        "x": 1.770448192517876,
-        "y": 1.7006144913809622
+        "x": 2.7508969104665937,
+        "y": 2.0515119272783973
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,20 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Idle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Intake Coral",
+      "waypointRelativePos": 0.52,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -48,7 +61,7 @@
   "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 60.48363507518591
+    "rotation": 117.93480784864826
   },
   "useDefaultConstraints": true
 }
