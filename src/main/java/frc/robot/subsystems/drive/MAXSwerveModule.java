@@ -202,6 +202,10 @@ public class MAXSwerveModule extends SubsystemBase {
     m_drivingEncoder.setPosition(0);
   }
 
+  public double getDrivingCurrent() {
+    return m_drivingFlex.getOutputCurrent();
+  }
+
   @Override
   public void periodic() {}
 
