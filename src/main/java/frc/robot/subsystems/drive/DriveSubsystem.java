@@ -17,6 +17,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Robot;
 import frc.robot.utils.LimelightHelpers;
 import org.littletonrobotics.junction.Logger;
 
@@ -254,30 +256,12 @@ public class DriveSubsystem extends SubsystemBase {
         pose);
   }
 
-  public void update() {
-    // if (Robot.isSimulation()) {
-    // return;
-    // } else if (DriverStation.getAlliance().get().toString().equals("Red")) {
-    // swerveDrivePoseEstimator.update(
-    // Rotation2d.fromDegrees(-m_gyro.getAngle(IMUAxis.kZ)),
-    // new SwerveModulePosition[] {
-    // m_frontLeft.getPositionPoseRed(),
-    // m_frontRight.getPositionPoseRed(),
-    // m_rearLeft.getPositionPoseRed(),
-    // m_rearRight.getPositionPoseRed()
-    // });
-    // } else {
-    // swerveDrivePoseEstimator.update(
-    // Rotation2d.fromDegrees(-m_gyro.getAngle(IMUAxis.kZ)),
-    // new SwerveModulePosition[] {
-    // m_frontLeft.getPositionPoseBlue(),
-    // m_frontRight.getPositionPoseBlue(),
-    // m_rearLeft.getPositionPoseBlue(),
-    // m_rearRight.getPositionPoseBlue()
-    // });
-    // }
+  public void updateOdometry() {
+    if (Robot.isSimulation()) {
+      return;
+    }
     swerveDrivePoseEstimator.update(
-        Rotation2d.fromDegrees(-m_gyro.getAngle()),
+        Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -285,116 +269,72 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
-    // boolean useMegaTag2 = true; // set to false to use MegaTag1
-    // boolean doRejectUpdate = false;
-    // if (useMegaTag2 == false) {
-    // LimelightHelpers.PoseEstimate mt1back =
-    // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-back");
-    // LimelightHelpers.PoseEstimate mt1Right =
-    // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-    // LimelightHelpers.PoseEstimate mt1left =
-    // LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
+    addVisionMeasurements(LimelightConstants.kLeftLimelightName);
+    addVisionMeasurements(LimelightConstants.kRightLimelightName);
+    addVisionMeasurements(LimelightConstants.kBackLimelightName);
+  }
 
-    // if (mt1back.tagCount == 1 && mt1back.rawFiducials.length == 1
-    // || mt1Right.tagCount == 1 && mt1Right.rawFiducials.length == 1
-    // || mt1left.tagCount == 1 && mt1left.rawFiducials.length == 1) {
-    // if (mt1back.rawFiducials[0].ambiguity > .7 &&
-    // mt1Right.rawFiducials[0].ambiguity > .7
-    // && mt1left.rawFiducials[0].ambiguity > .7) {
-    // doRejectUpdate = true;
-    // }
-    // if (mt1back.rawFiducials[0].distToCamera > 3 &&
-    // mt1Right.rawFiducials[0].distToCamera > 3
-    // && mt1left.rawFiducials[0].distToCamera > 3) {
-    // doRejectUpdate = true;
-    // }
-    // }
-    // if (mt1back.tagCount == 0 && mt1Right.tagCount == 0 && mt1left.tagCount == 0)
-    // {
-    // doRejectUpdate = true;
-    // }
+  private void addVisionMeasurements(String limelightName) {
+    boolean useMegaTag2 = true; // set to false to use MegaTag1
+    boolean doRejectUpdate = false;
+    if (useMegaTag2 == false) {
+      LimelightHelpers.PoseEstimate mt1 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
 
-    // if (!doRejectUpdate) {
-    // System.out.println("using mt1");
-    // swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5,
-    // 9999999));
-    // if (mt1back.tagCount > mt1Right.tagCount && mt1back.tagCount >
-    // mt1left.tagCount) {
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt1back.pose,
-    // mt1back.timestampSeconds);
-    // } else if (mt1left.tagCount > mt1Right.tagCount && mt1left.tagCount >
-    // mt1Right.tagCount) {
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt1Right.pose,
-    // mt1Right.timestampSeconds);
-    // } else {
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt1left.pose,
-    // mt1left.timestampSeconds);
-    // }
-    // }
-    // } else if (useMegaTag2 == true) {
-    // LimelightHelpers.PoseEstimate mt2back =
-    // LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-back");
-    // LimelightHelpers.PoseEstimate mt2right = LimelightHelpers
-    // .getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-    // LimelightHelpers.PoseEstimate mt2left =
-    // LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+      if (mt1.tagCount == 1 && mt1.rawFiducials.length == 1) {
+        if (mt1.rawFiducials[0].ambiguity > .7) {
+          doRejectUpdate = true;
+        }
+        if (mt1.rawFiducials[0].distToCamera > 3) {
+          doRejectUpdate = true;
+        }
+      }
+      if (mt1.tagCount == 0) {
+        doRejectUpdate = true;
+      }
 
-    // if (Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater
-    // than 720 degrees per second, ignore
-    // // vision updates
-    // {
-    // doRejectUpdate = true;
-    // }
-    // if (mt2back == null || mt2left == null || mt2right == null
-    // || mt2back.tagCount == 0 && mt2left.tagCount == 0 && mt2right.tagCount == 0)
-    // { // mt2right == null ||
-    // // mt2right.tagCount
-    // // == 0 &&
-    // doRejectUpdate = true;
-    // } else if (mt2back.avgTagDist > 3 && mt2right.avgTagDist > 3
-    // && mt2left.avgTagDist > 3) {
-    // doRejectUpdate = true;
-    // }
-
-    // if (!doRejectUpdate) {
-    // swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(1, 1,
-    // 9999999));
-    // if (mt2left.rawFiducials.length > mt2back.rawFiducials.length
-    // && mt2left.rawFiducials.length > mt2right.rawFiducials.length
-    // && mt2left.tagCount > mt2back.tagCount) { // && mt2left.tagCount >=
-    // mt2right.tagCount
-    // System.out.println("update left");
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt2left.pose,
-    // mt2left.timestampSeconds);
-    // } else if (mt2right.rawFiducials.length > mt2back.rawFiducials.length
-    // && mt2right.rawFiducials.length > mt2left.rawFiducials.length &&
-    // mt2right.tagCount > mt2left.tagCount) {
-    // System.out.println("update right");
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt2right.pose,
-    // mt2right.timestampSeconds);
-    // } else if (mt2back.rawFiducials.length > 0.1) {
-    // System.out.println("update back");
-    // swerveDrivePoseEstimator.addVisionMeasurement(
-    // mt2back.pose,
-    // mt2back.timestampSeconds);
-    // }
-    // }
-    // }
+      if (!doRejectUpdate) {
+        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        swerveDrivePoseEstimator.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+      }
+    } else if (useMegaTag2 == true) {
+      LimelightHelpers.SetRobotOrientation(
+          limelightName,
+          swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(),
+          0,
+          0,
+          0,
+          0,
+          0);
+      LimelightHelpers.PoseEstimate mt2 =
+          LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+      if (Math.abs(m_gyro.getRate())
+          > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision
+      // updates
+      {
+        doRejectUpdate = true;
+      }
+      if (mt2.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+      if (!doRejectUpdate) {
+        swerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        swerveDrivePoseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+      }
+    }
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber(
-        "left pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-left"));
+        "left pipeline",
+        LimelightHelpers.getCurrentPipelineIndex(LimelightConstants.kLeftLimelightName));
     SmartDashboard.putNumber(
-        "right pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-right"));
+        "right pipeline",
+        LimelightHelpers.getCurrentPipelineIndex(LimelightConstants.kRightLimelightName));
     SmartDashboard.putNumber(
-        "back pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-back"));
+        "back pipeline",
+        LimelightHelpers.getCurrentPipelineIndex(LimelightConstants.kBackLimelightName));
 
     // Update the odometry in the periodic block
 
@@ -408,7 +348,7 @@ public class DriveSubsystem extends SubsystemBase {
         "Drive/Pose/Rear Right Position", m_rearRight.getPosition().distanceMeters);
     SmartDashboard.putNumber("Drive/Pose/Heading", getHeading());
     LimelightHelpers.SetRobotOrientation(
-        "limelight-back",
+        LimelightConstants.kBackLimelightName,
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(),
         0,
         0,
@@ -416,7 +356,7 @@ public class DriveSubsystem extends SubsystemBase {
         0,
         0);
     LimelightHelpers.SetRobotOrientation(
-        "limelight-right",
+        LimelightConstants.kRightLimelightName,
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(),
         0,
         0,
@@ -424,14 +364,14 @@ public class DriveSubsystem extends SubsystemBase {
         0,
         0);
     LimelightHelpers.SetRobotOrientation(
-        "limelight-left",
+        LimelightConstants.kLeftLimelightName,
         swerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(),
         0,
         0,
         0,
         0,
         0);
-    update();
+    updateOdometry();
     m_fieldPose.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
     SmartDashboard.putData("Field", m_field);
   }
