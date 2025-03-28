@@ -202,6 +202,8 @@ public class RobotContainer {
     m_driverController.a().onTrue(m_stateMachine.scoreCoral());
     m_driverController.b().onTrue(m_stateMachine.stopScore());
 
+    m_driverController.b().onTrue(m_stateMachine.toggleDynamic());
+
     m_driverController
         .rightBumper()
         .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
