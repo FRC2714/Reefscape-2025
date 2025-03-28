@@ -129,7 +129,6 @@ public final class Constants {
     public static final double kPivotReduction = 1;
     public static final double kPivotMinAngle = 10;
     public static final double kPivotMaxAngle = 162;
-    public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
       public static final double kStow = 6;
@@ -333,7 +332,6 @@ public final class Constants {
 
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
-    public static final double kPivotZeroOffset = 149.0;
     public static final double kClearFromElevatorAngle = 180;
     public static final double kClearFromReefAngle = 45;
     public static final double kClearToScoreL4Angle = 65;
