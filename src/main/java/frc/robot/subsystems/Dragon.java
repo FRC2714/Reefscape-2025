@@ -41,6 +41,7 @@ public class Dragon extends SubsystemBase {
     STARTING_CONFIG,
     STOW,
     HANDOFF,
+    HANDOFF_STANDBY,
     L1,
     L2,
     L3,
@@ -204,6 +205,9 @@ public class Dragon extends SubsystemBase {
       case HANDOFF:
         pivotCurrentTarget = PivotSetpoints.kHandoff;
         break;
+      case HANDOFF_STANDBY:
+        pivotCurrentTarget = PivotSetpoints.kHandoffStandby;
+        break;
       case L1:
         pivotCurrentTarget = PivotSetpoints.kLevel1;
         break;
@@ -282,7 +286,7 @@ public class Dragon extends SubsystemBase {
   public Command handoffReady() {
     return this.run(
             () -> {
-              setPivot(DragonSetpoint.HANDOFF);
+              setPivot(DragonSetpoint.HANDOFF_STANDBY);
               setRollerPower(RollerSetpoints.kStop);
               setDragonState(DragonState.HANDOFF_READY);
             })
