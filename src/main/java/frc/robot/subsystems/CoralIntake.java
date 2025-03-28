@@ -428,6 +428,8 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
 
     SmartDashboard.putNumber("Coral Intake/Pivot/Current", pivotMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Coral Intake/Rollers/Current", rollerMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Coral Intake/Indexer/Current", indexerMotor.getOutputCurrent());
 
     SmartDashboard.putNumber(
         "Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());
