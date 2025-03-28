@@ -150,7 +150,6 @@ public final class Configs {
           .absoluteEncoder
           .positionConversionFactor(360 / CoralIntakeConstants.kPivotReduction)
           .inverted(false)
-          .zeroOffset(CoralIntakeConstants.kZeroOffsetDegrees / 360)
           .zeroCentered(false); // tune later
       pivotConfig
           .closedLoop
@@ -242,7 +241,6 @@ public final class Configs {
           .allowedClosedLoopError(0.5);
       pivotConfig
           .absoluteEncoder
-          .zeroOffset(DragonConstants.kPivotZeroOffset / 360)
           .inverted(false)
           .positionConversionFactor(360 / DragonConstants.kPivotReduction);
       pivotConfig
@@ -253,7 +251,7 @@ public final class Configs {
           .reverseSoftLimitEnabled(true);
 
       pivotRollerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
-      pivotRollerConfig.inverted(true);
+      pivotRollerConfig.inverted(false);
 
       pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
     }
