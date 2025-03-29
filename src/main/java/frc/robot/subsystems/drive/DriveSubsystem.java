@@ -12,7 +12,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.reduxrobotics.canand.CanandEventLoop;
 import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
@@ -75,7 +74,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          Rotation2d.fromDegrees(-m_gyro.getYaw()),
+          Rotation2d.fromDegrees(getHeading()),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -102,10 +101,6 @@ public class DriveSubsystem extends SubsystemBase {
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
     SmartDashboard.putData("Field", m_fieldPose);
-
-    m_gyro.startCalibration();
-    m_gyro.waitForCalibrationToFinish(7);
-    CanandEventLoop.getInstance();
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -237,7 +232,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetEstimatedHeading(Rotation2d rotation) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -249,7 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -282,7 +277,7 @@ public class DriveSubsystem extends SubsystemBase {
     // });
     // }
     swerveDrivePoseEstimator.update(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -483,7 +478,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
+                    Rotation2d.fromDegrees(getHeading()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -506,7 +501,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
+                    Rotation2d.fromDegrees(getHeading()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -571,6 +566,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
+    // return m_gyro.getYaw() * 360;
     return m_gyro.getYaw() >= 0 ? m_gyro.getYaw() * 360 : Math.abs((m_gyro.getYaw() * 360) + 360);
   }
 
