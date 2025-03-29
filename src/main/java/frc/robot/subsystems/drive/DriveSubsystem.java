@@ -12,8 +12,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+import com.reduxrobotics.canand.CanandEventLoop;
+import com.reduxrobotics.sensors.canandgyro.Canandgyro;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -65,7 +65,8 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
+  // private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
+  private final Canandgyro m_gyro = new Canandgyro(0);
 
   private final Field2d m_field = new Field2d();
 
@@ -74,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          Rotation2d.fromDegrees(-m_gyro.getAngle()),
+          Rotation2d.fromDegrees(-m_gyro.getYaw()),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -101,6 +102,10 @@ public class DriveSubsystem extends SubsystemBase {
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
     SmartDashboard.putData("Field", m_fieldPose);
+
+    m_gyro.startCalibration();
+    m_gyro.waitForCalibrationToFinish(7);
+    CanandEventLoop.getInstance();
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -170,7 +175,7 @@ public class DriveSubsystem extends SubsystemBase {
             new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Seconds.of(10)),
             new SysIdRoutine.Mechanism(
                 (voltage) -> this.driveVoltageRotateTest(voltage.in(Volts)), null, this));
-    m_gyro.reset();
+    m_gyro.setYaw(0);
   }
 
   public SysIdRoutine sysIdDrive() {
@@ -232,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetEstimatedHeading(Rotation2d rotation) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getYaw()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -244,7 +249,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getYaw()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -277,7 +282,7 @@ public class DriveSubsystem extends SubsystemBase {
     // });
     // }
     swerveDrivePoseEstimator.update(
-        Rotation2d.fromDegrees(-m_gyro.getAngle()),
+        Rotation2d.fromDegrees(-m_gyro.getYaw()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -478,7 +483,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getAngle()))
+                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -501,7 +506,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getAngle()))
+                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -553,13 +558,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
-    m_gyro.setAngleAdjustment(0);
+    m_gyro.setYaw(0);
   }
 
   public void flipHeading() {
-    m_gyro.reset();
-    m_gyro.setAngleAdjustment(180);
+    m_gyro.setYaw(180);
   }
 
   /**
@@ -568,7 +571,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
+    return m_gyro.getYaw() >= 0 ? m_gyro.getYaw() * 360 : Math.abs((m_gyro.getYaw() * 360) + 360);
   }
 
   /**
@@ -577,7 +580,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return m_gyro.getAngularVelocityYaw() * 360 * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds() {
