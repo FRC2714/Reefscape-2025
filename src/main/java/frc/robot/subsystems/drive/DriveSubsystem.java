@@ -387,6 +387,10 @@ public class DriveSubsystem extends SubsystemBase {
     // }
   }
 
+  public double getVelocityMagnitude() {
+    return Math.sqrt(Math.pow(getEstimatedPose().getX(), 2) + Math.pow(getEstimatedPose().getY(), 2));
+  }
+
   @Override
   public void periodic() {
 
@@ -394,6 +398,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Drive/Front Right Current", m_frontRight.getDrivingCurrent());
     SmartDashboard.putNumber("Drive/Rear Left Current", m_rearLeft.getDrivingCurrent());
     SmartDashboard.putNumber("Drive/Rear Right Current", m_rearRight.getDrivingCurrent());
+
+    SmartDashboard.putNumber("Drive/Velocity Magnitude", getVelocityMagnitude());
 
     SmartDashboard.putNumber(
         "left pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-left"));
