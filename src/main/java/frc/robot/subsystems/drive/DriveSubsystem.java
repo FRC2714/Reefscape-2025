@@ -557,7 +557,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void flipHeading() {
-    m_gyro.setYaw(180);
+    m_gyro.setYaw(0.5);
   }
 
   /**
