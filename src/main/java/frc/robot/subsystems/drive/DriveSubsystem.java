@@ -388,7 +388,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public double getVelocityMagnitude() {
-    return Math.sqrt(Math.pow(getEstimatedPose().getX(), 2) + Math.pow(getEstimatedPose().getY(), 2));
+    return Math.sqrt(
+        Math.pow(getEstimatedPose().getX(), 2) + Math.pow(getEstimatedPose().getY(), 2));
   }
 
   @Override
