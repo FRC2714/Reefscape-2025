@@ -74,7 +74,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Wait Until Loaded"
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -113,13 +113,19 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Remove Algae Low"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Event K to station 2NP"
+                  "pathName": "Algae K to station 2NP"
                 }
               }
             ]
@@ -129,6 +135,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

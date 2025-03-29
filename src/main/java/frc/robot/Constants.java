@@ -129,15 +129,16 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 1.5;
-      public static final double kIntake = 59;
-      public static final double kOneCoralInBetweenIntake = 77.2;
-      public static final double kExtake = 80;
-      public static final double kHandoff = 67;
-      public static final double kPoop = 70;
+      // Zero offset in Hardware Client is 10
+      public static final double kStow = 10.5;
+      public static final double kIntake = 69;
+      public static final double kOneCoralInBetweenIntake = 87.2;
+      public static final double kExtake = 90;
+      public static final double kHandoff = 77;
+      public static final double kPoop = 80;
 
       public static final double kZeroOffsetDegrees = 270;
-      public static final double kClimb = 90;
+      public static final double kClimb = 100;
     }
 
     public static final class RollerSetpoints {
@@ -338,7 +339,7 @@ public final class Constants {
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      // Zero offset in Hardwar Client is 10
+      // Zero offset in Hardware Client is 10
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
       public static final double kHandoff = 222; // fix this later

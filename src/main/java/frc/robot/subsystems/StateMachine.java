@@ -205,6 +205,7 @@ public class StateMachine extends SubsystemBase {
   public Command intakeSequenceAuto() {
     return (m_coralIntake
             .intake()
+            .onlyIf(() -> !m_coralIntake.isLoaded())
             .until(m_coralIntake::isLoaded)
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
@@ -350,7 +351,7 @@ public class StateMachine extends SubsystemBase {
   public Command dragonScoreL4SequenceAuto() {
     return m_dragon
         .scoreReadyLevel(DragonSetpoint.L4)
-        .until(m_dragon::atSetpoint)
+        .until(m_dragon::isClearToScoreL4)
         .andThen(m_dragon.score().until(() -> !m_dragon.isCoralOnDragon()))
         .andThen(stopScoreAuto())
         .beforeStarting(() -> m_state = State.DRAGON_SCORE);

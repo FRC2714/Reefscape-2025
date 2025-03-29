@@ -5,35 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "barge to J NP"
-                }
-              }
-            ]
+            "name": "Dragon standby"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto align"
-                }
-              }
-            ]
+            "name": "Set Align Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Event Barge to E P"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto align"
           }
         },
         {
@@ -45,19 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "J move back"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "J to station 1NP"
+            "pathName": "Event E to station 1P"
           }
         },
         {
@@ -82,26 +62,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to L 1NP"
+            "pathName": "Event station to C 2P"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto align"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
+            "name": "Auto align"
           }
         },
         {
@@ -109,11 +76,29 @@
           "data": {
             "name": "Score Coral"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Remove Algae Low"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Algae C to station 2P"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "NONPROCESSOR",
+  "folder": "PROCESSOR",
   "choreoAuto": false
 }

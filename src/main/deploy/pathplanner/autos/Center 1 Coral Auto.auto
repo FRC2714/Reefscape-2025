@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Dragon standby"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Align Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Barge Center to H"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "H move back"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "CENTER",
+  "choreoAuto": false
+}

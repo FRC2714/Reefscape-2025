@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4385245901639343,
-        "y": 6.5484118852459
+        "x": 1.5894267272949207,
+        "y": 6.797364239162869
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1835204918032796,
-        "y": 6.34981557377049
+        "x": 2.4828102563928662,
+        "y": 6.512710006148727
       },
       "isLocked": false,
       "linkedName": "NP station"
     },
     {
       "anchor": {
-        "x": 3.549,
-        "y": 5.3315
+        "x": 3.452459016393442,
+        "y": 5.229764344262294
       },
       "prevControl": {
-        "x": 2.6422499999999998,
-        "y": 5.78
+        "x": 2.7158294847276467,
+        "y": 6.008182887324581
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.9353070175438627,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -45,7 +59,7 @@
     },
     {
       "name": "L4",
-      "waypointRelativePos": 0.9487008660892788,
+      "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -64,7 +78,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0.5,
     "rotation": -59.99999999999999
   },
   "reversed": false,
