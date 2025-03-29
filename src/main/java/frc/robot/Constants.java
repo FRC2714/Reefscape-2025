@@ -330,26 +330,27 @@ public final class Constants {
 
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
-    public static final double kClearFromElevatorAngle = 173.5;
-    public static final double kClearFromReefAngle = 26.3;
-    public static final double kClearToScoreL4Angle = 60.7;
+    public static final double kClearFromElevatorAngle = 165.5;
+    public static final double kClearFromReefAngle = 50;
+    public static final double kClearToScoreL4Angle = 70.7;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStartingConfig = 235;
-      public static final double kStow = 17.25;
-      public static final double kHandoff = 212; // fix this later
-      public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 90.3;
-      public static final double kLevel3 = 25;
-      public static final double kLevel4 = 91.7;
-      public static final double kClimb = 180;
-      public static final double kAlgaeHigh = 79.4; // TODO: fix this later
-      public static final double kAlgaeLow = 79.4; // TODO: fix this later
-      public static final double kAlgaeReady = 210;
-      public static final double kRetract = 39.3;
+      // Zero offset in Hardwar Client is 10
+      public static final double kStartingConfig = 245;
+      public static final double kStow = 27.25;
+      public static final double kHandoff = 222; // fix this later
+      public static final double kLevel1 = 47.13;
+      public static final double kLevel2 = 100.3;
+      public static final double kLevel3 = 35;
+      public static final double kLevel4 = 101.7;
+      public static final double kClimb = 190;
+      public static final double kAlgaeHigh = 89.4; // TODO: fix this later
+      public static final double kAlgaeLow = 89.4; // TODO: fix this later
+      public static final double kAlgaeReady = 220;
+      public static final double kRetract = 49.3;
     }
 
     public static final class RollerSetpoints {
