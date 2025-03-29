@@ -204,7 +204,8 @@ public class StateMachine extends SubsystemBase {
 
   public Command intakeSequenceAuto() {
     return (m_coralIntake
-            .intake().onlyIf(() -> !m_coralIntake.isLoaded())
+            .intake()
+            .onlyIf(() -> !m_coralIntake.isLoaded())
             .until(m_coralIntake::isLoaded)
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
