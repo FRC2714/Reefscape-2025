@@ -42,17 +42,6 @@
           "name": "Idle"
         }
       }
-    },
-    {
-      "name": "Intake Coral",
-      "waypointRelativePos": 0.5196535642904566,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Coral"
-        }
-      }
     }
   ],
   "globalConstraints": {

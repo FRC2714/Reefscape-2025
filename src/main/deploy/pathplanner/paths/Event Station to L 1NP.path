@@ -47,10 +47,26 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "Handoff",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Handoff"
+        }
+      }
+    },
+    {
       "name": "L4",
       "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
     }
   ],
   "globalConstraints": {
