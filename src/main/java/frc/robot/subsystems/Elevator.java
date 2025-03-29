@@ -282,6 +282,10 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putString("Elevator/Elevator State", m_elevatorState.toString());
     SmartDashboard.putBoolean("Elevator/Pos/at Setpoint?", atSetpoint());
 
+    SmartDashboard.putNumber("Elevator/Motor Current", elevatorMotor.getOutputCurrent());
+    SmartDashboard.putNumber(
+        "Elevator/Follower Motor Current", elevatorFollower.getOutputCurrent());
+
     SmartDashboard.putString(
         "Elevator/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
