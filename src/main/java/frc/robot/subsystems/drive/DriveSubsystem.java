@@ -103,9 +103,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_fieldPose);
 
-    m_gyro.startCalibration();
-    m_gyro.waitForCalibrationToFinish(7);
-    CanandEventLoop.getInstance();
 
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
@@ -571,6 +568,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
+    // return m_gyro.getYaw() * 360;
     return m_gyro.getYaw() >= 0 ? m_gyro.getYaw() * 360 : Math.abs((m_gyro.getYaw() * 360) + 360);
   }
 
