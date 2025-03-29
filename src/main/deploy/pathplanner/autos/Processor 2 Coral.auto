@@ -1,0 +1,92 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Dragon standby"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Set Align Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Event Barge to E P"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Event E to station 1P"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Align to Coral Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Event station to C 2P"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C move back"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "PROCESSOR",
+  "choreoAuto": false
+}
