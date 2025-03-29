@@ -74,7 +74,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Wait Until Loaded"
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -119,7 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Event K to station 2NP"
+                  "pathName": "K move back"
                 }
               }
             ]
