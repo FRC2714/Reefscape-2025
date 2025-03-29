@@ -75,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          Rotation2d.fromDegrees(-m_gyro.getYaw()),
+          Rotation2d.fromDegrees(getHeading()),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -237,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetEstimatedHeading(Rotation2d rotation) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -249,7 +249,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     swerveDrivePoseEstimator.resetPosition(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -282,7 +282,7 @@ public class DriveSubsystem extends SubsystemBase {
     // });
     // }
     swerveDrivePoseEstimator.update(
-        Rotation2d.fromDegrees(-m_gyro.getYaw()),
+        Rotation2d.fromDegrees(getHeading()),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -483,7 +483,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
+                    Rotation2d.fromDegrees(getHeading()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -506,7 +506,7 @@ public class DriveSubsystem extends SubsystemBase {
                     xSpeedDelivered,
                     ySpeedDelivered,
                     rotDelivered,
-                    Rotation2d.fromDegrees(-m_gyro.getYaw()))
+                    Rotation2d.fromDegrees(getHeading()))
                 : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
