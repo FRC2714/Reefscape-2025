@@ -53,7 +53,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Wait Until Loaded"
+                  "name": "Intake Coral"
                 }
               }
             ]
@@ -87,6 +87,12 @@
           "type": "path",
           "data": {
             "pathName": "Algae C to station 2P"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         }
       ]

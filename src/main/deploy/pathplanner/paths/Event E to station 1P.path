@@ -36,13 +36,23 @@
       "name": "Idle",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
     },
     {
       "name": "Intake Coral",
       "waypointRelativePos": 0.52,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Coral"
+        }
+      }
     }
   ],
   "globalConstraints": {
