@@ -415,6 +415,8 @@ public class Dragon extends SubsystemBase {
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
 
+    SmartDashboard.putNumber("Dragon/Pivot/Current", pivotMotor.getOutputCurrent());
+
     SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
 
     SmartDashboard.putString("Dragon/State", m_dragonState.toString());

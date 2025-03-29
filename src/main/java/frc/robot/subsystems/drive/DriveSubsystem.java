@@ -394,6 +394,12 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Drive/Front Left Current", m_frontLeft.getDrivingCurrent());
+    SmartDashboard.putNumber("Drive/Front Right Current", m_frontRight.getDrivingCurrent());
+    SmartDashboard.putNumber("Drive/Rear Left Current", m_rearLeft.getDrivingCurrent());
+    SmartDashboard.putNumber("Drive/Rear Right Current", m_rearRight.getDrivingCurrent());
+
     SmartDashboard.putNumber(
         "left pipeline", LimelightHelpers.getCurrentPipelineIndex("limelight-left"));
     SmartDashboard.putNumber(
