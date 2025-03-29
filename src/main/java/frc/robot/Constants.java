@@ -127,16 +127,13 @@ public final class Constants {
     public static final double kG = 0.2;
 
     public static final double kPivotReduction = 1;
-    public static final double kPivotMinAngle = 10;
-    public static final double kPivotMaxAngle = 162;
-    public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 6;
-      public static final double kIntake = 65;
-      public static final double kOneCoralInBetweenIntake = 77;
-      public static final double kExtake = 85;
-      public static final double kHandoff = 69;
+      public static final double kStow = 1.5;
+      public static final double kIntake = 59;
+      public static final double kOneCoralInBetweenIntake = 77.2;
+      public static final double kExtake = 80;
+      public static final double kHandoff = 67;
       public static final double kPoop = 70;
 
       public static final double kZeroOffsetDegrees = 270;
@@ -316,7 +313,7 @@ public final class Constants {
 
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 1.07;
+      public static final double kLevel3 = 0;
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 4.89;
@@ -333,27 +330,27 @@ public final class Constants {
 
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
-    public static final double kPivotZeroOffset = 149.0;
-    public static final double kClearFromElevatorAngle = 180;
-    public static final double kClearFromReefAngle = 45;
-    public static final double kClearToScoreL4Angle = 65;
+    public static final double kClearFromElevatorAngle = 165.5;
+    public static final double kClearFromReefAngle = 50;
+    public static final double kClearToScoreL4Angle = 70.7;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
     public static final class PivotSetpoints {
-      public static final double kStartingConfig = 235;
-      public static final double kStow = 20;
-      public static final double kHandoff = 224.6; // fix this later
-      public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 107;
-      public static final double kLevel3 = 61.08;
-      public static final double kLevel4 = 95;
-      public static final double kClimb = 180;
-      public static final double kAlgaeHigh = 90; // TODO: fix this later
-      public static final double kAlgaeLow = 92; // TODO: fix this later
-      public static final double kAlgaeReady = 210;
-      public static final double kRetract = 41;
+      // Zero offset in Hardwar Client is 10
+      public static final double kStartingConfig = 245;
+      public static final double kStow = 27.25;
+      public static final double kHandoff = 222; // fix this later
+      public static final double kLevel1 = 47.13;
+      public static final double kLevel2 = 100.3;
+      public static final double kLevel3 = 35;
+      public static final double kLevel4 = 101.7;
+      public static final double kClimb = 190;
+      public static final double kAlgaeHigh = 89.4; // TODO: fix this later
+      public static final double kAlgaeLow = 89.4; // TODO: fix this later
+      public static final double kAlgaeReady = 220;
+      public static final double kRetract = 49.3;
     }
 
     public static final class RollerSetpoints {

@@ -150,7 +150,6 @@ public final class Configs {
           .absoluteEncoder
           .positionConversionFactor(360 / CoralIntakeConstants.kPivotReduction)
           .inverted(false)
-          .zeroOffset(CoralIntakeConstants.kZeroOffsetDegrees / 360)
           .zeroCentered(false); // tune later
       pivotConfig
           .closedLoop
@@ -160,17 +159,12 @@ public final class Configs {
           .p(Constants.CoralIntakeConstants.kP)
           .d(0)
           .outputRange(-1, 1)
+          .positionWrappingEnabled(true)
+          .positionWrappingInputRange(0, 360)
           .maxMotion
           .maxVelocity(4200 * 360)
           .maxAcceleration(6000 * 360)
           .allowedClosedLoopError(0.5);
-
-      pivotConfig
-          .softLimit
-          .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
-          .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
-          .forwardSoftLimitEnabled(true)
-          .reverseSoftLimitEnabled(true);
 
       // Configure basic settings of the intake motor
       rollerConfig
@@ -242,9 +236,9 @@ public final class Configs {
           .allowedClosedLoopError(0.5);
       pivotConfig
           .absoluteEncoder
-          .zeroOffset(DragonConstants.kPivotZeroOffset / 360)
           .inverted(false)
           .positionConversionFactor(360 / DragonConstants.kPivotReduction);
+
       pivotConfig
           .softLimit
           .forwardSoftLimit(DragonConstants.kPivotMaxAngle)
@@ -253,7 +247,7 @@ public final class Configs {
           .reverseSoftLimitEnabled(true);
 
       pivotRollerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
-      pivotRollerConfig.inverted(true);
+      pivotRollerConfig.inverted(false);
 
       pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
     }
