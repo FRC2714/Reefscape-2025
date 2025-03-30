@@ -65,7 +65,7 @@ public final class Configs {
     static {
       // Configure basic setting of the arm motor
       pivotConfig
-          .smartCurrentLimit(40)
+          .smartCurrentLimit(80)
           .idleMode(IdleMode.kBrake)
           .inverted(false)
           .voltageCompensation(12);
