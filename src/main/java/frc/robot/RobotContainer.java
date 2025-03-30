@@ -24,6 +24,7 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoral;
 import frc.robot.commands.AlignToCoralStation;
+import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -55,20 +56,23 @@ public class RobotContainer {
           LimelightConstants.kRightLimelightName,
           LimelightConstants.kRightCameraHeight,
           LimelightConstants.kRightMountingPitch,
-          LimelightConstants.kReefTagHeight);
+          LimelightConstants.kReefTagHeight,
+          LimelightConstants.kRightLimelightPose);
   private final Limelight m_leftLimelight =
       new Limelight(
           LimelightConstants.kLeftLimelightName,
           LimelightConstants.kLeftCameraHeight,
           LimelightConstants.kLeftMountingPitch,
-          LimelightConstants.kReefTagHeight);
+          LimelightConstants.kReefTagHeight,
+          LimelightConstants.kLeftLimelightPose);
 
   private final Limelight m_backLimelight =
       new Limelight(
           LimelightConstants.kBackLimelightName,
           LimelightConstants.kBackCameraHeight,
           LimelightConstants.kBackMountingPitch,
-          LimelightConstants.kCoralStationTagHeight);
+          LimelightConstants.kCoralStationTagHeight,
+          LimelightConstants.kBackLimelightPose);
 
   private final StateMachine m_stateMachine =
       new StateMachine(m_dragon, m_elevator, m_coralIntake, m_climber);
@@ -204,7 +208,7 @@ public class RobotContainer {
 
     m_driverController
         .rightBumper()
-        .whileTrue(new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight));
+        .whileTrue(new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
