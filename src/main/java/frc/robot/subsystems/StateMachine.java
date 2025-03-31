@@ -649,7 +649,10 @@ public class StateMachine extends SubsystemBase {
   }
 
   public boolean isReadyToScore() {
-    return (m_state == State.DRAGON_READY && m_dragon.atSetpoint() && m_elevator.atSetpoint())
+    return (m_state == State.DRAGON_READY
+            && m_dragon.atSetpoint()
+            && m_elevator.atSetpoint()
+            && (m_level == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
         || (m_state == State.POOP_READY
             && m_coralIntake.atSetpoint()
             && m_dragon.atSetpoint()

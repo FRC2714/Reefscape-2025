@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -337,6 +340,12 @@ public final class Constants {
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
+
+    public static final class LaserCanConstants {
+      // TODO(jan): Tune
+      public static final Distance kL4MinDetectionDistance = Inches.of(7);
+      public static final Distance kL4MaxDetectionDistance = Inches.of(10);
+    }
 
     public static final class PivotSetpoints {
       // Zero offset in Hardware Client is 10
