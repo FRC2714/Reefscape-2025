@@ -436,7 +436,7 @@ public class Dragon extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    if (SmartDashboard.getBoolean("Zero Dragon", false) == true) {
+    if (SmartDashboard.getBoolean("Zero Dragon", false)) {
       SparkFlexConfig zeroConfig = new SparkFlexConfig();
       zeroConfig.absoluteEncoder.zeroOffset(0);
       pivotMotor.configure(
