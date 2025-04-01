@@ -435,7 +435,8 @@ public class Dragon extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
-    SmartDashboard.putNumber(("Dragon/Distance from branch millimeters"), m_laserCan.getMeasurement().distance_mm);
+    SmartDashboard.putNumber(
+        ("Dragon/Distance from branch millimeters"), m_laserCan.getMeasurement().distance_mm);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
