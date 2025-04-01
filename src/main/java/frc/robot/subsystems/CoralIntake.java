@@ -120,6 +120,9 @@ public class CoralIntake extends SubsystemBase {
               CoralIntakeConstants.PivotSetpoints.kZeroOffsetDegrees));
 
   public CoralIntake() {
+
+    SmartDashboard.setDefaultBoolean("Zero Coral Intake", false);
+
     tunableAngle = new TunableNumber("Coral Intake/Tunable Pivot Angle");
     tunableP = new TunableNumber("Coral Intake/Tunable Pivot P");
     tunableAngle.setDefault(0);
@@ -423,6 +426,20 @@ public class CoralIntake extends SubsystemBase {
   @Override
   public void periodic() {
     // Display subsystem values
+
+    if (SmartDashboard.getBoolean("Zero Coral Intake", false) == true) {
+      SparkFlexConfig zeroConfig = new SparkFlexConfig();
+      zeroConfig.absoluteEncoder.zeroOffset(0);
+      pivotMotor.configure(
+          zeroConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+      double position = (pivotEncoder.getPosition() - 10) / 360;
+      zeroConfig.absoluteEncoder.zeroOffset(position);
+      pivotMotor.configure(
+          zeroConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+      SmartDashboard.putBoolean("Zero Coral Intake", false);
+    }
+
     SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());

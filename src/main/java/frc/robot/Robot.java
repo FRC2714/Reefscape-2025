@@ -58,7 +58,6 @@ public class Robot extends TimedRobot {
 
     defaultStatesSet = false;
 
-    SmartDashboard.setDefaultBoolean("Zero Coral Intake", false);
   }
 
   /**
