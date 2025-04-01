@@ -364,7 +364,7 @@ public class CoralIntake extends SubsystemBase {
         .andThen(
             this.run(
                 () -> {
-                  setRollerPower(RollerSetpoints.kExtake);
+                  setRollerPower(RollerSetpoints.kIntake);
                   setCoralIntakeState(CoralIntakeState.POOP_SCORE);
                 }))
         .withName("poop l1");
