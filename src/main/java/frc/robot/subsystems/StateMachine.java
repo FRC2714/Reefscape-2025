@@ -670,5 +670,9 @@ public class StateMachine extends SubsystemBase {
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
     SmartDashboard.putBoolean("State Machine/Ready to Score", isReadyToScore());
+
+    if (isReadyToScore() && !manualOverride) {
+      scoreCoral();
+    }
   }
 }
