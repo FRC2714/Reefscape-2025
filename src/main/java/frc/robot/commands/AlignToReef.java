@@ -13,7 +13,7 @@ import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlignToCoral extends Command {
+public class AlignToReef extends Command {
   private DriveSubsystem m_drivetrain;
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
@@ -23,7 +23,7 @@ public class AlignToCoral extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
-  public AlignToCoral(
+  public AlignToReef(
       DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
