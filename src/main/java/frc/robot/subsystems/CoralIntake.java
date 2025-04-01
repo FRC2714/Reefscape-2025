@@ -207,7 +207,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kExtake;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
@@ -364,7 +364,7 @@ public class CoralIntake extends SubsystemBase {
         .andThen(
             this.run(
                 () -> {
-                  setRollerPower(RollerSetpoints.kExtake);
+                  setRollerPower(RollerSetpoints.kIntake);
                   setCoralIntakeState(CoralIntakeState.POOP_SCORE);
                 }))
         .withName("poop l1");

@@ -383,11 +383,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   private Command poopScoreSequence() {
-    return m_coralIntake
-        .poopL1()
-        .until(() -> !m_coralIntake.isLoaded())
-        .andThen(idleSequence())
-        .beforeStarting(() -> m_state = State.POOP_SCORE);
+    return m_coralIntake.poopL1().beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
   public Command algaeRemovalSequence(ScoreLevel level) {
@@ -410,6 +406,7 @@ public class StateMachine extends SubsystemBase {
                 idleSequence().schedule();
               } else if (m_state == State.INTAKE
                   || m_state == State.EXTAKE
+                  || m_state == State.POOP_SCORE
                   || m_state == State.ALGAE_REMOVE
                   || m_state == State.IDLE) {
                 idleSequence().schedule();
@@ -462,7 +459,8 @@ public class StateMachine extends SubsystemBase {
               if (manualOverride
                   || m_state == State.IDLE
                   || m_state == State.DRAGON_READY
-                  || m_state == State.DRAGON_STANDBY) {
+                  || m_state == State.DRAGON_STANDBY
+                  || m_state == State.POOP_SCORE) {
                 idleSequence()
                     .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
                     .schedule();
@@ -513,7 +511,9 @@ public class StateMachine extends SubsystemBase {
                     || m_state == State.DRAGON_STANDBY
                     || m_state == State.ALGAE_REMOVE) {
                   scoreReadySequence(level).schedule();
-                } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
+                } else if (!autoHandoff
+                    || m_state == State.POOP_STANDBY
+                    || m_state == State.POOP_READY) {
                   poopReadySequence().schedule();
                 }
               } else if (level == ScoreLevel.L4) {
