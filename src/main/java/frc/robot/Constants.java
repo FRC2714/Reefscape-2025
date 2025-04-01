@@ -89,7 +89,7 @@ public final class Constants {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
 
-      public static final double kMaxAngle = 315;
+      public static final double kMaxAngle = 315 * .5555;
       public static final double kMinAngle = 0;
     }
   }
