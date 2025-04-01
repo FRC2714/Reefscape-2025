@@ -131,6 +131,8 @@ public class Dragon extends SubsystemBase {
 
   /** Creates a new Elevator and Pivot. */
   public Dragon() {
+    SmartDashboard.getBoolean("Zero Dragon", false);
+
     tunableAngle = new TunableNumber("Dragon/Pivot Angle");
     tunableP = new TunableNumber("Dragon/Pivot P");
     tunableAngle.setDefault(0);
@@ -433,6 +435,19 @@ public class Dragon extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    if (SmartDashboard.getBoolean("Zero Dragon", false) == true) {
+      SparkFlexConfig zeroConfig = new SparkFlexConfig();
+      zeroConfig.absoluteEncoder.zeroOffset(0);
+      pivotMotor.configure(
+          zeroConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+      double position = (pivotAbsoluteEncoder.getPosition() - 10) / 360;
+      zeroConfig.absoluteEncoder.zeroOffset(position);
+      pivotMotor.configure(
+          zeroConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+      SmartDashboard.putBoolean("Zero Dragon", false);
+    }
 
     SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
     SmartDashboard.putNumber(
