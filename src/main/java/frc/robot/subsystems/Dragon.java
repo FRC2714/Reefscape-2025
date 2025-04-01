@@ -4,6 +4,14 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Millimeters;
+
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
+import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
+import au.grapplerobotics.interfaces.LaserCanInterface.TimingBudget;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -28,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.DragonConstants;
+import frc.robot.Constants.DragonConstants.LaserCanConstants;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
@@ -74,6 +83,8 @@ public class Dragon extends SubsystemBase {
   private DragonSetpoint m_previousSetpoint;
 
   private boolean coralOnDragon;
+
+  LaserCan m_laserCan = new LaserCan(1);
 
   // Pivot Arm
   private SparkFlex pivotMotor =
@@ -124,6 +135,14 @@ public class Dragon extends SubsystemBase {
     tunableP = new TunableNumber("Dragon/Pivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
+
+    try {
+      m_laserCan.setRangingMode(RangingMode.SHORT);
+      m_laserCan.setRegionOfInterest(new RegionOfInterest(8, 8, 6, 6));
+      m_laserCan.setTimingBudget(TimingBudget.TIMING_BUDGET_33MS);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     pivotMotor.configure(
         Configs.Dragon.pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -402,9 +421,23 @@ public class Dragon extends SubsystemBase {
     return m_dragonState;
   }
 
+  public boolean isBranchDetected() {
+    Measurement measurement = m_laserCan.getMeasurement();
+
+    return measurement != null
+        && measurement.status == LaserCanInterface.LASERCAN_STATUS_VALID_MEASUREMENT
+        && measurement.distance_mm >= LaserCanConstants.kL4MinDetectionDistance.in(Millimeters)
+        && measurement.distance_mm <= LaserCanConstants.kL4MaxDetectionDistance.in(Millimeters);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
+    SmartDashboard.putNumber(
+        ("Dragon/Distance from branch millimeters"),
+        m_laserCan.getMeasurement() != null ? m_laserCan.getMeasurement().distance_mm : -1);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
