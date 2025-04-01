@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Millimeters;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -343,8 +344,8 @@ public final class Constants {
 
     public static final class LaserCanConstants {
       // TODO(jan): Tune
-      public static final Distance kL4MinDetectionDistance = Inches.of(7);
-      public static final Distance kL4MaxDetectionDistance = Inches.of(10);
+      public static final Distance kL4MinDetectionDistance = Millimeters.of(135);
+      public static final Distance kL4MaxDetectionDistance = Millimeters.of(200);
     }
 
     public static final class PivotSetpoints {

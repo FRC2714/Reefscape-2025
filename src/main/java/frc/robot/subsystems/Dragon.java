@@ -138,7 +138,7 @@ public class Dragon extends SubsystemBase {
 
     try {
       m_laserCan.setRangingMode(RangingMode.SHORT);
-      m_laserCan.setRegionOfInterest(new RegionOfInterest(8, 8, 8, 8));
+      m_laserCan.setRegionOfInterest(new RegionOfInterest(8, 8, 6, 6));
       m_laserCan.setTimingBudget(TimingBudget.TIMING_BUDGET_33MS);
     } catch (Exception e) {
       e.printStackTrace();
@@ -435,6 +435,7 @@ public class Dragon extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
+    SmartDashboard.putNumber(("Dragon/Distance from branch millimeters"), m_laserCan.getMeasurement().distance_mm);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
