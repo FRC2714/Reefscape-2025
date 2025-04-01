@@ -436,7 +436,8 @@ public class Dragon extends SubsystemBase {
 
     SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
     SmartDashboard.putNumber(
-        ("Dragon/Distance from branch millimeters"), m_laserCan.getMeasurement().distance_mm);
+        ("Dragon/Distance from branch millimeters"),
+        m_laserCan.getMeasurement() != null ? m_laserCan.getMeasurement().distance_mm : -1);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
