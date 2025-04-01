@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -648,11 +649,31 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !elevatorHasReset);
   }
 
+  boolean previousL4Detected = false;
+  double timestamp = 0;
+
   public boolean isReadyToScore() {
+
+    boolean aaaaaaaa = false;
+
+    if (m_level == ScoreLevel.L4) {
+
+      if (!previousL4Detected && m_dragon.isBranchDetected()) {
+        timestamp = Timer.getFPGATimestamp();
+        previousL4Detected = true;
+      } else if (previousL4Detected && !m_dragon.isBranchDetected()) {
+        previousL4Detected = false;
+      } else if (previousL4Detected && Timer.getFPGATimestamp() - timestamp >= 0.5) {
+        aaaaaaaa = true;
+      }
+    } else {
+      aaaaaaaa = true;
+    }
+
     return (m_state == State.DRAGON_READY
             && m_dragon.atSetpoint()
             && m_elevator.atSetpoint()
-            && (m_level == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
+            && aaaaaaaa)
         || (m_state == State.POOP_READY
             && m_coralIntake.atSetpoint()
             && m_dragon.atSetpoint()
