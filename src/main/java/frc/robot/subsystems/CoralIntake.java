@@ -427,7 +427,7 @@ public class CoralIntake extends SubsystemBase {
   public void periodic() {
     // Display subsystem values
 
-    if (SmartDashboard.getBoolean("Zero Coral Intake", false) == true) {
+    if (SmartDashboard.getBoolean("Zero Coral Intake", false)) {
       SparkFlexConfig zeroConfig = new SparkFlexConfig();
       zeroConfig.absoluteEncoder.zeroOffset(0);
       pivotMotor.configure(
