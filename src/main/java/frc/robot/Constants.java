@@ -137,7 +137,7 @@ public final class Constants {
       public static final double kIntake = 69;
       public static final double kOneCoralInBetweenIntake = 87.2;
       public static final double kExtake = 90;
-      public static final double kHandoff = 77;
+      public static final double kHandoff = 78.8;
       public static final double kPoop = 80;
 
       public static final double kZeroOffsetDegrees = 270;
@@ -351,7 +351,7 @@ public final class Constants {
       // Zero offset in Hardware Client is 10
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
-      public static final double kHandoff = 222; // fix this later
+      public static final double kHandoff = 221.1; // fix this later
       public static final double kLevel1 = 47.13;
       public static final double kLevel2 = 100.3;
       public static final double kLevel3 = 35;
