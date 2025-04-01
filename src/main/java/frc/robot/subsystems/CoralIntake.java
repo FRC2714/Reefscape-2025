@@ -207,7 +207,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kExtake;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
