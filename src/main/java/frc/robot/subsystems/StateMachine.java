@@ -648,6 +648,17 @@ public class StateMachine extends SubsystemBase {
         .onlyIf(() -> !elevatorHasReset);
   }
 
+  public boolean isReadyToScore() {
+    return (m_state == State.DRAGON_READY
+            && m_dragon.atSetpoint()
+            && m_elevator.atSetpoint()
+            && (m_level == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
+        || (m_state == State.POOP_READY
+            && m_coralIntake.atSetpoint()
+            && m_dragon.atSetpoint()
+            && m_elevator.atSetpoint());
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
@@ -658,5 +669,6 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putString(
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+    SmartDashboard.putBoolean("State Machine/Ready to Score", isReadyToScore());
   }
 }
