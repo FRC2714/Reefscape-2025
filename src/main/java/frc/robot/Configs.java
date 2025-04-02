@@ -23,7 +23,7 @@ public final class Configs {
       double turningFactor = 2 * Math.PI;
       double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
 
-      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
+      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(60);
       drivingConfig
           .encoder
           .positionConversionFactor(drivingFactor) // meters
@@ -221,7 +221,7 @@ public final class Configs {
     public static final SparkFlexConfig pivotRollerConfig = new SparkFlexConfig();
 
     static {
-      pivotConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
+      pivotConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(60).voltageCompensation(12);
       pivotConfig.inverted(true);
       pivotConfig
           .closedLoop
