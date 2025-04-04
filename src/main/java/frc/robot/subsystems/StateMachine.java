@@ -285,7 +285,7 @@ public class StateMachine extends SubsystemBase {
           if (m_state == State.DRAGON_SCORE)
             if (m_level == ScoreLevel.L4) {
               m_dragon
-                  .retract()
+                  .retractWithNoHold()
                   .until(m_dragon::isClearFromReef)
                   .andThen(
                       removeAlgae(
@@ -313,7 +313,7 @@ public class StateMachine extends SubsystemBase {
   public Command stopScoreAuto() {
     return new ConditionalCommand(
         m_dragon
-            .retract()
+            .retractWithNoHold()
             .until(m_dragon::atSetpoint)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         m_dragon

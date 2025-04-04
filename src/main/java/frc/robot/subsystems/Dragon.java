@@ -370,6 +370,16 @@ public class Dragon extends SubsystemBase {
         .withName("retract()");
   }
 
+  public Command retractWithNoHold() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.RETRACT);
+              setRollerPower(RollerSetpoints.kStop);
+              setDragonState(DragonState.SCORE_READY);
+            })
+        .withName("retract()");
+  }
+
   public Command stopRoller() {
     return this.run(
             () -> {

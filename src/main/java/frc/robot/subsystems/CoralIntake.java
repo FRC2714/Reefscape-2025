@@ -46,7 +46,7 @@ public class CoralIntake extends SubsystemBase {
     CORALBETWEEN,
     EXTAKE,
     POOP,
-    CLIMB
+    CLIMB,
   }
 
   public enum CoralIntakeState {
@@ -60,7 +60,7 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
-    POOP_STANDBY
+    POOP_STANDBY,
   }
 
   // Tunables
@@ -364,7 +364,7 @@ public class CoralIntake extends SubsystemBase {
         .andThen(
             this.run(
                 () -> {
-                  setRollerPower(RollerSetpoints.kIntake);
+                  setRollerPower(RollerSetpoints.kPoop);
                   setCoralIntakeState(CoralIntakeState.POOP_SCORE);
                 }))
         .withName("poop l1");

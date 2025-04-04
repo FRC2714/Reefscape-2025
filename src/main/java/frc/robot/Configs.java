@@ -23,7 +23,7 @@ public final class Configs {
       double turningFactor = 2 * Math.PI;
       double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
 
-      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
+      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(70);
       drivingConfig
           .encoder
           .positionConversionFactor(drivingFactor) // meters
@@ -176,6 +176,7 @@ public final class Configs {
       // Configure indexer
       indexerConfig.inverted(false).smartCurrentLimit(40).idleMode(IdleMode.kBrake);
       indexerConfig.limitSwitch.forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false);
+      indexerConfig.signals.limitsPeriodMs(5);
     }
   }
 

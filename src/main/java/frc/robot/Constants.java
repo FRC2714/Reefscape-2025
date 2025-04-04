@@ -133,7 +133,7 @@ public final class Constants {
 
     public static final class PivotSetpoints {
       // Zero offset in Hardware Client is 10
-      public static final double kStow = 10.5;
+      public static final double kStow = 15.2;
       public static final double kIntake = 69;
       public static final double kOneCoralInBetweenIntake = 87.2;
       public static final double kExtake = 90;
@@ -149,6 +149,7 @@ public final class Constants {
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
       public static final double kPrePoop = -0.2;
+      public static final double kPoop = 0.35;
     }
   }
 
@@ -317,7 +318,7 @@ public final class Constants {
 
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 0;
+      public static final double kLevel3 = 1.3; // CHANGE
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 4.89;
@@ -352,9 +353,9 @@ public final class Constants {
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
       public static final double kHandoff = 221.1; // fix this later
-      public static final double kLevel1 = 47.13;
-      public static final double kLevel2 = 100.3;
-      public static final double kLevel3 = 35;
+      public static final double kLevel1 = 35;
+      public static final double kLevel2 = 100.3; // CHANGE?
+      public static final double kLevel3 = 57.7; // CHANGE
       public static final double kLevel4 = 101.7;
       public static final double kClimb = 190;
       public static final double kAlgaeHigh = 89.4; // TODO: fix this later
