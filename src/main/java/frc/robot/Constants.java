@@ -353,6 +353,7 @@ public final class Constants {
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
       public static final double kHandoff = 221.1; // fix this later
+      public static final double kHandoffStandby = 200; //TODO: CHANGE
       public static final double kLevel1 = 35;
       public static final double kLevel2 = 100.3; // CHANGE?
       public static final double kLevel3 = 57.7; // CHANGE

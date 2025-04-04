@@ -173,7 +173,8 @@ public class StateMachine extends SubsystemBase {
     return m_coralIntake
         .coralBetween()
         .until(m_coralIntake::isLoaded)
-        .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))
+        .alongWith(m_dragon.handoffStandby
+        ().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
             new ConditionalCommand(
@@ -198,7 +199,7 @@ public class StateMachine extends SubsystemBase {
             .intake()
             .until(m_coralIntake::isLoaded)
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
-        .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
+        .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -208,7 +209,7 @@ public class StateMachine extends SubsystemBase {
             .onlyIf(() -> !m_coralIntake.isLoaded())
             .until(m_coralIntake::isLoaded)
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
-        .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
+        .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -226,12 +227,14 @@ public class StateMachine extends SubsystemBase {
                 .onlyIf(() -> !m_elevator.atSetpoint())
                 .until(m_dragon::isClearFromElevator)
                 .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-                .andThen(m_dragon.handoffReady())
+                .andThen(m_dragon.handoffStandby())
                 .until(m_dragon::atSetpoint))
             .alongWith(
                 m_coralIntake
                     .takeLaxative()
                     .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
+        .andThen(
+          m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .andThen(
             m_coralIntake
                 .handoff()
