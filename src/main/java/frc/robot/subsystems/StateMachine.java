@@ -196,7 +196,11 @@ public class StateMachine extends SubsystemBase {
   public Command intakeSequence() {
     return (m_coralIntake
             .intake()
-            .until(m_coralIntake::isLoaded)
+            .until(
+                () ->
+                    autoHandoff
+                        ? m_coralIntake.isLoaded()
+                        : m_coralIntake.innerBeamBreakIsPressed())
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
