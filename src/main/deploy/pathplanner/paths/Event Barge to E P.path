@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.372438524590163,
-        "y": 1.939139344262295
+        "x": 7.1686475409836055,
+        "y": 1.9211577868852465
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.361028268179908,
-        "y": 1.9494598570828088
+        "x": 6.452884615384615,
+        "y": 1.8989743589743593
       },
       "isLocked": false,
       "linkedName": "Processor side start"
     },
     {
       "anchor": {
-        "x": 4.966730769230768,
-        "y": 2.8175
+        "x": 5.131858974358974,
+        "y": 2.5078846153846155
       },
       "prevControl": {
-        "x": 5.5137179487179475,
-        "y": 1.8680128205128197
+        "x": 5.575641025641025,
+        "y": 1.8473717948717945
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,22 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.95,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -50,5 +62,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

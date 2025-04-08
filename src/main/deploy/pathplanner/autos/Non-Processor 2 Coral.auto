@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "barge to J NP"
+                  "pathName": "Event barge to J NP"
                 }
               }
             ]
@@ -33,12 +33,6 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              },
               {
                 "type": "named",
                 "data": {
@@ -61,13 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "J-back to station 1NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Idle"
+                  "pathName": "Event J-back to station 1NP"
                 }
               }
             ]
@@ -99,13 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Station to L 1NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
+                  "pathName": "Event Station to L 1NP"
                 }
               }
             ]
@@ -119,12 +101,6 @@
                 "type": "named",
                 "data": {
                   "name": "Auto align"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
                 }
               }
             ]
@@ -143,57 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "K to station 2NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Idle"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align to Coral Station"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake Coral"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "station to mid 2NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Align Left"
+                  "pathName": "K move back"
                 }
               }
             ]
@@ -203,6 +129,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }

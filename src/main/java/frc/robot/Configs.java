@@ -23,7 +23,7 @@ public final class Configs {
       double turningFactor = 2 * Math.PI;
       double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
 
-      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
+      drivingConfig.idleMode(IdleMode.kBrake).smartCurrentLimit(70);
       drivingConfig
           .encoder
           .positionConversionFactor(drivingFactor) // meters
@@ -65,7 +65,7 @@ public final class Configs {
     static {
       // Configure basic setting of the arm motor
       pivotConfig
-          .smartCurrentLimit(40)
+          .smartCurrentLimit(80)
           .idleMode(IdleMode.kBrake)
           .inverted(false)
           .voltageCompensation(12);
@@ -150,7 +150,6 @@ public final class Configs {
           .absoluteEncoder
           .positionConversionFactor(360 / CoralIntakeConstants.kPivotReduction)
           .inverted(false)
-          .zeroOffset(CoralIntakeConstants.kZeroOffsetDegrees / 360)
           .zeroCentered(false); // tune later
       pivotConfig
           .closedLoop
@@ -160,17 +159,12 @@ public final class Configs {
           .p(Constants.CoralIntakeConstants.kP)
           .d(0)
           .outputRange(-1, 1)
+          .positionWrappingEnabled(true)
+          .positionWrappingInputRange(0, 360)
           .maxMotion
           .maxVelocity(4200 * 360)
           .maxAcceleration(6000 * 360)
           .allowedClosedLoopError(0.5);
-
-      pivotConfig
-          .softLimit
-          .forwardSoftLimit(CoralIntakeConstants.kPivotMaxAngle)
-          .reverseSoftLimit(CoralIntakeConstants.kPivotMinAngle)
-          .forwardSoftLimitEnabled(true)
-          .reverseSoftLimitEnabled(true);
 
       // Configure basic settings of the intake motor
       rollerConfig
@@ -182,6 +176,7 @@ public final class Configs {
       // Configure indexer
       indexerConfig.inverted(false).smartCurrentLimit(40).idleMode(IdleMode.kBrake);
       indexerConfig.limitSwitch.forwardLimitSwitchEnabled(false).reverseLimitSwitchEnabled(false);
+      indexerConfig.signals.limitsPeriodMs(5);
     }
   }
 
@@ -242,9 +237,9 @@ public final class Configs {
           .allowedClosedLoopError(0.5);
       pivotConfig
           .absoluteEncoder
-          .zeroOffset(DragonConstants.kPivotZeroOffset / 360)
           .inverted(false)
           .positionConversionFactor(360 / DragonConstants.kPivotReduction);
+
       pivotConfig
           .softLimit
           .forwardSoftLimit(DragonConstants.kPivotMaxAngle)
@@ -253,7 +248,7 @@ public final class Configs {
           .reverseSoftLimitEnabled(true);
 
       pivotRollerConfig.limitSwitch.forwardLimitSwitchEnabled(false);
-      pivotRollerConfig.inverted(true);
+      pivotRollerConfig.inverted(false);
 
       pivotRollerConfig.idleMode(IdleMode.kCoast).smartCurrentLimit(60).voltageCompensation(12);
     }

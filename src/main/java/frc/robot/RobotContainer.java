@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AlignToCoral;
 import frc.robot.commands.AlignToCoralStation;
 import frc.robot.commands.AlignToReef;
 import frc.robot.subsystems.Climber;
@@ -143,7 +143,11 @@ public class RobotContainer {
         new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand(
         "Auto align",
-        new AlignToCoral(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
+        new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
+    NamedCommands.registerCommand(
+        "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
+    NamedCommands.registerCommand(
+        "Remove Algae Low", m_stateMachine.algaeRemovalSequence(ScoreLevel.ALGAE_LOW));
     configureButtonBindings();
 
     // Configure default commands
@@ -199,6 +203,7 @@ public class RobotContainer {
         .onTrue(m_stateMachine.intakeCoral());
 
     m_driverController.a().onTrue(m_stateMachine.scoreCoral());
+    m_driverController.b().onTrue(m_stateMachine.stopScore());
 
     m_driverController
         .rightBumper()
@@ -209,6 +214,8 @@ public class RobotContainer {
         .whileTrue(new AlignToCoralStation(m_robotDrive, m_backLimelight));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading()));
+
+    m_driverController.leftBumper().onTrue(m_stateMachine.oneCoralBetweenIntake());
 
     // Stages
     L1Button.onTrue(m_stateMachine.setLevel(ScoreLevel.L1));
@@ -293,6 +300,10 @@ public class RobotContainer {
 
   public Command homingSequence() {
     return m_stateMachine.homingSequence();
+  }
+
+  public void flipHeading() {
+    m_robotDrive.flipHeading();
   }
 
   /**

@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.521858974358974,
-        "y": 2.74525641025641
+        "x": 3.452459016393442,
+        "y": 5.23
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.026476475682296,
-        "y": 1.8267296276386253
+        "x": 1.9704590163934421,
+        "y": 5.912500000000001
       },
       "isLocked": false,
-      "linkedName": "C-Coral"
+      "linkedName": "K-Coral"
     },
     {
       "anchor": {
-        "x": 1.4505122950819784,
-        "y": 1.2258709016373734
+        "x": 2.3975409836065573,
+        "y": 5.853125
       },
       "prevControl": {
-        "x": 1.8323712694409524,
-        "y": 1.855422183688655
+        "x": 3.6942909836065567,
+        "y": 5.190124999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Idle",
+      "waypointRelativePos": 0.586275816122588,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -41,14 +53,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 53.32280657677183
+    "velocity": 0.5,
+    "rotation": -54.36019080191327
   },
   "reversed": false,
-  "folder": "PROCESSOR",
+  "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.668000000000006
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

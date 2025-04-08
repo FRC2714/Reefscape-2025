@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -52,6 +53,8 @@ public class Robot extends TimedRobot {
 
     URCL.start();
     DriverStation.startDataLog(DataLogManager.getLog());
+
+    CanandEventLoop.getInstance();
 
     defaultStatesSet = false;
   }
@@ -102,6 +105,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    m_robotContainer.flipHeading();
 
     if (!defaultStatesSet) {
 

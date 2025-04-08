@@ -46,7 +46,7 @@ public class CoralIntake extends SubsystemBase {
     CORALBETWEEN,
     EXTAKE,
     POOP,
-    CLIMB
+    CLIMB,
   }
 
   public enum CoralIntakeState {
@@ -60,7 +60,7 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
-    POOP_STANDBY
+    POOP_STANDBY,
   }
 
   // Tunables
@@ -207,7 +207,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kExtake;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
@@ -364,7 +364,7 @@ public class CoralIntake extends SubsystemBase {
         .andThen(
             this.run(
                 () -> {
-                  setRollerPower(RollerSetpoints.kExtake);
+                  setRollerPower(RollerSetpoints.kPoop);
                   setCoralIntakeState(CoralIntakeState.POOP_SCORE);
                 }))
         .withName("poop l1");
@@ -426,6 +426,10 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber("Coral Intake/Pivot/Current Position", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Coral Intake/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Coral Intake/Pivot/at Setpoint?", atSetpoint());
+
+    SmartDashboard.putNumber("Coral Intake/Pivot/Current", pivotMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Coral Intake/Rollers/Current", rollerMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Coral Intake/Indexer/Current", indexerMotor.getOutputCurrent());
 
     SmartDashboard.putNumber(
         "Coral Intake/Intex/Roller/Applied Output", rollerMotor.getAppliedOutput());

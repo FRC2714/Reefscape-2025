@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.7051420454545454,
-        "y": 0.56984375
+        "x": 1.4505122950819784,
+        "y": 1.2258709016373734
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.272770250582751,
-        "y": 1.4264463141025647
+        "x": 2.1577868852459017,
+        "y": 1.8132684426229502
       },
       "isLocked": false,
       "linkedName": "Processor side station"
     },
     {
       "anchor": {
-        "x": 3.686987179487179,
-        "y": 3.003269230769231
+        "x": 3.521858974358974,
+        "y": 2.74525641025641
       },
       "prevControl": {
-        "x": 3.284487179487179,
-        "y": 2.301474358974359
+        "x": 3.1193589743589736,
+        "y": 2.043461538461538
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,33 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Handoff",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Handoff"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.95,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -50,5 +73,5 @@
     "velocity": 0,
     "rotation": 53.32280657677183
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

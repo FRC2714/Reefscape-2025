@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Millimeters;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -53,6 +56,7 @@ public final class Constants {
     public static final int kFrontLeftDrivingCanId = 5;
     public static final int kFrontRightDrivingCanId = 7;
     public static final int kRearRightDrivingCanId = 1;
+
     public static final int kRearLeftDrivingCanId = 3;
 
     public static final int kFrontLeftTurningCanId = 6;
@@ -80,13 +84,13 @@ public final class Constants {
 
     public static final double kDeploySpeed = 1;
     public static final double kRetractSpeed = -1;
-    public static final double kClimbSetpoint = 10;
+    public static final double kClimbSetpoint = 2;
 
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
 
-      public static final double kMaxAngle = 315;
+      public static final double kMaxAngle = 91;
       public static final double kMinAngle = 0;
     }
   }
@@ -127,20 +131,18 @@ public final class Constants {
     public static final double kG = 0.2;
 
     public static final double kPivotReduction = 1;
-    public static final double kPivotMinAngle = 10;
-    public static final double kPivotMaxAngle = 162;
-    public static final double kZeroOffsetDegrees = 159.0;
 
     public static final class PivotSetpoints {
-      public static final double kStow = 8;
-      public static final double kIntake = 65;
-      public static final double kOneCoralInBetweenIntake = 77;
-      public static final double kExtake = 85;
-      public static final double kHandoff = 72.8;
-      public static final double kPoop = 70;
+      // Zero offset in Hardware Client is 10
+      public static final double kStow = 15.2;
+      public static final double kIntake = 69;
+      public static final double kOneCoralInBetweenIntake = 87.2;
+      public static final double kExtake = 90;
+      public static final double kHandoff = 78.8;
+      public static final double kPoop = 69.7;
 
       public static final double kZeroOffsetDegrees = 270;
-      public static final double kClimb = 90;
+      public static final double kClimb = 100;
     }
 
     public static final class RollerSetpoints {
@@ -148,6 +150,7 @@ public final class Constants {
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
       public static final double kPrePoop = -0.2;
+      public static final double kPoop = 0.35;
     }
   }
 
@@ -344,9 +347,10 @@ public final class Constants {
       public static final double kStow = 0;
       public static final double kPoop = 0;
       public static final double kHandoff = 0;
-      public static final double kLevel1 = 4.5;
+
+      public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 1.07;
+      public static final double kLevel3 = 1.3; // CHANGE
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 4.89;
@@ -363,26 +367,34 @@ public final class Constants {
 
     public static final double kPivotMinAngle = 10.0;
     public static final double kPivotMaxAngle = 250.0;
-    public static final double kPivotZeroOffset = 149.0;
-    public static final double kClearFromElevatorAngle = 180;
-    public static final double kClearFromReefAngle = 45;
+    public static final double kClearFromElevatorAngle = 165.5;
+    public static final double kClearFromReefAngle = 50;
+    public static final double kClearToScoreL4Angle = 70.7;
 
     public static final double kP = 0.015;
     public static final double kG = -0.25;
 
+    public static final class LaserCanConstants {
+      // TODO(jan): Tune
+      public static final Distance kL4MinDetectionDistance = Millimeters.of(135);
+      public static final Distance kL4MaxDetectionDistance = Millimeters.of(200);
+    }
+
     public static final class PivotSetpoints {
-      public static final double kStartingConfig = 235;
-      public static final double kStow = 20;
-      public static final double kHandoff = 224.6; // fix this later
-      public static final double kLevel1 = 37.13;
-      public static final double kLevel2 = 108;
-      public static final double kLevel3 = 61.08;
-      public static final double kLevel4 = 95;
-      public static final double kClimb = 180;
-      public static final double kAlgaeHigh = 90; // TODO: fix this later
-      public static final double kAlgaeLow = 92; // TODO: fix this later
-      public static final double kAlgaeReady = 210;
-      public static final double kRetract = 41;
+      // Zero offset in Hardware Client is 10
+      public static final double kStartingConfig = 245;
+      public static final double kStow = 27.25;
+      public static final double kHandoff = 221.1; // fix this later
+      public static final double kHandoffStandby = 200; // TODO: CHANGE
+      public static final double kLevel1 = 35;
+      public static final double kLevel2 = 100.3; // CHANGE?
+      public static final double kLevel3 = 57.7; // CHANGE
+      public static final double kLevel4 = 101.7;
+      public static final double kClimb = 190;
+      public static final double kAlgaeHigh = 89.4; // TODO: fix this later
+      public static final double kAlgaeLow = 89.4; // TODO: fix this later
+      public static final double kAlgaeReady = 220;
+      public static final double kRetract = 49.3;
     }
 
     public static final class RollerSetpoints {

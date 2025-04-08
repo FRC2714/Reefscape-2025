@@ -4,6 +4,14 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Millimeters;
+
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import au.grapplerobotics.interfaces.LaserCanInterface.RangingMode;
+import au.grapplerobotics.interfaces.LaserCanInterface.RegionOfInterest;
+import au.grapplerobotics.interfaces.LaserCanInterface.TimingBudget;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -28,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.DragonConstants;
+import frc.robot.Constants.DragonConstants.LaserCanConstants;
 import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
@@ -41,6 +50,7 @@ public class Dragon extends SubsystemBase {
     STARTING_CONFIG,
     STOW,
     HANDOFF,
+    HANDOFF_STANDBY,
     L1,
     L2,
     L3,
@@ -74,6 +84,8 @@ public class Dragon extends SubsystemBase {
   private DragonSetpoint m_previousSetpoint;
 
   private boolean coralOnDragon;
+
+  LaserCan m_laserCan = new LaserCan(1);
 
   // Pivot Arm
   private SparkFlex pivotMotor =
@@ -124,6 +136,14 @@ public class Dragon extends SubsystemBase {
     tunableP = new TunableNumber("Dragon/Pivot P");
     tunableAngle.setDefault(0);
     tunableP.setDefault(0);
+
+    try {
+      m_laserCan.setRangingMode(RangingMode.SHORT);
+      m_laserCan.setRegionOfInterest(new RegionOfInterest(8, 8, 6, 6));
+      m_laserCan.setTimingBudget(TimingBudget.TIMING_BUDGET_33MS);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     pivotMotor.configure(
         Configs.Dragon.pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -177,6 +197,13 @@ public class Dragon extends SubsystemBase {
     return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefAngle;
   }
 
+  public boolean isClearToScoreL4() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() > DragonConstants.kClearToScoreL4Angle;
+  }
+
   private void setDragonState(DragonState state) {
     m_dragonState = state;
   }
@@ -196,6 +223,9 @@ public class Dragon extends SubsystemBase {
         break;
       case HANDOFF:
         pivotCurrentTarget = PivotSetpoints.kHandoff;
+        break;
+      case HANDOFF_STANDBY:
+        pivotCurrentTarget = PivotSetpoints.kHandoffStandby;
         break;
       case L1:
         pivotCurrentTarget = PivotSetpoints.kLevel1;
@@ -282,6 +312,16 @@ public class Dragon extends SubsystemBase {
         .withName("handoffReady()");
   }
 
+  public Command handoffStandby() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.HANDOFF_STANDBY);
+              setRollerPower(RollerSetpoints.kStop);
+              setDragonState(DragonState.HANDOFF_READY);
+            })
+        .withName("handoffReady()");
+  }
+
   public Command handoff() {
     return handoffReady()
         .until(this::atSetpoint)
@@ -331,7 +371,6 @@ public class Dragon extends SubsystemBase {
               setRollerPower(RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE);
             })
-        .onlyIf(this::atSetpoint)
         .withName("score()"); // ADD BACK AFTER TESTING
   }
 
@@ -339,6 +378,17 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               setPivot(DragonSetpoint.RETRACT);
+              setRollerPower(RollerSetpoints.kHold);
+              setDragonState(DragonState.SCORE_READY);
+            })
+        .withName("retract()");
+  }
+
+  public Command retractWithNoHold() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.RETRACT);
+              setRollerPower(RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("retract()");
@@ -396,14 +446,30 @@ public class Dragon extends SubsystemBase {
     return m_dragonState;
   }
 
+  public boolean isBranchDetected() {
+    Measurement measurement = m_laserCan.getMeasurement();
+
+    return measurement != null
+        && measurement.status == LaserCanInterface.LASERCAN_STATUS_VALID_MEASUREMENT
+        && measurement.distance_mm >= LaserCanConstants.kL4MinDetectionDistance.in(Millimeters)
+        && measurement.distance_mm <= LaserCanConstants.kL4MaxDetectionDistance.in(Millimeters);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
+    SmartDashboard.putNumber(
+        ("Dragon/Distance from branch millimeters"),
+        m_laserCan.getMeasurement() != null ? m_laserCan.getMeasurement().distance_mm : -1);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("Dragon/Pivot/Setpoint", pivotCurrentTarget);
     SmartDashboard.putBoolean("Dragon/Pivot/at Setpoint?", atSetpoint());
+
+    SmartDashboard.putNumber("Dragon/Pivot/Current", pivotMotor.getOutputCurrent());
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Power", pivotRollers.getAppliedOutput());
 

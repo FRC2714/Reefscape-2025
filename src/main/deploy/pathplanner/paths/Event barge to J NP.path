@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.421632658167292,
-        "y": 6.206775232311838
+        "x": 6.926,
+        "y": 6.16025
       },
       "isLocked": false,
       "linkedName": "barge nonprocessor"
@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.9460359760159763,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
@@ -42,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0.1,
-    "rotation": -119.88200000000002
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": "NONPROCESSOR",

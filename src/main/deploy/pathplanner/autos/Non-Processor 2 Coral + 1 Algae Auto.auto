@@ -36,12 +36,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "Auto align"
                 }
               }
@@ -76,6 +70,12 @@
                 "data": {
                   "name": "Align to Coral Station"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Coral"
+                }
               }
             ]
           }
@@ -88,12 +88,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Event Station to L 1NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
                 }
               }
             ]
@@ -108,12 +102,6 @@
                 "data": {
                   "name": "Auto align"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
               }
             ]
           }
@@ -125,29 +113,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Event K to station 2NP"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align to Coral Station"
-                }
-              }
-            ]
+            "name": "Remove Algae Low"
           }
         },
         {
@@ -157,19 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "station to mid 2NP"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Handoff"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Set Align Left"
+                  "pathName": "Algae K to station 2NP"
                 }
               }
             ]
@@ -179,6 +135,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "NONPROCESSOR",
   "choreoAuto": false
 }
