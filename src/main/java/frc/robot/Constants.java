@@ -56,6 +56,7 @@ public final class Constants {
     public static final int kFrontLeftDrivingCanId = 5;
     public static final int kFrontRightDrivingCanId = 7;
     public static final int kRearRightDrivingCanId = 1;
+
     public static final int kRearLeftDrivingCanId = 3;
 
     public static final int kFrontLeftTurningCanId = 6;
@@ -89,7 +90,7 @@ public final class Constants {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
 
-      public static final double kMaxAngle = 315 * .5555 * 25 / 45;
+      public static final double kMaxAngle = 91;
       public static final double kMinAngle = 0;
     }
   }
@@ -353,7 +354,7 @@ public final class Constants {
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
       public static final double kHandoff = 221.1; // fix this later
-      public static final double kHandoffStandby = 200; //TODO: CHANGE
+      public static final double kHandoffStandby = 200; // TODO: CHANGE
       public static final double kLevel1 = 35;
       public static final double kLevel2 = 100.3; // CHANGE?
       public static final double kLevel3 = 57.7; // CHANGE

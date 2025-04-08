@@ -173,8 +173,7 @@ public class StateMachine extends SubsystemBase {
     return m_coralIntake
         .coralBetween()
         .until(m_coralIntake::isLoaded)
-        .alongWith(m_dragon.handoffStandby
-        ().until(m_coralIntake::atSetpoint))
+        .alongWith(m_dragon.handoffStandby().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
             new ConditionalCommand(
@@ -233,8 +232,7 @@ public class StateMachine extends SubsystemBase {
                 m_coralIntake
                     .takeLaxative()
                     .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
-        .andThen(
-          m_dragon.handoffReady().until(m_dragon::atSetpoint))
+        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .andThen(
             m_coralIntake
                 .handoff()

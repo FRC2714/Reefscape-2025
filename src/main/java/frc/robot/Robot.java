@@ -57,7 +57,6 @@ public class Robot extends TimedRobot {
     CanandEventLoop.getInstance();
 
     defaultStatesSet = false;
-
   }
 
   /**

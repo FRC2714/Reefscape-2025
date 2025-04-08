@@ -388,7 +388,7 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               setPivot(DragonSetpoint.RETRACT);
-              setRollerPower(RollerSetpoints.kStop);
+              setRollerPower(RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE_READY);
             })
         .withName("retract()");
