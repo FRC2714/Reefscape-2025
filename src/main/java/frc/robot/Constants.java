@@ -264,12 +264,12 @@ public final class Constants {
     // Parallel to elevator
     public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
     public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
-    public static final double kBackCameraXOffset = 0; //TODO: change
+    public static final double kBackCameraXOffset = 0; // TODO: change
 
     // Perpendicular to elevator
     public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
-    public static final double kBackCameraYOffset = -3.086657; //TODO: change
+    public static final double kBackCameraYOffset = -3.086657; // TODO: change
 
     public static final double kBackCameraHeight = 38.868062; // TODO: change
 
