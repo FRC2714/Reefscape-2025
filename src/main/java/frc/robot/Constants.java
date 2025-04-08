@@ -150,7 +150,7 @@ public final class Constants {
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
       public static final double kPrePoop = -0.2;
-      public static final double kPoop = 0.35;
+      public static final double kPoop = 0.35; //TODO: change
     }
   }
 
