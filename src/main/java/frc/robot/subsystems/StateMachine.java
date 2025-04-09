@@ -666,7 +666,7 @@ public class StateMachine extends SubsystemBase {
         .until(m_dragon::isClearFromElevator)
         .onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence().until(m_elevator::reverseLimitSwitchPressed))
-        .andThen(m_climber.retract().until(m_climber::limitSwitchPressed))
+        .alongWith(m_climber.retract().until(m_climber::limitSwitchPressed))
         .beforeStarting(() -> elevatorHasReset = true)
         .onlyIf(() -> !elevatorHasReset);
   }
