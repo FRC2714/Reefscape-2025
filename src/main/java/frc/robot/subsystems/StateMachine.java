@@ -172,7 +172,10 @@ public class StateMachine extends SubsystemBase {
   private Command oneCoralBetweenIntakeSequence() {
     return m_coralIntake
         .coralBetween()
-        .until(m_coralIntake::isLoaded)
+        .until(
+            () -> autoHandoff ? m_coralIntake.isLoaded() : m_coralIntake.outerBeamBreakIsPressed())
+        .andThen(m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+        .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
         .alongWith(m_dragon.handoffStandby().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
