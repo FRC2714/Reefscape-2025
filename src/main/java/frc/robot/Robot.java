@@ -57,6 +57,8 @@ public class Robot extends TimedRobot {
     CanandEventLoop.getInstance();
 
     defaultStatesSet = false;
+
+    RobotController.setBrownoutVoltage(2);
   }
 
   /**
