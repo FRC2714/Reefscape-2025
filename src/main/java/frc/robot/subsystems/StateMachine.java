@@ -196,7 +196,14 @@ public class StateMachine extends SubsystemBase {
   public Command intakeSequence() {
     return (m_coralIntake
             .intake()
-            .until(m_coralIntake::isLoaded)
+            .until(
+                () ->
+                    autoHandoff
+                        ? m_coralIntake.isLoaded()
+                        : m_coralIntake.outerBeamBreakIsPressed())
+            .andThen(
+                m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+            .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
@@ -206,7 +213,14 @@ public class StateMachine extends SubsystemBase {
     return (m_coralIntake
             .intake()
             .onlyIf(() -> !m_coralIntake.isLoaded())
-            .until(m_coralIntake::isLoaded)
+            .until(
+                () ->
+                    autoHandoff
+                        ? m_coralIntake.isLoaded()
+                        : m_coralIntake.outerBeamBreakIsPressed())
+            .andThen(
+                m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+            .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
         .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
@@ -463,6 +477,7 @@ public class StateMachine extends SubsystemBase {
                   || m_state == State.DRAGON_STANDBY
                   || m_state == State.POOP_SCORE) {
                 idleSequence()
+                    .onlyIf(() -> !m_dragon.atSetpoint() && !m_elevator.atSetpoint())
                     .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
                     .schedule();
               } else if (m_state == State.INTAKE) {
