@@ -83,7 +83,7 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final double kDeploySpeed = 1;
-    public static final double kRetractSpeed = -1;
+    public static final double kRetractSpeed = -.50;
     public static final double kClimbSetpoint = 2;
 
     public static final class PivotSetpoints {
@@ -147,6 +147,7 @@ public final class Constants {
 
     public static final class RollerSetpoints {
       public static final double kIntake = 0.6;
+      public static final double kIntakeSlow = 0.2;
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
       public static final double kPrePoop = -0.2;
