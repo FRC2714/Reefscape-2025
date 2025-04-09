@@ -86,8 +86,8 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
-  private SparkLimitSwitch outerBeamBreak = indexerMotor.getForwardLimitSwitch();
-  private SparkLimitSwitch innerBeamBreak = indexerMotor.getReverseLimitSwitch();
+  private SparkLimitSwitch outerBeamBreak = indexerMotor.getReverseLimitSwitch();
+  private SparkLimitSwitch innerBeamBreak = indexerMotor.getForwardLimitSwitch();
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -235,6 +235,17 @@ public class CoralIntake extends SubsystemBase {
         .withName("intake");
   }
 
+  public Command intakeSlow() {
+    return intakeReady()
+        .andThen(
+            this.run(
+                () -> {
+                  setRollerPower(RollerSetpoints.kIntakeSlow);
+                  setCoralIntakeState(CoralIntakeState.INTAKE);
+                }))
+        .withName("intake");
+  }
+
   public Command coralBetween() {
     return coralBetweenReady()
         .until(this::atSetpoint)
@@ -334,7 +345,7 @@ public class CoralIntake extends SubsystemBase {
             () -> {
               setRollerPower(RollerSetpoints.kPrePoop);
             })
-        .until(() -> !outerBeamBreak.isPressed())
+        .until(() -> !innerBeamBreak.isPressed())
         .withName("take laxative");
   }
 
@@ -398,6 +409,11 @@ public class CoralIntake extends SubsystemBase {
     return innerBeamBreak.isPressed();
   }
 
+  public boolean outerBeamBreakIsPressed() {
+    if (Robot.isSimulation()) return loaded;
+    return outerBeamBreak.isPressed();
+  }
+
   public boolean shouldRumble() {
     if (Robot.isSimulation()) return loaded;
     return isLoaded();
@@ -441,8 +457,8 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber(
         "Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putBoolean("Coral Intake/Intex/Back Beam Break", outerBeamBreak.isPressed());
-    SmartDashboard.putBoolean("Coral Intake/Intex/Front Beam Break", innerBeamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Inner Beam Break", innerBeamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Outer Beam Break", outerBeamBreak.isPressed());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());
