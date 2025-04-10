@@ -24,6 +24,7 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AlignToCoralStation;
 import frc.robot.commands.AlignToReef;
+import frc.robot.commands.AlignToReefL2;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralIntake;
 import frc.robot.subsystems.Dragon;
@@ -205,6 +206,10 @@ public class RobotContainer {
     m_driverController
         .rightBumper()
         .whileTrue(new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight));
+
+    m_driverController
+        .y()
+        .whileTrue(new AlignToReefL2(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
