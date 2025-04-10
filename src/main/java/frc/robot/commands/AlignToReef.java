@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -19,7 +18,6 @@ public class AlignToReef extends Command {
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
   private Align side;
-  private StateMachine m_stateMachine;
 
   private PIDController xController;
   private PIDController yController;
@@ -29,7 +27,6 @@ public class AlignToReef extends Command {
       DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
-    this.m_stateMachine = mStateMachine;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
     this.side = Limelight.SIDE;
@@ -154,7 +151,6 @@ public class AlignToReef extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint())
-        || m_stateMachine.isReadyToScore();
+    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
   }
 }
