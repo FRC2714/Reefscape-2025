@@ -157,7 +157,6 @@ public class StateMachineTests {
     assertCommandHasNoEffect(
         State.INTAKE,
         m_stateMachine.extakeCoral(),
-        m_stateMachine.setLevel(ScoreLevel.L1),
         m_stateMachine.setLevel(ScoreLevel.L2),
         m_stateMachine.setLevel(ScoreLevel.L3),
         m_stateMachine.setLevel(ScoreLevel.L4),
@@ -191,7 +190,6 @@ public class StateMachineTests {
     assertCommandHasNoEffect(
         State.EXTAKE,
         m_stateMachine.intakeCoral(),
-        m_stateMachine.setLevel(ScoreLevel.L1),
         m_stateMachine.setLevel(ScoreLevel.L2),
         m_stateMachine.setLevel(ScoreLevel.L3),
         m_stateMachine.setLevel(ScoreLevel.L4),
@@ -350,8 +348,6 @@ public class StateMachineTests {
     m_dragon.coralOnDragonFalse();
     assertCommandHasNoEffect(
         State.POOP_SCORE,
-        m_stateMachine.idle(),
-        m_stateMachine.intakeCoral(),
         m_stateMachine.extakeCoral(),
         m_stateMachine.setLevel(ScoreLevel.L1),
         m_stateMachine.setLevel(ScoreLevel.L2),
@@ -363,8 +359,6 @@ public class StateMachineTests {
     m_dragon.coralOnDragonFalse();
     assertCommandHasNoEffect(
         State.POOP_SCORE,
-        m_stateMachine.idle(),
-        m_stateMachine.intakeCoral(),
         m_stateMachine.extakeCoral(),
         m_stateMachine.setLevel(ScoreLevel.L1),
         m_stateMachine.setLevel(ScoreLevel.L2),
@@ -467,10 +461,6 @@ public class StateMachineTests {
     m_dragon.coralOnDragonFalse();
     assertCommandHasNoEffect(
         State.DRAGON_STANDBY, m_stateMachine.extakeCoral(), m_stateMachine.scoreCoral());
-
-    setState(State.DRAGON_STANDBY);
-    m_dragon.coralOnDragonTrue();
-    assertCommandHasNoEffect(State.IDLE, m_stateMachine.intakeCoral());
   }
 
   @Test

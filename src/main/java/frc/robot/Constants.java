@@ -56,6 +56,7 @@ public final class Constants {
     public static final int kFrontLeftDrivingCanId = 5;
     public static final int kFrontRightDrivingCanId = 7;
     public static final int kRearRightDrivingCanId = 1;
+
     public static final int kRearLeftDrivingCanId = 3;
 
     public static final int kFrontLeftTurningCanId = 6;
@@ -82,14 +83,14 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final double kDeploySpeed = 1;
-    public static final double kRetractSpeed = -1;
+    public static final double kRetractSpeed = -0.5;
     public static final double kClimbSetpoint = 2;
 
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
 
-      public static final double kMaxAngle = 315 * .5555;
+      public static final double kMaxAngle = 91;
       public static final double kMinAngle = 0;
     }
   }
@@ -133,12 +134,12 @@ public final class Constants {
 
     public static final class PivotSetpoints {
       // Zero offset in Hardware Client is 10
-      public static final double kStow = 10.5;
+      public static final double kStow = 15.2;
       public static final double kIntake = 69;
       public static final double kOneCoralInBetweenIntake = 87.2;
       public static final double kExtake = 90;
       public static final double kHandoff = 78.8;
-      public static final double kPoop = 80;
+      public static final double kPoop = 69.7;
 
       public static final double kZeroOffsetDegrees = 270;
       public static final double kClimb = 100;
@@ -146,9 +147,11 @@ public final class Constants {
 
     public static final class RollerSetpoints {
       public static final double kIntake = 0.6;
+      public static final double kIntakeSlow = 0.2;
       public static final double kExtake = -0.4;
       public static final double kStop = 0;
       public static final double kPrePoop = -0.2;
+      public static final double kPoop = 0.30; // TODO: change
     }
   }
 
@@ -317,7 +320,7 @@ public final class Constants {
 
       public static final double kLevel1 = 0;
       public static final double kLevel2 = 0;
-      public static final double kLevel3 = 0;
+      public static final double kLevel3 = 1.3; // CHANGE
       public static final double kLevel4 = 9.62;
       public static final double kAlgaeLow = 0;
       public static final double kAlgaeHigh = 4.89;
@@ -352,9 +355,10 @@ public final class Constants {
       public static final double kStartingConfig = 245;
       public static final double kStow = 27.25;
       public static final double kHandoff = 221.1; // fix this later
-      public static final double kLevel1 = 47.13;
-      public static final double kLevel2 = 100.3;
-      public static final double kLevel3 = 35;
+      public static final double kHandoffStandby = 200; // TODO: CHANGE
+      public static final double kLevel1 = 35;
+      public static final double kLevel2 = 100.3; // CHANGE?
+      public static final double kLevel3 = 57.7; // CHANGE
       public static final double kLevel4 = 101.7;
       public static final double kClimb = 190;
       public static final double kAlgaeHigh = 89.4; // TODO: fix this later

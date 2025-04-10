@@ -46,7 +46,7 @@ public class CoralIntake extends SubsystemBase {
     CORALBETWEEN,
     EXTAKE,
     POOP,
-    CLIMB
+    CLIMB,
   }
 
   public enum CoralIntakeState {
@@ -60,7 +60,7 @@ public class CoralIntake extends SubsystemBase {
     POOP_READY,
     POOP_SCORE,
     CLIMB,
-    POOP_STANDBY
+    POOP_STANDBY,
   }
 
   // Tunables
@@ -86,8 +86,8 @@ public class CoralIntake extends SubsystemBase {
   private SparkClosedLoopController pivotController = pivotMotor.getClosedLoopController();
   private ArmFeedforward pivotFF = new ArmFeedforward(0, CoralIntakeConstants.kG, 0);
 
-  private SparkLimitSwitch backBeamBreak = indexerMotor.getForwardLimitSwitch();
-  private SparkLimitSwitch frontBeamBreak = indexerMotor.getReverseLimitSwitch();
+  private SparkLimitSwitch outerBeamBreak = indexerMotor.getReverseLimitSwitch();
+  private SparkLimitSwitch innerBeamBreak = indexerMotor.getForwardLimitSwitch();
 
   // Simulation setup and variables
   private DCMotor armMotorModel = DCMotor.getNeoVortex(1);
@@ -207,7 +207,7 @@ public class CoralIntake extends SubsystemBase {
         pivotCurrentTarget = PivotSetpoints.kExtake;
         break;
       case POOP:
-        pivotCurrentTarget = PivotSetpoints.kExtake;
+        pivotCurrentTarget = PivotSetpoints.kPoop;
         break;
       case CLIMB:
         pivotCurrentTarget = PivotSetpoints.kClimb;
@@ -230,6 +230,17 @@ public class CoralIntake extends SubsystemBase {
             this.run(
                 () -> {
                   setRollerPower(RollerSetpoints.kIntake);
+                  setCoralIntakeState(CoralIntakeState.INTAKE);
+                }))
+        .withName("intake");
+  }
+
+  public Command intakeSlow() {
+    return intakeReady()
+        .andThen(
+            this.run(
+                () -> {
+                  setRollerPower(RollerSetpoints.kIntakeSlow);
                   setCoralIntakeState(CoralIntakeState.INTAKE);
                 }))
         .withName("intake");
@@ -334,7 +345,7 @@ public class CoralIntake extends SubsystemBase {
             () -> {
               setRollerPower(RollerSetpoints.kPrePoop);
             })
-        .until(() -> !backBeamBreak.isPressed())
+        .until(() -> !innerBeamBreak.isPressed())
         .withName("take laxative");
   }
 
@@ -364,7 +375,7 @@ public class CoralIntake extends SubsystemBase {
         .andThen(
             this.run(
                 () -> {
-                  setRollerPower(RollerSetpoints.kExtake);
+                  setRollerPower(RollerSetpoints.kPoop);
                   setCoralIntakeState(CoralIntakeState.POOP_SCORE);
                 }))
         .withName("poop l1");
@@ -390,7 +401,17 @@ public class CoralIntake extends SubsystemBase {
 
   public boolean isLoaded() {
     if (Robot.isSimulation()) return loaded;
-    return backBeamBreak.isPressed() || frontBeamBreak.isPressed();
+    return outerBeamBreak.isPressed() || innerBeamBreak.isPressed();
+  }
+
+  public boolean innerBeamBreakIsPressed() {
+    if (Robot.isSimulation()) return loaded;
+    return innerBeamBreak.isPressed();
+  }
+
+  public boolean outerBeamBreakIsPressed() {
+    if (Robot.isSimulation()) return loaded;
+    return outerBeamBreak.isPressed();
   }
 
   public boolean shouldRumble() {
@@ -436,8 +457,8 @@ public class CoralIntake extends SubsystemBase {
     SmartDashboard.putNumber(
         "Coral Intake/Intex/Indexer/Applied Output", indexerMotor.getAppliedOutput());
 
-    SmartDashboard.putBoolean("Coral Intake/Intex/Back Beam Break", backBeamBreak.isPressed());
-    SmartDashboard.putBoolean("Coral Intake/Intex/Front Beam Break", frontBeamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Inner Beam Break", innerBeamBreak.isPressed());
+    SmartDashboard.putBoolean("Coral Intake/Intex/Outer Beam Break", outerBeamBreak.isPressed());
     SmartDashboard.putBoolean("Coral Intake/Intex/Loaded?", isLoaded());
 
     SmartDashboard.putString("Coral Intake/Coral Intake State", m_coralIntakeState.toString());

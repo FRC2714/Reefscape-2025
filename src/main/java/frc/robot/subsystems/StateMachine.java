@@ -173,8 +173,11 @@ public class StateMachine extends SubsystemBase {
   private Command oneCoralBetweenIntakeSequence() {
     return m_coralIntake
         .coralBetween()
-        .until(m_coralIntake::isLoaded)
-        .alongWith(m_dragon.handoffReady().until(m_coralIntake::atSetpoint))
+        .until(
+            () -> autoHandoff ? m_coralIntake.isLoaded() : m_coralIntake.outerBeamBreakIsPressed())
+        .andThen(m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+        .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
+        .alongWith(m_dragon.handoffStandby().until(m_coralIntake::atSetpoint))
         .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))
         .andThen(
             new ConditionalCommand(
@@ -197,9 +200,16 @@ public class StateMachine extends SubsystemBase {
   public Command intakeSequence() {
     return (m_coralIntake
             .intake()
-            .until(m_coralIntake::isLoaded)
+            .until(
+                () ->
+                    autoHandoff
+                        ? m_coralIntake.isLoaded()
+                        : m_coralIntake.outerBeamBreakIsPressed())
+            .andThen(
+                m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+            .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
-        .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
+        .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -207,9 +217,16 @@ public class StateMachine extends SubsystemBase {
     return (m_coralIntake
             .intake()
             .onlyIf(() -> !m_coralIntake.isLoaded())
-            .until(m_coralIntake::isLoaded)
+            .until(
+                () ->
+                    autoHandoff
+                        ? m_coralIntake.isLoaded()
+                        : m_coralIntake.outerBeamBreakIsPressed())
+            .andThen(
+                m_coralIntake.intakeSlow().until(() -> m_coralIntake.innerBeamBreakIsPressed()))
+            .andThen(m_coralIntake.takeLaxative().onlyIf(() -> !autoHandoff))
             .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint)))
-        .alongWith(m_dragon.handoffReady().until(m_dragon::atSetpoint))
+        .alongWith(m_dragon.handoffStandby().until(m_dragon::atSetpoint))
         .beforeStarting(() -> m_state = State.INTAKE);
   }
 
@@ -227,12 +244,13 @@ public class StateMachine extends SubsystemBase {
                 .onlyIf(() -> !m_elevator.atSetpoint())
                 .until(m_dragon::isClearFromElevator)
                 .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
-                .andThen(m_dragon.handoffReady())
+                .andThen(m_dragon.handoffStandby())
                 .until(m_dragon::atSetpoint))
             .alongWith(
                 m_coralIntake
                     .takeLaxative()
                     .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
+        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .andThen(
             m_coralIntake
                 .handoff()
@@ -286,7 +304,7 @@ public class StateMachine extends SubsystemBase {
           if (m_state == State.DRAGON_SCORE)
             if (m_level == ScoreLevel.L4) {
               m_dragon
-                  .retract()
+                  .retractWithNoHold()
                   .until(m_dragon::isClearFromReef)
                   .andThen(
                       removeAlgae(
@@ -314,7 +332,7 @@ public class StateMachine extends SubsystemBase {
   public Command stopScoreAuto() {
     return new ConditionalCommand(
         m_dragon
-            .retract()
+            .retractWithNoHold()
             .until(m_dragon::atSetpoint)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         m_dragon
@@ -384,11 +402,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   private Command poopScoreSequence() {
-    return m_coralIntake
-        .poopL1()
-        .until(() -> !m_coralIntake.isLoaded())
-        .andThen(idleSequence())
-        .beforeStarting(() -> m_state = State.POOP_SCORE);
+    return m_coralIntake.poopL1().beforeStarting(() -> m_state = State.POOP_SCORE);
   }
 
   public Command algaeRemovalSequence(ScoreLevel level) {
@@ -411,6 +425,7 @@ public class StateMachine extends SubsystemBase {
                 idleSequence().schedule();
               } else if (m_state == State.INTAKE
                   || m_state == State.EXTAKE
+                  || m_state == State.POOP_SCORE
                   || m_state == State.ALGAE_REMOVE
                   || m_state == State.IDLE) {
                 idleSequence().schedule();
@@ -463,8 +478,10 @@ public class StateMachine extends SubsystemBase {
               if (manualOverride
                   || m_state == State.IDLE
                   || m_state == State.DRAGON_READY
-                  || m_state == State.DRAGON_STANDBY) {
+                  || m_state == State.DRAGON_STANDBY
+                  || m_state == State.POOP_SCORE) {
                 idleSequence()
+                    .onlyIf(() -> !m_dragon.atSetpoint() && !m_elevator.atSetpoint())
                     .andThen(intakeAndContinueSequence().onlyIf(() -> !m_dragon.isCoralOnDragon()))
                     .schedule();
               } else if (m_state == State.INTAKE) {
@@ -514,7 +531,9 @@ public class StateMachine extends SubsystemBase {
                     || m_state == State.DRAGON_STANDBY
                     || m_state == State.ALGAE_REMOVE) {
                   scoreReadySequence(level).schedule();
-                } else if (m_state == State.POOP_STANDBY || m_state == State.POOP_READY) {
+                } else if (!autoHandoff
+                    || m_state == State.POOP_STANDBY
+                    || m_state == State.POOP_READY) {
                   poopReadySequence().schedule();
                 }
               } else if (level == ScoreLevel.L4) {
@@ -644,7 +663,7 @@ public class StateMachine extends SubsystemBase {
         .until(m_dragon::isClearFromElevator)
         .onlyIf(() -> !m_elevator.reverseLimitSwitchPressed())
         .andThen(m_elevator.homingSequence().until(m_elevator::reverseLimitSwitchPressed))
-        .andThen(m_climber.retract().until(m_climber::limitSwitchPressed))
+        .alongWith(m_climber.retract().until(m_climber::limitSwitchPressed))
         .beforeStarting(() -> elevatorHasReset = true)
         .onlyIf(() -> !elevatorHasReset);
   }
