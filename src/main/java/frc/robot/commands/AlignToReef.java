@@ -33,20 +33,20 @@ public class AlignToReef extends Command {
     this.m_leftLimelight = m_leftLimelight;
     this.side = Limelight.SIDE;
 
-    xController = new PIDController(0.5, 0, 0);
-    yController = new PIDController(0.21, 0, 0);
-    thetaController = new PIDController(0.02, 0, 0);
+    xController = new PIDController(0.3, 0, 0);
+    yController = new PIDController(0.45, 0, 0);
+    thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(0.1);
+    xController.setSetpoint(-0.35);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.01);
+    xController.setTolerance(.06);
     yController.setTolerance(.01);
-    thetaController.setTolerance(.1);
+    thetaController.setTolerance(1);
 
     positions = null;
   }
@@ -61,9 +61,13 @@ public class AlignToReef extends Command {
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
       m_leftLimelight.setCoralTagPipelineRight();
+      yController.setSetpoint(0.239);
+      thetaController.setSetpoint(-0.25);
     } else if (side == Align.LEFT) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
+      yController.setSetpoint(-0.235);
+      thetaController.setSetpoint(0.25);
     }
   }
 
@@ -108,10 +112,13 @@ public class AlignToReef extends Command {
       SmartDashboard.putNumber("Auto Align/Rot Position", positions[4]);
       m_drivetrain.drive(
           xController.calculate(positions[2]),
-          yController.calculate(positions[0]),
-          thetaController.calculate(positions[4]),
+          -yController.calculate(positions[0]),
+          -thetaController.calculate(positions[4]),
           false);
     }
+    SmartDashboard.putBoolean("X Align at setpoint", xController.atSetpoint());
+    SmartDashboard.putBoolean("Y Align at setpoint", yController.atSetpoint());
+    SmartDashboard.putBoolean("Rot Align at setpoint", thetaController.atSetpoint());
   }
 
   // Called once the command ends or is interrupted.
