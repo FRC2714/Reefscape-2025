@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.5000284090909086,
-        "y": 5.336264204545455
+        "x": 3.8590056818181817,
+        "y": 5.5257244318181815
       },
       "prevControl": {
-        "x": 2.7633988774251135,
-        "y": 6.114682747607742
+        "x": 3.1223761501523866,
+        "y": 6.3041429748804685
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "L-Coral"
+      "linkedName": "K-Coral"
     }
   ],
   "rotationTargets": [],
@@ -79,7 +79,7 @@
   },
   "goalEndState": {
     "velocity": 0.5,
-    "rotation": -59.63832480397212
+    "rotation": -59.99999999999999
   },
   "reversed": false,
   "folder": "NONPROCESSOR",
