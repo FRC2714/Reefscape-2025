@@ -265,28 +265,28 @@ public final class Constants {
     // Left-right
     public static final double kRightCameraXOffset = 12.153079; // 0.3086882066 meters
     public static final double kLeftCameraXOffset = -12.153079; // -0.3086882066 meters
-    public static final double kBackCameraXOffset = 0; // -0.3086882066 meters
+    public static final double kBackCameraXOffset = 12.161609;
 
     // Front-back
     public static final double kRightCameraYOffset = 11.940763; // 0.3032953802 meters
     public static final double kLeftCameraYOffset = 11.940763; // 0.3032953802 meters
-    public static final double kBackCameraYOffset = -3.086657; // -0.3086882066 meters
+    public static final double kBackCameraYOffset = 4.569702;
 
-    public static final double kBackCameraHeight = 38.868062;
+    public static final double kBackCameraHeight = 37.048371;
 
     public static final double kRightMountingPitch = -45;
     public static final double kLeftMountingPitch = -45;
 
     public static final double kRightMountingRoll = 13.760;
     public static final double kLeftMountingRoll = -13.760;
-    public static final double kBackMountingRoll = 0;
+    public static final double kBackMountingRoll = 13.760;
 
     public static final double kRightMountingYaw = 24.499987;
     public static final double kLeftMountingYaw = -24.499987;
 
-    public static final double kBackMountingPitch = 20;
+    public static final double kBackMountingPitch = 45;
 
-    public static final double kBackMountingYaw = 0;
+    public static final double kBackMountingYaw = -24.499987;
 
     public static final double[] kLeftLimelightPose = {
       Units.inchesToMeters(kLeftCameraYOffset),
