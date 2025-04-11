@@ -55,20 +55,23 @@ public class RobotContainer {
           LimelightConstants.kRightLimelightName,
           LimelightConstants.kRightCameraHeight,
           LimelightConstants.kRightMountingPitch,
-          LimelightConstants.kReefTagHeight);
+          LimelightConstants.kReefTagHeight,
+          LimelightConstants.kRightLimelightPose);
   private final Limelight m_leftLimelight =
       new Limelight(
           LimelightConstants.kLeftLimelightName,
           LimelightConstants.kLeftCameraHeight,
           LimelightConstants.kLeftMountingPitch,
-          LimelightConstants.kReefTagHeight);
+          LimelightConstants.kReefTagHeight,
+          LimelightConstants.kLeftLimelightPose);
 
   private final Limelight m_backLimelight =
       new Limelight(
           LimelightConstants.kBackLimelightName,
           LimelightConstants.kBackCameraHeight,
           LimelightConstants.kBackMountingPitch,
-          LimelightConstants.kCoralStationTagHeight);
+          LimelightConstants.kCoralStationTagHeight,
+          LimelightConstants.kBackLimelightPose);
 
   private final StateMachine m_stateMachine =
       new StateMachine(m_dragon, m_elevator, m_coralIntake, m_climber);
