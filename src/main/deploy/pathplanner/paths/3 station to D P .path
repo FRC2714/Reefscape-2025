@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4505122950819784,
-        "y": 1.2258709016373734
+        "x": 1.589,
+        "y": 1.127
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2833974358974354,
-        "y": 1.7028846153846156
+        "x": 2.4827307595200634,
+        "y": 1.411761882083418
       },
       "isLocked": false,
       "linkedName": "Processor side station"
     },
     {
       "anchor": {
-        "x": 3.872756410256409,
-        "y": 2.5078846153846155
+        "x": 3.452,
+        "y": 2.69
       },
       "prevControl": {
-        "x": 3.047115384615384,
-        "y": 1.971217948717948
+        "x": 2.715170350078258,
+        "y": 1.9113691073453332
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -73,5 +73,5 @@
     "velocity": 0,
     "rotation": 53.32280657677183
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

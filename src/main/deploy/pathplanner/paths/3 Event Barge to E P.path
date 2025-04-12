@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1686475409836055,
-        "y": 1.9211577868852465
+        "x": 7.176,
+        "y": 2.42
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.401282051282051,
-        "y": 2.0021794871794873
+        "x": 6.926,
+        "y": 2.42
       },
       "isLocked": false,
-      "linkedName": "Processor side start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.131858974358974,
-        "y": 2.5078846153846155
+        "x": 5.168,
+        "y": 2.574
       },
       "prevControl": {
-        "x": 5.802692307692308,
-        "y": 2.2085897435897435
+        "x": 5.98730372407446,
+        "y": 2.3886856516140185
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,8 +46,8 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 2.75,
-    "maxAngularVelocity": 540.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
