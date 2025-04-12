@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.452459016393442,
-        "y": 5.23
+        "y": 5.229764344262294
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.9704590163934421,
-        "y": 5.912500000000001
+        "y": 5.912264344262295
       },
       "isLocked": false,
       "linkedName": "K-Coral"
