@@ -41,6 +41,7 @@ import frc.robot.Constants.DragonConstants.PivotSetpoints;
 import frc.robot.Constants.DragonConstants.RollerSetpoints;
 import frc.robot.Constants.SimulationRobotConstants;
 import frc.robot.Robot;
+import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.utils.TunableNumber;
 import java.util.function.BooleanSupplier;
 
@@ -368,7 +369,10 @@ public class Dragon extends SubsystemBase {
     return this.run(
             () -> {
               m_previousSetpoint = m_dragonSetpoint;
-              setRollerPower(RollerSetpoints.kExtake);
+              setRollerPower(
+                  StateMachine.LEVEL == ScoreLevel.L2
+                      ? RollerSetpoints.kExtakeL2
+                      : RollerSetpoints.kExtake);
               setDragonState(DragonState.SCORE);
             })
         .withName("score()"); // ADD BACK AFTER TESTING

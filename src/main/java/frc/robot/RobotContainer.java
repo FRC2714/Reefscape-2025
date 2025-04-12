@@ -143,8 +143,7 @@ public class RobotContainer {
         new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
     NamedCommands.registerCommand(
         "Auto align",
-        new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getLevel())
-            .withTimeout(1.5));
+        new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight).withTimeout(1.5));
     NamedCommands.registerCommand(
         "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
     NamedCommands.registerCommand(
@@ -208,9 +207,7 @@ public class RobotContainer {
 
     m_driverController
         .rightBumper()
-        .whileTrue(
-            new AlignToReef(
-                m_robotDrive, m_rightLimelight, m_leftLimelight, m_stateMachine.getLevel()));
+        .whileTrue(new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight));
 
     m_driverController
         .leftTrigger(OIConstants.kTriggerButtonThreshold)
