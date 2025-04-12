@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 1.589,
-        "y": 1.127
+        "y": 1.1278
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.4827307595200634,
-        "y": 1.411761882083418
+        "y": 1.4125618820834178
       },
       "isLocked": false,
       "linkedName": "Processor side station"
