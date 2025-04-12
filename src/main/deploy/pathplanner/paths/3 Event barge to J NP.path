@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 7.176,
-        "y": 6.16025
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.421632658167292,
-        "y": 6.206775232311838
+        "x": 6.926,
+        "y": 5.5
       },
       "isLocked": false,
-      "linkedName": "barge nonprocessor"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.350999999999999
       },
       "prevControl": {
-        "x": 5.362049986413495,
-        "y": 5.922951652931805
+        "x": 5.9865,
+        "y": 5.536249999999999
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,30 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Dragon standby",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Dragon standby"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.9460359760159763,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
@@ -41,7 +64,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": -119.99999999999999
   },
   "reversed": false,

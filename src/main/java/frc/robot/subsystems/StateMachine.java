@@ -332,7 +332,7 @@ public class StateMachine extends SubsystemBase {
     return new ConditionalCommand(
         m_dragon
             .retractWithNoHold()
-            .until(m_dragon::atSetpoint)
+            .until(m_dragon::isClearFromReefNoCoral)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         m_dragon
             .stopScore()

@@ -45,7 +45,7 @@ public class AlignToReef extends Command {
     thetaController.enableContinuousInput(-180, 180);
 
     xController.setTolerance(.06);
-    yController.setTolerance(.01);
+    yController.setTolerance(.05);
     thetaController.setTolerance(1);
 
     positions = null;
@@ -62,12 +62,12 @@ public class AlignToReef extends Command {
       m_rightLimelight.setCoralTagPipelineRight();
       m_leftLimelight.setCoralTagPipelineRight();
       yController.setSetpoint(0.239);
-      thetaController.setSetpoint(-0.25);
+      thetaController.setSetpoint(3);
     } else if (side == Align.LEFT) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
       yController.setSetpoint(-0.235);
-      thetaController.setSetpoint(0.25);
+      thetaController.setSetpoint(-3);
     }
   }
 
