@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.026476475682296,
-        "y": 1.8267296276386253
+        "x": 2.8097435897435887,
+        "y": 2.126025641025641
       },
       "isLocked": false,
       "linkedName": "C-Coral"
@@ -20,8 +20,8 @@
         "y": 1.2258709016373734
       },
       "prevControl": {
-        "x": 1.8323712694409524,
-        "y": 1.855422183688655
+        "x": 2.0357051282051275,
+        "y": 1.682243589743589
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,30 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Idle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
+    },
+    {
+      "name": "Intake Coral",
+      "waypointRelativePos": 0.4484649122807003,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Coral"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,

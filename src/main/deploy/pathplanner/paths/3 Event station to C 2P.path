@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4505122950819784,
+        "y": 1.2258709016373734
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1577868852459017,
+        "y": 1.8132684426229502
+      },
+      "isLocked": false,
+      "linkedName": "Processor side station"
+    },
+    {
+      "anchor": {
+        "x": 3.521858974358974,
+        "y": 2.74525641025641
+      },
+      "prevControl": {
+        "x": 2.943910256410256,
+        "y": 2.126025641025641
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "C-Coral"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Handoff",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Handoff"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.9331140350876989,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.7,
+    "rotation": 57.66826662430165
+  },
+  "reversed": false,
+  "folder": "PROCESSOR",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 53.32280657677183
+  },
+  "useDefaultConstraints": false
+}

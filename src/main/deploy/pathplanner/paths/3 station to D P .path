@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8515467108448496,
-        "y": 1.745142331107337
+        "x": 2.2833974358974354,
+        "y": 1.7028846153846156
       },
       "isLocked": false,
       "linkedName": "Processor side station"
     },
     {
       "anchor": {
-        "x": 4.006923076923076,
-        "y": 2.8381410256410255
+        "x": 3.872756410256409,
+        "y": 2.5078846153846155
       },
       "prevControl": {
-        "x": 3.4102707770934546,
-        "y": 2.010580777524405
+        "x": 3.047115384615384,
+        "y": 1.971217948717948
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,30 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Handoff",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Handoff"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.770833333333332,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -41,8 +64,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 60.48363507518591
+    "velocity": 0.7,
+    "rotation": 60.48400000000001
   },
   "reversed": false,
   "folder": "PROCESSOR",
