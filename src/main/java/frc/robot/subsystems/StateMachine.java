@@ -99,6 +99,10 @@ public class StateMachine extends SubsystemBase {
     m_stalk = stalk;
   }
 
+  public ScoreLevel getLevel() {
+    return m_level;
+  }
+
   public Command enableManualOverride() {
     return new InstantCommand(() -> manualOverride = true).ignoringDisable(true);
   }

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
+import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.utils.LimelightHelpers;
 
@@ -18,6 +19,7 @@ public class AlignToReef extends Command {
   private Limelight m_rightLimelight;
   private Limelight m_leftLimelight;
   private Align side;
+  private ScoreLevel level;
 
   private PIDController xController;
   private PIDController yController;
@@ -26,12 +28,16 @@ public class AlignToReef extends Command {
   private double[] positions;
 
   public AlignToReef(
-      DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
+      DriveSubsystem m_drivetrain,
+      Limelight m_rightLimelight,
+      Limelight m_leftLimelight,
+      ScoreLevel level) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
     this.side = Limelight.SIDE;
+    this.level = level;
 
     xController = new PIDController(0.3, 0, 0);
     yController = new PIDController(0.45, 0, 0);
@@ -39,7 +45,12 @@ public class AlignToReef extends Command {
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(-0.35);
+    if (level == ScoreLevel.L2) {
+      xController.setSetpoint(0); // TODO
+    } else {
+      xController.setSetpoint(-0.35);
+    }
+
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
