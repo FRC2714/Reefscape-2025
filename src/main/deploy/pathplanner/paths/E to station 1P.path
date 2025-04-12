@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.168,
-        "y": 2.57
+        "x": 5.4185,
+        "y": 2.7068
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.322500000002704,
-        "y": 1.8370641025685015
+        "x": 5.573000000002704,
+        "y": 1.9738641025685015
       },
       "isLocked": false,
       "linkedName": "E-Coral"

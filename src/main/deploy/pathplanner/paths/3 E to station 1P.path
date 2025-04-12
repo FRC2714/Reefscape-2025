@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.168,
-        "y": 2.57
+        "x": 5.4185,
+        "y": 2.7068
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.7239657084147435,
-        "y": 1.9093567166039
+        "x": 4.974465708414743,
+        "y": 2.0461567166039
       },
       "isLocked": false,
       "linkedName": "E-Coral"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 1.589,
-        "y": 1.127
+        "y": 1.128
       },
       "prevControl": {
         "x": 2.652093470863863,
-        "y": 2.2416818036359887
+        "y": 2.2426818036359886
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,17 +40,6 @@
         "type": "named",
         "data": {
           "name": "Idle"
-        }
-      }
-    },
-    {
-      "name": "Intake Coral",
-      "waypointRelativePos": 0.52,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Coral"
         }
       }
     }
