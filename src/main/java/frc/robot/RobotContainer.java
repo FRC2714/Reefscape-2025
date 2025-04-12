@@ -243,6 +243,8 @@ public class RobotContainer {
       loadCoralButton
           .onTrue(new InstantCommand(() -> m_coralIntake.setLoadedTrue()))
           .onFalse(new InstantCommand(() -> m_coralIntake.setLoadedFalse()));
+    } else {
+      coralOnDragonButton.onTrue(new InstantCommand(() -> m_elevator.zeroElevator()));
     }
 
     overrideStateMachineButton
