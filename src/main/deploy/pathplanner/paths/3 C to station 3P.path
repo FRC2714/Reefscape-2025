@@ -45,7 +45,7 @@
     },
     {
       "name": "Intake Coral",
-      "waypointRelativePos": 0.4484649122807003,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
