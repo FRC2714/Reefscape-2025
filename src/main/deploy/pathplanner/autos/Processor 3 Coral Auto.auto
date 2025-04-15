@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Set Align Right"
+            "name": "Set Align Left"
           }
         },
         {
@@ -141,7 +141,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Set Align Left"
+            "name": "Set Align Right"
           }
         },
         {

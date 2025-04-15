@@ -264,7 +264,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command dragonStandbySequence() {
     return m_dragon
-        .stow()
+        .stowAndHold()
         .onlyIf(() -> !m_elevator.atSetpoint())
         .until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToStow().alongWith(m_dragon.scoreStandby()))

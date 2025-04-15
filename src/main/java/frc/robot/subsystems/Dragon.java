@@ -299,6 +299,16 @@ public class Dragon extends SubsystemBase {
         .withName("stow()");
   }
 
+  public Command stowAndHold() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.STOW);
+              setRollerPower(RollerSetpoints.kHold);
+              setDragonState(DragonState.STOW);
+            })
+        .withName("stow()");
+  }
+
   public Command moveToStartingConfig() {
     return this.run(
             () -> {

@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4827307595200634,
+        "x": 2.482730759520063,
         "y": 1.4125618820834178
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.848,
-        "y": 2.5388
+        "x": 3.6202868852459016,
+        "y": 2.736321721311475
       },
       "prevControl": {
-        "x": 3.111170350078258,
-        "y": 1.7601691073453334
+        "x": 2.8834572353241597,
+        "y": 1.9576908286568084
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "D-Coral"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
