@@ -83,14 +83,14 @@ public final class Constants {
     public static final double kPivotReduction = 1;
 
     public static final double kDeploySpeed = 1;
-    public static final double kRetractSpeed = -0.5;
-    public static final double kClimbSetpoint = 2;
+    public static final double kRetractSpeed = -1;
+    public static final double kClimbSetpoint = 0;
 
     public static final class PivotSetpoints {
       public static final double kDeploy = 307.6;
       public static final double kRetract = 0;
 
-      public static final double kMaxAngle = 91;
+      public static final double kMaxAngle = 82.4;
       public static final double kMinAngle = 0;
     }
   }

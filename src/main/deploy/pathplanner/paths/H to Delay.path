@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.214651639344262,
-        "y": 5.613370901639343
+        "x": 6.101987179487179,
+        "y": 4.190128205128206
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.7705618957545175,
-        "y": 6.274101670870112
+        "x": 6.815250000000001,
+        "y": 7.379
       },
       "isLocked": false,
-      "linkedName": "J-Back"
+      "linkedName": "H-Coral"
     },
     {
       "anchor": {
-        "x": 1.5894267272949207,
-        "y": 6.797364239162869
+        "x": 3.357,
+        "y": 7.104
       },
       "prevControl": {
-        "x": 2.6524395478077407,
-        "y": 5.6827488545474845
+        "x": 6.399000000000001,
+        "y": 6.7139999999999995
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": "Delay"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Idle",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Idle"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.36019080191327
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "NONPROCESSOR",
+  "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.74488129694222
+    "rotation": -178.0548532385857
   },
   "useDefaultConstraints": true
 }

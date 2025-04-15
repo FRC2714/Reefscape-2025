@@ -33,6 +33,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "Dragon standby",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Dragon standby"
+        }
+      }
+    },
+    {
       "name": "L4",
       "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
@@ -60,7 +71,7 @@
   "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.54528113830685
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }
