@@ -245,7 +245,7 @@ public class StateMachine extends SubsystemBase {
                 .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
                 .andThen(m_dragon.handoffStandby())
                 .until(m_dragon::atSetpoint))
-                .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
+            .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
             .alongWith(
                 m_coralIntake
                     .takeLaxative()
