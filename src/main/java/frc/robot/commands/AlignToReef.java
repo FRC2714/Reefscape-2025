@@ -4,13 +4,13 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.utils.LimelightHelpers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToReef extends Command {
@@ -23,6 +23,8 @@ public class AlignToReef extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
+  private double[] positions;
+
   public AlignToReef(
       DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -31,20 +33,22 @@ public class AlignToReef extends Command {
     this.m_leftLimelight = m_leftLimelight;
     this.side = Limelight.SIDE;
 
-    xController = new PIDController(0.5, 0, 0);
-    yController = new PIDController(0.21, 0, 0);
-    thetaController = new PIDController(0.02, 0, 0);
+    xController = new PIDController(0.3, 0, 0);
+    yController = new PIDController(0.45, 0, 0);
+    thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(0.11);
+    xController.setSetpoint(-0.35);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.01);
-    yController.setTolerance(.01);
-    thetaController.setTolerance(.1);
+    xController.setTolerance(.06);
+    yController.setTolerance(.05);
+    thetaController.setTolerance(1);
+
+    positions = null;
   }
 
   // Called when the command is initially scheduled.
@@ -52,93 +56,69 @@ public class AlignToReef extends Command {
   public void initialize() {
     SmartDashboard.putBoolean("Align is finished", false);
     side = Limelight.SIDE;
+
+    // TODO: This can potentially be removed
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
       m_leftLimelight.setCoralTagPipelineRight();
+      yController.setSetpoint(0.239);
+      thetaController.setSetpoint(3);
     } else if (side == Align.LEFT) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
+      yController.setSetpoint(-0.235);
+      thetaController.setSetpoint(-3);
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   // when both cameras see:
-  // right align = right default (pipelin 1)
-  // left align = left default (pipelin 2)
+  // right align = right default (pipeline 1)
+  // left align = left default (pipeline 2)
   // if both cameras see, the default camera will be set to whatever side the
   // driver wants to align to (ie. left bumper = left align = default left camera
   // which uses pipeline 1)
   @Override
   public void execute() {
+
+    SmartDashboard.putNumber("Auto Align/X Setpoint", xController.getSetpoint());
+    SmartDashboard.putNumber("Auto Align/Y Setpoint", yController.getSetpoint());
+    SmartDashboard.putNumber("Auto Align/Rot Setpoint", thetaController.getSetpoint());
+
     if (m_leftLimelight.isTargetVisible()
         && m_rightLimelight.isTargetVisible()) { // if both are visible
       if (m_leftLimelight.getTargetID()
           == m_rightLimelight.getTargetID()) { // checks if both see same april tag
         if (side == Align.RIGHT) // driver align right so left camera
         {
-          updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+          positions = LimelightHelpers.getBotPose_TargetSpace(m_leftLimelight.getName());
 
-          m_drivetrain.drive(
-              -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-              m_leftLimelight.getDistanceToGoalMeters() < 0.4
-                  ? yController.calculate(m_leftLimelight.getXOffsetRadians())
-                  : 0,
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
         } else // driver aligns left so left camera
         {
-          updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
-
-          m_drivetrain.drive(
-              -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-              m_rightLimelight.getDistanceToGoalMeters() < 0.4
-                  ? yController.calculate(m_rightLimelight.getXOffsetRadians())
-                  : 0,
-              thetaController.calculate(m_drivetrain.getHeading()),
-              false);
+          positions = LimelightHelpers.getBotPose_TargetSpace(m_rightLimelight.getName());
         }
-      } else {
-        m_drivetrain.drive(0, 0, 0, true);
       }
     } else if ((m_leftLimelight
         .isTargetVisible())) { // if can only see left, then do whatever we did before
-      updateThetaControllerSetpoint(m_leftLimelight.getTargetID());
+      positions = LimelightHelpers.getBotPose_TargetSpace(m_leftLimelight.getName());
 
-      m_drivetrain.drive(
-          -xController.calculate(m_leftLimelight.getDistanceToGoalMeters()),
-          m_leftLimelight.getDistanceToGoalMeters() < 0.4
-              ? yController.calculate(m_leftLimelight.getXOffsetRadians())
-              : 0,
-          thetaController.calculate(m_drivetrain.getHeading()),
-          false);
     } else if ((m_rightLimelight.isTargetVisible())) { // same thing when the camera sees right
-      updateThetaControllerSetpoint(m_rightLimelight.getTargetID());
+      positions = LimelightHelpers.getBotPose_TargetSpace(m_rightLimelight.getName());
+    }
 
+    if (positions != null) {
+      SmartDashboard.putNumber("Auto Align/X Position", positions[2]);
+      SmartDashboard.putNumber("Auto Align/Y Position", positions[0]);
+      SmartDashboard.putNumber("Auto Align/Rot Position", positions[4]);
       m_drivetrain.drive(
-          -xController.calculate(m_rightLimelight.getDistanceToGoalMeters()),
-          m_rightLimelight.getDistanceToGoalMeters() < 0.4
-              ? yController.calculate(m_rightLimelight.getXOffsetRadians())
-              : 0,
-          thetaController.calculate(m_drivetrain.getHeading()),
+          xController.calculate(positions[2]),
+          -yController.calculate(positions[0]),
+          -thetaController.calculate(positions[4]),
           false);
-    } else {
-      m_drivetrain.drive(0, 0, 0, true);
     }
-  }
-
-  private void updateThetaControllerSetpoint(int targetID) {
-    switch (targetID) {
-      case 6, 19 -> thetaController.setSetpoint(300);
-      case 7, 18 -> thetaController.setSetpoint(0);
-      case 8, 17 -> thetaController.setSetpoint(60);
-      case 9, 22 -> thetaController.setSetpoint(120);
-      case 10, 21 -> thetaController.setSetpoint(180);
-      case 11, 20 -> thetaController.setSetpoint(240);
-    }
-
-    PPHolonomicDriveController.clearXFeedbackOverride();
-    PPHolonomicDriveController.clearYFeedbackOverride();
-    PPHolonomicDriveController.clearRotationFeedbackOverride();
+    SmartDashboard.putBoolean("X Align at setpoint", xController.atSetpoint());
+    SmartDashboard.putBoolean("Y Align at setpoint", yController.atSetpoint());
+    SmartDashboard.putBoolean("Rot Align at setpoint", thetaController.atSetpoint());
   }
 
   // Called once the command ends or is interrupted.

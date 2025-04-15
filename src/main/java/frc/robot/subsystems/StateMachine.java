@@ -264,7 +264,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command dragonStandbySequence() {
     return m_dragon
-        .stow()
+        .stowAndHold()
         .onlyIf(() -> !m_elevator.atSetpoint())
         .until(m_dragon::isClearFromElevator)
         .andThen(m_elevator.moveToStow().alongWith(m_dragon.scoreStandby()))
@@ -332,7 +332,7 @@ public class StateMachine extends SubsystemBase {
     return new ConditionalCommand(
         m_dragon
             .retractWithNoHold()
-            .until(m_dragon::atSetpoint)
+            .until(m_dragon::isClearFromReefNoCoral)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
         m_dragon
             .stopScore()

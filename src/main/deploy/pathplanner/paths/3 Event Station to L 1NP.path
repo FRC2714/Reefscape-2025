@@ -3,33 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.16025,
-        "y": 1.34375
+        "x": 1.5894267272949207,
+        "y": 6.797364239162869
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8675245901639235,
-        "y": 1.9311475409855767
+        "x": 2.4828102563928662,
+        "y": 6.512710006148727
       },
       "isLocked": false,
-      "linkedName": "Processor side station"
+      "linkedName": "NP station"
     },
     {
       "anchor": {
-        "x": 3.46125,
-        "y": 2.8452499999999996
+        "x": 3.452459016393442,
+        "y": 5.229764344262294
       },
       "prevControl": {
-        "x": 3.05875,
-        "y": 2.1434551282051277
+        "x": 2.7158294847276467,
+        "y": 6.008182887324581
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "C-Coral"
+      "linkedName": "K-Coral"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.9353070175438627,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -56,22 +70,22 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 59.99999999999999
+    "velocity": 0.7,
+    "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "PROCESSOR",
+  "folder": "NONPROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 54.36
+    "rotation": -54.36019080191327
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.521858974358974,
-        "y": 2.74525641025641
+        "x": 3.46125,
+        "y": 2.8452499999999996
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3925204918032783,
-        "y": 2.508555327868852
+        "x": 3.3319115174443046,
+        "y": 2.6085489176124415
       },
       "isLocked": false,
       "linkedName": "C-Coral"
@@ -60,7 +60,7 @@
   "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.66826662430165
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": false
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.452459016393442,
-        "y": 5.229764344262294
+        "x": 7.176,
+        "y": 2.42
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.748406682897496,
-        "y": 5.799878619158709
+        "x": 6.926,
+        "y": 2.42
       },
       "isLocked": false,
-      "linkedName": "K-Coral"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5894267272949207,
-        "y": 6.797364239162869
+        "x": 5.4185,
+        "y": 2.7068
       },
       "prevControl": {
-        "x": 2.207621462786638,
-        "y": 6.460574114764178
+        "x": 6.2378037240744595,
+        "y": 2.5214856516140185
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": "E-Coral"
     }
   ],
   "rotationTargets": [],
@@ -33,45 +33,45 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Idle",
+      "name": "Dragon standby",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Idle"
+          "name": "Dragon standby"
         }
       }
     },
     {
-      "name": "Intake Coral",
-      "waypointRelativePos": 0.5009993337774713,
+      "name": "L4",
+      "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Intake Coral"
+          "name": "L4"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0.5,
-    "rotation": -54.36019080191327
+    "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "NONPROCESSOR",
+  "folder": "PROCESSOR",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

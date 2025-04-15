@@ -5,9 +5,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.utils.LimelightHelpers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToCoralStation extends Command {
@@ -18,30 +20,33 @@ public class AlignToCoralStation extends Command {
   private PIDController yController;
   private PIDController thetaController;
 
+  private double[] positions;
+
   public AlignToCoralStation(DriveSubsystem m_drivetrain, Limelight m_limelight) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_limelight = m_limelight;
 
-    xController = new PIDController(0.5, 0, 0);
-    yController = new PIDController(0.25, 0, 0);
+    xController = new PIDController(0.3, 0, 0);
+    yController = new PIDController(0.2, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(0.392); // TODO
-    yController.setSetpoint(0);
-    thetaController.setSetpoint(0);
+    xController.setSetpoint(-1.55); // TODO
+    yController.setSetpoint(-0.5);
+    thetaController.setSetpoint(-29);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.01);
-    yController.setTolerance(.01);
-    thetaController.setTolerance(.1);
+    xController.setTolerance(.1);
+    yController.setTolerance(.1);
+    thetaController.setTolerance(1);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("Align is finished", false);
     m_limelight.setCoralStationPipeline();
   }
 
@@ -55,32 +60,27 @@ public class AlignToCoralStation extends Command {
   @Override
   public void execute() {
     if ((m_limelight.isTargetVisible())) { // if can only see left, then do whatever we did before
-      updateThetaControllerSetpoint(m_limelight.getTargetID());
-
-      m_drivetrain.drive(
-          m_limelight.getDistanceToGoalMetersCoralStation() < 1
-              ? xController.calculate(m_limelight.getDistanceToGoalMetersCoralStation())
-              : 0,
-          m_limelight.getDistanceToGoalMetersCoralStation() < 0.9
-              ? yController.calculate(m_limelight.getXOffsetRadians())
-              : 0,
-          thetaController.calculate(m_drivetrain.getHeading()),
-          false);
-    } else {
-      m_drivetrain.drive(0, 0, 0, true);
+      positions = LimelightHelpers.getBotPose_TargetSpace(m_limelight.getName());
     }
-  }
 
-  private void updateThetaControllerSetpoint(int targetID) {
-    switch (targetID) {
-      case 2, 12 -> thetaController.setSetpoint(54.011);
-      case 1, 13 -> thetaController.setSetpoint(-54.011);
+    if (positions != null) {
+      SmartDashboard.putNumber("Coral Auto Align/X Position", positions[2]);
+      SmartDashboard.putNumber("Coral Auto Align/Y Position", positions[0]);
+      SmartDashboard.putNumber("Coral Auto Align/Rot Position", positions[4]);
+      m_drivetrain.drive(
+          positions[2] > 0
+              ? xController.calculate(positions[2])
+              : -xController.calculate(positions[2]),
+          yController.calculate(positions[0]),
+          thetaController.calculate(positions[4]),
+          false);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("Align is finished", true);
     m_drivetrain.drive(0, 0, 0, interrupted);
   }
 
