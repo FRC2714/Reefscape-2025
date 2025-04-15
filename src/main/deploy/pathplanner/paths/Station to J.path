@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.452459016393442,
-        "y": 5.229764344262294
+        "x": 1.2480000000000002,
+        "y": 6.755
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9704590163934421,
-        "y": 5.912264344262295
+        "x": 2.2480000000000007,
+        "y": 6.755
       },
       "isLocked": false,
-      "linkedName": "K-Coral"
+      "linkedName": "station 2"
     },
     {
       "anchor": {
-        "x": 1.5894267272949207,
-        "y": 6.797364239162869
+        "x": 4.894500000000001,
+        "y": 5.06825
       },
       "prevControl": {
-        "x": 2.8861767272949193,
-        "y": 6.134364239162868
+        "x": 4.355053278688525,
+        "y": 6.183106557377048
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NP station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake Coral",
-      "waypointRelativePos": 0.2724252491694249,
+      "name": "Handoff",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Intake Coral"
+          "name": "Handoff"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.9534098582039119,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
         }
       }
     }
@@ -53,14 +64,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.5,
-    "rotation": -54.36019080191327
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "NONPROCESSOR",
+  "folder": "CENTER",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": -32.90524292298794
   },
   "useDefaultConstraints": true
 }
