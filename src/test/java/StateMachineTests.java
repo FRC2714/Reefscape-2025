@@ -43,7 +43,7 @@ public class StateMachineTests {
   void setScoreLevel(ScoreLevel scoreLevel) {
     try {
 
-      Field field = StateMachine.class.getDeclaredField("m_level");
+      Field field = StateMachine.class.getDeclaredField("LEVEL");
       field.setAccessible(true);
       field.set(m_stateMachine, scoreLevel);
     } catch (Exception e) {

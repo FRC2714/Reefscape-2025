@@ -389,7 +389,7 @@ public final class Constants {
       public static final double kHandoff = 221.1; // fix this later
       public static final double kHandoffStandby = 200; // TODO: CHANGE
       public static final double kLevel1 = 35;
-      public static final double kLevel2 = 100.3; // CHANGE?
+      public static final double kLevel2 = 85.5; // CHANGE?
       public static final double kLevel3 = 57.7; // CHANGE
       public static final double kLevel4 = 101.7;
       public static final double kClimb = 190;
@@ -402,6 +402,7 @@ public final class Constants {
     public static final class RollerSetpoints {
       public static final double kIntake = -0.1; // TODO: tune (pos when getting from station)
       public static final double kExtake = .7; // TODO: tune ts (neg when scoring)
+      public static final double kExtakeL2 = .2;
       public static final double kStop = 0;
       public static final double kHold = -0.2;
     }

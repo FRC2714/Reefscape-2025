@@ -55,7 +55,7 @@ public class StateMachine extends SubsystemBase {
     ALGAE_LOW
   }
 
-  ScoreLevel m_level = null;
+  public static ScoreLevel LEVEL = null;
 
   private HashMap<ScoreLevel, ElevatorSetpoint> elevatorMap = new HashMap<>();
   private HashMap<ScoreLevel, DragonSetpoint> dragonMap = new HashMap<>();
@@ -245,11 +245,11 @@ public class StateMachine extends SubsystemBase {
                 .andThen(m_elevator.moveToHandoff().until(m_elevator::isClearToStowDragon))
                 .andThen(m_dragon.handoffStandby())
                 .until(m_dragon::atSetpoint))
+            .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
             .alongWith(
                 m_coralIntake
                     .takeLaxative()
                     .andThen(m_coralIntake.handoffReady().until(m_coralIntake::atSetpoint))))
-        .andThen(m_dragon.handoffReady().until(m_dragon::atSetpoint))
         .andThen(
             m_coralIntake
                 .handoff()
@@ -285,7 +285,7 @@ public class StateMachine extends SubsystemBase {
   }
 
   public Command scoreReadyL4Sequence(ScoreLevel level) {
-    return new InstantCommand(() -> m_level = ScoreLevel.L4)
+    return new InstantCommand(() -> LEVEL = ScoreLevel.L4)
         .andThen(
             m_dragon
                 .stow()
@@ -301,7 +301,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
         () -> {
           if (m_state == State.DRAGON_SCORE)
-            if (m_level == ScoreLevel.L4) {
+            if (LEVEL == ScoreLevel.L4) {
               m_dragon
                   .retractWithNoHold()
                   .until(m_dragon::isClearFromReef)
@@ -338,7 +338,7 @@ public class StateMachine extends SubsystemBase {
             .stopScore()
             .until(m_dragon::atSetpoint)
             .beforeStarting(() -> m_state = State.DRAGON_READY),
-        () -> m_level == ScoreLevel.L4);
+        () -> LEVEL == ScoreLevel.L4);
   }
 
   public Command dragonScoreSequence() {
@@ -447,7 +447,8 @@ public class StateMachine extends SubsystemBase {
                 }
               }
             })
-        .withName("idle()");
+        .withName("idle()")
+        .beforeStarting(new InstantCommand(() -> LEVEL = ScoreLevel.L1));
   }
 
   public Command removeAlgae(ScoreLevel level) {
@@ -523,7 +524,7 @@ public class StateMachine extends SubsystemBase {
   public Command setLevel(ScoreLevel level) {
     return new InstantCommand(
             () -> {
-              m_level = level;
+              LEVEL = level;
               if (level == ScoreLevel.L1) {
                 if (manualOverride
                     || m_state == State.DRAGON_READY
@@ -562,7 +563,7 @@ public class StateMachine extends SubsystemBase {
     return new InstantCommand(
             () -> {
               if (manualOverride || m_state == State.DRAGON_READY) {
-                if (m_level == ScoreLevel.L4) {
+                if (LEVEL == ScoreLevel.L4) {
                   dragonScoreL4Sequence().schedule();
                 } else {
                   dragonScoreSequence().schedule();
@@ -577,7 +578,7 @@ public class StateMachine extends SubsystemBase {
 
   public Command scoreCoralAuto() {
     return new ConditionalCommand(
-            dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> m_level == ScoreLevel.L4)
+            dragonScoreL4SequenceAuto(), dragonScoreSequenceAuto(), () -> LEVEL == ScoreLevel.L4)
         .withName("scoreCoralAuto()");
   }
 
@@ -671,7 +672,7 @@ public class StateMachine extends SubsystemBase {
     return (m_state == State.DRAGON_READY
             && m_dragon.atSetpoint()
             && m_elevator.atSetpoint()
-            && (m_level == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
+            && (LEVEL == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
         || (m_state == State.POOP_READY
             && m_coralIntake.atSetpoint()
             && m_dragon.atSetpoint()
@@ -684,7 +685,7 @@ public class StateMachine extends SubsystemBase {
     SmartDashboard.putBoolean("Elevator homing done?", elevatorHasReset);
     SmartDashboard.putBoolean("State Machine/Auto Handoff", autoHandoff);
     SmartDashboard.putString("State Machine/State", m_state.toString());
-    SmartDashboard.putString("State Machine/Level", m_level == null ? "None" : m_level.toString());
+    SmartDashboard.putString("State Machine/Level", LEVEL == null ? "None" : LEVEL.toString());
     SmartDashboard.putString(
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
