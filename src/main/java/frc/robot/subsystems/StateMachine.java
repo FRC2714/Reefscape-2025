@@ -447,7 +447,8 @@ public class StateMachine extends SubsystemBase {
                 }
               }
             })
-        .withName("idle()");
+        .withName("idle()")
+        .beforeStarting(new InstantCommand(() -> LEVEL = ScoreLevel.L1));
   }
 
   public Command removeAlgae(ScoreLevel level) {

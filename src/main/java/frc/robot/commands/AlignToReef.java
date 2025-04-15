@@ -9,10 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.Align;
-import frc.robot.subsystems.StateMachine;
-import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.utils.LimelightHelpers;
+import java.util.function.BooleanSupplier;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignToReef extends Command {
@@ -21,34 +20,52 @@ public class AlignToReef extends Command {
   private Limelight m_leftLimelight;
   private Align side;
 
-  private PIDController xController;
-  private PIDController yController;
-  private PIDController thetaController;
+  private PIDController xController, xL2Controller;
+  private PIDController yController, yL2Controller;
+  private PIDController thetaController, thetaL2Controller;
+
+  private BooleanSupplier isL2;
 
   private double[] positions;
 
   public AlignToReef(
-      DriveSubsystem m_drivetrain, Limelight m_rightLimelight, Limelight m_leftLimelight) {
+      DriveSubsystem m_drivetrain,
+      Limelight m_rightLimelight,
+      Limelight m_leftLimelight,
+      BooleanSupplier isL2) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.m_drivetrain = m_drivetrain;
     this.m_rightLimelight = m_rightLimelight;
     this.m_leftLimelight = m_leftLimelight;
     this.side = Limelight.SIDE;
+    this.isL2 = isL2;
 
     xController = new PIDController(0.3, 0, 0);
     yController = new PIDController(0.45, 0, 0);
     thetaController = new PIDController(0.01, 0, 0);
 
+    xL2Controller = new PIDController(0.3, 0, 0);
+    yL2Controller = new PIDController(0.45, 0, 0);
+    thetaL2Controller = new PIDController(0.01, 0, 0);
+
+    xL2Controller.setSetpoint(-0.5);
+    yL2Controller.setTolerance(0.01);
+
+    thetaL2Controller.setSetpoint(0);
+    thetaL2Controller.enableContinuousInput(-180, 180);
+
     addRequirements(m_drivetrain);
 
-    xController.setSetpoint(0);
+    xController.setSetpoint(-0.35);
     yController.setSetpoint(0);
     thetaController.setSetpoint(0);
     thetaController.enableContinuousInput(-180, 180);
 
     xController.setTolerance(.06);
+    xL2Controller.setTolerance(.06);
     yController.setTolerance(.05);
     thetaController.setTolerance(1);
+    thetaL2Controller.setTolerance(1);
 
     positions = null;
   }
@@ -59,26 +76,23 @@ public class AlignToReef extends Command {
     SmartDashboard.putBoolean("Align is finished", false);
     side = Limelight.SIDE;
 
-    if (StateMachine.LEVEL == ScoreLevel.L2) {
-      if (side == Align.RIGHT) xController.setSetpoint(-0.5);
-      else xController.setSetpoint(-0.47);
-      yController.setTolerance(0.01);
-    } else {
-      xController.setSetpoint(-0.35);
-      yController.setTolerance(0.06);
-    }
-
     // TODO: This can potentially be removed
     if (side == Align.RIGHT) {
       m_rightLimelight.setCoralTagPipelineRight();
       m_leftLimelight.setCoralTagPipelineRight();
       yController.setSetpoint(0.239);
       thetaController.setSetpoint(3);
+      thetaL2Controller.setSetpoint(3);
+      xL2Controller.setSetpoint(-0.5);
+      yL2Controller.setSetpoint(0.239);
     } else if (side == Align.LEFT) {
       m_rightLimelight.setCoralTagPipelineLeft();
       m_leftLimelight.setCoralTagPipelineLeft();
       yController.setSetpoint(-0.235);
       thetaController.setSetpoint(-3);
+      thetaL2Controller.setSetpoint(-3);
+      xL2Controller.setSetpoint(-0.47);
+      yL2Controller.setSetpoint(-0.235);
     }
   }
 
@@ -122,8 +136,12 @@ public class AlignToReef extends Command {
       SmartDashboard.putNumber("Auto Align/Y Position", positions[0]);
       SmartDashboard.putNumber("Auto Align/Rot Position", positions[4]);
       m_drivetrain.drive(
-          xController.calculate(positions[2]),
-          -yController.calculate(positions[0]),
+          isL2.getAsBoolean()
+              ? xL2Controller.calculate(positions[2])
+              : xController.calculate(positions[2]),
+          isL2.getAsBoolean()
+              ? -yL2Controller.calculate(positions[0])
+              : -yController.calculate(positions[0]),
           -thetaController.calculate(positions[4]),
           false);
     }
@@ -142,6 +160,8 @@ public class AlignToReef extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return xController.atSetpoint() && yController.atSetpoint() && thetaController.atSetpoint();
+    return (isL2.getAsBoolean() ? xL2Controller.atSetpoint() : xController.atSetpoint())
+        && (isL2.getAsBoolean() ? yL2Controller.atSetpoint() : yController.atSetpoint())
+        && thetaController.atSetpoint();
   }
 }
