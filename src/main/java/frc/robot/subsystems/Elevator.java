@@ -152,6 +152,10 @@ public class Elevator extends SubsystemBase {
     }
   }
 
+  public void zeroElevator() {
+    elevatorEncoder.setPosition(0);
+  }
+
   public boolean atSetpoint() {
     if (Robot.isSimulation()) {
       return true;
