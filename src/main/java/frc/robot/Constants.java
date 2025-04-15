@@ -370,6 +370,7 @@ public final class Constants {
     public static final double kPivotMaxAngle = 250.0;
     public static final double kClearFromElevatorAngle = 165.5;
     public static final double kClearFromReefAngle = 50;
+    public static final double kClearFromReefNoCoralAngle = 64;
     public static final double kClearToScoreL4Angle = 70.7;
 
     public static final double kP = 0.015;

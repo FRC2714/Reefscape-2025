@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 7.176,
-        "y": 6.16025
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.926,
-        "y": 6.16025
+        "y": 5.5
       },
       "isLocked": false,
-      "linkedName": "barge nonprocessor"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.217776639344262
       },
       "prevControl": {
-        "x": 5.612992609364314,
-        "y": 5.789728292276068
+        "x": 6.2374426229508195,
+        "y": 5.403026639344262
       },
       "nextControl": null,
       "isLocked": false,

@@ -198,6 +198,13 @@ public class Dragon extends SubsystemBase {
     return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefAngle;
   }
 
+  public boolean isClearFromReefNoCoral() {
+    if (Robot.isSimulation()) {
+      return true;
+    }
+    return pivotAbsoluteEncoder.getPosition() < DragonConstants.kClearFromReefNoCoralAngle;
+  }
+
   public boolean isClearToScoreL4() {
     if (Robot.isSimulation()) {
       return true;
@@ -288,6 +295,16 @@ public class Dragon extends SubsystemBase {
             () -> {
               setPivot(DragonSetpoint.STOW);
               setRollerPower(RollerSetpoints.kStop);
+              setDragonState(DragonState.STOW);
+            })
+        .withName("stow()");
+  }
+
+  public Command stowAndHold() {
+    return this.run(
+            () -> {
+              setPivot(DragonSetpoint.STOW);
+              setRollerPower(RollerSetpoints.kHold);
               setDragonState(DragonState.STOW);
             })
         .withName("stow()");

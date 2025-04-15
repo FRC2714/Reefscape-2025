@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.0992500000000005,
-        "y": 5.4095
+        "x": 5.41844262295082,
+        "y": 5.217776639344262
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.655160256410256,
-        "y": 6.070230769230769
+        "x": 4.974352879361075,
+        "y": 5.878507408575031
       },
       "isLocked": false,
       "linkedName": "J-Coral"
@@ -53,7 +53,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.5,
+    "velocity": 1.1,
     "rotation": -54.36019080191327
   },
   "reversed": false,

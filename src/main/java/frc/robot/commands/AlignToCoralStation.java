@@ -38,14 +38,15 @@ public class AlignToCoralStation extends Command {
     thetaController.setSetpoint(-29);
     thetaController.enableContinuousInput(-180, 180);
 
-    xController.setTolerance(.01);
-    yController.setTolerance(.01);
-    thetaController.setTolerance(.1);
+    xController.setTolerance(.1);
+    yController.setTolerance(.1);
+    thetaController.setTolerance(1);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("Align is finished", false);
     m_limelight.setCoralStationPipeline();
   }
 
@@ -79,6 +80,7 @@ public class AlignToCoralStation extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("Align is finished", true);
     m_drivetrain.drive(0, 0, 0, interrupted);
   }
 
