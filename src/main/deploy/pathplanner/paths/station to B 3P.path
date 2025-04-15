@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.589,
-        "y": 1.1278
+        "x": 1.16025,
+        "y": 1.34375
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2495128205128205,
-        "y": 2.170171794871793
+        "x": 1.8207628205128206,
+        "y": 2.3861217948717934
       },
       "isLocked": false,
       "linkedName": "Processor side station"
