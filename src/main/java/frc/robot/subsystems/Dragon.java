@@ -395,6 +395,19 @@ public class Dragon extends SubsystemBase {
         .withName("score()"); // ADD BACK AFTER TESTING
   }
 
+  public Command scoreAuto() {
+    return this.run(
+            () -> {
+              m_previousSetpoint = m_dragonSetpoint;
+              setRollerPower(
+                  StateMachine.LEVEL == ScoreLevel.L2
+                      ? RollerSetpoints.kExtakeL2
+                      : RollerSetpoints.kExtakeAuto);
+              setDragonState(DragonState.SCORE);
+            })
+        .withName("score()"); // ADD BACK AFTER TESTING
+  }
+
   public Command retract() {
     return this.run(
             () -> {
