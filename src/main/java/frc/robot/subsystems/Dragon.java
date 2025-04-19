@@ -480,23 +480,9 @@ public class Dragon extends SubsystemBase {
     return m_dragonState;
   }
 
-  public boolean isBranchDetected() {
-    Measurement measurement = m_laserCan.getMeasurement();
-
-    return measurement != null
-        && measurement.status == LaserCanInterface.LASERCAN_STATUS_VALID_MEASUREMENT
-        && measurement.distance_mm >= LaserCanConstants.kL4MinDetectionDistance.in(Millimeters)
-        && measurement.distance_mm <= LaserCanConstants.kL4MaxDetectionDistance.in(Millimeters);
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    SmartDashboard.putBoolean("Dragon/Branch Detected", isBranchDetected());
-    SmartDashboard.putNumber(
-        ("Dragon/Distance from branch millimeters"),
-        m_laserCan.getMeasurement() != null ? m_laserCan.getMeasurement().distance_mm : -1);
 
     SmartDashboard.putNumber("Dragon/Roller/Roller Current", pivotRollers.getOutputCurrent());
     SmartDashboard.putNumber("Dragon/Pivot/Current Position", pivotAbsoluteEncoder.getPosition());

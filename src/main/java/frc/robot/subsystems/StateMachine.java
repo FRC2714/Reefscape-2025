@@ -672,7 +672,7 @@ public class StateMachine extends SubsystemBase {
     return (m_state == State.DRAGON_READY
             && m_dragon.atSetpoint()
             && m_elevator.atSetpoint()
-            && (LEVEL == ScoreLevel.L4 ? m_dragon.isBranchDetected() : true))
+            && (LEVEL == ScoreLevel.L4 ? true : true))
         || (m_state == State.POOP_READY
             && m_coralIntake.atSetpoint()
             && m_dragon.atSetpoint()
