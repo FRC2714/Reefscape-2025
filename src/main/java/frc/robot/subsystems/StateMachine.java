@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -679,6 +680,9 @@ public class StateMachine extends SubsystemBase {
             && m_elevator.atSetpoint());
   }
 
+  private double timestamp = 0;
+  private boolean timerRunning = false;
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("State Machine/Manual Override", manualOverride);
@@ -690,5 +694,23 @@ public class StateMachine extends SubsystemBase {
         "State Machine/Current Comamand",
         this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
     SmartDashboard.putBoolean("State Machine/Ready to Score", isReadyToScore());
+
+    if (!timerRunning
+        && isReadyToScore()
+        && !manualOverride
+        && m_level == ScoreLevel.L4
+        && m_dragon.isCoralOnDragon()) {
+      timestamp = 0;
+      timerRunning = true;
+    } else if (timerRunning && !isReadyToScore()) {
+      timestamp = 0;
+      timerRunning = false;
+    } else if (timerRunning && timestamp > 500) {
+      scoreCoralAuto().schedule();
+      timerRunning = false;
+      timestamp = 0;
+    }
+    else if (timerRunning)
+      timestamp += 20;
   }
 }
