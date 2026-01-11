@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
@@ -119,36 +117,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    NamedCommands.registerCommand(
-        "Dragon standby", m_stateMachine.dragonStandbySequence().withTimeout(0.3));
-    NamedCommands.registerCommand("Score Coral", m_stateMachine.scoreCoralAuto());
-    NamedCommands.registerCommand("L4", m_stateMachine.scoreReadyL4Sequence(ScoreLevel.L4));
-    NamedCommands.registerCommand("L3", m_stateMachine.scoreReadySequence(ScoreLevel.L3));
-    NamedCommands.registerCommand("L2", m_stateMachine.scoreReadySequence(ScoreLevel.L2));
-    NamedCommands.registerCommand("L1", m_stateMachine.scoreReadySequence(ScoreLevel.L1));
-    NamedCommands.registerCommand("Intake Coral", m_stateMachine.intakeSequenceAuto());
-    NamedCommands.registerCommand("Handoff", m_stateMachine.handoffSequence());
-    NamedCommands.registerCommand("Extake Coral", m_stateMachine.extakeCoral().withTimeout(2));
-    NamedCommands.registerCommand("Enable Auto Handoff", m_stateMachine.enableAutoHandoff());
-    NamedCommands.registerCommand("Disable Auto Handoff", m_stateMachine.disableAutoHandoff());
-    NamedCommands.registerCommand("Idle", m_stateMachine.idleSequence());
-    NamedCommands.registerCommand(
-        "Flip Heading", new InstantCommand(() -> m_robotDrive.flipHeading()));
-    NamedCommands.registerCommand(
-        "Set Align Right", new InstantCommand(() -> Limelight.setSIDE(Align.RIGHT)));
-    NamedCommands.registerCommand(
-        "Set Align Left", new InstantCommand(() -> Limelight.setSIDE(Align.LEFT)));
-    NamedCommands.registerCommand(
-        "Align to Coral Station",
-        new AlignToCoralStation(m_robotDrive, m_backLimelight).withTimeout(1));
-    NamedCommands.registerCommand(
-        "Auto align",
-        new AlignToReef(m_robotDrive, m_rightLimelight, m_leftLimelight, () -> false)
-            .withTimeout(1.5));
-    NamedCommands.registerCommand(
-        "Wait Until Loaded", new WaitUntilCommand(m_coralIntake::isLoaded));
-    NamedCommands.registerCommand(
-        "Remove Algae Low", m_stateMachine.algaeRemovalSequence(ScoreLevel.ALGAE_LOW));
     configureButtonBindings();
 
     // Configure default commands
@@ -168,8 +136,6 @@ public class RobotContainer {
                     true),
             m_robotDrive));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -296,20 +262,8 @@ public class RobotContainer {
         });
   }
 
-  public Command setAutonomousDefaultStates() {
-    return new InstantCommand(
-        () -> {
-          m_robotDrive.flipHeading();
-          m_stateMachine.setAutonomousDefaultStates().schedule();
-        });
-  }
-
   public Command homingSequence() {
     return m_stateMachine.homingSequence();
-  }
-
-  public void flipHeading() {
-    m_robotDrive.flipHeading();
   }
 
   /**
