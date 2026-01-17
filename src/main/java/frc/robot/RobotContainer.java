@@ -31,6 +31,7 @@ import frc.robot.subsystems.Limelight.Align;
 import frc.robot.subsystems.StateMachine;
 import frc.robot.subsystems.StateMachine.ScoreLevel;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.Intake;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,6 +48,7 @@ public class RobotContainer {
   private final Elevator m_elevator = new Elevator();
   private final Dragon m_dragon = new Dragon();
   private final Climber m_climber = new Climber();
+  private final Intake m_intake = new Intake();
 
   private final Limelight m_rightLimelight =
       new Limelight(
@@ -169,8 +171,11 @@ public class RobotContainer {
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
 
-    m_driverController.a().onTrue(m_stateMachine.scoreCoral());
-    m_driverController.b().onTrue(m_stateMachine.stopScore());
+    m_driverController.a().onTrue(new InstantCommand(() -> m_intake.intake()));
+    m_driverController.a().onFalse(new InstantCommand(() -> m_intake.stop()));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_intake.outtake()));
+    m_driverController.b().onFalse(new InstantCommand(() -> m_intake.stop()));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_intake.stop()));
 
     m_driverController
         .rightBumper()
