@@ -171,16 +171,21 @@ public class RobotContainer {
         .rightTrigger(OIConstants.kTriggerButtonThreshold)
         .onTrue(m_stateMachine.intakeCoral());
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_intake.intake()));
+    m_driverController.a().onTrue(new InstantCommand(() -> m_intake.intake())); //100% Power
     m_driverController.a().onFalse(new InstantCommand(() -> m_intake.stop()));
+    m_driverController.y().onTrue(new InstantCommand(() -> m_intake.intakeMedium())); //75% Power
+    m_driverController.y().onFalse(new InstantCommand(() -> m_intake.stop()));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_intake.intakeSlow())); //50% Power
+    m_driverController.x().onFalse(new InstantCommand(() -> m_intake.stop()));
+    
     m_driverController.b().onTrue(new InstantCommand(() -> m_intake.outtake()));
     m_driverController.b().onFalse(new InstantCommand(() -> m_intake.stop()));
-    m_driverController.x().onTrue(new InstantCommand(() -> m_intake.stop()));
 
     m_driverController
         .rightBumper()
         .whileTrue(
             new AlignToReef(
+
                 m_robotDrive,
                 m_rightLimelight,
                 m_leftLimelight,

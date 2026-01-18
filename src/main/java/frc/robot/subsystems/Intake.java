@@ -21,12 +21,27 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(1);
   }
 
+  public void intakeMedium() {
+    intakeMotor.set(0.75);
+  }
+
+  public void intakeSlow() {
+    intakeMotor.set(0.50);
+  }
+
    public void stop() {
     intakeMotor.set(0);
   }
 
-   public void outtake() {
+  public void outtake() {
     intakeMotor.set(-1);
+  }
+
+  public void outtakeMedium() {
+    intakeMotor.set(-0.75);
+  }
+  public void outtakeSlow() {
+    intakeMotor.set(-0.5);
   }
 
   @Override
