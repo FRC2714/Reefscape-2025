@@ -18,7 +18,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void intake() {
-    intakeMotor.set(0.5);
+    intakeMotor.set(1);
   }
 
    public void stop() {
@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
   }
 
    public void outtake() {
-    intakeMotor.set(-0.5);
+    intakeMotor.set(-1);
   }
 
   @Override
